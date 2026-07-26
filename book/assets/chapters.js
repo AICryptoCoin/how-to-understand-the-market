@@ -17,7 +17,7 @@ window.BOOK_CHAPTERS = [
   { n:  1, part: 0, file: "ch01-karta-vmesto-prognoza.html", title: "Карта вместо прогноза",              status: "done" },
 
   { n:  2, part: 1, file: "ch02-ekonomika-kak-potok.html",   title: "Экономика как поток: ВВП",           status: "done" },
-  { n:  3, part: 1, file: "ch03-biznes-cikl.html",           title: "Бизнес-цикл и иерархия циклов",      status: "todo" },
+  { n:  3, part: 1, file: "ch03-biznes-cikl.html",           title: "Бизнес-цикл и иерархия циклов",      status: "done" },
   { n:  4, part: 1, file: "ch04-dengi-i-kredit.html",        title: "Деньги, кредит и ликвидность",       status: "todo" },
 
   { n:  5, part: 2, file: "ch05-hope.html",                  title: "H-O-P-E: скелет опережения",         status: "todo" },
