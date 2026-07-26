@@ -16,7 +16,7 @@ window.BOOK_PARTS = [
 window.BOOK_CHAPTERS = [
   { n:  1, part: 0, file: "ch01-karta-vmesto-prognoza.html", title: "Карта вместо прогноза",              status: "done" },
 
-  { n:  2, part: 1, file: "ch02-ekonomika-kak-potok.html",   title: "Экономика как поток: ВВП",           status: "todo" },
+  { n:  2, part: 1, file: "ch02-ekonomika-kak-potok.html",   title: "Экономика как поток: ВВП",           status: "done" },
   { n:  3, part: 1, file: "ch03-biznes-cikl.html",           title: "Бизнес-цикл и иерархия циклов",      status: "todo" },
   { n:  4, part: 1, file: "ch04-dengi-i-kredit.html",        title: "Деньги, кредит и ликвидность",       status: "todo" },
 
