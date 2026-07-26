@@ -283,6 +283,7 @@ blockquote cite { display: block; margin-top: .5rem; font-style: normal; font-fa
 .callout--trap    { --accent: var(--st-critical); }
 .callout--source  { --accent: var(--ink-muted); }
 .callout--ours    { --accent: var(--series-3); }
+.callout--beyond  { --accent: var(--series-5); }
 
 /* Правило R## */
 .rule-id {
