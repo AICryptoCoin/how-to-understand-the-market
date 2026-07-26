@@ -24,7 +24,7 @@ window.BOOK_CHAPTERS = [
   { n:  6, part: 2, file: "ch06-zhilyo.html",                title: "Жильё — первое звено",               status: "done" },
   { n:  7, part: 2, file: "ch07-zakazy-proizvodstvo.html",   title: "Заказы, производство, запасы",       status: "done" },
   { n:  8, part: 2, file: "ch08-pribyl.html",                title: "Прибыль корпораций",                 status: "done" },
-  { n:  9, part: 2, file: "ch09-trud-i-potrebitel.html",     title: "Труд, доходы и потребитель",         status: "todo" },
+  { n:  9, part: 2, file: "ch09-trud-i-potrebitel.html",     title: "Труд, доходы и потребитель",         status: "done" },
   { n: 10, part: 2, file: "ch10-ceny-i-inflyaciya.html",     title: "Цены и инфляция",                    status: "done" },
 
   { n: 11, part: 3, file: "ch11-frs-ustroystvo.html",        title: "ФРС: устройство и каналы",           status: "done" },
