@@ -30,7 +30,7 @@ window.BOOK_CHAPTERS = [
   { n: 11, part: 3, file: "ch11-frs-ustroystvo.html",        title: "ФРС: устройство и каналы",           status: "todo" },
   { n: 12, part: 3, file: "ch12-kak-chitat-frs.html",        title: "Как читать ФРС",                     status: "todo" },
   { n: 13, part: 3, file: "ch13-krivaya-mehanika.html",      title: "Кривая доходности: механика",        status: "todo" },
-  { n: 14, part: 3, file: "ch14-formy-i-realnye-stavki.html",title: "Формы, режимы и реальные ставки",    status: "todo" },
+  { n: 14, part: 3, file: "ch14-formy-i-realnye-stavki.html",title: "Формы, режимы и реальные ставки",    status: "done" },
 
   { n: 15, part: 4, file: "ch15-mezhrynochnyy-analiz.html",  title: "Межрыночный анализ",                 status: "todo" },
   { n: 16, part: 4, file: "ch16-dollar-zoloto-syryo.html",   title: "Доллар, золото, сырьё",              status: "todo" },

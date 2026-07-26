@@ -1,0 +1,1757 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>14. Формы, режимы и реальные ставки — Как понимать рынок</title>
+<meta name="description" content="Пять форм кривой доходности, четыре режима её движения, правило «важна не форма, а как к ней пришли», спреды и рецессии, тождество реальных ставок и связь с форвардным мультипликатором.">
+<link rel="stylesheet" href="assets/book.css">
+</head>
+<body data-chapter="14">
+
+<header class="topbar">
+  <button class="btn sidebar-toggle" id="sidebar-btn" type="button" aria-expanded="false">☰</button>
+  <a class="topbar__book" href="index.html">Как понимать рынок</a>
+  <span class="topbar__sep">·</span>
+  <span class="topbar__where" id="topbar-where"></span>
+  <span class="topbar__spacer"></span>
+  <button class="btn" id="theme-btn" type="button">◐&nbsp;&nbsp;Тема: авто</button>
+</header>
+
+<div class="layout">
+  <aside class="sidebar"><nav id="book-nav"></nav></aside>
+
+  <main class="content">
+  <article class="prose">
+
+    <p class="chapter-eyebrow">Часть III · ФРС и ставки · Глава 14</p>
+    <h1>Формы, режимы и реальные ставки</h1>
+    <p class="chapter-lede">
+      Здесь собирается предохранитель всего инструмента. Две оси дают квадрант,
+      но квадрант ещё не даёт права торговать: его должна подтвердить кривая
+      доходности, посчитанная независимо от осей. А чтобы понять, почему
+      верхняя половина матрицы платит за мультипликатор, а нижняя его отбирает,
+      придётся разобрать одно короткое тождество.
+    </p>
+
+    <nav class="chapter-map">
+      <h2>В этой главе</h2>
+      <ol>
+        <li><a href="#s1">Зачем эта глава: третий вход инструмента</a></li>
+        <li><a href="#s2">Пять форм кривой — и одна лишняя</a></li>
+        <li><a href="#s3">Четыре режима движения</a></li>
+        <li><a href="#s4">Одна форма — три пути</a></li>
+        <li><a href="#s5">Валидатор: когда инструмент обязан молчать</a></li>
+        <li><a href="#s6">Спреды, нулевая линия и рецессии</a></li>
+        <li><a href="#s7">Реальные ставки: тождество</a></li>
+        <li><a href="#s8">Реальные ставки и мультипликатор</a></li>
+        <li><a href="#s9">Что сделать руками</a></li>
+        <li><a href="#s10">Что читать дальше</a></li>
+      </ol>
+    </nav>
+
+    <!-- ================================================================= -->
+    <h2 id="s1">Зачем эта глава: третий вход инструмента</h2>
+
+    <p>
+      У МЕГА-шпаргалки два входа — ось <b>FED Policy</b> и ось <b>MACRO sentiment</b>.
+      Но есть и третий элемент, который входом не является и именно поэтому важен:
+      <b>форма движения кривой доходности</b>. Она считается по рыночным данным
+      напрямую, не заглядывая ни в одну из осей. Если посчитанная форма не совпала
+      с той, что предписана квадрантом, состояние объявляется неподтверждённым
+      и инструмент отказывается давать сигнал.
+    </p>
+    <p>
+      Это единственный механизм во всей конструкции, который умеет сказать «нет»
+      уже полученному ответу. Всё остальное — сложение свидетельств в пользу
+      выбранного квадранта; здесь — независимая проверка. Поэтому глава самая
+      техническая в книге и одна из двух несущих.
+    </p>
+
+    <div class="callout callout--rule">
+      <div class="callout__label" data-icon="⌘">Что глава закрывает</div>
+      <p>
+        <span class="rule-id">R24</span>–<span class="rule-id">R27</span> — классификация
+        режима движения кривой (bull/bear × flattener/steepener).<br>
+        <span class="rule-id">R28</span> — условие неподтверждения: форма ≠ предписанной
+        квадрантом ⇒ центр / no-trade.<br>
+        <span class="rule-id">R29</span> — спреды <span class="ticker">10Y−2Y</span>,
+        <span class="ticker">10Y−3M</span>, <span class="ticker">10Y−5Y</span> и нулевая линия.<br>
+        <span class="rule-id">R30</span> — классифицировать <b>только по изменению за окно</b>,
+        никогда по уровню.<br>
+        <span class="rule-id">R31</span> — тождество-валидатор
+        <code>R.Yields = N.Yields − Inf.exp</code>.<br>
+        <span class="rule-id">R36</span> — реальные ставки → форвардный мультипликатор
+        (калибровка 23.5× при −1.0 % и 15.2× при +1.3…1.5 %).
+      </p>
+      <p style="margin-bottom:0">
+        Первые пять правил — про валидатор. Последнее объясняет, почему обе
+        <em>верхние</em> клетки матрицы имеют <code>Fwd P/E ▲</code>, а обе нижние — <code>▼</code>.
+      </p>
+    </div>
+
+    <p>
+      Прежде чем идти дальше, вспомним карту драйверов кривой из предыдущей главы
+      <b>[КАНОН]</b>: участок до 2 лет двигает <b>ФРС</b>, участок 3–7 лет —
+      <b>инфляционные ожидания</b>, участок 10–30 лет — <b>ожидания долгосрочного
+      экономического роста</b>. Вся эта глава — следствие того, что эти три группы
+      ожиданий живут своей жизнью и могут расходиться. Кривая — это, по сути,
+      три разных рынка, нарисованных одной линией.
+    </p>
+    <p>
+      И вспомним разложение доходности <b>[КАНОН]</b>, которое понадобится во второй
+      половине главы:
+    </p>
+
+    <blockquote>
+      Номинальная доходность = Инфляционные ожидания + Премия за риск + Безрисковая доходность
+    </blockquote>
+
+    <div class="callout callout--beyond">
+      <div class="callout__label" data-icon="✚">Дополнено: та же мысль в академической форме</div>
+      <p>
+        <b>[ДОПОЛНЕНО]</b> Формула курса — практическая запись стандартного разложения,
+        и полезно знать его каноническую версию, потому что вся вторая половина главы
+        и вся врезка «2023 → 2026» держатся именно на ней. Доходность облигации
+        со сроком <i>n</i> раскладывается на два слагаемых:
+      </p>
+      <blockquote style="margin-top:.5rem">
+        y<sub>n</sub> = средняя ожидаемая краткосрочная ставка за <i>n</i> лет
+        &nbsp;+&nbsp; <b>премия за срок</b> (term premium)
+      </blockquote>
+      <p>
+        Первое слагаемое — то, что рынок думает про ФРС на всём горизонте. Второе —
+        компенсация, которую требует инвестор за то, что вообще держит длинную бумагу:
+        за риск, что ставки пойдут не туда, и за неопределённость инфляции. Гипотеза,
+        что премии нет и длинная ставка есть просто среднее из будущих коротких
+        (<i>expectations hypothesis</i>), эмпирически не подтверждается — это классический
+        результат <b>Фамы и Блисса (1987)</b> и <b>Кэмпбелла и Шиллера (1991)</b>:
+        форвардные ставки предсказывают не будущие ставки, а именно избыточную доходность,
+        то есть премию.
+      </p>
+      <p style="margin-bottom:0">
+        Практическая ценность разложения в том, что <b>одно и то же движение длинного
+        конца может иметь два совершенно разных источника</b>: рынок передумал про ФРС —
+        или изменилась цена риска дюрации. Курс это различение не делает. Оценки премии
+        публикуются: модель <b>ACM</b> (Адриан, Крамп и Мёнч, <i>Journal of Financial
+        Economics</i>, 2013) — ежедневный ряд ФРБ Нью-Йорка; альтернатива — модель
+        <b>Кима и Райта</b> Совета управляющих ФРС.
+      </p>
+    </div>
+
+    <!-- ================================================================= -->
+    <h2 id="s2">Пять форм кривой — и одна лишняя</h2>
+
+    <p>
+      Курс работает с упрощённой моделью кривой из четырёх узлов <b>[КАНОН]</b>:
+      девять теноров (M, 1Y, 2Y, 3Y, 5Y, 7Y, 10Y, 20Y, 30Y) схлопываются в
+      <b>M / 1–2Y / 3–7Y / 10–30Y</b>. Дальше вся классификация идёт по этим четырём точкам.
+      Форм, которые автор разбирает отдельно, — пять.
+    </p>
+
+    <figure class="figure" id="fig-14-1">
+      <div class="figure__frame">
+        <svg viewBox="0 0 900 240" role="img" aria-labelledby="f141t f141d">
+          <title id="f141t">Пять форм кривой доходности: нормальная, крутая, плоская, перевёрнутая, горбатая</title>
+          <desc id="f141d">Пять мини-графиков в ряд. По горизонтали — четыре узла срочности: M, 1–2Y, 3–7Y, 10–30Y. По вертикали — доходность с отметками один, два и три процента. Нормальная кривая растёт слева направо; крутая растёт сильнее; плоская идёт горизонтально на двух процентах; перевёрнутая падает слева направо; горбатая имеет вершину на участке один-два года и помечена как аномалия, которая не классифицируется.</desc>
+
+          <!-- общая шкала слева -->
+          <text class="viz-axis" x="34" y="64" text-anchor="end">3 %</text>
+          <text class="viz-axis" x="34" y="104" text-anchor="end">2 %</text>
+          <text class="viz-axis" x="34" y="144" text-anchor="end">1 %</text>
+
+          <!-- рамка аномалии (панель 5) -->
+          <rect x="718" y="8" width="176" height="214" rx="8" fill="none" stroke="var(--st-critical)" stroke-width="1"/>
+
+          <!-- ===== панель 1 · нормальная ===== -->
+          <g tabindex="0" data-tip="<b>Нормальная</b><br>Ставка ФРС низкая, PMI выше 50, инфляция и кредитный риск низкие, сырьё растёт.">
+            <text class="viz-title" x="44" y="20">Нормальная</text>
+            <text class="viz-q-sub" x="44" y="36">NORMAL</text>
+            <line class="viz-grid" x1="52" y1="60" x2="200" y2="60"/>
+            <line class="viz-grid" x1="52" y1="100" x2="200" y2="100"/>
+            <line class="viz-grid" x1="52" y1="140" x2="200" y2="140"/>
+            <line class="viz-axisline" x1="52" y1="46" x2="52" y2="180"/>
+            <line class="viz-axisline" x1="52" y1="180" x2="200" y2="180"/>
+            <path class="viz-line" stroke="var(--series-1)" d="M70,140 L108,120 L146,106 L188,80"/>
+            <circle class="viz-mark" cx="70" cy="140" r="3" fill="var(--series-1)"/>
+            <circle class="viz-mark" cx="108" cy="120" r="3" fill="var(--series-1)"/>
+            <circle class="viz-mark" cx="146" cy="106" r="3" fill="var(--series-1)"/>
+            <circle class="viz-mark" cx="188" cy="80" r="3" fill="var(--series-1)"/>
+            <text class="viz-axis" x="70" y="196" text-anchor="middle">M</text>
+            <text class="viz-axis" x="108" y="196" text-anchor="middle">1–2Y</text>
+            <text class="viz-axis" x="146" y="196" text-anchor="middle">3–7Y</text>
+            <text class="viz-axis" x="188" y="196" text-anchor="middle">10–30Y</text>
+          </g>
+
+          <!-- ===== панель 2 · крутая ===== -->
+          <g tabindex="0" data-tip="<b>Крутая</b><br>Ставка пока низкая, но её роста уже опасаются; инфляционные ожидания стремительно растут; сырьё готовится к нырку вниз.">
+            <text class="viz-title" x="214" y="20">Крутая</text>
+            <text class="viz-q-sub" x="214" y="36">STEEP</text>
+            <line class="viz-grid" x1="222" y1="60" x2="370" y2="60"/>
+            <line class="viz-grid" x1="222" y1="100" x2="370" y2="100"/>
+            <line class="viz-grid" x1="222" y1="140" x2="370" y2="140"/>
+            <line class="viz-axisline" x1="222" y1="46" x2="222" y2="180"/>
+            <line class="viz-axisline" x1="222" y1="180" x2="370" y2="180"/>
+            <path class="viz-line" stroke="var(--series-1)" d="M240,148 L278,120 L316,86 L358,64"/>
+            <circle class="viz-mark" cx="240" cy="148" r="3" fill="var(--series-1)"/>
+            <circle class="viz-mark" cx="278" cy="120" r="3" fill="var(--series-1)"/>
+            <circle class="viz-mark" cx="316" cy="86" r="3" fill="var(--series-1)"/>
+            <circle class="viz-mark" cx="358" cy="64" r="3" fill="var(--series-1)"/>
+            <text class="viz-axis" x="240" y="196" text-anchor="middle">M</text>
+            <text class="viz-axis" x="278" y="196" text-anchor="middle">1–2Y</text>
+            <text class="viz-axis" x="316" y="196" text-anchor="middle">3–7Y</text>
+            <text class="viz-axis" x="358" y="196" text-anchor="middle">10–30Y</text>
+          </g>
+
+          <!-- ===== панель 3 · плоская ===== -->
+          <g tabindex="0" data-tip="<b>Плоская</b><br>Ставка выросла и, вероятно, вырастет ещё; банковская система тормозит; PMI ниже 50; кредитные спреды растут; сырьё уже сползло вниз.">
+            <text class="viz-title" x="384" y="20">Плоская</text>
+            <text class="viz-q-sub" x="384" y="36">FLAT</text>
+            <line class="viz-grid" x1="392" y1="60" x2="540" y2="60"/>
+            <line class="viz-grid" x1="392" y1="100" x2="540" y2="100"/>
+            <line class="viz-grid" x1="392" y1="140" x2="540" y2="140"/>
+            <line class="viz-axisline" x1="392" y1="46" x2="392" y2="180"/>
+            <line class="viz-axisline" x1="392" y1="180" x2="540" y2="180"/>
+            <path class="viz-line" stroke="var(--series-1)" d="M410,100 L448,100 L486,100 L528,100"/>
+            <circle class="viz-mark" cx="410" cy="100" r="3" fill="var(--series-1)"/>
+            <circle class="viz-mark" cx="448" cy="100" r="3" fill="var(--series-1)"/>
+            <circle class="viz-mark" cx="486" cy="100" r="3" fill="var(--series-1)"/>
+            <circle class="viz-mark" cx="528" cy="100" r="3" fill="var(--series-1)"/>
+            <text class="viz-axis" x="410" y="196" text-anchor="middle">M</text>
+            <text class="viz-axis" x="448" y="196" text-anchor="middle">1–2Y</text>
+            <text class="viz-axis" x="486" y="196" text-anchor="middle">3–7Y</text>
+            <text class="viz-axis" x="528" y="196" text-anchor="middle">10–30Y</text>
+          </g>
+
+          <!-- ===== панель 4 · перевёрнутая ===== -->
+          <g tabindex="0" data-tip="<b>Перевёрнутая</b><br>Ставка высокая и снижать её никто не собирается; кредиты непопулярны; PMI ниже 50; безработица вот-вот начнёт расти; сырьё никому не интересно.">
+            <text class="viz-title" x="554" y="20">Перевёрнутая</text>
+            <text class="viz-q-sub" x="554" y="36">INVERTED</text>
+            <line class="viz-grid" x1="562" y1="60" x2="710" y2="60"/>
+            <line class="viz-grid" x1="562" y1="100" x2="710" y2="100"/>
+            <line class="viz-grid" x1="562" y1="140" x2="710" y2="140"/>
+            <line class="viz-axisline" x1="562" y1="46" x2="562" y2="180"/>
+            <line class="viz-axisline" x1="562" y1="180" x2="710" y2="180"/>
+            <path class="viz-line" stroke="var(--series-1)" d="M580,58 L618,76 L656,100 L698,120"/>
+            <circle class="viz-mark" cx="580" cy="58" r="3" fill="var(--series-1)"/>
+            <circle class="viz-mark" cx="618" cy="76" r="3" fill="var(--series-1)"/>
+            <circle class="viz-mark" cx="656" cy="100" r="3" fill="var(--series-1)"/>
+            <circle class="viz-mark" cx="698" cy="120" r="3" fill="var(--series-1)"/>
+            <text class="viz-axis" x="580" y="196" text-anchor="middle">M</text>
+            <text class="viz-axis" x="618" y="196" text-anchor="middle">1–2Y</text>
+            <text class="viz-axis" x="656" y="196" text-anchor="middle">3–7Y</text>
+            <text class="viz-axis" x="698" y="196" text-anchor="middle">10–30Y</text>
+          </g>
+
+          <!-- ===== панель 5 · горбатая ===== -->
+          <g tabindex="0" data-tip="<b>Горбатая</b><br>Авторская пометка: «явно херня какая-то…». Вершина на участке 1–2 года, длинный конец ниже короткого. Состояние нечитаемое: в матрице 2×2 места для него нет.">
+            <text class="viz-title" x="724" y="20">Горбатая</text>
+            <text class="viz-q-sub" x="724" y="36">HUMPED</text>
+            <line class="viz-grid" x1="732" y1="60" x2="880" y2="60"/>
+            <line class="viz-grid" x1="732" y1="100" x2="880" y2="100"/>
+            <line class="viz-grid" x1="732" y1="140" x2="880" y2="140"/>
+            <line class="viz-axisline" x1="732" y1="46" x2="732" y2="180"/>
+            <line class="viz-axisline" x1="732" y1="180" x2="880" y2="180"/>
+            <path class="viz-line" stroke="var(--series-1)" d="M750,106 L788,88 L826,94 L868,108"/>
+            <circle class="viz-mark" cx="750" cy="106" r="3" fill="var(--series-1)"/>
+            <circle class="viz-mark" cx="788" cy="88" r="3" fill="var(--series-1)"/>
+            <circle class="viz-mark" cx="826" cy="94" r="3" fill="var(--series-1)"/>
+            <circle class="viz-mark" cx="868" cy="108" r="3" fill="var(--series-1)"/>
+            <text class="viz-axis" x="750" y="196" text-anchor="middle">M</text>
+            <text class="viz-axis" x="788" y="196" text-anchor="middle">1–2Y</text>
+            <text class="viz-axis" x="826" y="196" text-anchor="middle">3–7Y</text>
+            <text class="viz-axis" x="868" y="196" text-anchor="middle">10–30Y</text>
+            <text class="viz-annot" x="726" y="214" fill="var(--st-critical)">⚠ не классифицируется</text>
+          </g>
+        </svg>
+      </div>
+      <figcaption>
+        <span class="figure__num">Рис. 14.1.</span> <b>Пять форм кривой.</b>
+        Уровни 1 / 2 / 3 % — это учебные ориентиры слайдов, а не рыночные данные:
+        важна геометрия, а не абсолютная высота. Четыре узла — свёрнутая модель
+        кривой из курса. Пятая форма обведена и помечена значком: автор сам
+        называет её аномалией, и в матрице два на два для неё нет клетки.
+      </figcaption>
+      <div class="figure__table table-scroll" hidden>
+        <table class="data">
+          <caption class="viz-legend" style="text-align:left;padding:.5rem .75rem;color:var(--ink-muted)">Положение узлов, реконструированное по слайдам 21–25 лекции 7 (учебные уровни, не котировки)</caption>
+          <thead>
+            <tr><th>Форма</th><th class="num">M</th><th class="num">1–2Y</th><th class="num">3–7Y</th><th class="num">10–30Y</th><th>Геометрия</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Нормальная</td><td class="num">≈ 1.0 %</td><td class="num">≈ 1.5 %</td><td class="num">≈ 1.9 %</td><td class="num">≈ 2.5 %</td><td>монотонный рост</td></tr>
+            <tr><td>Крутая</td><td class="num">&lt; 1.0 %</td><td class="num">≈ 1.5 %</td><td class="num">&gt; 2.0 %</td><td class="num">≈ 2.9 %</td><td>рост, но угол больше</td></tr>
+            <tr><td>Плоская</td><td class="num">≈ 2.0 %</td><td class="num">≈ 2.0 %</td><td class="num">≈ 2.0 %</td><td class="num">≈ 2.0 %</td><td>горизонталь</td></tr>
+            <tr><td>Перевёрнутая</td><td class="num">&gt; 3.0 %</td><td class="num">≈ 2.6 %</td><td class="num">≈ 2.0 %</td><td class="num">≈ 1.5 %</td><td>монотонное падение</td></tr>
+            <tr><td>Горбатая</td><td class="num">≈ 1.85 %</td><td class="num">≈ 2.3 %</td><td class="num">≈ 2.15 %</td><td class="num">≈ 1.8 %</td><td>вершина в середине</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </figure>
+
+    <p>
+      Каждой форме автор даёт диагностический набор — блок «Что происходит?».
+      Это не механизм, а именно набор признаков: если кривая выглядит так,
+      то экономика, скорее всего, выглядит эдак. Приведём все пять целиком,
+      включая авторские формулировки.
+    </p>
+
+    <div class="table-scroll">
+      <table class="data">
+        <thead>
+          <tr>
+            <th>Признак</th><th>Нормальная</th><th>Крутая</th><th>Плоская</th><th>Перевёрнутая</th><th>Горбатая</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Ставка ФРС</td>
+            <td>низкая, ≈ 1 %</td>
+            <td>пока низкая, но её роста опасаются</td>
+            <td>выросла до ≈ 2 %, опасаются продолжения</td>
+            <td>высокая, &gt; 2.5 %, снижать не собираются</td>
+            <td>уже низкая, ≈ 1.5 %</td>
+          </tr>
+          <tr>
+            <td>Банковская система</td>
+            <td>стабильна</td>
+            <td>стабильна</td>
+            <td>тормозит</td>
+            <td>работает плохо, кредиты непопулярны</td>
+            <td>работает нестабильно</td>
+          </tr>
+          <tr>
+            <td>Инфляция и ожидания</td>
+            <td>низкие</td>
+            <td>стремительно растут</td>
+            <td>ожидания падают, инфляция выросла</td>
+            <td>высокие, но с ними борются</td>
+            <td>пока низкие</td>
+          </tr>
+          <tr>
+            <td>Кредитный риск</td>
+            <td>низкий</td>
+            <td>пока не растёт</td>
+            <td>вырос, спреды расширяются</td>
+            <td>вырос, спреды «порвали все риски»</td>
+            <td>уже высокий</td>
+          </tr>
+          <tr>
+            <td>Рост / PMI</td>
+            <td>высокий, PMI &gt; 50</td>
+            <td>высокий, PMI &gt; 50</td>
+            <td>низкий, PMI &lt; 50</td>
+            <td>низкий, PMI &lt; 50</td>
+            <td>«наверняка уже почти растёт»</td>
+          </tr>
+          <tr>
+            <td>Безработица</td>
+            <td>низкая</td>
+            <td>низкая</td>
+            <td>ещё низкая, но все готовятся</td>
+            <td>уже почти растёт</td>
+            <td>«какая-то»</td>
+          </tr>
+          <tr>
+            <td>Сырьё</td>
+            <td>растёт</td>
+            <td>готовится к нырку вниз</td>
+            <td>уже сползло вниз</td>
+            <td>пока никому не интересно</td>
+            <td>интересно только спекулянтам</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      Механика первых четырёх форм читается прямо через карту драйверов.
+      <b>Нормальная</b> — ФРС держит короткий конец низко, а длинный несёт премию
+      за срок и неопределённость: обычное состояние. <b>Крутая</b> — длинный конец
+      уехал вверх, потому что растут инфляционные ожидания и ожидания роста,
+      а ФРС ещё не отреагировала. <b>Плоская</b> — короткий конец догнал длинный.
+      <b>Перевёрнутая</b> — короткий конец обогнал длинный: ФРС держит ставку выше,
+      чем рынок оценивает долгосрочный потенциал роста экономики. Это и есть
+      экономический смысл инверсии — не «предсказание рецессии», а зафиксированный
+      конфликт между текущей ценой денег и долгосрочными ожиданиями.
+    </p>
+
+    <div class="callout callout--source">
+      <div class="callout__label" data-icon="❞">Горбатая: что пишет сам автор</div>
+      <p>
+        В блоке «Что происходит?» для горбатой кривой первым пунктом стоит
+        «<b>явно херня какая-то…</b>», а дальше — набор взаимно несовместимых признаков:
+        ставка уже низкая, но кредитный риск уже высокий; инфляция пока низкая,
+        но банковская система не работает; безработица — «какая-то».
+      </p>
+      <p style="margin-bottom:0">
+        Это честная пометка, и её нужно принять буквально: горбатая кривая —
+        не пятый режим, а <b>отказ от классификации</b>. Автор не выводит из неё
+        торговых следствий, потому что их нет.
+      </p>
+    </div>
+
+    <p>
+      <b>[ДОПОЛНЕНО]</b> Сказать, что горб «нечитаем», — не то же самое, что сказать,
+      что он бессмыслен. Через разложение на ожидания и премию за срок горб получается
+      естественно и ровно в одной ситуации: <b>рынок ждёт, что ставка сначала ещё
+      вырастет, а потом развернётся вниз</b>. Средняя ожидаемая короткая ставка тогда
+      максимальна не сегодня и не через тридцать лет, а на горизонте, куда попадает
+      предполагаемый пик цикла, — и именно там кривая даёт вершину. Второй, более
+      технический источник горба — стресс или перекос спроса на отдельном участке
+      (например, на векселях), который двигает одну точку кривой, не трогая соседние;
+      это уже эффект сегментации рынков, формализованный в модели предпочитаемой среды
+      обитания <b>Ваяноса и Вилы</b> (<i>Econometrica</i>, 2021).
+    </p>
+    <p>
+      Практический вывод от этого не меняется, а укрепляется: горб — это состояние,
+      в котором короткий и длинный концы говорят о разных фазах цикла одновременно.
+      Инструмент, у которого на выходе один квадрант, такое состояние выразить не может.
+    </p>
+
+    <p>
+      Отсюда следует вывод, который курс не делает явно, но который придётся
+      сделать нам, раз мы собираем код. <b>[ВЫВЕДЕНО]</b> В матрице два на два
+      четыре угла, и каждый угол занят одним из четырёх <em>режимов движения</em>
+      (о них — следующий раздел). Горбатая форма — это состояние <em>уровня</em>,
+      и ни в один из четырёх углов она не отображается. Значит, инструмент
+      обязан иметь состояние сверх пяти: не Growth, не Risk ON, не Risk OFF,
+      не Value и даже не Quality, а «<b>не классифицируется</b>».
+    </p>
+
+    <div class="callout callout--ours">
+      <div class="callout__label" data-icon="◆">Наше решение: шестой класс</div>
+      <p style="margin-bottom:0">
+        Вводим класс <code>ANOMALY / UNDEFINED</code> — шестое состояние поверх четырёх
+        квадрантов и центра. Триггеры: немонотонность кривой (локальный максимум
+        внутри, «крюк» на 20Y), а также разнознаковый сдвиг концов (см. раздел
+        <a href="#s4">«Одна форма — три пути»</a>). Отличие от центра принципиальное:
+        <b>Quality</b> — это «режима нет, покупаем качество», а <code>ANOMALY</code> — это
+        «данные не читаются, не торгуем вообще». Смешивать их нельзя, потому что
+        первое — торговое решение, а второе — его отсутствие.
+      </p>
+    </div>
+
+    <p>
+      Что это не теоретическая придирка, видно на реальной кривой из самого курса.
+      На срезе конца февраля 2023 <b>[КАНОН]</b> максимум кривой стоял на 6M
+      (≈ 5.13 %), минимум — на 10Y (≈ 3.92 %), а на 20Y был локальный «крюк» вверх
+      (≈ 4.10 %) при 30Y ≈ 3.93 %. То есть живая кривая была одновременно
+      перевёрнутой, горбатой на коротком конце и немонотонной на длинном.
+      Классификация «по форме» на ней ломается — и это ещё до того, как мы дошли
+      до главного тезиса главы.
+    </p>
+
+    <!-- ================================================================= -->
+    <h2 id="s3">Четыре режима движения</h2>
+
+    <p>
+      Теперь — то, что реально стоит по углам шпаргалки. Не формы, а <b>режимы
+      движения</b>: как кривая изменилась за последние дни. Их четыре, и они
+      получаются пересечением двух вопросов: куда пошли доходности и какой конец
+      пошёл сильнее.
+    </p>
+    <p>
+      Первое слово названия — про <em>цену</em> облигации, а не про доходность
+      <b>[КАНОН]</b>. <b>BULL</b> («бычье») означает, что цена облигаций растёт,
+      то есть доходности <em>падают</em>. <b>BEAR</b> — цена падает, доходности растут.
+      Второе слово — про геометрию: <b>flattener</b> — кривая уплощается (спред
+      между длинным и коротким концом сужается), <b>steepener</b> — укручается
+      (спред расширяется).
+    </p>
+
+    <div class="callout callout--trap">
+      <div class="callout__label" data-icon="⚠">Ловушка стрелок</div>
+      <p style="margin-bottom:0">
+        На графиках кривой стрелка вверх означает <b>рост доходности</b> — и это
+        плохая новость для того, кто держит облигацию: цена при этом падает.
+        Зелёная стрелка вверх на кривой и зелёная стрелка вверх на графике акции
+        означают противоположные вещи для вашего счёта. Половина путаницы
+        в разговорах про кривую растёт именно отсюда. В этой книге стрелка на
+        кривой всегда показывает направление <em>доходности</em>, а слова
+        bull / bear всегда относятся к <em>цене</em>.
+      </p>
+    </div>
+
+    <figure class="figure" id="fig-14-2">
+      <div class="figure__frame">
+        <svg viewBox="0 0 920 500" role="img" aria-labelledby="f142t f142d">
+          <title id="f142t">Четыре режима движения кривой: бычье и медвежье уплощение и укручение</title>
+          <desc id="f142d">Четыре панели, расположенные так же, как квадранты шпаргалки. В каждой панели серая линия — исходная кривая, цветная — новая, и две стрелки разной длины на коротком и длинном конце. Слева вверху бычье уплощение: доходности падают везде, длинный конец сильнее, квадрант Growth. Справа вверху бычье укручение: доходности падают, короткий конец сильнее, квадрант Risk ON. Слева внизу медвежье уплощение: доходности растут, короткий конец сильнее, квадрант Risk OFF. Справа внизу медвежье укручение: доходности растут, длинный конец сильнее, квадрант Value.</desc>
+
+          <defs>
+            <marker id="f142-g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--q-growth)"/>
+            </marker>
+            <marker id="f142-o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--q-riskon)"/>
+            </marker>
+            <marker id="f142-f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--q-riskoff)"/>
+            </marker>
+            <marker id="f142-v" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--q-value)"/>
+            </marker>
+          </defs>
+
+          <!-- ===== A · BULL flattener (Q-I) ===== -->
+          <g transform="translate(20,30)" tabindex="0"
+             data-tip="<b>BULL flattener</b><br>Доходности падают по всей кривой, длинный конец падает сильнее. Рынок понижает ожидания долгосрочного роста быстрее, чем ФРС успевает смягчить. Квадрант Growth.">
+            <text class="viz-title" x="0" y="14" fill="var(--q-growth)">BULL flattener</text>
+            <text class="viz-q-sub" x="0" y="32">БЫЧЬЕ УПЛОЩЕНИЕ</text>
+            <line class="viz-axisline" x1="8" y1="40" x2="8" y2="172"/>
+            <line class="viz-axisline" x1="8" y1="172" x2="178" y2="172"/>
+            <path class="viz-curve-old" d="M22,128 L62,114 L108,102 L164,82"/>
+            <path class="viz-line" stroke="var(--q-growth)" d="M22,140 L62,132 L108,130 L164,126"/>
+            <circle class="viz-mark" cx="22" cy="140" r="3" fill="var(--q-growth)"/>
+            <circle class="viz-mark" cx="62" cy="132" r="3" fill="var(--q-growth)"/>
+            <circle class="viz-mark" cx="108" cy="130" r="3" fill="var(--q-growth)"/>
+            <circle class="viz-mark" cx="164" cy="126" r="3" fill="var(--q-growth)"/>
+            <path d="M22,128 L22,136" stroke="var(--q-growth)" stroke-width="2" marker-end="url(#f142-g)"/>
+            <path d="M164,82 L164,122" stroke="var(--q-growth)" stroke-width="2" marker-end="url(#f142-g)"/>
+            <text class="viz-axis" x="22" y="188" text-anchor="middle">M</text>
+            <text class="viz-axis" x="62" y="188" text-anchor="middle">1–2Y</text>
+            <text class="viz-axis" x="108" y="188" text-anchor="middle">3–7Y</text>
+            <text class="viz-axis" x="164" y="188" text-anchor="middle">10–30Y</text>
+            <text class="viz-label" x="200" y="58">доходности <tspan class="viz-down">▼</tspan> по всей кривой</text>
+            <text class="viz-label" x="200" y="78">длинный конец <tspan class="viz-down">▼</tspan> сильнее</text>
+            <text class="viz-label" x="200" y="98">спред 10Y−2Y сужается</text>
+            <text class="viz-title" x="200" y="128" fill="var(--q-growth)">Q-I · Growth ▲</text>
+            <text class="viz-annot" x="200" y="148">рынок роняет ожидания роста</text>
+            <text class="viz-annot" x="200" y="168">правило R24</text>
+          </g>
+
+          <!-- ===== B · BULL steepener (Q-II) ===== -->
+          <g transform="translate(480,30)" tabindex="0"
+             data-tip="<b>BULL steepener</b><br>Доходности падают, короткий конец падает сильнее. Рынок закладывает разворот ФРС, а длинный конец держится на восстановлении ожиданий роста и инфляции. Квадрант Risk ON.">
+            <text class="viz-title" x="0" y="14" fill="var(--q-riskon)">BULL steepener</text>
+            <text class="viz-q-sub" x="0" y="32">БЫЧЬЕ УКРУЧЕНИЕ</text>
+            <line class="viz-axisline" x1="8" y1="40" x2="8" y2="172"/>
+            <line class="viz-axisline" x1="8" y1="172" x2="178" y2="172"/>
+            <path class="viz-curve-old" d="M22,128 L62,114 L108,102 L164,82"/>
+            <path class="viz-line" stroke="var(--q-riskon)" d="M22,168 L62,144 L108,116 L164,90"/>
+            <circle class="viz-mark" cx="22" cy="168" r="3" fill="var(--q-riskon)"/>
+            <circle class="viz-mark" cx="62" cy="144" r="3" fill="var(--q-riskon)"/>
+            <circle class="viz-mark" cx="108" cy="116" r="3" fill="var(--q-riskon)"/>
+            <circle class="viz-mark" cx="164" cy="90" r="3" fill="var(--q-riskon)"/>
+            <path d="M22,128 L22,164" stroke="var(--q-riskon)" stroke-width="2" marker-end="url(#f142-o)"/>
+            <path d="M164,82 L164,86" stroke="var(--q-riskon)" stroke-width="2" marker-end="url(#f142-o)"/>
+            <text class="viz-axis" x="22" y="188" text-anchor="middle">M</text>
+            <text class="viz-axis" x="62" y="188" text-anchor="middle">1–2Y</text>
+            <text class="viz-axis" x="108" y="188" text-anchor="middle">3–7Y</text>
+            <text class="viz-axis" x="164" y="188" text-anchor="middle">10–30Y</text>
+            <text class="viz-label" x="200" y="58">доходности <tspan class="viz-down">▼</tspan> по всей кривой</text>
+            <text class="viz-label" x="200" y="78">короткий конец <tspan class="viz-down">▼</tspan> сильнее</text>
+            <text class="viz-label" x="200" y="98">спред 10Y−2Y расширяется</text>
+            <text class="viz-title" x="200" y="128" fill="var(--q-riskon)">Q-II · Risk ON</text>
+            <text class="viz-annot" x="200" y="148">рынок закладывает пивот ФРС</text>
+            <text class="viz-annot" x="200" y="168">правило R25</text>
+          </g>
+
+          <!-- ===== C · BEAR flattener (Q-III) ===== -->
+          <g transform="translate(20,290)" tabindex="0"
+             data-tip="<b>BEAR flattener</b><br>Доходности растут, короткий конец растёт сильнее. ФРС давит ставкой, а длинный конец не верит в долгосрочный рост — отсюда путь к инверсии. Квадрант Risk OFF.">
+            <text class="viz-title" x="0" y="14" fill="var(--q-riskoff)">BEAR flattener</text>
+            <text class="viz-q-sub" x="0" y="32">МЕДВЕЖЬЕ УПЛОЩЕНИЕ</text>
+            <line class="viz-axisline" x1="8" y1="40" x2="8" y2="172"/>
+            <line class="viz-axisline" x1="8" y1="172" x2="178" y2="172"/>
+            <path class="viz-curve-old" d="M22,128 L62,114 L108,102 L164,82"/>
+            <path class="viz-line" stroke="var(--q-riskoff)" d="M22,88 L62,84 L108,80 L164,72"/>
+            <circle class="viz-mark" cx="22" cy="88" r="3" fill="var(--q-riskoff)"/>
+            <circle class="viz-mark" cx="62" cy="84" r="3" fill="var(--q-riskoff)"/>
+            <circle class="viz-mark" cx="108" cy="80" r="3" fill="var(--q-riskoff)"/>
+            <circle class="viz-mark" cx="164" cy="72" r="3" fill="var(--q-riskoff)"/>
+            <path d="M22,128 L22,92" stroke="var(--q-riskoff)" stroke-width="2" marker-end="url(#f142-f)"/>
+            <path d="M164,82 L164,76" stroke="var(--q-riskoff)" stroke-width="2" marker-end="url(#f142-f)"/>
+            <text class="viz-axis" x="22" y="188" text-anchor="middle">M</text>
+            <text class="viz-axis" x="62" y="188" text-anchor="middle">1–2Y</text>
+            <text class="viz-axis" x="108" y="188" text-anchor="middle">3–7Y</text>
+            <text class="viz-axis" x="164" y="188" text-anchor="middle">10–30Y</text>
+            <text class="viz-label" x="200" y="58">доходности <tspan class="viz-up">▲</tspan> по всей кривой</text>
+            <text class="viz-label" x="200" y="78">короткий конец <tspan class="viz-up">▲</tspan> сильнее</text>
+            <text class="viz-label" x="200" y="98">спред сужается → инверсия</text>
+            <text class="viz-title" x="200" y="128" fill="var(--q-riskoff)">Q-III · Risk OFF</text>
+            <text class="viz-annot" x="200" y="148">ФРС давит, рост не верит</text>
+            <text class="viz-annot" x="200" y="168">правило R26</text>
+          </g>
+
+          <!-- ===== D · BEAR steepener (Q-IV) ===== -->
+          <g transform="translate(480,290)" tabindex="0"
+             data-tip="<b>BEAR steepener</b><br>Доходности растут, длинный конец растёт сильнее. Ожидания роста и инфляции обгоняют темп ужесточения. Квадрант Value.">
+            <text class="viz-title" x="0" y="14" fill="var(--q-value)">BEAR steepener</text>
+            <text class="viz-q-sub" x="0" y="32">МЕДВЕЖЬЕ УКРУЧЕНИЕ</text>
+            <line class="viz-axisline" x1="8" y1="40" x2="8" y2="172"/>
+            <line class="viz-axisline" x1="8" y1="172" x2="178" y2="172"/>
+            <path class="viz-curve-old" d="M22,128 L62,114 L108,102 L164,82"/>
+            <path class="viz-line" stroke="var(--q-value)" d="M22,120 L62,100 L108,76 L164,44"/>
+            <circle class="viz-mark" cx="22" cy="120" r="3" fill="var(--q-value)"/>
+            <circle class="viz-mark" cx="62" cy="100" r="3" fill="var(--q-value)"/>
+            <circle class="viz-mark" cx="108" cy="76" r="3" fill="var(--q-value)"/>
+            <circle class="viz-mark" cx="164" cy="44" r="3" fill="var(--q-value)"/>
+            <path d="M22,128 L22,124" stroke="var(--q-value)" stroke-width="2" marker-end="url(#f142-v)"/>
+            <path d="M164,82 L164,48" stroke="var(--q-value)" stroke-width="2" marker-end="url(#f142-v)"/>
+            <text class="viz-axis" x="22" y="188" text-anchor="middle">M</text>
+            <text class="viz-axis" x="62" y="188" text-anchor="middle">1–2Y</text>
+            <text class="viz-axis" x="108" y="188" text-anchor="middle">3–7Y</text>
+            <text class="viz-axis" x="164" y="188" text-anchor="middle">10–30Y</text>
+            <text class="viz-label" x="200" y="58">доходности <tspan class="viz-up">▲</tspan> по всей кривой</text>
+            <text class="viz-label" x="200" y="78">длинный конец <tspan class="viz-up">▲</tspan> сильнее</text>
+            <text class="viz-label" x="200" y="98">спред 10Y−2Y расширяется</text>
+            <text class="viz-title" x="200" y="128" fill="var(--q-value)">Q-IV · Value ▲</text>
+            <text class="viz-annot" x="200" y="148">рост и инфляция обгоняют ФРС</text>
+            <text class="viz-annot" x="200" y="168">правило R27</text>
+          </g>
+        </svg>
+      </div>
+      <figcaption>
+        <span class="figure__num">Рис. 14.2.</span> <b>Четыре режима движения — ядро главы.</b>
+        Серая линия — кривая «до», цветная — «после». Длина стрелки показывает
+        величину сдвига: именно <em>разница</em> длин на коротком и длинном конце
+        решает, flattener это или steepener. Панели расставлены так же, как углы
+        шпаргалки: bull-режимы вверху (ФРС «+»), bear-режимы внизу (ФРС «−»);
+        уплощения слева (макро «−»), укручения справа (макро «+»).
+      </figcaption>
+      <div class="figure__table table-scroll" hidden>
+        <table class="data">
+          <caption class="viz-legend" style="text-align:left;padding:.5rem .75rem;color:var(--ink-muted)">Четыре режима: механика и привязка к квадрантам (L07 сл. 28, L08 сл. 54)</caption>
+          <thead>
+            <tr><th>Режим</th><th>Цена облигаций</th><th>Доходности</th><th>Какой конец сильнее</th><th>Спред 10Y−2Y</th><th>Квадрант</th><th>Правило</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>BULL flattener<br><span class="term">бычье уплощение</span></td><td>растёт</td><td><span class="dir dir--down">вниз</span> везде</td><td>длинный</td><td>сужается</td><td>Q-I · Growth ▲</td><td><span class="rule-id">R24</span></td></tr>
+            <tr><td>BULL steepener<br><span class="term">бычье укручение</span></td><td>растёт</td><td><span class="dir dir--down">вниз</span> везде</td><td>короткий</td><td>расширяется</td><td>Q-II · Risk ON</td><td><span class="rule-id">R25</span></td></tr>
+            <tr><td>BEAR flattener<br><span class="term">медвежье уплощение</span></td><td>падает</td><td><span class="dir dir--up">вверх</span> везде</td><td>короткий</td><td>сужается, вплоть до инверсии</td><td>Q-III · Risk OFF</td><td><span class="rule-id">R26</span></td></tr>
+            <tr><td>BEAR steepener<br><span class="term">медвежье укручение</span></td><td>падает</td><td><span class="dir dir--up">вверх</span> везде</td><td>длинный</td><td>расширяется</td><td>Q-IV · Value ▲</td><td><span class="rule-id">R27</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </figure>
+
+    <p>
+      Разберём каждый режим механически — какой конец двигается сильнее и что
+      это означает экономически. Держите в голове карту драйверов: короткий
+      конец — это ФРС, длинный — ожидания долгосрочного роста.
+    </p>
+
+    <h3>BULL flattener — доходности вниз, длинный конец сильнее</h3>
+    <p>
+      Длинный конец падает быстрее короткого. Так как длинный конец — это цена
+      ожиданий долгосрочного роста, его обвал означает, что рынок ускоренно
+      списывает будущий рост. ФРС при этом уже развернулась или вот-вот
+      развернётся (короткий конец тоже идёт вниз), но <em>медленнее</em>, чем рушатся
+      ожидания. Это <b>Q-I, Growth</b>: деньги дешевеют, экономика слаба, и главный
+      заработок — в дюрации. Из главы 13: при параллельном снижении ставок на
+      1 п.п. 30-летние UST дают <b>+21.5 %</b>, а 2-летние — только <b>+6.7 %</b>.
+      В bull flattener перекос ещё сильнее, потому что длинный конец падает
+      не наравне со всеми, а быстрее.
+    </p>
+
+    <h3>BULL steepener — доходности вниз, короткий конец сильнее</h3>
+    <p>
+      Теперь быстрее падает короткий конец — тот, которым управляет ФРС. Значит,
+      рынок закладывает снижение ставки, причём агрессивное. Длинный конец
+      тоже снижается, но неохотно: ожидания роста и инфляции уже восстанавливаются
+      (в Q-II канон прямо ставит <code>Inf. exp. ▲</code>). Это <b>Q-II, Risk ON</b> —
+      режим, в котором, по формулировке автора, «нужно быть в активах на 100 %
+      и рисковать максимально».
+    </p>
+
+    <h3>BEAR flattener — доходности вверх, короткий конец сильнее</h3>
+    <p>
+      Зеркало предыдущего. ФРС поднимает ставку, короткий конец летит вверх,
+      а длинный за ним не идёт: рынок не верит, что жёсткая политика совместима
+      с высоким долгосрочным ростом. Спред сжимается и в пределе уходит ниже нуля —
+      так получается инверсия. Это <b>Q-III, Risk OFF</b>. У BofA этот переход
+      подписан отдельным предупреждением <b>[КАНОН]</b>: «Cyclical correction follows
+      yield curve bear flattening» — за медвежьим уплощением следует циклическая
+      коррекция акций. Это единственное явно поименованное событие на границе
+      квадрантов во всём курсе.
+    </p>
+
+    <h3>BEAR steepener — доходности вверх, длинный конец сильнее</h3>
+    <p>
+      Доходности растут везде, но длинный конец обгоняет. Ожидания роста и
+      инфляции разгоняются быстрее, чем ФРС успевает ужесточать. Это <b>Q-IV, Value</b>:
+      работают циклика, сырьё, нефть, финансовый сектор, короткая дюрация.
+      Заметьте асимметрию: в Q-IV длинные и средние госбонды стоят со знаком
+      <span class="dir dir--down">снижение</span> — держать дюрацию в этом режиме
+      дороже всего (30Y при росте ставок на 1 п.п. теряет <b>−13.6 %</b>).
+    </p>
+
+    <div class="callout callout--rule">
+      <div class="callout__label" data-icon="⌘">Формально</div>
+      <p style="margin-bottom:0">
+        Пусть Δy<sub>short</sub> и Δy<sub>long</sub> — изменения доходностей короткого
+        и длинного конца за окно.<br>
+        <span class="rule-id">R24</span> Δy<sub>s</sub> &lt; 0, Δy<sub>l</sub> &lt; 0,
+        |Δy<sub>l</sub>| &gt; |Δy<sub>s</sub>| → <b>BULL flattener</b><br>
+        <span class="rule-id">R25</span> Δy<sub>s</sub> &lt; 0, Δy<sub>l</sub> &lt; 0,
+        |Δy<sub>s</sub>| &gt; |Δy<sub>l</sub>| → <b>BULL steepener</b><br>
+        <span class="rule-id">R26</span> Δy<sub>s</sub> &gt; 0, Δy<sub>l</sub> &gt; 0,
+        Δy<sub>s</sub> &gt; Δy<sub>l</sub> → <b>BEAR flattener</b><br>
+        <span class="rule-id">R27</span> Δy<sub>s</sub> &gt; 0, Δy<sub>l</sub> &gt; 0,
+        Δy<sub>l</sub> &gt; Δy<sub>s</sub> → <b>BEAR steepener</b>
+      </p>
+    </div>
+
+    <div class="callout callout--beyond">
+      <div class="callout__label" data-icon="✚">Дополнено: у одного и того же steepener бывает два мотора</div>
+      <p>
+        <b>[ДОПОЛНЕНО]</b> Правила <span class="rule-id">R24</span>–<span class="rule-id">R27</span>
+        смотрят только на знак и величину сдвига. Но длинный конец может уехать вверх
+        по двум совершенно разным причинам: потому что рынок поднял <em>ожидания</em>
+        будущих коротких ставок (экономика сильна, ФРС придётся давить дольше) — или
+        потому что выросла <b>премия за срок</b>, то есть подорожал сам риск держать
+        дюрацию. Внешне это один и тот же bear steepener; экономически — противоположные
+        новости.
+      </p>
+      <p style="margin-bottom:0">
+        Различить их можно, разложив длинную ставку моделью ACM или Кима–Райта.
+        Практическое правило: если укручение идёт через ожидания — оно должно
+        сопровождаться улучшением макро-данных и ростом инфляционных ожиданий
+        (это честный Q-IV); если через премию — макро может стоять на месте, а кривая
+        всё равно укручается. Второй случай в шпаргалке не предусмотрен, и именно
+        он делает валидатор из следующего раздела не формальностью, а необходимостью.
+        Подробнее — во врезке «2023 → 2026».
+      </p>
+    </div>
+
+    <!-- ================================================================= -->
+    <h2 id="s4">Одна форма — три пути</h2>
+
+    <p>
+      Теперь главный тезис главы. Он сформулирован в курсе одной подчёркнутой строкой
+      <b>[КАНОН]</b>:
+    </p>
+
+    <div class="callout callout--source">
+      <div class="callout__label" data-icon="❞">Лекция 7, слайд 28</div>
+      <p style="margin-bottom:0">
+        «<b>Важна не форма кривой, а то, как к ней пришли!</b>»
+      </p>
+    </div>
+
+    <p>
+      Автор доказывает это конструктивно: берёт три разные нормальные кривые,
+      прикладывает к ним три разных набора сдвигов — и получает <em>одну и ту же</em>
+      плоскую форму. Если бы форма была информативна сама по себе, все три исхода
+      означали бы одно и то же. Они означают противоположное.
+    </p>
+
+    <figure class="figure" id="fig-14-3">
+      <div class="figure__frame">
+        <svg viewBox="0 0 900 330" role="img" aria-labelledby="f143t f143d">
+          <title id="f143t">Три разных пути к одной и той же плоской кривой</title>
+          <desc id="f143d">Три панели. В каждой серая линия — исходная нормальная кривая, стрелки — сдвиги узлов, цветная горизонталь — результат. В первой панели короткий конец идёт вверх, а длинный вниз, и они встречаются на двух процентах: это разнознаковый твист, который не относится ни к бычьим, ни к медвежьим режимам. Во второй панели все узлы, кроме самого короткого, идут вниз, и кривая становится плоской на уровне около одного процента: это бычье уплощение, квадрант Growth. В третьей панели короткий и средний участки идут вверх при неподвижном длинном конце, и кривая становится плоской на уровне около двух с половиной процентов: это медвежье уплощение, квадрант Risk OFF.</desc>
+
+          <defs>
+            <marker id="f143-up" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--dir-up)"/>
+            </marker>
+            <marker id="f143-dn" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--dir-down)"/>
+            </marker>
+          </defs>
+
+          <!-- ===== путь 1 · твист ===== -->
+          <g transform="translate(20,0)" tabindex="0"
+             data-tip="<b>Путь 1 · твист</b><br>Короткий конец идёт вверх, длинный вниз, встречаются на 2 %. Формально это не bull и не bear: правила R24–R27 требуют одного знака на обоих концах.">
+            <text class="viz-title" x="0" y="16">Путь 1 · твист</text>
+            <line class="viz-grid" x1="10" y1="60" x2="262" y2="60"/>
+            <line class="viz-grid" x1="10" y1="110" x2="262" y2="110"/>
+            <line class="viz-grid" x1="10" y1="160" x2="262" y2="160"/>
+            <line class="viz-axisline" x1="10" y1="40" x2="10" y2="210"/>
+            <line class="viz-axisline" x1="10" y1="210" x2="262" y2="210"/>
+            <path class="viz-curve-old" d="M40,145 L100,125 L160,105 L240,80"/>
+            <path class="viz-line" stroke="var(--ink-2)" d="M40,110 L100,110 L160,110 L240,110"/>
+            <path d="M40,145 L40,114" stroke="var(--dir-up)" stroke-width="2" marker-end="url(#f143-up)"/>
+            <path d="M240,80 L240,106" stroke="var(--dir-down)" stroke-width="2" marker-end="url(#f143-dn)"/>
+            <circle class="viz-mark" cx="40" cy="110" r="3" fill="var(--ink-2)"/>
+            <circle class="viz-mark" cx="100" cy="110" r="3" fill="var(--ink-2)"/>
+            <circle class="viz-mark" cx="160" cy="110" r="3" fill="var(--ink-2)"/>
+            <circle class="viz-mark" cx="240" cy="110" r="3" fill="var(--ink-2)"/>
+            <text class="viz-axis" x="40" y="226" text-anchor="middle">M</text>
+            <text class="viz-axis" x="100" y="226" text-anchor="middle">1–2Y</text>
+            <text class="viz-axis" x="160" y="226" text-anchor="middle">3–7Y</text>
+            <text class="viz-axis" x="240" y="226" text-anchor="middle">10–30Y</text>
+            <text class="viz-label" x="0" y="250">→ плоская на ≈ 2 %</text>
+            <text class="viz-annot" x="0" y="270">короткий ▲, длинный ▼</text>
+            <text class="viz-annot" x="0" y="292" fill="var(--ink-2)">не bull и не bear</text>
+            <text class="viz-annot" x="0" y="312">инструмент молчит</text>
+          </g>
+
+          <!-- ===== путь 2 · bull flattener ===== -->
+          <g transform="translate(315,0)" tabindex="0"
+             data-tip="<b>Путь 2 · BULL flattener</b><br>Все узлы, кроме самого короткого, падают; длинный сильнее всех. Кривая ложится на низкий уровень. Квадрант Growth: длинная дюрация уже принесла максимум.">
+            <text class="viz-title" x="0" y="16">Путь 2 · BULL flattener</text>
+            <line class="viz-grid" x1="10" y1="60" x2="262" y2="60"/>
+            <line class="viz-grid" x1="10" y1="110" x2="262" y2="110"/>
+            <line class="viz-grid" x1="10" y1="160" x2="262" y2="160"/>
+            <line class="viz-axisline" x1="10" y1="40" x2="10" y2="210"/>
+            <line class="viz-axisline" x1="10" y1="210" x2="262" y2="210"/>
+            <path class="viz-curve-old" d="M40,152 L100,130 L160,105 L240,80"/>
+            <path class="viz-line" stroke="var(--q-growth)" d="M40,152 L100,152 L160,152 L240,152"/>
+            <path d="M100,130 L100,148" stroke="var(--dir-down)" stroke-width="2" marker-end="url(#f143-dn)"/>
+            <path d="M160,105 L160,148" stroke="var(--dir-down)" stroke-width="2" marker-end="url(#f143-dn)"/>
+            <path d="M240,80 L240,148" stroke="var(--dir-down)" stroke-width="2" marker-end="url(#f143-dn)"/>
+            <circle class="viz-mark" cx="40" cy="152" r="3" fill="var(--q-growth)"/>
+            <circle class="viz-mark" cx="100" cy="152" r="3" fill="var(--q-growth)"/>
+            <circle class="viz-mark" cx="160" cy="152" r="3" fill="var(--q-growth)"/>
+            <circle class="viz-mark" cx="240" cy="152" r="3" fill="var(--q-growth)"/>
+            <text class="viz-axis" x="40" y="226" text-anchor="middle">M</text>
+            <text class="viz-axis" x="100" y="226" text-anchor="middle">1–2Y</text>
+            <text class="viz-axis" x="160" y="226" text-anchor="middle">3–7Y</text>
+            <text class="viz-axis" x="240" y="226" text-anchor="middle">10–30Y</text>
+            <text class="viz-label" x="0" y="250">→ плоская на ≈ 1.2 %</text>
+            <text class="viz-annot" x="0" y="270">все ▼, длинный сильнее</text>
+            <text class="viz-annot" x="0" y="292" fill="var(--q-growth)">Q-I · Growth ▲</text>
+            <text class="viz-annot" x="0" y="312">длинная дюрация заработала</text>
+          </g>
+
+          <!-- ===== путь 3 · bear flattener ===== -->
+          <g transform="translate(610,0)" tabindex="0"
+             data-tip="<b>Путь 3 · BEAR flattener</b><br>Короткий и средний участки растут, длинный стоит. Кривая ложится на высокий уровень. Квадрант Risk OFF: защита и минимальный риск.">
+            <text class="viz-title" x="0" y="16">Путь 3 · BEAR flattener</text>
+            <line class="viz-grid" x1="10" y1="60" x2="262" y2="60"/>
+            <line class="viz-grid" x1="10" y1="110" x2="262" y2="110"/>
+            <line class="viz-grid" x1="10" y1="160" x2="262" y2="160"/>
+            <line class="viz-axisline" x1="10" y1="40" x2="10" y2="210"/>
+            <line class="viz-axisline" x1="10" y1="210" x2="262" y2="210"/>
+            <path class="viz-curve-old" d="M40,155 L100,130 L160,105 L240,82"/>
+            <path class="viz-line" stroke="var(--q-riskoff)" d="M40,82 L100,82 L160,82 L240,82"/>
+            <path d="M40,155 L40,86" stroke="var(--dir-up)" stroke-width="2" marker-end="url(#f143-up)"/>
+            <path d="M100,130 L100,86" stroke="var(--dir-up)" stroke-width="2" marker-end="url(#f143-up)"/>
+            <path d="M160,105 L160,86" stroke="var(--dir-up)" stroke-width="2" marker-end="url(#f143-up)"/>
+            <circle class="viz-mark" cx="40" cy="82" r="3" fill="var(--q-riskoff)"/>
+            <circle class="viz-mark" cx="100" cy="82" r="3" fill="var(--q-riskoff)"/>
+            <circle class="viz-mark" cx="160" cy="82" r="3" fill="var(--q-riskoff)"/>
+            <circle class="viz-mark" cx="240" cy="82" r="3" fill="var(--q-riskoff)"/>
+            <text class="viz-axis" x="40" y="226" text-anchor="middle">M</text>
+            <text class="viz-axis" x="100" y="226" text-anchor="middle">1–2Y</text>
+            <text class="viz-axis" x="160" y="226" text-anchor="middle">3–7Y</text>
+            <text class="viz-axis" x="240" y="226" text-anchor="middle">10–30Y</text>
+            <text class="viz-label" x="0" y="250">→ плоская на ≈ 2.6 %</text>
+            <text class="viz-annot" x="0" y="270">короткий ▲, длинный стоит</text>
+            <text class="viz-annot" x="0" y="292" fill="var(--q-riskoff)">Q-III · Risk OFF</text>
+            <text class="viz-annot" x="0" y="312">защита, минимум риска</text>
+          </g>
+        </svg>
+      </div>
+      <figcaption>
+        <span class="figure__num">Рис. 14.3.</span> <b>Одна плоская кривая — три механизма.</b>
+        Стрелки показывают направление <em>доходности</em>: вверх — доходность растёт,
+        цена облигации падает. Итоговая форма во всех трёх панелях одинакова
+        с точностью до уровня; квадранты — противоположные. Реконструировано
+        по слайду 30 лекции 7.
+      </figcaption>
+      <div class="figure__table table-scroll" hidden>
+        <table class="data">
+          <caption class="viz-legend" style="text-align:left;padding:.5rem .75rem;color:var(--ink-muted)">Три пути к плоской кривой (L07 сл. 30). Уровни — учебные ориентиры слайда</caption>
+          <thead>
+            <tr><th>Путь</th><th>Что двигалось</th><th>Итоговый уровень</th><th>Режим по <span class="rule-id">R24</span>–<span class="rule-id">R27</span></th><th>Квадрант</th><th>Торговый вывод</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1 · твист</td>
+              <td>M <span class="dir dir--up">вверх</span>, 10–30Y <span class="dir dir--down">вниз</span></td>
+              <td class="num">≈ 2.0 %</td>
+              <td>не определяется: знаки концов разные</td>
+              <td>—</td>
+              <td>сигнала нет, состояние не подтверждено</td>
+            </tr>
+            <tr>
+              <td>2 · BULL flattener</td>
+              <td>1–2Y, 3–7Y, 10–30Y <span class="dir dir--down">вниз</span>; M на месте</td>
+              <td class="num">≈ 1.2 %</td>
+              <td>BULL flattener</td>
+              <td>Q-I · Growth ▲</td>
+              <td>длинная дюрация уже отработала; High P/E, Large Cap, GOLD ▲</td>
+            </tr>
+            <tr>
+              <td>3 · BEAR flattener</td>
+              <td>M, 1–2Y, 3–7Y <span class="dir dir--up">вверх</span>; 10–30Y на месте</td>
+              <td class="num">≈ 2.6 %</td>
+              <td>BEAR flattener</td>
+              <td>Q-III · Risk OFF</td>
+              <td>защита, доллар, VIX; риск минимальный</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </figure>
+
+    <p>
+      Прочитаем результат. Пути 2 и 3 приводят к <em>визуально одинаковой</em> плоской
+      кривой, но предписывают прямо противоположное поведение. В пути 2 доходности
+      упали по всей кривой — держатель длинных облигаций заработал, режим Growth,
+      риск умеренно положительный, работают качественный рост и длинная дюрация.
+      В пути 3 доходности выросли — держатель длинных облигаций потерял, режим
+      Risk OFF, надо сидеть в защите. Один и тот же снимок кривой, два взаимно
+      исключающих решения. Всё различие — в истории движения.
+    </p>
+    <p>
+      Путь 1 — отдельный случай, и курс проходит мимо него, хотя сам же его рисует.
+      Здесь короткий конец идёт вверх, а длинный вниз: концы сходятся навстречу
+      друг другу. Экономически это самая тревожная из трёх картин — рынок
+      одновременно закладывает более жёсткую ФРС <em>и</em> более слабый долгосрочный
+      рост. Формально же такой сдвиг <b>не покрыт ни одним из правил</b>
+      <span class="rule-id">R24</span>–<span class="rule-id">R27</span>: все четыре
+      требуют одинакового знака на обоих концах.
+    </p>
+
+    <div class="callout callout--ours">
+      <div class="callout__label" data-icon="◆">Наше решение: твист не подтверждает ничего</div>
+      <p>
+        <b>[НАШЕ РЕШЕНИЕ]</b> Разнознаковый сдвиг (Δy<sub>short</sub> и Δy<sub>long</sub>
+        разных знаков) классифицируется как flattener или steepener по знаку изменения
+        спреда, но <b>без атрибута bull/bear</b>. Поскольку все четыре угла шпаргалки
+        подписаны полными именами («BULL flattener», а не просто «flattener»), твист
+        не совпадает ни с одним из них → состояние не подтверждено → класс
+        <code>ANOMALY</code>.
+      </p>
+      <p style="margin-bottom:0">
+        Обоснование: атрибут bull/bear несёт информацию о направлении цены облигаций,
+        то есть о том, зарабатывает или теряет дюрация. При твисте ответ зависит
+        от того, где именно вы сидите на кривой, — общего ответа нет, и притворяться,
+        что он есть, значит выдавать сигнал там, где данных на сигнал не хватает.
+        Тот же принцип закрывает и вырожденные случаи, когда один из концов
+        не сдвинулся вовсе: путь 2 и путь 3 на рис. 14.3 — ровно такие, и строгое
+        чтение <span class="rule-id">R24</span>/<span class="rule-id">R26</span>
+        («&gt; 0» и «&lt; 0») их тоже не ловит. Практическое решение — считать
+        неподвижным лишь то, что не вышло за порог шума, а не то, что в точности равно нулю.
+      </p>
+    </div>
+
+    <div class="callout callout--rule">
+      <div class="callout__label" data-icon="⌘">Правило классификации</div>
+      <p style="margin-bottom:0">
+        <span class="rule-id">R30</span> Режим кривой определяется <b>только по изменению
+        за окно</b> (на слайдах встречаются срезы 5 / 10 / 30 дней) и <b>никогда по уровню</b>.
+        Уровень отвечает на вопрос «какая сейчас форма»; инструменту нужен ответ
+        на вопрос «как мы в неё пришли». Это прямое следствие тезиса слайда 28
+        и демонстрации слайда 30.
+      </p>
+    </div>
+
+    <!-- ================================================================= -->
+    <h2 id="s5">Валидатор: когда инструмент обязан молчать</h2>
+
+    <p>
+      Теперь соберём предохранитель. Обе оси считаются по своим входам и дают
+      квадрант. Форма движения кривой считается отдельно, по котировкам UST,
+      и даёт режим. Если они не совпали — инструмент не выдаёт сигнал.
+    </p>
+
+    <div class="callout callout--rule">
+      <div class="callout__label" data-icon="⌘">Условие неподтверждения</div>
+      <p style="margin-bottom:0">
+        <span class="rule-id">R28</span> Если форма, посчитанная по Δ кривой,
+        <b>≠</b> формы, предписанной квадрантом из <span class="rule-id">R19</span>–<span class="rule-id">R22</span>,
+        то состояние считается <b>неподтверждённым</b> → инструмент возвращает
+        центр / <b>Quality</b> / no-trade.
+      </p>
+    </div>
+
+    <p>
+      Почему это работает. Обе оси собираются из входов, которые аналитик выбирает
+      и взвешивает сам, — там легко незаметно подогнать результат под уже сложившееся
+      мнение. Кривая же — это цена, по которой прямо сейчас торгуется крупнейший
+      финансовый рынок мира (на 2020 год долговые бумаги — <b>$123.5 трлн</b> против
+      <b>$109.2 трлн</b> у акций <b>[КАНОН]</b>). Она не спрашивает, что вы думаете.
+      Требование совпадения — это требование, чтобы ваша модель и рынок облигаций
+      сошлись в диагнозе. Не сошлись — значит, вы чего-то не видите, и правильная
+      реакция не «торговать по модели», а «не торговать».
+    </p>
+    <p>
+      Обратите внимание на асимметрию: валидатор умеет только <em>запрещать</em>.
+      Совпадение формы с квадрантом ничего не добавляет к уверенности — оно просто
+      снимает вето. Это сознательная конструкция: инструмент, у которого есть способ
+      сказать «нет», честнее инструмента, который всегда отвечает.
+    </p>
+
+    <div class="callout callout--ours">
+      <div class="callout__label" data-icon="◆">Что здесь не доопределено</div>
+      <p>
+        <b>[НЕТ В КУРСЕ]</b> Три параметра валидатора автор не задаёт, а без них
+        код не пишется:
+      </p>
+      <ul>
+        <li><b>Окно Δ.</b> На слайдах одновременно встречаются срезы 1, 5, 6, 10, 25
+          и 30 дней. Какой канонический — не сказано.</li>
+        <li><b>Теноры концов.</b> Модель кривой свёрнута в четыре узла
+          (M / 1–2Y / 3–7Y / 10–30Y), но какую именно пару брать для Δy<sub>short</sub>
+          и Δy<sub>long</sub> — 2Y и 10Y, 3M и 10Y, 1Y и 20Y — не зафиксировано.</li>
+        <li><b>Порог шума.</b> Сдвиг на один базисный пункт формально имеет знак,
+          но содержательно не значит ничего.</li>
+      </ul>
+      <p style="margin-bottom:0">
+        <b>[НАШЕ РЕШЕНИЕ]</b> Предварительно: пара <span class="ticker">US02Y</span> /
+        <span class="ticker">US10Y</span> как основная (у неё самая длинная история
+        и самый ликвидный рынок), окно 10 торговых дней как основное с проверкой
+        на 5 и 30, порог шума задаётся в базисных пунктах и калибруется по исторической
+        волатильности соответствующего тенора. Окончательный выбор — предмет главы 24,
+        где эти параметры станут явными настройками с обязанностью их бэктестить.
+      </p>
+    </div>
+
+    <!-- ================================================================= -->
+    <h2 id="s6">Спреды, нулевая линия и рецессии</h2>
+
+    <p>
+      Спред — это разность доходностей двух теноров, то есть числовое выражение
+      наклона кривой на выбранном участке. Курс работает с тремя <b>[КАНОН]</b>,
+      и у каждого свой смысл, который читается через карту драйверов.
+    </p>
+
+    <div class="table-scroll">
+      <table class="data">
+        <thead>
+          <tr><th>Спред</th><th>Тикер</th><th class="num">Порог</th><th class="num">Март 2023</th><th>Что сравнивает</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>10Y − 3M</b></td>
+            <td><span class="ticker">US10Y-US03MY</span></td>
+            <td class="num">0.000 %</td>
+            <td class="num">−0.872 %</td>
+            <td>текущую ставку ФРС против ожиданий долгосрочного роста — самый «фэдовский» из трёх</td>
+          </tr>
+          <tr>
+            <td><b>10Y − 2Y</b></td>
+            <td><span class="ticker">US10Y-US02Y</span></td>
+            <td class="num">0.000 %</td>
+            <td class="num">−0.869 %</td>
+            <td>двухлетние ожидания по ФРС против долгосрочного роста — классика, самый цитируемый</td>
+          </tr>
+          <tr>
+            <td><b>10Y − 5Y</b></td>
+            <td><span class="ticker">US10Y-US05Y</span></td>
+            <td class="num">0.000 %</td>
+            <td class="num">−0.257 %</td>
+            <td>инфляционные ожидания против долгосрочного роста — целиком внутри «дальней» части кривой</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      Правило чтения простое и в курсе оно выписано буквально: <b>спред больше нуля —
+      кривая нормальная, спред меньше нуля — перевёрнутая</b>. На дату лекции все три
+      были глубоко отрицательными, и автор показывает историческую панель, где уходы
+      ниже нуля предшествуют затенённым рецессиям — перед 2001, перед 2007–2009,
+      перед 2020.
+    </p>
+
+    <div class="callout callout--rule">
+      <div class="callout__label" data-icon="⌘">Спред — флаг, а не вход</div>
+      <p style="margin-bottom:0">
+        <span class="rule-id">R29</span> Если spread(10Y−2Y) &lt; 0 → кривая перевёрнутая
+        (рецессионный флаг); &gt; 0 → нормальная. Аналогично для 10Y−3M и 10Y−5Y.<br>
+        Но <span class="rule-id">R29</span> описывает <b>уровень</b>, а
+        <span class="rule-id">R30</span> запрещает классифицировать режим по уровню.
+        Противоречия нет: спред идёт в инструмент как <b>контекст</b> и как флаг риска,
+        а вход классификатора — только Δ. Использовать пересечение нуля как торговый
+        триггер — прямое нарушение <span class="rule-id">R30</span>.
+      </p>
+    </div>
+
+    <div class="indicator">
+      <div class="indicator__head">
+        <span class="indicator__name">Спред кривой 10 лет минус 2 года</span>
+        <span class="indicator__en">10Y−2Y Treasury Constant Maturity Spread</span>
+        <span class="indicator__tag indicator__tag--lead">лидирующий</span>
+      </div>
+      <dl class="indicator__grid">
+        <div class="indicator__cell"><dt>Публикатор</dt><dd>U.S. Treasury (Daily Par Yield Curve); ряды — FRED, TradingView</dd></div>
+        <div class="indicator__cell"><dt>Частота</dt><dd>ежедневно</dd></div>
+        <div class="indicator__cell"><dt>Выход</dt><dd>по итогам торгов UST</dd></div>
+        <div class="indicator__cell"><dt>Порог</dt><dd>0.000 %</dd></div>
+        <div class="indicator__cell"><dt>Тикер</dt><dd><span class="ticker">US10Y-US02Y</span> · FRED <span class="ticker">T10Y2Y</span></dd></div>
+        <div class="indicator__cell"><dt>Значение курса</dt><dd>−0.869 % (март 2023)</dd></div>
+      </dl>
+      <div class="indicator__body">
+        <p style="margin-bottom:0">
+          Читается как уровень (нормальная / перевёрнутая) и как Δ за окно
+          (flattener / steepener). В инструмент идёт вторым способом; первый —
+          контекстный флаг. Родственные ряды: <span class="ticker">T10Y3M</span>
+          (10Y−3M) и <span class="ticker">US10Y-US05Y</span>.
+        </p>
+      </div>
+    </div>
+
+    <div class="callout callout--beyond">
+      <div class="callout__label" data-icon="✚">Дополнено: откуда вообще взялся «сигнал инверсии»</div>
+      <p>
+        <b>[ДОПОЛНЕНО]</b> Курс показывает связь инверсии с рецессиями графиком
+        и на этом останавливается. У этой связи есть конкретный источник и конкретные
+        оговорки, и знать их важнее, чем сам факт.
+      </p>
+      <p>
+        Каноническая работа — <b>Эстрелла и Мишкин, «The Yield Curve as a Predictor
+        of U.S. Recessions»</b> (ФРБ Нью-Йорка, <i>Current Issues in Economics and
+        Finance</i>, 1996) и их же статьи середины 1990-х. Три вывода оттуда:
+      </p>
+      <ul>
+        <li>лучше всего работает спред <b>10Y − 3M</b>, а не 10Y − 2Y — то есть тот,
+          где короткий конец максимально близко к фактической ставке ФРС;</li>
+        <li>предсказательная сила максимальна на горизонте примерно <b>от двух
+          до шести кварталов вперёд</b>, а не «сейчас» и не «через месяц»;</li>
+        <li>на этих горизонтах спред обыгрывает большинство прочих опережающих
+          индикаторов, взятых поодиночке.</li>
+      </ul>
+      <p>
+        На этой методике ФРБ Нью-Йорка до сих пор публикует ежемесячный ряд
+        «вероятность рецессии по спреду кривой». Обратите внимание: модель выдаёт
+        <b>вероятность на горизонте года</b>, а не дату. Инверсия никогда и не была
+        таймером — таймером её сделал пересказ.
+      </p>
+      <p style="margin-bottom:0">
+        Число исторических эпизодов, на которых всё это оценено, невелико — рецессий
+        в США с 1960-х порядка десятка. Статистическая уверенность в такой выборке
+        принципиально ограничена, и это не придирка: именно малая выборка объясняет,
+        почему один нестандартный цикл (см. врезку «2023 → 2026») способен
+        поставить весь сигнал под вопрос.
+      </p>
+    </div>
+
+    <!-- ================================================================= -->
+    <h2 id="s7">Реальные ставки: тождество</h2>
+
+    <p>
+      Вторая половина главы — про величину, которая в шпаргалке стоит во всех четырёх
+      квадрантах и связывает кривую с ценами акций. Начнём с определения, и оно
+      выводится прямо из уже знакомого разложения <b>[КАНОН]</b>. На слайде 50 автор
+      объединяет фигурной скобкой два последних слагаемых:
+    </p>
+
+    <blockquote>
+      Номинальная доходность = Инфляционные ожидания + <b>Премия за риск + Безрисковая доходность</b><br>
+      <span style="font-style:normal">где выделенное и есть</span> <b>Реальная доходность</b>
+    </blockquote>
+
+    <p>Отсюда — рабочая форма, которой пользуются дальше все главы про активы:</p>
+
+    <blockquote>
+      <b>Реальная доходность = Номинальная доходность − Инфляционные ожидания</b>
+    </blockquote>
+
+    <p>
+      На практике курс считает её как спред двух рядов <b>[КАНОН]</b>:
+      <span class="ticker">US05Y</span> минус <span class="ticker">T5YIE</span>.
+      На срез марта 2023: <b>4.247 % − 2.71 % = 1.537 %</b>. Два порога:
+      <b>0.000 %</b> — водораздел положительной и отрицательной реальной доходности,
+      <b>2.0</b> по <span class="ticker">T5YIE</span> — водораздел «инфляционные
+      ожидания заякорены / разъякорены» (цель ФРС по инфляции — 2 %).
+    </p>
+    <p>
+      Историческая динамика из того же слайда <b>[КАНОН]</b>: реальная доходность была
+      устойчиво отрицательной примерно с 2011 по 2013, эпизодически в 2014–2020
+      и особенно глубоко в 2020–2022 — до примерно <b>−2 %</b>. Пик пришёлся
+      на кризис 2008 года — выше <b>+4 %</b>, причём не потому, что выросла номинальная
+      доходность, а потому, что обвалились инфляционные ожидания (<span class="ticker">T5YIE</span>
+      уходил примерно к −2). Это хорошая иллюстрация того, что реальная ставка —
+      разность, и расти она умеет с обеих сторон.
+    </p>
+
+    <div class="callout callout--beyond">
+      <div class="callout__label" data-icon="✚">Дополнено: что такое безубыточная инфляция и что она на самом деле меряет</div>
+      <p>
+        <b>[ДОПОЛНЕНО]</b> Курс берёт <span class="ticker">T5YIE</span> готовым рядом
+        и его устройство не разбирает. Устройство простое и его надо знать, потому что
+        от него зависит, как интерпретировать реальную ставку.
+      </p>
+      <p>
+        Казначейство США выпускает два вида бумаг: обычные номинальные и <b>TIPS</b>
+        (Treasury Inflation-Protected Securities), у которых номинал индексируется
+        по индексу потребительских цен. Держатель TIPS получает реальную доходность
+        «в чистом виде» — инфляция ему компенсируется по факту. Отсюда:
+      </p>
+      <blockquote style="margin-top:.5rem">
+        <b>Безубыточная инфляция</b> (breakeven) = доходность номинальной бумаги −
+        доходность TIPS того же срока
+      </blockquote>
+      <p>
+        Это ровно та инфляция, при которой обе бумаги принесут одинаковый результат:
+        выше — выгоднее были TIPS, ниже — номинальная. Ряды FRED
+        <span class="ticker">T5YIE</span> и <span class="ticker">T10YIE</span>
+        построены именно так, из рядов постоянной срочности.
+      </p>
+      <p style="margin-bottom:0">
+        Важная оговорка. Breakeven — это <b>не</b> чистое ожидание инфляции. В нём сидят
+        ещё две компоненты: <b>премия за инфляционный риск</b> (за неопределённость
+        будущей инфляции доплачивают) и <b>премия за ликвидность TIPS</b> (рынок TIPS
+        уже рынка номинальных бумаг, и в стрессе их доходность подскакивает, механически
+        обрушивая breakeven — как это было осенью 2008 года). Разложение breakeven
+        на ожидания и премии — предмет работы <b>Д’Амико, Кима и Вэя «Tips from TIPS»</b>
+        (серия FEDS Совета управляющих ФРС). Практический вывод: <b>резкое движение
+        breakeven в момент рыночного стресса читать как изменение инфляционных ожиданий
+        нельзя</b> — с большой вероятностью это ликвидность. Опорой в такие моменты
+        служат опросные меры: инфляционные ожидания Мичиганского университета
+        и Survey of Consumer Expectations ФРБ Нью-Йорка.
+      </p>
+    </div>
+
+    <div class="indicator">
+      <div class="indicator__head">
+        <span class="indicator__name">Безубыточная инфляция на 5 лет</span>
+        <span class="indicator__en">5-Year Breakeven Inflation Rate · T5YIE</span>
+        <span class="indicator__tag indicator__tag--lead">лидирующий</span>
+      </div>
+      <dl class="indicator__grid">
+        <div class="indicator__cell"><dt>Публикатор</dt><dd>FRED (ФРБ Сент-Луиса) по рядам Казначейства</dd></div>
+        <div class="indicator__cell"><dt>Частота</dt><dd>ежедневно</dd></div>
+        <div class="indicator__cell"><dt>Порог</dt><dd>2.0 — «заякорены / разъякорены»</dd></div>
+        <div class="indicator__cell"><dt>Тикер</dt><dd><span class="ticker">T5YIE</span></dd></div>
+        <div class="indicator__cell"><dt>Значение курса</dt><dd>2.71 (март 2023)</dd></div>
+        <div class="indicator__cell"><dt>Роль</dt><dd>вычитаемое в тождестве; ось <code>Inf. exp.</code></dd></div>
+      </dl>
+      <div class="indicator__body">
+        <p style="margin-bottom:0">
+          Провал ряда в 2008 году — примерно до −2, в марте 2020 — примерно до 0
+          <b>[КАНОН]</b>. Оба эпизода — стресс ликвидности, а не дефляционные ожидания
+          такой глубины: см. оговорку выше.
+        </p>
+      </div>
+    </div>
+
+    <div class="indicator">
+      <div class="indicator__head">
+        <span class="indicator__name">Реальная доходность 5 лет</span>
+        <span class="indicator__en">5-Year Real Yield · US05Y − T5YIE</span>
+        <span class="indicator__tag indicator__tag--lead">лидирующий</span>
+      </div>
+      <dl class="indicator__grid">
+        <div class="indicator__cell"><dt>Публикатор</dt><dd>расчётный спред двух рядов (TVC / FRED)</dd></div>
+        <div class="indicator__cell"><dt>Частота</dt><dd>ежедневно</dd></div>
+        <div class="indicator__cell"><dt>Порог</dt><dd>0.000 %</dd></div>
+        <div class="indicator__cell"><dt>Тикер</dt><dd><span class="ticker">US05Y-T5YIE</span></dd></div>
+        <div class="indicator__cell"><dt>Значение курса</dt><dd>1.537 % (март 2023)</dd></div>
+        <div class="indicator__cell"><dt>На что влияет</dt><dd>Fwd P/E, золото, доллар</dd></div>
+      </dl>
+      <div class="indicator__body">
+        <p style="margin-bottom:0">
+          Главный драйвер акций, золота и доллара во всей второй половине курса.
+          Связь с золотом — обратная: корреляция золота с этим рядом
+          <b>−0.21</b> при среднем <b>−0.44</b> <b>[КАНОН]</b>; разбирается в главе 16.
+          Прямой аналог на десятилетнем сроке — <span class="ticker">US10Y-T10YIE</span>.
+        </p>
+      </div>
+    </div>
+
+    <h3>Тождество как валидатор</h3>
+
+    <p>
+      Теперь — то, ради чего всё это в главе. В каждом квадранте шпаргалки выписаны
+      направления трёх величин: <code>N. Yields</code> (номинальные доходности),
+      <code>Inf. exp.</code> (инфляционные ожидания) и <code>R. Yields</code> (реальные
+      доходности). Но эти три величины <b>не независимы</b>: третья арифметически равна
+      разности первых двух. Значит, набор стрелок в каждом квадранте можно <em>проверить</em>.
+    </p>
+
+    <figure class="figure" id="fig-14-4">
+      <div class="figure__frame">
+        <svg viewBox="0 0 900 480" role="img" aria-labelledby="f144t f144d">
+          <title id="f144t">Проверка тождества реальных ставок по четырём квадрантам шпаргалки</title>
+          <desc id="f144d">Четыре клетки в осях политики ФРС и макро-настроения. В каждой выписаны направления номинальных доходностей, инфляционных ожиданий и реальных доходностей и проверено, что третье равно разности первых двух. В квадранте Growth номинальные вниз, ожидания вбок, реальные вниз. В Risk ON номинальные вниз, ожидания вверх, реальные вниз сильно. В Risk OFF номинальные вверх, ожидания вниз, реальные вверх сильно. В Value номинальные вверх, ожидания вверх, знак реальных не определён и зависит от того, что растёт быстрее. Все четыре квадранта внутренне непротиворечивы.</desc>
+
+          <!-- оси -->
+          <line class="viz-axisline" x1="450" y1="32" x2="450" y2="452"/>
+          <line class="viz-axisline" x1="30" y1="240" x2="870" y2="240"/>
+          <text class="viz-q-sub" x="458" y="24">FED POLICY +</text>
+          <text class="viz-q-sub" x="458" y="470">FED POLICY −</text>
+          <text class="viz-q-sub" x="34" y="234">MACRO −</text>
+          <text class="viz-q-sub" x="866" y="234" text-anchor="end">MACRO +</text>
+
+          <!-- ===== Q-I ===== -->
+          <g transform="translate(60,52)" tabindex="0"
+             data-tip="<b>Q-I · Growth</b><br>N ▼ − Inf ► ⇒ реальная ставка вниз. Канон пишет ►▼: сначала вбок, потом вниз — это последовательность двух подфаз, а не одно состояние.">
+            <text class="viz-q-title" x="0" y="20" fill="var(--q-growth)">Q-I · Growth ▲</text>
+            <text class="viz-q-sub" x="0" y="38">BULL FLATTENER</text>
+            <text class="viz-label" x="8" y="68">N. Yields</text>
+            <text class="viz-label" x="122" y="68">Inf. exp.</text>
+            <text class="viz-label" x="236" y="68">R. Yields</text>
+            <text class="viz-q-title" x="8" y="92"><tspan class="viz-down">▼</tspan></text>
+            <text class="viz-q-title" x="96" y="92" fill="var(--ink-muted)">−</text>
+            <text class="viz-q-title" x="122" y="92"><tspan class="viz-flat">►</tspan></text>
+            <text class="viz-q-title" x="210" y="92" fill="var(--ink-muted)">=</text>
+            <text class="viz-q-title" x="236" y="92"><tspan class="viz-flat">►</tspan><tspan class="viz-down">▼</tspan></text>
+            <text class="viz-annot" x="0" y="120">▼ − ► ⇒ реальная ставка вниз</text>
+            <text class="viz-annot" x="0" y="140">двойная стрелка — две подфазы, а не состояние</text>
+          </g>
+
+          <!-- ===== Q-II ===== -->
+          <g transform="translate(470,52)" tabindex="0"
+             data-tip="<b>Q-II · Risk ON</b><br>N ▼ − Inf ▲ ⇒ реальная ставка падает сильно: оба слагаемых толкают её в одну сторону. Лучшая комбинация для мультипликатора.">
+            <text class="viz-q-title" x="0" y="20" fill="var(--q-riskon)">Q-II · Risk ON</text>
+            <text class="viz-q-sub" x="0" y="38">BULL STEEPENER</text>
+            <text class="viz-label" x="8" y="68">N. Yields</text>
+            <text class="viz-label" x="122" y="68">Inf. exp.</text>
+            <text class="viz-label" x="236" y="68">R. Yields</text>
+            <text class="viz-q-title" x="8" y="92"><tspan class="viz-down">▼</tspan></text>
+            <text class="viz-q-title" x="96" y="92" fill="var(--ink-muted)">−</text>
+            <text class="viz-q-title" x="122" y="92"><tspan class="viz-up">▲</tspan></text>
+            <text class="viz-q-title" x="210" y="92" fill="var(--ink-muted)">=</text>
+            <text class="viz-q-title" x="236" y="92"><tspan class="viz-down">▼</tspan></text>
+            <text class="viz-annot" x="0" y="120">▼ − ▲ ⇒ реальная ставка вниз сильно</text>
+            <text class="viz-annot" x="0" y="140">оба слагаемых толкают её в одну сторону</text>
+          </g>
+
+          <!-- ===== Q-III ===== -->
+          <g transform="translate(60,262)" tabindex="0"
+             data-tip="<b>Q-III · Risk OFF</b><br>N ▲ − Inf ▼ ⇒ реальная ставка растёт сильно. Худшая комбинация для мультипликатора и для золота.">
+            <text class="viz-q-title" x="0" y="20" fill="var(--q-riskoff)">Q-III · Risk OFF</text>
+            <text class="viz-q-sub" x="0" y="38">BEAR FLATTENER</text>
+            <text class="viz-label" x="8" y="68">N. Yields</text>
+            <text class="viz-label" x="122" y="68">Inf. exp.</text>
+            <text class="viz-label" x="236" y="68">R. Yields</text>
+            <text class="viz-q-title" x="8" y="92"><tspan class="viz-up">▲</tspan></text>
+            <text class="viz-q-title" x="96" y="92" fill="var(--ink-muted)">−</text>
+            <text class="viz-q-title" x="122" y="92"><tspan class="viz-down">▼</tspan></text>
+            <text class="viz-q-title" x="210" y="92" fill="var(--ink-muted)">=</text>
+            <text class="viz-q-title" x="236" y="92"><tspan class="viz-up">▲</tspan></text>
+            <text class="viz-annot" x="0" y="120">▲ − ▼ ⇒ реальная ставка вверх сильно</text>
+            <text class="viz-annot" x="0" y="140">худшая комбинация для мультипликатора</text>
+          </g>
+
+          <!-- ===== Q-IV ===== -->
+          <g transform="translate(470,262)" tabindex="0"
+             data-tip="<b>Q-IV · Value</b><br>N ▲ − Inf ▲ ⇒ знак не определён: зависит от того, что растёт быстрее. Канон ставит ►▼, то есть на опережающий рост инфляционных ожиданий.">
+            <text class="viz-q-title" x="0" y="20" fill="var(--q-value)">Q-IV · Value ▲</text>
+            <text class="viz-q-sub" x="0" y="38">BEAR STEEPENER</text>
+            <text class="viz-label" x="8" y="68">N. Yields</text>
+            <text class="viz-label" x="122" y="68">Inf. exp.</text>
+            <text class="viz-label" x="236" y="68">R. Yields</text>
+            <text class="viz-q-title" x="8" y="92"><tspan class="viz-up">▲</tspan></text>
+            <text class="viz-q-title" x="96" y="92" fill="var(--ink-muted)">−</text>
+            <text class="viz-q-title" x="122" y="92"><tspan class="viz-up">▲</tspan></text>
+            <text class="viz-q-title" x="210" y="92" fill="var(--ink-muted)">=</text>
+            <text class="viz-q-title" x="236" y="92"><tspan class="viz-flat">►</tspan><tspan class="viz-down">▼</tspan></text>
+            <text class="viz-annot" x="0" y="120">▲ − ▲ ⇒ знак зависит от того, что быстрее</text>
+            <text class="viz-annot" x="0" y="140">канон ставит на опережающий рост ожиданий</text>
+          </g>
+        </svg>
+      </div>
+      <figcaption>
+        <span class="figure__num">Рис. 14.4.</span> <b>Тождество как валидатор шпаргалки.</b>
+        Все четыре квадранта внутренне непротиворечивы: выписанное автором направление
+        реальных ставок совпадает с тем, что даёт вычитание. Это готовая проверка
+        для кода — и одновременно проверка самой шпаргалки, которую она проходит.
+        Обратите внимание на диагональ: сильные, однозначные движения реальной ставки
+        живут в Q-II и Q-III, а в Q-I и Q-IV знак слабый или неопределённый.
+      </figcaption>
+      <div class="figure__table table-scroll" hidden>
+        <table class="data">
+          <caption class="viz-legend" style="text-align:left;padding:.5rem .75rem;color:var(--ink-muted)">Тождество R.Yields = N.Yields − Inf.exp по квадрантам (спека §2.2, L08 сл. 50–54)</caption>
+          <thead>
+            <tr><th>Квадрант</th><th>N. Yields</th><th>Inf. exp.</th><th>Что даёт вычитание</th><th>R. Yields по канону</th><th>Сходится</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Q-I · Growth ▲</td><td><span class="dir dir--down">вниз</span></td><td><span class="dir dir--flat">вбок</span></td><td>вниз</td><td><span class="dir dir--flat"></span><span class="dir dir--down"></span> ►▼</td><td>да, та же сторона</td></tr>
+            <tr><td>Q-II · Risk ON</td><td><span class="dir dir--down">вниз</span></td><td><span class="dir dir--up">вверх</span></td><td>вниз сильно</td><td><span class="dir dir--down">вниз</span></td><td>да</td></tr>
+            <tr><td>Q-III · Risk OFF</td><td><span class="dir dir--up">вверх</span></td><td><span class="dir dir--down">вниз</span></td><td>вверх сильно</td><td><span class="dir dir--up">вверх</span></td><td>да</td></tr>
+            <tr><td>Q-IV · Value ▲</td><td><span class="dir dir--up">вверх</span></td><td><span class="dir dir--up">вверх</span></td><td>знак не определён</td><td>►▼</td><td>да, при условии что ожидания растут быстрее</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </figure>
+
+    <div class="callout callout--rule">
+      <div class="callout__label" data-icon="⌘">Тождество-валидатор</div>
+      <p style="margin-bottom:0">
+        <span class="rule-id">R31</span> <code>R.Yields = N.Yields − Inf.exp</code>.
+        Если наблюдаемые знаки трёх рядов этому противоречат — состояние не подтверждено.
+        Это второй независимый предохранитель после
+        <span class="rule-id">R28</span>: первый сверяет модель с рынком облигаций,
+        второй сверяет данные сами с собой.
+      </p>
+    </div>
+
+    <p>
+      Два наблюдения, которые стоит проговорить честно.
+    </p>
+    <p>
+      <b>Первое.</b> В Q-I вычитание даёт однозначное «вниз» (номинальные падают,
+      ожидания стоят), а канон пишет <code>►▼</code> — «сначала вбок, потом вниз».
+      Противоречия нет: двойная стрелка описывает <em>последовательность во времени</em>,
+      две подфазы квадранта. Но для кода это проблема, а не нюанс: состояние
+      и последовательность — разные типы данных. Либо квадрант разбивается на две
+      подфазы, либо <code>►▼</code> трактуется как «нейтрально или слабо вниз».
+      Решать это придётся в главе 24.
+    </p>
+    <p>
+      <b>Второе.</b> Q-IV — единственный квадрант, где тождество <em>не</em> определяет знак:
+      обе компоненты растут, и результат зависит от того, какая быстрее. Канон
+      ставит <code>►▼</code>, то есть на опережающий рост инфляционных ожиданий.
+      Экономически это напряжённая конструкция: ФРС ужесточает, а реальная ставка
+      при этом не растёт. Такое бывает — в начале цикла ужесточения, когда рынок
+      ещё считает, что ФРС отстаёт от инфляции, — но условие устойчивости автор
+      не задаёт, и долго такое состояние не живёт. Практически: если в Q-IV реальная
+      ставка уверенно пошла вверх, вы, скорее всего, уже не в Q-IV, а на пути в Q-III.
+    </p>
+
+    <!-- ================================================================= -->
+    <h2 id="s8">Реальные ставки и мультипликатор</h2>
+
+    <p>
+      Последний шаг главы объясняет, почему матрица делится на верхнюю и нижнюю
+      половины по признаку «мультипликатор растёт / падает». Курс приводит две
+      картины <b>[КАНОН]</b>: «Rising real yields are a drag on equities» — S&amp;P 500
+      против реальной доходности 2-леток с инвертированной осью, ряды идут почти
+      синхронно; и график Goldman Sachs «S&amp;P 500 P/E has moved hand in hand with
+      Treasury yields», подписанный стрелкой «Higher real interest rates / lower P/E
+      multiples». С последнего снимаются две точки калибровки.
+    </p>
+
+    <figure class="figure" id="fig-14-5">
+      <div class="figure__frame">
+        <svg viewBox="0 0 860 400" role="img" aria-labelledby="f145t f145d">
+          <title id="f145t">Реальная ставка и форвардный мультипликатор S&amp;P 500</title>
+          <desc id="f145d">Нисходящая прямая: чем выше реальная ставка, тем ниже форвардный мультипликатор. Отмечены две точки калибровки из курса: при реальной ставке минус один процент форвардный P/E около 23.5, при реальной ставке плюс 1.3–1.5 процента — около 15.2. Наклон между ними — примерно минус 3.5 пункта мультипликатора на каждый процентный пункт реальной ставки.</desc>
+
+          <text class="viz-label" x="90" y="38">форвардный P/E S&amp;P 500</text>
+
+          <line class="viz-grid" x1="90" y1="95" x2="790" y2="95"/>
+          <line class="viz-grid" x1="90" y1="140" x2="790" y2="140"/>
+          <line class="viz-grid" x1="90" y1="185" x2="790" y2="185"/>
+          <line class="viz-grid" x1="90" y1="230" x2="790" y2="230"/>
+          <line class="viz-grid" x1="90" y1="275" x2="790" y2="275"/>
+          <line class="viz-grid" x1="390" y1="50" x2="390" y2="320"/>
+          <line class="viz-axisline" x1="90" y1="50" x2="90" y2="320"/>
+          <line class="viz-axisline" x1="90" y1="320" x2="790" y2="320"/>
+
+          <text class="viz-axis" x="82" y="54" text-anchor="end">25×</text>
+          <text class="viz-axis" x="82" y="99" text-anchor="end">23×</text>
+          <text class="viz-axis" x="82" y="144" text-anchor="end">21×</text>
+          <text class="viz-axis" x="82" y="189" text-anchor="end">19×</text>
+          <text class="viz-axis" x="82" y="234" text-anchor="end">17×</text>
+          <text class="viz-axis" x="82" y="279" text-anchor="end">15×</text>
+          <text class="viz-axis" x="82" y="324" text-anchor="end">13×</text>
+
+          <text class="viz-axis" x="90" y="344" text-anchor="middle">−1.5</text>
+          <text class="viz-axis" x="190" y="344" text-anchor="middle">−1.0</text>
+          <text class="viz-axis" x="290" y="344" text-anchor="middle">−0.5</text>
+          <text class="viz-axis" x="390" y="344" text-anchor="middle">0</text>
+          <text class="viz-axis" x="490" y="344" text-anchor="middle">+0.5</text>
+          <text class="viz-axis" x="590" y="344" text-anchor="middle">+1.0</text>
+          <text class="viz-axis" x="690" y="344" text-anchor="middle">+1.5</text>
+          <text class="viz-axis" x="790" y="344" text-anchor="middle">+2.0</text>
+          <text class="viz-axis" x="440" y="372" text-anchor="middle">реальная ставка 10Y, % годовых</text>
+
+          <path class="viz-line" stroke="var(--series-1)" d="M130,60 L750,302"/>
+
+          <circle class="viz-mark" cx="190" cy="84" r="5" fill="var(--series-1)" tabindex="0"
+                  data-tip="<b>2020–2021</b><br>Реальная ставка ≈ −1.0 %, форвардный P/E ≈ 23.5×. Пик мультипликатора."/>
+          <circle class="viz-mark" cx="670" cy="270" r="5" fill="var(--series-1)" tabindex="0"
+                  data-tip="<b>Конец 2022</b><br>Реальная ставка ≈ +1.3…1.5 %, форвардный P/E ≈ 15.2×."/>
+
+          <text class="viz-title" x="204" y="80">23.5× при −1.0 %</text>
+          <text class="viz-annot" x="204" y="98">2020–2021, пик мультипликатора</text>
+          <text class="viz-title" x="656" y="264" text-anchor="end">15.2× при +1.3…1.5 %</text>
+          <text class="viz-annot" x="656" y="282" text-anchor="end">конец 2022</text>
+
+          <text class="viz-annot" x="300" y="206">наклон ≈ −3.5 пункта P/E на 1 п.п.</text>
+          <text class="viz-annot" x="300" y="224">две точки калибровки — не регрессия</text>
+          <text class="viz-annot" x="396" y="62">реальная ставка = 0</text>
+        </svg>
+      </div>
+      <figcaption>
+        <span class="figure__num">Рис. 14.5.</span> <b>Реальная ставка против форвардного
+        мультипликатора.</b> Обе отмеченные точки — из графика Goldman Sachs, приведённого
+        в курсе. Прямая между ними проведена нами и служит грубым ориентиром, а не моделью:
+        двух точек на регрессию не хватает, и за пределами отрезка от −1 до +1.5 %
+        экстраполировать её нельзя.
+      </figcaption>
+      <div class="figure__table table-scroll" hidden>
+        <table class="data">
+          <caption class="viz-legend" style="text-align:left;padding:.5rem .75rem;color:var(--ink-muted)">Калибровка R36 (L08 сл. 53, FactSet / Goldman Sachs Global Investment Research)</caption>
+          <thead>
+            <tr><th>Точка</th><th class="num">Реальная ставка 10Y</th><th class="num">Forward P/E</th><th class="num">Доходность прибыли, 1 ÷ P/E</th><th>Пометка</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>2020–2021, пик</td><td class="num">≈ −1.0 %</td><td class="num">≈ 23.5×</td><td class="num">≈ 4.26 %</td><td>[КАНОН]</td></tr>
+            <tr><td>Конец 2022</td><td class="num">≈ +1.3…1.5 %</td><td class="num">≈ 15.2×</td><td class="num">≈ 6.58 %</td><td>[КАНОН]</td></tr>
+            <tr><td>Март 2020, минимум</td><td class="num">—</td><td class="num">≈ 13.3×</td><td class="num">≈ 7.52 %</td><td>[КАНОН]; реальная ставка на слайде не подписана</td></tr>
+            <tr><td>Наклон между точками</td><td class="num">Δ = 2.4 п.п.</td><td class="num">Δ = −8.3 пункта</td><td class="num">Δ = +2.32 п.п.</td><td>[ВЫВЕДЕНО]: ≈ −3.5 пункта P/E на 1 п.п.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </figure>
+
+    <p>
+      Из двух точек следует грубая калибровка <b>[ВЫВЕДЕНО]</b>: между −1 % и +1.4 %
+      реальной ставки мультипликатор сдвигается примерно на <b>−3.5 пункта на каждый
+      процентный пункт</b> ((15.2 − 23.5) ÷ (1.4 + 1.0) = −3.46). Пользоваться этим
+      можно как прикидкой порядка величины и только внутри этого отрезка: две точки —
+      не регрессия, а связь между ставкой и мультипликатором нелинейна по построению.
+    </p>
+
+    <h3>Почему это вообще работает</h3>
+
+    <p>
+      Курс даёт связь как факт и на этом останавливается. Механизм стоит развернуть —
+      он объясняет и величину эффекта, и его нелинейность.
+    </p>
+    <p>
+      Переверните мультипликатор. Величина <b>1 ÷ P/E</b> — это <em>доходность прибыли</em>
+      (earnings yield), то есть сколько прибыли приходится на вложенный доллар.
+      Посчитаем её в обеих точках калибровки <b>[ВЫВЕДЕНО]</b>:
+      1 ÷ 23.5 = <b>4.26 %</b> и 1 ÷ 15.2 = <b>6.58 %</b>. Разница — <b>2.32 п.п.</b>
+      А реальная ставка на том же отрезке изменилась на <b>2.4 п.п.</b> Почти один к одному.
+    </p>
+    <p>
+      Это и есть механизм. Акция конкурирует за деньги с безрисковой бумагой,
+      и сравнение идёт в реальных величинах: номинальная доходность облигации
+      обесценивается инфляцией, прибыль компаний вместе с ценами растёт. Когда
+      реальная безрисковая ставка поднимается на процентный пункт, инвестор требует
+      от акций примерно на процентный пункт большей доходности прибыли — а значит,
+      меньшего мультипликатора. Мультипликатор не «реагирует на ставку» — он
+      арифметически обязан сдвинуться.
+    </p>
+
+    <div class="callout callout--beyond">
+      <div class="callout__label" data-icon="✚">Дополнено: та же арифметика в модели дисконтирования</div>
+      <p>
+        <b>[ДОПОЛНЕНО]</b> Формально это простейшая модель дисконтирования дивидендов
+        (<b>Гордон, 1962</b>). Если поток растёт постоянным темпом <i>g</i>, а требуемая
+        доходность равна <i>r</i>, то цена = поток ÷ (<i>r</i> − <i>g</i>), и значит
+        мультипликатор:
+      </p>
+      <blockquote style="margin-top:.5rem">
+        P/E = 1 ÷ (<i>r</i> − <i>g</i>), &nbsp; где <i>r</i> = реальная безрисковая ставка +
+        премия за риск акций
+      </blockquote>
+      <p>
+        Отсюда сразу три вещи, которых в курсе нет. Во-первых, <b>нелинейность</b>:
+        производная P/E по ставке равна −1 ÷ (<i>r</i> − <i>g</i>)², то есть чувствительность
+        мультипликатора к ставке тем выше, чем выше сам мультипликатор. Один и тот же
+        рост реальной ставки на 100 базисных пунктов бьёт по акции с P/E 40 в разы
+        сильнее, чем по акции с P/E 12 — это и есть «дюрация акции».
+      </p>
+      <p>
+        Во-вторых, у мультипликатора <b>два драйвера, а не один</b>: <i>r</i> и <i>g</i>.
+        Правило <span class="rule-id">R36</span> держит <i>g</i> постоянным, а в реальном
+        цикле он движется вместе с макро. Поэтому связь «реальная ставка ↑ → P/E ↓»
+        сильнее всего там, где макро не мешает, — и слабеет там, где ожидания роста
+        меняются одновременно.
+      </p>
+      <p style="margin-bottom:0">
+        В-третьих, отсюда честная оговорка к нижней половине матрицы. В Q-III
+        (Risk OFF) всё сходится: реальная ставка вверх, ожидания роста вниз — оба
+        драйвера бьют по мультипликатору, и <code>Fwd P/E ▼</code> следует из тождества.
+        А в Q-IV (Value) реальная ставка по канону идёт <code>►▼</code>, то есть
+        <span class="rule-id">R36</span> сама по себе знака «вниз» не даёт: там
+        мультипликатор давят рост номинальных ставок и премии за риск, а не реальная
+        ставка. Знак <code>Fwd P/E ▼</code> в Q-IV — это <b>[ВЫВЕДЕНО]</b> из оси FED,
+        и связь в этом квадранте заметно слабее, чем в остальных трёх. Читателю,
+        который будет это кодировать, стоит знать, что здесь опора тоньше.
+        Динамическую версию этого разложения — какая доля движения оценки приходится
+        на ставки, а какая на ожидания роста, — дают <b>Кэмпбелл и Шиллер (1988)</b>.
+      </p>
+    </div>
+
+    <div class="callout callout--rule">
+      <div class="callout__label" data-icon="⌘">Верх и низ матрицы</div>
+      <p style="margin-bottom:0">
+        <span class="rule-id">R36</span> Если реальные ставки растут → форвардный P/E
+        падает и акции под давлением; если падают → P/E растёт.
+        Калибровка: −1.0 % ⇒ ≈ 23.5×; +1.3…1.5 % ⇒ ≈ 15.2×.<br>
+        Отсюда обе <b>верхние</b> клетки матрицы (ФРС «+») имеют
+        <code>Fwd P/E ▲</code>, а обе <b>нижние</b> (ФРС «−») — <code>Fwd P/E ▼</code>.
+        Вертикальная ось шпаргалки — это, по сути, ось мультипликатора.
+        Горизонтальная — ось прибыли (<code>EPS</code>, <code>LEI</code>).
+        Цена акции = прибыль × мультипликатор, и матрица разложена ровно по этим
+        двум сомножителям.
+      </p>
+    </div>
+
+    <!-- ================================================================= -->
+    <div class="callout callout--crypto">
+      <div class="callout__label" data-icon="₿">Крипто-слой</div>
+      <p>
+        Реальные ставки — главный макро-драйвер крипты, и работает он ровно тем же
+        механизмом, что и с мультипликатором акций роста. У биткоина нет денежного
+        потока вообще: вся его стоимость — терминальная, отнесённая в неопределённое
+        будущее. В терминах предыдущего раздела это актив с <b>максимально возможной
+        дюрацией</b>: знаменатель (<i>r</i> − <i>g</i>) у него самый чувствительный,
+        а числитель не даёт никакой поддержки. Поэтому крипта реагирует на реальную
+        ставку сильнее любого сегмента акций.
+      </p>
+      <p>
+        Эмпирика из самого курса это подтверждает <b>[КАНОН]</b>: в цикле ужесточения
+        2022 года биткоин потерял <b>−48.66 %</b> против <b>−26.21 %</b> у Nasdaq
+        и <b>−10.52 %</b> у Dow. Порядок ровно по «дюрации»: чем дальше денежный поток
+        (или чем меньше его вообще), тем больнее. И происходило это на фоне движения
+        реальной ставки из зоны примерно <b>−2 %</b> в зону выше <b>+1.5 %</b>
+        <b>[КАНОН]</b> — то есть на сдвиге порядка трёх с половиной процентных пунктов.
+      </p>
+      <p style="margin-bottom:0">
+        Практический вывод для нашего инструмента <b>[ВЫВЕДЕНО]</b>: в качестве
+        макро-входа для крипты нужно брать <b>реальную</b> ставку
+        (<span class="ticker">US05Y-T5YIE</span> или <span class="ticker">US10Y-T10YIE</span>),
+        а не номинальную. Рост номинальной доходности, целиком вызванный ростом
+        инфляционных ожиданий, реальную ставку не двигает — и по этому механизму
+        крипту давить не должен. Смешивать их — значит получать ложные сигналы ровно
+        в те моменты, когда инфляционные ожидания разъякориваются. Оговорка: связь
+        крипты с макро режимно-зависима — в 2022 году она была очень тесной,
+        в другие периоды заметно слабее; подробнее — в главе 22.
+      </p>
+    </div>
+
+    <div class="callout callout--2026">
+      <div class="callout__label" data-icon="↻">2023 → 2026</div>
+      <p>
+        Это самая важная врезка книги, потому что здесь курс разошёлся с реальностью
+        сильнее всего. <b>[ДОПОЛНЕНО]</b> Курс записан в разгар инверсии и подаёт её
+        как надёжный опережающий сигнал рецессии. Что произошло дальше:
+      </p>
+      <ul>
+        <li>Спред <span class="ticker">10Y−2Y</span> ушёл ниже нуля летом 2022 года
+          и оставался отрицательным <b>около двух лет</b> — это самая продолжительная
+          непрерывная инверсия за всю историю ряда FRED <span class="ticker">T10Y2Y</span>,
+          который начинается в 1976 году.</li>
+        <li>Кривая <b>дезинвертировалась осенью 2024 года</b>, вскоре после первого
+          снижения ставки ФРС в сентябре 2024-го.</li>
+        <li><b>Рецессии в США за этим не последовало.</b> Комитет по датировке циклов
+          NBER новой рецессии не объявлял.</li>
+        <li>Заодно в этом же цикле дал ложный сигнал и другой уважаемый индикатор —
+          <b>правило Сам</b> (Sahm rule, 2019), сработавшее по безработице в 2024 году
+          без последующей рецессии.</li>
+      </ul>
+      <p>
+        <b>Что это значит для сигнала инверсии.</b> Не «он сломался» и не «он работает
+        как раньше», а нечто третье. Инверсия никогда не была таймером: у Эстреллы
+        и Мишкина она даёт вероятность на горизонте порядка года, а исторический лаг
+        от инверсии до рецессии измерялся многими месяцами и никогда не был постоянным.
+        В этом цикле лаг либо превысил все прежние, либо сигнал оказался ложным —
+        и различить эти две гипотезы на выборке из десятка рецессий невозможно
+        в принципе. Честная позиция: <b>уровень спреда — контекст, а не вход</b>.
+        Ровно это и требует <span class="rule-id">R30</span>.
+      </p>
+      <p>
+        <b>Премия за срок и почему её рост меняет прочтение.</b> Вспомним разложение:
+        длинная доходность = средние ожидаемые короткие ставки + премия за срок.
+        В 2010-е годы оценки премии (модель ACM ФРБ Нью-Йорка) были продолжительное
+        время <b>отрицательными</b>: количественное смягчение изымало дюрацию с рынка,
+        а глобальный спрос на «безопасный» долгосрочный актив был огромен. Отрицательная
+        премия механически занижала длинный конец — а значит, кривая инвертировалась
+        <em>при меньшем ужесточении</em>, чем потребовалось бы в прошлом. Часть
+        «рекордной» инверсии 2022–2024 — не столько сила рецессионного сигнала,
+        сколько артефакт заниженной премии.
+      </p>
+      <p>
+        С 2023–2024 годов премия за срок вернулась в положительную зону. Причины
+        известны и все они лежат вне бизнес-цикла: <b>QT</b> (ФРС перестала быть
+        покупателем дюрации и начала сокращать баланс), <b>рост предложения UST</b>
+        на фоне устойчивого фискального дефицита и <b>структура заимствований</b> —
+        решения Казначейства о доле длинных купонных бумаг против векселей,
+        публикуемые в квартальных объявлениях о рефинансировании (QRA), стали
+        самостоятельным рыночным событием. Параллельно рынок пересмотрел вверх
+        оценки нейтральной ставки <b><i>r</i>*</b> (ориентир — модель Холстона,
+        Лаубаха и Уильямса, ФРБ Нью-Йорка).
+      </p>
+      <p>
+        <b>Почему это критично именно для нашей главы.</b> Растущая премия за срок
+        толкает длинный конец вверх <em>без всякого улучшения макро</em> — то есть
+        производит <b>bear steepener</b>, который по шпаргалке означает Q-IV / Value,
+        хотя экономика может стоять на месте. И наоборот: сама дезинверсия 2024 года
+        началась через падение короткого конца (рынок закладывал разворот ФРС —
+        это bull steepener, Q-II), а продолжилась уже через рост длинного
+        (bear steepener, Q-IV). <b>Один и тот же положительный спред означал
+        два разных режима.</b> Лучшей иллюстрации к тезису «важна не форма кривой,
+        а то, как к ней пришли» реальность придумать не могла.
+      </p>
+      <p style="margin-bottom:0">
+        Вывод для инструмента, и он неудобный: в мире с подвижной премией за срок
+        валидатор <span class="rule-id">R28</span> будет срабатывать <b>чаще</b>,
+        и инструмент будет чаще уходить в центр. Это не поломка — это правильное
+        поведение. Если кривая укручается по причинам, к бизнес-циклу отношения
+        не имеющим, то квадрант, который она «подтверждает», ничего не стоит.
+        Практическое усиление <b>[НАШЕ РЕШЕНИЕ]</b>: там, где доступна оценка премии
+        за срок, разделять движение длинного конца на ожиданиевую и премиальную
+        компоненты и подтверждать квадрант только первой. Курс такого различения
+        не делает — он записан в мире, где премия была стабильно отрицательной
+        и об этом можно было не думать.
+      </p>
+    </div>
+
+    <!-- ================================================================= -->
+    <h2 id="s9">Что сделать руками</h2>
+
+    <ul class="checklist">
+      <li>Откройте три спреда — <span class="ticker">US10Y-US02Y</span>,
+        <span class="ticker">US10Y-US03MY</span>, <span class="ticker">US10Y-US05Y</span> —
+        и для каждого выпишите две разные вещи: уровень (нормальная / перевёрнутая)
+        и изменение за 10 дней (какой режим). Убедитесь, что вы не путаете эти два ответа.</li>
+      <li>Возьмите текущие <span class="ticker">US02Y</span> и <span class="ticker">US10Y</span>,
+        посчитайте Δ каждого за 5, 10 и 30 дней и классифицируйте режим по
+        <span class="rule-id">R24</span>–<span class="rule-id">R27</span>. Если три окна
+        дали разные ответы — это и есть та неопределённость, которую в главе 24
+        придётся закрывать порогом, а не интуицией.</li>
+      <li>Посчитайте реальную ставку как <span class="ticker">US05Y</span> −
+        <span class="ticker">T5YIE</span> и проверьте тождество
+        <span class="rule-id">R31</span> на текущих данных: сходятся ли знаки трёх
+        рядов с тем квадрантом, в котором вы считаете себя.</li>
+      <li>Прикиньте по <span class="rule-id">R36</span>, какой форвардный мультипликатор
+        «нормален» при сегодняшней реальной ставке, и сравните с фактическим.
+        Разрыв — это либо ожидания роста, либо чужой оптимизм; определите, что именно.</li>
+      <li>Проверьте свой инструмент (или свою голову) на наличие ответа
+        «не классифицируется». Если любая кривая всегда получает квадрант — предохранителя
+        у вас нет.</li>
+    </ul>
+
+    <!-- ================================================================= -->
+    <h2 id="s10">Что читать дальше</h2>
+
+    <ul>
+      <li>
+        <b>Estrella A., Mishkin F. «The Yield Curve as a Predictor of U.S. Recessions»</b>
+        (FRB New York, <i>Current Issues in Economics and Finance</i>, 1996). Первоисточник
+        сигнала инверсии. Смотреть: почему выбран спред 10Y−3M и на каком горизонте
+        его предсказательная сила максимальна. Там же — методика ежемесячного ряда
+        вероятности рецессии, который ФРБ Нью-Йорка публикует до сих пор.
+      </li>
+      <li>
+        <b>Adrian T., Crump R., Moench E. «Pricing the Term Structure with Linear
+        Regressions»</b> (<i>Journal of Financial Economics</i>, 2013) и ежедневные ряды
+        ACM на сайте ФРБ Нью-Йорка. Смотреть: как длинная доходность делится
+        на ожидания и премию за срок, и как менялся знак премии в 2010-е и после 2022 года.
+        Альтернативная оценка — модель <b>Кима и Райта</b> (FEDS, Совет управляющих ФРС).
+      </li>
+      <li>
+        <b>Vayanos D., Vila J.-L. «A Preferred-Habitat Model of the Term Structure
+        of Interest Rates»</b> (<i>Econometrica</i>, 2021). Смотреть: механизм, из-за
+        которого объём и структура предложения облигаций (QE, QT, решения Казначейства
+        о длине заимствований) двигают отдельные участки кривой независимо от ожиданий
+        по ставке. Это теоретическая база всего, что написано во врезке «2023 → 2026».
+      </li>
+      <li>
+        <b>D’Amico S., Kim D., Wei M. «Tips from TIPS»</b> (серия FEDS, Совет управляющих ФРС).
+        Смотреть: из чего на самом деле состоит безубыточная инфляция — премия
+        за инфляционный риск и премия за ликвидность TIPS. Нужно, чтобы не читать
+        обвал breakeven в стрессе как обвал инфляционных ожиданий.
+      </li>
+      <li>
+        <b>Tuckman B., Serrat A. «Fixed Income Securities»</b>. Смотреть главы о дюрации
+        и выпуклости, и особенно <i>key rate durations</i> — аппарат, который описывает
+        реакцию портфеля на непараллельный сдвиг кривой. Курс работает с параллельным
+        сдвигом; flattener и steepener параллельными не бывают.
+      </li>
+      <li>
+        <b>Campbell J., Shiller R. «Stock Prices, Earnings, and Expected Dividends»</b> (1988)
+        и их же <b>«Yield Spreads and Interest Rate Movements: A Bird’s Eye View»</b> (1991).
+        Первое — почему уровень мультипликатора раскладывается на ставки и ожидания роста
+        (строгая версия того, что в главе сделано на двух точках). Второе — почему
+        гипотеза чистых ожиданий на рынке облигаций эмпирически не работает.
+      </li>
+    </ul>
+
+    <nav class="chapter-nav" id="chapter-nav"></nav>
+
+  </article>
+  </main>
+</div>
+
+<script src="assets/chapters.js"></script>
+<script src="assets/book.js"></script>
+</body>
+</html>
