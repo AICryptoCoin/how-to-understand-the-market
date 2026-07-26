@@ -1,0 +1,1802 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>19. Эволюция шпаргалки — Как понимать рынок</title>
+<meta name="description" content="Восемь предшественников МЕГА-шпаргалки, почему ось «инфляция» пришлось заменить на политику ФРС и шесть шагов авторской сборки инструмента.">
+<link rel="stylesheet" href="assets/book.css">
+</head>
+<body data-chapter="19">
+
+<header class="topbar">
+  <button class="btn sidebar-toggle" id="sidebar-btn" type="button" aria-expanded="false">☰</button>
+  <a class="topbar__book" href="index.html">Как понимать рынок</a>
+  <span class="topbar__sep">·</span>
+  <span class="topbar__where" id="topbar-where"></span>
+  <span class="topbar__spacer"></span>
+  <button class="btn" id="theme-btn" type="button">◐&nbsp;&nbsp;Тема: авто</button>
+</header>
+
+<div class="layout">
+  <aside class="sidebar"><nav id="book-nav"></nav></aside>
+
+  <main class="content">
+  <article class="prose">
+
+    <p class="chapter-eyebrow">Часть V · Синтез — сама шпаргалка · Глава 19</p>
+    <h1>Эволюция шпаргалки</h1>
+    <p class="chapter-lede">
+      Матрицу из главы 1 вы уже видели. Пока неизвестно, какую задачу решает
+      каждый её элемент, она выглядит как набор произвольных решений — и её
+      хочется «улучшить». Эта глава — археология: восемь чужих схем, из которых
+      инструмент вырос, и шесть авторских шагов, каждый из которых закрывал
+      конкретную дыру предыдущего.
+    </p>
+
+    <nav class="chapter-map">
+      <h2>В этой главе</h2>
+      <ol>
+        <li><a href="#s1">Зачем эта глава</a></li>
+        <li><a href="#s2">Восемь предшественников</a></li>
+        <li><a href="#s3">Почему ось «инфляция» пришлось убрать</a></li>
+        <li><a href="#s4">Шесть шагов авторской сборки</a></li>
+        <li><a href="#s5">Дрейф семантики ярлыков</a></li>
+        <li><a href="#s6">Что вся эта линия так и не закрыла</a></li>
+        <li><a href="#s7">Что сделать перед следующей главой</a></li>
+        <li><a href="#s8">Что читать дальше</a></li>
+      </ol>
+    </nav>
+
+    <!-- ================================================================= -->
+    <h2 id="s1">Зачем эта глава</h2>
+
+    <p>
+      Все предыдущие главы собирали <em>входы</em>. Эта — единственная в книге,
+      которая ничего не добавляет ко входам и ни одного нового индикатора не
+      вводит. Она объясняет <b>конструкцию</b>: почему осей ровно две, почему
+      вторая ось — политика ФРС, а не инфляция, почему форма кривой доходности
+      стоит в углах отдельно от всего остального и почему в центре есть пятое
+      состояние.
+    </p>
+    <p>
+      Это не историческая справка. Три решения из перечисленных прямо кодируются
+      в главе 24, и каждое легко испортить, не зная его происхождения:
+    </p>
+    <ul>
+      <li>
+        <span class="rule-id">R19</span>–<span class="rule-id">R23</span> —
+        классификация по паре знаков (FED, MACRO). Если не понимать, почему
+        инфляция была вынесена из осей, её захочется вернуть «для полноты»:
+        три оси, восемь состояний, аккуратно и симметрично. Инструмент при этом
+        ослепнет ровно на развороте — там, где он нужен.
+      </li>
+      <li>
+        <span class="rule-id">R24</span>–<span class="rule-id">R28</span> —
+        валидация формой кривой. Форма появилась в сборке <em>раньше</em>
+        индикаторов и активов именно потому, что она — независимая проверка,
+        а не вывод. Посчитать её из осей технически проще; это уничтожает
+        весь смысл.
+      </li>
+      <li>
+        <span class="rule-id">R23</span>, <span class="rule-id">R55</span> —
+        центр Quality. Ни у одного из восьми предков состояния «режима нет»
+        не было: все они обязаны отвечать всегда. Пятый класс — авторское
+        добавление последним шагом, и без него классификатор не умеет говорить
+        «не знаю».
+      </li>
+    </ul>
+    <p>
+      Плюс побочный, но дорогой сюжет: матрица показана в курсе четыре раза,
+      и привязка ярлыков между показами менялась. Из-за этого в конспектах
+      возник конфликт знаков, который пришлось разрешать возвратом к финальному
+      слайду. Раздел <a href="#s5">«Дрейф семантики»</a> — про то, как не
+      наступить на это второй раз.
+    </p>
+
+    <!-- ================================================================= -->
+    <h2 id="s2">Восемь предшественников</h2>
+
+    <p>
+      Обзорный слайд лекции 10 устроен как родословная: слева — миниатюры чужих
+      схем, справа через большую стрелку — итоговая шпаргалка. <b>[КАНОН]</b>
+      Ниже они разложены по порядку нарастания полезности. У каждой — что она
+      дала и чего в ней не хватило.
+    </p>
+
+    <figure class="figure" id="fig-19-1">
+      <div class="figure__frame">
+        <svg viewBox="0 0 920 545" role="img" aria-labelledby="fig191-title fig191-desc">
+          <title id="fig191-title">Галерея восьми предшественников МЕГА-шпаргалки</title>
+          <desc id="fig191-desc">Восемь схем в сетке четыре на два. Первая — описательные экономические часы без торговых инструкций. Далее квадрант «рост × инфляция» с формами кривой, шесть стадий бизнес-цикла StockCharts с порядком ротации активов, классическая схема опережения рынка над экономикой, инвестиционные часы Merrill Lynch, четыре квадранта Gavekal, матрица BofA с заменой оси инфляции на политику ФРС и вторая версия BofA с направлениями ставок и прибыли в углах. Полный текст — в таблице значений.</desc>
+
+          <text class="viz-q-sub" x="10" y="20">ОТ ОПИСАНИЯ ФАЗ — К ДВУМ ИЗМЕРИМЫМ ОСЯМ</text>
+
+          <g class="viz-legend">
+            <rect x="400" y="12" width="11" height="3" rx="1.5" fill="var(--axis)"/>
+            <text x="418" y="20">описательные</text>
+            <rect x="505" y="12" width="11" height="3" rx="1.5" fill="var(--series-2)"/>
+            <text x="523" y="20">ветвь «инфляция»</text>
+            <rect x="635" y="12" width="11" height="3" rx="1.5" fill="var(--series-1)"/>
+            <text x="653" y="20">ветвь «политика ФРС»</text>
+          </g>
+
+          <!-- ===== 1. The Economic Clock ===== -->
+          <g tabindex="0" data-tip="<b>1. The Economic Clock</b><br>Овальный циферблат: Boom → Slump → Recovery по часовой стрелке, ≈45 словесных признаков и 4 розовых маркера-триггера.<br>Ни одного измеримого входа.">
+            <rect class="viz-box" x="10" y="46" width="216" height="232" rx="8"/>
+            <rect x="10" y="46" width="4" height="232" rx="2" fill="var(--axis)"/>
+            <text class="viz-title" x="21" y="68">1. The Economic Clock</text>
+            <text class="viz-axis"  x="21" y="84">осей нет · круг фаз</text>
+            <g>
+              <circle cx="118" cy="128" r="26" fill="none" stroke="var(--axis)" stroke-width="1"/>
+              <line class="viz-axisline" x1="118" y1="96"  x2="118" y2="102"/>
+              <line class="viz-axisline" x1="118" y1="154" x2="118" y2="160"/>
+              <line class="viz-axisline" x1="86"  y1="128" x2="92"  y2="128"/>
+              <line class="viz-axisline" x1="144" y1="128" x2="150" y2="128"/>
+              <path d="M118,128 L134,110" stroke="var(--ink-muted)" stroke-width="1.5"/>
+              <path d="M140,112 A26,26 0 0 1 140,144" fill="none" stroke="var(--axis)" stroke-width="1"/>
+            </g>
+            <text class="viz-q-sub" x="21" y="182">ЧТО ДОБАВИЛА</text>
+            <text class="viz-label" x="21" y="198">≈45 словесных признаков по</text>
+            <text class="viz-label" x="21" y="214">кругу и 4 маркера-триггера</text>
+            <text class="viz-q-sub" x="21" y="236">ЧТО НЕ УСТРОИЛО</text>
+            <text class="viz-annot" x="21" y="252">описание фаз без торговых</text>
+            <text class="viz-annot" x="21" y="267">инструкций и без входов</text>
+          </g>
+
+          <!-- ===== 2. Рост × инфляция ===== -->
+          <g tabindex="0" data-tip="<b>2. Квадрант «рост × инфляция» + овал форм кривой</b><br>Cyclical/Defensive × Growth/Value, поверх — овал Bull/Bear Steepening/Flattening.<br>Первое совмещение стилей с формами кривой.">
+            <rect class="viz-box" x="238" y="46" width="216" height="232" rx="8"/>
+            <rect x="238" y="46" width="4" height="232" rx="2" fill="var(--series-2)"/>
+            <text class="viz-title" x="249" y="68">2. Рост × инфляция</text>
+            <text class="viz-axis"  x="249" y="84">рост ↔ · инфляция ↕ · овал</text>
+            <g>
+              <rect class="viz-box" x="300" y="101" width="92" height="54" rx="4"/>
+              <line class="viz-axisline" x1="346" y1="101" x2="346" y2="155"/>
+              <line class="viz-axisline" x1="300" y1="128" x2="392" y2="128"/>
+              <ellipse cx="346" cy="128" rx="42" ry="24" fill="none" stroke="var(--series-2)" stroke-width="1.5"/>
+            </g>
+            <text class="viz-q-sub" x="249" y="182">ЧТО ДОБАВИЛА</text>
+            <text class="viz-label" x="249" y="198">совмещение стилей с формами</text>
+            <text class="viz-label" x="249" y="214">кривой доходности</text>
+            <text class="viz-q-sub" x="249" y="236">ЧТО НЕ УСТРОИЛО</text>
+            <text class="viz-annot" x="249" y="252">стили не привязаны к политике</text>
+            <text class="viz-annot" x="249" y="267">центрального банка</text>
+          </g>
+
+          <!-- ===== 3. StockCharts ===== -->
+          <g tabindex="0" data-tip="<b>3. StockCharts — 6 стадий бизнес-цикла</b><br>Синусоида Expansion/Contraction, Stage 1…6.<br>Порядок ротации: облигации разворачиваются первыми, акции вторыми, сырьё третьими — и на дне, и на вершине.">
+            <rect class="viz-box" x="466" y="46" width="216" height="232" rx="8"/>
+            <rect x="466" y="46" width="4" height="232" rx="2" fill="var(--axis)"/>
+            <text class="viz-title" x="477" y="68">3. StockCharts · 6 стадий</text>
+            <text class="viz-axis"  x="477" y="84">синусоида цикла, 6 стадий</text>
+            <g>
+              <line class="viz-axisline" x1="494" y1="128" x2="654" y2="128"/>
+              <path class="viz-line" stroke="var(--seq-400)" d="M494,144 C516,144 520,108 546,108 C572,108 578,148 602,148 C624,148 632,112 654,110"/>
+              <line class="viz-grid" x1="520" y1="100" x2="520" y2="156"/>
+              <line class="viz-grid" x1="546" y1="100" x2="546" y2="156"/>
+              <line class="viz-grid" x1="574" y1="100" x2="574" y2="156"/>
+              <line class="viz-grid" x1="602" y1="100" x2="602" y2="156"/>
+              <line class="viz-grid" x1="628" y1="100" x2="628" y2="156"/>
+            </g>
+            <text class="viz-q-sub" x="477" y="182">ЧТО ДОБАВИЛА</text>
+            <text class="viz-label" x="477" y="198">порядок ротации: облигации →</text>
+            <text class="viz-label" x="477" y="214">акции → сырьё, шесть стадий</text>
+            <text class="viz-q-sub" x="477" y="236">ЧТО НЕ УСТРОИЛО</text>
+            <text class="viz-annot" x="477" y="252">нет измеримых входов и нет</text>
+            <text class="viz-annot" x="477" y="267">уровня риска</text>
+          </g>
+
+          <!-- ===== 4. Рынок vs экономика ===== -->
+          <g tabindex="0" data-tip="<b>4. Рынок vs экономика + Sector Rotation</b><br>Две кривые: цикл экономики и цикл фондового рынка. Вершина рынка наступает раньше пика экономики, дно — раньше впадины.<br>Лидирующие сектора привязаны к точкам цикла.">
+            <rect class="viz-box" x="694" y="46" width="216" height="232" rx="8"/>
+            <rect x="694" y="46" width="4" height="232" rx="2" fill="var(--axis)"/>
+            <text class="viz-title" x="705" y="68">4. Рынок vs экономика</text>
+            <text class="viz-axis"  x="705" y="84">две кривые + сектора</text>
+            <g>
+              <line class="viz-axisline" x1="722" y1="152" x2="882" y2="152"/>
+              <path class="viz-line" stroke="var(--series-1)" d="M722,146 C742,146 750,102 776,102 C802,102 810,146 830,148"/>
+              <path class="viz-line" stroke="var(--series-2)" d="M756,146 C776,146 784,102 810,102 C836,102 844,146 864,148"/>
+              <circle class="viz-mark" cx="776" cy="102" r="3.5" fill="var(--series-1)"/>
+              <circle class="viz-mark" cx="810" cy="102" r="3.5" fill="var(--series-2)"/>
+            </g>
+            <text class="viz-q-sub" x="705" y="182">ЧТО ДОБАВИЛА</text>
+            <text class="viz-label" x="705" y="198">рынок опережает экономику;</text>
+            <text class="viz-label" x="705" y="214">сектора-лидеры по точкам</text>
+            <text class="viz-q-sub" x="705" y="236">ЧТО НЕ УСТРОИЛО</text>
+            <text class="viz-annot" x="705" y="252">качественно: нет правила, как</text>
+            <text class="viz-annot" x="705" y="267">определить текущую точку</text>
+          </g>
+
+          <!-- ===== 5. Merrill Lynch ===== -->
+          <g tabindex="0" data-tip="<b>5. Merrill Lynch Investment Clock</b><br>Оси: рост × инфляция, обход по часовой стрелке. Четыре фазы: Reflationary, Inflationary, Stagflationary, Deflationary — со списками активов, секторов и регионов.<br>Первые две измеримые оси-драйвера.">
+            <rect class="viz-box" x="10" y="296" width="216" height="232" rx="8"/>
+            <rect x="10" y="296" width="4" height="232" rx="2" fill="var(--series-2)"/>
+            <text class="viz-title" x="21" y="318">5. Merrill Lynch Clock</text>
+            <text class="viz-axis"  x="21" y="334">рост ↔ × инфляция ↕</text>
+            <g>
+              <rect class="viz-box" x="72" y="351" width="92" height="54" rx="4"/>
+              <line class="viz-axisline" x1="118" y1="351" x2="118" y2="405"/>
+              <line class="viz-axisline" x1="72"  y1="378" x2="164" y2="378"/>
+              <path d="M104,364 A16,16 0 1 1 100,388" fill="none" stroke="var(--series-2)" stroke-width="1.5"/>
+              <path d="M96,384 L100,390 L106,387 z" fill="var(--series-2)"/>
+            </g>
+            <text class="viz-q-sub" x="21" y="432">ЧТО ДОБАВИЛА</text>
+            <text class="viz-label" x="21" y="448">две измеримые оси-драйвера;</text>
+            <text class="viz-label" x="21" y="464">4 фазы со списками активов</text>
+            <text class="viz-q-sub" x="21" y="486">ЧТО НЕ УСТРОИЛО</text>
+            <text class="viz-annot" x="21" y="502">инфляция запаздывает — ось</text>
+            <text class="viz-annot" x="21" y="517">слепа на разворотах</text>
+          </g>
+
+          <!-- ===== 6. Gavekal ===== -->
+          <g tabindex="0" data-tip="<b>6. Gavekal — The Four Quadrants</b><br>Оси: цены × экономическая активность. Явные правила Buy/Sell внутри каждого квадранта.<br>Та же беда: цены — запаздывающая величина.">
+            <rect class="viz-box" x="238" y="296" width="216" height="232" rx="8"/>
+            <rect x="238" y="296" width="4" height="232" rx="2" fill="var(--series-2)"/>
+            <text class="viz-title" x="249" y="318">6. Gavekal · 4 квадранта</text>
+            <text class="viz-axis"  x="249" y="334">цены ↕ × активность ↔</text>
+            <g>
+              <rect class="viz-box" x="300" y="351" width="92" height="54" rx="4"/>
+              <line class="viz-axisline" x1="346" y1="351" x2="346" y2="405"/>
+              <line class="viz-axisline" x1="300" y1="378" x2="392" y2="378"/>
+              <circle cx="323" cy="365" r="4" fill="var(--series-2)"/>
+              <circle cx="369" cy="365" r="4" fill="var(--series-2)"/>
+              <circle cx="323" cy="392" r="4" fill="var(--series-2)"/>
+              <circle cx="369" cy="392" r="4" fill="var(--series-2)"/>
+            </g>
+            <text class="viz-q-sub" x="249" y="432">ЧТО ДОБАВИЛА</text>
+            <text class="viz-label" x="249" y="448">явные правила Buy / Sell</text>
+            <text class="viz-label" x="249" y="464">внутри каждого квадранта</text>
+            <text class="viz-q-sub" x="249" y="486">ЧТО НЕ УСТРОИЛО</text>
+            <text class="viz-annot" x="249" y="502">цены — тот же запаздывающий</text>
+            <text class="viz-annot" x="249" y="517">показатель, что и инфляция</text>
+          </g>
+
+          <!-- ===== 7. BofA ML ===== -->
+          <g tabindex="0" data-tip="<b>7. BofA ML — «Consensus not positioned for risk of a hawkish Fed / stronger macro combo»</b><br>Оси: Dovish/Hawkish Fed × Weaker/Stronger macro. Имя квадранта = форма кривой: Bull/Bear × steepening/flattening.<br>Именно здесь ось инфляции заменена на политику ФРС.">
+            <rect class="viz-box" x="466" y="296" width="216" height="232" rx="8"/>
+            <rect x="466" y="296" width="4" height="232" rx="2" fill="var(--series-1)"/>
+            <text class="viz-title" x="477" y="318">7. BofA ML · ФРС × макро</text>
+            <text class="viz-axis"  x="477" y="334">ФРС ↕ × макро ↔</text>
+            <g>
+              <rect class="viz-box" x="528" y="351" width="92" height="54" rx="4"/>
+              <line class="viz-axisline" x1="574" y1="351" x2="574" y2="405"/>
+              <line class="viz-axisline" x1="528" y1="378" x2="620" y2="378"/>
+              <path d="M538,368 Q548,360 566,359" fill="none" stroke="var(--series-1)" stroke-width="1.2"/>
+              <path d="M584,368 Q594,358 612,362" fill="none" stroke="var(--series-1)" stroke-width="1.2"/>
+              <path d="M538,396 Q548,386 566,389" fill="none" stroke="var(--series-8)" stroke-width="1.2"/>
+              <path d="M584,396 Q594,384 612,382" fill="none" stroke="var(--series-8)" stroke-width="1.2"/>
+            </g>
+            <text class="viz-q-sub" x="477" y="432">ЧТО ДОБАВИЛА</text>
+            <text class="viz-label" x="477" y="448">ось инфляции → политика ФРС;</text>
+            <text class="viz-label" x="477" y="464">форма кривой = имя квадранта</text>
+            <text class="viz-q-sub" x="477" y="486">ЧТО НЕ УСТРОИЛО</text>
+            <text class="viz-annot" x="477" y="502">нет направлений индикаторов</text>
+            <text class="viz-annot" x="477" y="517">и нет режима риска</text>
+          </g>
+
+          <!-- ===== 8. BofA 2.0 ===== -->
+          <g tabindex="0" data-tip="<b>8. BofA 2.0 — Investment Clock</b><br>Те же оси, но углы подписаны направлениями Rates ↑↓ и EPS ↑↓. Конкретные тикеры ETF и датировка COVID-цикла: Lockdown Q2'20 → Vaccine Q3–Q4'20 → Reopening Boom H1'21 → Inflation H2'21.<br>Заголовок сам по себе правило: «циклическая коррекция следует за bear flattening».">
+            <rect class="viz-box" x="694" y="296" width="216" height="232" rx="8"/>
+            <rect x="694" y="296" width="4" height="232" rx="2" fill="var(--series-1)"/>
+            <text class="viz-title" x="705" y="318">8. BofA 2.0 · Rates × EPS</text>
+            <text class="viz-axis"  x="705" y="334">углы: Rates ↕ · EPS ↕</text>
+            <g>
+              <rect class="viz-box" x="756" y="351" width="92" height="54" rx="4"/>
+              <line class="viz-axisline" x1="802" y1="351" x2="802" y2="405"/>
+              <line class="viz-axisline" x1="756" y1="378" x2="848" y2="378"/>
+              <path d="M770,370 L770,358" stroke="var(--series-1)" stroke-width="1.4"/>
+              <path d="M778,358 L778,370" stroke="var(--series-8)" stroke-width="1.4"/>
+              <path d="M816,370 L816,358" stroke="var(--series-1)" stroke-width="1.4"/>
+              <path d="M824,370 L824,358" stroke="var(--series-1)" stroke-width="1.4"/>
+              <path d="M770,398 L770,386" stroke="var(--series-8)" stroke-width="1.4"/>
+              <path d="M778,386 L778,398" stroke="var(--series-8)" stroke-width="1.4"/>
+              <path d="M816,386 L816,398" stroke="var(--series-8)" stroke-width="1.4"/>
+              <path d="M824,398 L824,386" stroke="var(--series-1)" stroke-width="1.4"/>
+            </g>
+            <text class="viz-q-sub" x="705" y="432">ЧТО ДОБАВИЛА</text>
+            <text class="viz-label" x="705" y="448">направления Rates и EPS в углах</text>
+            <text class="viz-label" x="705" y="464">тикеры ETF, датировка фаз</text>
+            <text class="viz-q-sub" x="705" y="486">ЧТО НЕ УСТРОИЛО</text>
+            <text class="viz-annot" x="705" y="502">мало индикаторов, нет стилевых</text>
+            <text class="viz-annot" x="705" y="517">ярлыков и центрального класса</text>
+          </g>
+        </svg>
+      </div>
+      <figcaption>
+        <span class="figure__num">Рис. 19.1.</span> <b>Родословная инструмента.</b>
+        Серым помечены описательные схемы, оранжевым — ветвь, где второй осью
+        была инфляция или цены, синим — ветвь, где второй осью стала политика
+        центрального банка. Именно синяя ветвь дошла до финала. Схемы внутри
+        плашек — условные пиктограммы, а не копии слайдов.
+        <br><br>
+        Нумерация 1–8 — в порядке нарастания полезности, а не хронологии.
+        Полный перечень с источниками — в таблице значений; там же девятая
+        схема с обзорного слайда, которая в основную линию не вошла.
+      </figcaption>
+      <div class="figure__table table-scroll" hidden>
+        <table class="data">
+          <caption class="viz-legend" style="text-align:left;padding:.5rem .75rem;color:var(--ink-muted)">Предшественники МЕГА-шпаргалки (L10 сл. 02–08; спецификация §3.1)</caption>
+          <thead>
+            <tr><th>#</th><th>Версия</th><th>Оси</th><th>Что добавила</th><th>Что не устроило автора</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="num">1</td>
+              <td>The Economic Clock<br><span class="term-en">сл. 03</span></td>
+              <td>осей нет; круг Boom → Slump → Recovery</td>
+              <td>≈45 словесных признаков по кругу; 4 маркера-триггера: Rising/Falling Share Prices, Share market Peak, Rising/Falling Commodity Prices</td>
+              <td>только описание фаз, нет торговых инструкций и нет измеримых входов</td>
+            </tr>
+            <tr>
+              <td class="num">2</td>
+              <td>Квадрант Growth × Inflation + овал форм кривой<br><span class="term-en">сл. 02</span></td>
+              <td>Growth (rising/falling) × Inflation (rising/falling)</td>
+              <td>первое совмещение квадранта стилей (Cyclical/Defensive × Growth/Value) с формами кривой Bull/Bear × Steepening/Flattening</td>
+              <td>стили не привязаны к политике центрального банка</td>
+            </tr>
+            <tr>
+              <td class="num">3</td>
+              <td>StockCharts — 6 стадий бизнес-цикла<br><span class="term-en">сл. 04</span></td>
+              <td>синусоида Expansion / Contraction, Stage 1…6</td>
+              <td>порядок ротации активов: облигации → акции → сырьё, и на дне, и на вершине</td>
+              <td>нет входов-измерителей, нет уровня риска</td>
+            </tr>
+            <tr>
+              <td class="num">4</td>
+              <td>Классика: рынок vs экономика + Sector Rotation<br><span class="term-en">сл. 05</span></td>
+              <td>Economic Cycle vs Stock Market Cycle</td>
+              <td>рынок опережает экономику; привязка лидирующих секторов к точкам цикла</td>
+              <td>качественно, без правил определения текущей точки</td>
+            </tr>
+            <tr>
+              <td class="num">5</td>
+              <td>Merrill Lynch Investment Clock<br><span class="term-en">сл. 06</span></td>
+              <td>Growth (↔) × Inflation (↕)</td>
+              <td>две измеримые оси-драйвера; 4 названные фазы (Reflationary / Inflationary / Stagflationary / Deflationary) со списками активов, секторов и регионов</td>
+              <td>инфляция — запаздывающий показатель (H-O-P-E) → ось слепа на разворотах</td>
+            </tr>
+            <tr>
+              <td class="num">6</td>
+              <td>Gavekal — The Four Quadrants<br><span class="term-en">сл. 02</span></td>
+              <td>Prices (↕) × Economic activity (↔)</td>
+              <td>явные правила Buy / Sell внутри квадрантов</td>
+              <td>та же проблема: цены запаздывают</td>
+            </tr>
+            <tr>
+              <td class="num">7</td>
+              <td>BofA ML — «Consensus not positioned…»<br><span class="term-en">сл. 07</span></td>
+              <td>Dovish/Hawkish Fed × Stronger/Weaker macro</td>
+              <td>замена оси «инфляция» на политику ФРС; форма кривой становится именем квадранта; списки активов по квадрантам</td>
+              <td>нет направлений индикаторов, нет режима риска</td>
+            </tr>
+            <tr>
+              <td class="num">8</td>
+              <td>BofA 2.0 — Investment Clock<br><span class="term-en">сл. 08</span></td>
+              <td>те же оси; углы подписаны Rates ↑↓ × EPS ↑↓</td>
+              <td>направления двух драйверов в углах; тикеры ETF (TLT/LQD/QQQ · HYG/SOX/EEM/IWM · XPH/DVY/XLP · Oil/BKX/EFA); датировка COVID-цикла; правило «Cyclical correction follows yield curve bear flattening»</td>
+              <td>мало индикаторов, нет стилевых ярлыков, нет центра</td>
+            </tr>
+            <tr>
+              <td class="num">—</td>
+              <td>The Yield Curve Cycle (вне основной линии)<br><span class="term-en">сл. 02, п. 7</span></td>
+              <td>круг из 4 цветных секторов</td>
+              <td>стрелки Short Rate / Long Rate / Inflation / Earnings / Yield Curve в каждом секторе; датировки «March–April 2020», «September 2021»; плашки-рекомендации Buy Growth/Quality, Buy Value/Cyclicals и др.</td>
+              <td>круг не даёт двух независимых измеримых входов</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </figure>
+
+    <h3>Первая ступень: описание вместо инструкции</h3>
+    <p>
+      «Экономические часы» — самая архаичная из схем: овальный циферблат,
+      по которому по часовой стрелке идут фазы Boom → Slump → Recovery, и около
+      сорока пяти словесных признаков вроде «растёт занятость», «дорожает аренда»,
+      «падают заказы». <b>[КАНОН]</b> Розовым выделены четыре маркера-триггера —
+      прото-правила: рост цен акций, рост цен сырья, пик фондового рынка, падение
+      цен акций.
+    </p>
+    <p>
+      Проблема этой схемы не в том, что она неверна, — большинство её признаков
+      описывают цикл честно. Проблема в том, что она <em>ничего не требует
+      измерить</em>. «Растёт деловая уверенность» — это не вход: нет ряда, нет
+      порога, нет момента, когда утверждение становится истинным или ложным.
+      Из такой схемы нельзя получить сигнал; из неё можно только получить
+      ощущение понимания.
+    </p>
+
+    <h3>Вторая ступень: порядок</h3>
+    <p>
+      Классическая школа добавила то, чего у часов не было, — <b>порядок</b>.
+      Схема StockCharts делит синусоиду цикла на шесть стадий и утверждает жёсткую
+      последовательность разворотов: <b>облигации разворачиваются первыми, акции
+      вторыми, сырьё третьими</b> — и на дне, и на вершине. <b>[КАНОН]</b>
+      Это уже проверяемое утверждение: последовательность либо соблюдается,
+      либо нет.
+    </p>
+    <p>
+      Вторая схема того же ряда — две наложенные кривые «экономика» и «фондовый
+      рынок» с привязкой лидирующих секторов к точкам цикла. Её вклад — тезис,
+      к которому книга возвращалась в главе 1: рынок разворачивается раньше
+      экономики, поэтому дожидаться подтверждения данными значит опаздывать
+      системно.
+    </p>
+    <p>
+      Чего не хватает обеим: они говорят, <em>что</em> будет после <em>чего</em>,
+      но не говорят, <em>где мы сейчас</em>. Порядок без точки отсчёта не
+      операционален. Именно эту дыру закрывает следующая ступень.
+    </p>
+
+    <div class="callout callout--beyond">
+      <div class="callout__label" data-icon="✚">Откуда эти две картинки на самом деле</div>
+      <p>
+        Курс подписывает их источником-сайтом, и читатель остаётся с
+        впечатлением, что это анонимный «фольклор технического анализа».
+        У обеих схем есть авторы, и знать их полезно, потому что у авторов
+        оговорены условия применимости, которых на слайде нет.
+      </p>
+      <p>
+        Порядок «облигации → акции → сырьё» и вся конструкция четырёх
+        взаимодействующих рынков — это <b>Джон Мёрфи</b> (<i>John J. Murphy,
+        «Intermarket Analysis: Profiting from Global Market Relationships»</i>);
+        сам конспект лекции упоминает его фамилию под нижней схемой слайда.
+        Кривая ротации секторов по фазам цикла восходит к работам
+        <b>Сэма Стоволла</b> для Standard &amp; Poor's (<i>«Standard &amp; Poor's
+        Guide to Sector Investing», 1996</i>). <b>[ДОПОЛНЕНО]</b>
+      </p>
+      <p style="margin-bottom:0">
+        Практическая разница вот в чём: у Мёрфи порядок ротации выводится из
+        связей между рынками — инфляционных ожиданий, доллара, стоимости
+        заимствования — и потому у него оговорено, что связи <em>меняют знак</em>
+        при смене инфляционного режима. На слайде курса порядок подан как
+        безусловный закон. Это важное сужение, которое нам придётся держать
+        в голове при кодировании межрыночных правил
+        (<span class="rule-id">R69</span>–<span class="rule-id">R80</span>).
+      </p>
+    </div>
+
+    <h3>Третья ступень: две оси</h3>
+    <p>
+      Инвестиционные часы Merrill Lynch — первая схема, где состояние задаётся
+      <b>парой измеримых величин</b>: направление роста и направление инфляции.
+      Четыре комбинации — четыре названные фазы, у каждой готовый список активов,
+      секторов и регионов. <b>[КАНОН]</b> Обход — по часовой стрелке: рост
+      ускоряется → инфляция ускоряется → рост замедляется → инфляция замедляется.
+    </p>
+
+    <div class="callout callout--beyond">
+      <div class="callout__label" data-icon="✚">Оригинал часов и что в курсе переименовано</div>
+      <p>
+        Схема опубликована командой глобальной аллокации Merrill Lynch
+        (<i>Trevor Greetham и соавторы, «The Investment Clock: Making Money from
+        Macro», ноябрь 2004</i>). В оригинале четыре фазы называются
+        <b>Reflation → Recovery → Overheat → Stagflation</b>, и у каждой свой
+        лидирующий класс активов: <b>облигации → акции → сырьё → кэш</b>.
+        <b>[ДОПОЛНЕНО]</b>
+      </p>
+      <p>
+        Отсюда неожиданное: <b>часы Merrill Lynch и шесть стадий StockCharts
+        говорят одно и то же</b>. «Облигации разворачиваются первыми, акции
+        вторыми, сырьё третьими» — это обход часов по кругу, записанный
+        в другой системе координат. Предки № 3 и № 5 в родословной — не два
+        независимых источника, а одно утверждение в двух записях, и второй
+        добавляет к первому только измеримые оси. <b>[ВЫВЕДЕНО]</b>
+      </p>
+      <p style="margin-bottom:0">
+        На слайде курса фазы подписаны иначе:
+        <i>Reflationary / Inflationary / Stagflationary / Deflationary</i>. Это
+        не опечатка конспекта, а другая — производная — редакция схемы; наборы
+        активов по квадрантам при этом сходятся с оригиналом, а имена разъехались.
+        Мы показываем обе версии рядом и <b>не подменяем</b> авторскую: для чтения
+        курса нужны его имена, для чтения первоисточника — оригинальные.
+      </p>
+    </div>
+
+    <div class="table-scroll">
+      <table class="data">
+        <thead>
+          <tr><th>Рост</th><th>Инфляция</th><th>Имя у Merrill Lynch</th><th>Имя на слайде курса</th><th>Лидирующий класс</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="dir dir--down">падает</span></td><td><span class="dir dir--down">падает</span></td><td>Reflation</td><td>Deflationary</td><td>облигации</td></tr>
+          <tr><td><span class="dir dir--up">растёт</span></td><td><span class="dir dir--down">падает</span></td><td>Recovery</td><td>Reflationary</td><td>акции</td></tr>
+          <tr><td><span class="dir dir--up">растёт</span></td><td><span class="dir dir--up">растёт</span></td><td>Overheat</td><td>Inflationary</td><td>сырьё</td></tr>
+          <tr><td><span class="dir dir--down">падает</span></td><td><span class="dir dir--up">растёт</span></td><td>Stagflation</td><td>Stagflationary</td><td>кэш</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      Совпадает только нижняя строка. В остальных именах курс и первоисточник
+      расходятся — причём слово «рефляция» у них означает <em>противоположные</em>
+      квадранты. Для нашей работы это ещё одно напоминание: имя фазы —
+      ненадёжный ключ, надёжны только знаки на осях.
+    </p>
+
+    <p>
+      Gavekal — та же конструкция с переименованными осями: цены × экономическая
+      активность, плюс явные правила Buy/Sell внутри квадрантов. Восьмая схема
+      в галерее — квадрант «рост × инфляция», на который поверх наложен овал
+      с четырьмя формами кривой доходности; это первое место, где формы кривой
+      и стили оказались на одной картинке, хотя ещё и без связи с ЦБ.
+    </p>
+    <p>
+      С этого момента конструкция инструмента уже узнаваема: две оси, четыре
+      квадранта, готовая аллокация в каждом. Осталось единственное — и решающее —
+      исправление.
+    </p>
+
+    <h3>Четвёртая ступень: замена второй оси</h3>
+    <p>
+      BofA берёт ту же рамку и меняет вертикальную ось: вместо инфляции —
+      <b>политика ФРС</b> (Dovish ↔ Hawkish). <b>[КАНОН]</b> Одновременно
+      происходит второе, менее заметное, но не менее важное изменение:
+      <b>именем квадранта становится форма кривой доходности</b> — bull/bear ×
+      steepening/flattening. Квадрант перестаёт называться по своему содержанию
+      («стагфляция») и начинает называться по наблюдаемому рыночному факту.
+    </p>
+    <p>
+      Вторая версия BofA подписывает углы направлениями двух драйверов —
+      <span class="ticker">Rates ↑↓</span> и <span class="ticker">EPS ↑↓</span> —
+      и раскладывает по квадрантам конкретные тикеры ETF вместе с датировкой
+      COVID-цикла: Lockdown Q2'20 → Vaccine Q3–Q4'20 → Reopening Boom H1'21 →
+      Inflation H2'21. Её заголовок сам по себе — торговое правило.
+    </p>
+    <p>
+      Обе матрицы — не отдельные публикации, а иллюстрации из регулярных
+      стратегических записок <b>BofA Global Investment Strategy</b>: такие
+      «часы» появляются у них в еженедельных обзорах не по одному разу, с
+      обновлённой датировкой фаз. <b>[ДОПОЛНЕНО]</b> Номера конкретных выпусков
+      конспект не сохраняет, и мы их не восстанавливали; но по подписям
+      квадрантов видно, что версия 2.0 нарисована уже поверх пройденного
+      COVID-цикла, то есть не раньше конца 2021 года. <b>[ВЫВЕДЕНО]</b>
+    </p>
+
+    <div class="callout callout--rule">
+      <div class="callout__label" data-icon="⌘">Правило, унаследованное целиком</div>
+      <p style="margin-bottom:0">
+        <span class="rule-id">R53</span> Заголовок графика BofA 2.0 — «<i>Cyclical
+        correction follows yield curve bear flattening</i>»: если началось
+        уплощение кривой на растущих доходностях (вход в Q-III), ожидать
+        циклическую коррекцию акций. Это единственное правило в шпаргалке,
+        пришедшее из чужой схемы вместе с формулировкой. <b>[КАНОН]</b>
+      </p>
+    </div>
+
+    <div class="callout callout--source">
+      <div class="callout__label" data-icon="❞">Вся эволюция одной строкой</div>
+      <p style="margin-bottom:0">
+        Описание фаз → порядок ротации активов → две оси (рост × инфляция) →
+        замена инфляции на ФРС → форма кривой как имя квадранта → направления
+        индикаторов и тикеры → <em>(автор)</em> режим риска, стили и центр Quality.
+      </p>
+    </div>
+
+    <!-- ================================================================= -->
+    <h2 id="s3">Почему ось «инфляция» пришлось убрать</h2>
+
+    <p>
+      Это главный поворот всей главы, и он стоит того, чтобы разобрать его
+      медленно. Инфляционная ось выглядит естественно: рост и инфляция —
+      две канонические макро-переменные, их произведение даёт четыре
+      экономически осмысленных режима, и у каждого есть имя, знакомое любому
+      экономисту. Схема красива. И именно поэтому она держалась
+      десятилетиями.
+    </p>
+    <p>
+      Дефект у неё ровно один, зато фатальный: <b>инфляция — запаздывающий
+      показатель</b>. В цепочке H-O-P-E из главы 5 она стоит последней, за
+      занятостью, с лагом до двадцати четырёх месяцев относительно первого
+      звена. Ось, построенная на последнем звене цепочки, меняет знак
+      <em>после</em> того, как разворот уже произошёл и уже отторгован.
+    </p>
+
+    <figure class="figure" id="fig-19-2">
+      <div class="figure__frame">
+        <svg viewBox="0 0 900 512" role="img" aria-labelledby="fig192-title fig192-desc">
+          <title id="fig192-title">Замена оси инфляции на политику ФРС</title>
+          <desc id="fig192-desc">Слева матрица «рост × инфляция» Merrill Lynch с фазами Stagflationary, Inflationary, Deflationary, Reflationary. Справа матрица «политика ФРС × макро-настроение» с квадрантами Growth, Risk ON, Risk OFF, Value; инфляционные ожидания в ней остались, но как индикатор внутри квадранта. Внизу цепочка H-O-P-E показывает, что жильё, заказы и прибыль стоят в начале цепочки с лидом до двадцати четырёх месяцев, а инфляция — в конце с лагом до двадцати четырёх месяцев.</desc>
+
+          <defs>
+            <marker id="ah-f192" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--axis)"/>
+            </marker>
+            <marker id="ar-f192" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--series-1)"/>
+            </marker>
+          </defs>
+
+          <text class="viz-q-sub" x="30"  y="24">БЫЛО: MERRILL LYNCH / GAVEKAL</text>
+          <text class="viz-q-sub" x="520" y="24">СТАЛО: BOFA → АВТОР</text>
+
+          <!-- ===== левая матрица ===== -->
+          <rect class="viz-box" x="30" y="44" width="300" height="248" rx="8"/>
+          <line class="viz-axisline" x1="180" y1="50" x2="180" y2="286" marker-start="url(#ah-f192)" marker-end="url(#ah-f192)"/>
+          <line class="viz-axisline" x1="36" y1="168" x2="324" y2="168" marker-start="url(#ah-f192)" marker-end="url(#ah-f192)"/>
+          <text class="viz-q-sub" x="186" y="62">ИНФЛЯЦИЯ +</text>
+          <text class="viz-q-sub" x="186" y="280">ИНФЛЯЦИЯ −</text>
+          <text class="viz-q-sub" x="38"  y="160">РОСТ −</text>
+          <text class="viz-q-sub" x="322" y="160" text-anchor="end">РОСТ +</text>
+
+          <text class="viz-title" x="40" y="86">Stagflationary</text>
+          <text class="viz-label" x="40" y="104">Commodities, Bonds,</text>
+          <text class="viz-label" x="40" y="120">Healthcare, Utilities</text>
+
+          <text class="viz-title" x="192" y="86">Inflationary</text>
+          <text class="viz-label" x="192" y="104">Commodities, Energy,</text>
+          <text class="viz-label" x="192" y="120">Industrials</text>
+
+          <text class="viz-title" x="40" y="196">Deflationary</text>
+          <text class="viz-label" x="40" y="214">Bonds, Healthcare,</text>
+          <text class="viz-label" x="40" y="230">Utilities, US, UK</text>
+
+          <text class="viz-title" x="192" y="196">Reflationary</text>
+          <text class="viz-label" x="192" y="214">Equities, Tech,</text>
+          <text class="viz-label" x="192" y="230">Industrials, BRIC</text>
+
+          <!-- ===== стрелка замены ===== -->
+          <text class="viz-q-sub" x="424" y="150" text-anchor="middle">ЗАМЕНА ОСИ</text>
+          <line x1="350" y1="168" x2="498" y2="168" stroke="var(--series-1)" stroke-width="2" marker-end="url(#ar-f192)"/>
+          <text class="viz-label" x="424" y="194" text-anchor="middle">инфляция → ФРС</text>
+
+          <!-- ===== правая матрица ===== -->
+          <rect class="viz-box" x="520" y="44" width="300" height="248" rx="8"/>
+          <line class="viz-axisline" x1="670" y1="50" x2="670" y2="286" marker-start="url(#ah-f192)" marker-end="url(#ah-f192)"/>
+          <line class="viz-axisline" x1="526" y1="168" x2="814" y2="168" marker-start="url(#ah-f192)" marker-end="url(#ah-f192)"/>
+          <text class="viz-q-sub" x="676" y="62">FED POLICY +</text>
+          <text class="viz-q-sub" x="676" y="280">FED POLICY −</text>
+          <text class="viz-q-sub" x="528" y="160">MACRO −</text>
+          <text class="viz-q-sub" x="812" y="160" text-anchor="end">MACRO +</text>
+
+          <text class="viz-title" x="530" y="86" fill="var(--q-growth)">Growth ▲</text>
+          <text class="viz-q-sub" x="530" y="102">BULL FLATTENER</text>
+          <text class="viz-label" x="530" y="122">Inf. exp. <tspan class="viz-flat">►</tspan></text>
+
+          <text class="viz-title" x="682" y="86" fill="var(--q-riskon)">Risk ON</text>
+          <text class="viz-q-sub" x="682" y="102">BULL STEEPENER</text>
+          <text class="viz-label" x="682" y="122">Inf. exp. <tspan class="viz-up">▲</tspan></text>
+
+          <text class="viz-title" x="530" y="196" fill="var(--q-riskoff)">Risk OFF</text>
+          <text class="viz-q-sub" x="530" y="212">BEAR FLATTENER</text>
+          <text class="viz-label" x="530" y="232">Inf. exp. <tspan class="viz-down">▼</tspan></text>
+
+          <text class="viz-title" x="682" y="196" fill="var(--q-value)">Value ▲</text>
+          <text class="viz-q-sub" x="682" y="212">BEAR STEEPENER</text>
+          <text class="viz-label" x="682" y="232">Inf. exp. <tspan class="viz-up">▲</tspan></text>
+
+          <!-- ===== цепочка ===== -->
+          <line class="viz-grid" x1="30" y1="316" x2="870" y2="316"/>
+          <text class="viz-q-sub" x="30" y="344">ПОЧЕМУ ЗАПАЗДЫВАЮЩАЯ ОСЬ СЛЕПА НА РАЗВОРОТЕ</text>
+
+          <text class="viz-label" x="285" y="364" text-anchor="middle">чем меряется ось MACRO</text>
+          <text class="viz-label" x="795" y="364" text-anchor="middle">ось Merrill Lynch — здесь</text>
+          <path d="M40,378 L40,370 L530,370 L530,378" fill="none" stroke="var(--axis)" stroke-width="1"/>
+          <path d="M795,370 L795,380" stroke="var(--series-2)" stroke-width="1.5"/>
+
+          <rect class="viz-box" x="40"  y="382" width="150" height="40" rx="6"/>
+          <rect class="viz-box" x="210" y="382" width="150" height="40" rx="6"/>
+          <rect class="viz-box" x="380" y="382" width="150" height="40" rx="6"/>
+          <rect class="viz-box" x="550" y="382" width="150" height="40" rx="6"/>
+          <rect class="viz-box" x="720" y="382" width="150" height="40" rx="6" stroke="var(--series-2)" stroke-width="1.5"/>
+
+          <line x1="192" y1="402" x2="206" y2="402" stroke="var(--axis)" stroke-width="1" marker-end="url(#ah-f192)"/>
+          <line x1="362" y1="402" x2="376" y2="402" stroke="var(--axis)" stroke-width="1" marker-end="url(#ah-f192)"/>
+          <line x1="532" y1="402" x2="546" y2="402" stroke="var(--axis)" stroke-width="1" marker-end="url(#ah-f192)"/>
+          <line x1="702" y1="402" x2="716" y2="402" stroke="var(--axis)" stroke-width="1" marker-end="url(#ah-f192)"/>
+
+          <text class="viz-label" x="115" y="406" text-anchor="middle">H · Жильё</text>
+          <text class="viz-label" x="285" y="406" text-anchor="middle">O · Заказы</text>
+          <text class="viz-label" x="455" y="406" text-anchor="middle">P · Прибыль</text>
+          <text class="viz-label" x="625" y="406" text-anchor="middle">E · Занятость</text>
+          <text class="viz-label" x="795" y="406" text-anchor="middle">Инфляция</text>
+
+          <text class="viz-annot" x="115" y="442" text-anchor="middle">лид до −24 мес.</text>
+          <text class="viz-annot" x="795" y="442" text-anchor="middle">лаг до +24 мес.</text>
+
+          <text class="viz-annot" x="40" y="472">Ось на последнем звене цепочки меняет знак после того, как разворот уже отторгован.</text>
+          <text class="viz-annot" x="40" y="490">Ожидания по ставке, наоборот, — самое переднее наблюдаемое звено: они торгуются до факта.</text>
+        </svg>
+      </div>
+      <figcaption>
+        <span class="figure__num">Рис. 19.2.</span> <b>Одна замена, ради которой
+        существует вся линия.</b> Слева — рамка «рост × инфляция»; справа — та же
+        рамка после замены вертикальной оси. Инфляция из системы не исчезла: она
+        осталась в каждом квадранте как индикатор
+        <span class="ticker">Inf. exp.</span> со своим направлением.
+        <br><br>
+        Ориентация левой матрицы приведена к привычной (рост увеличивается
+        вправо) — на оригинальном слайде ось роста направлена влево, и это одна
+        из причин, по которым схему тяжело читать. <b>[НАШЕ РЕШЕНИЕ]</b>
+        Значения лидов и лагов — в таблице.
+      </figcaption>
+      <div class="figure__table table-scroll" hidden>
+        <table class="data">
+          <caption class="viz-legend" style="text-align:left;padding:.5rem .75rem;color:var(--ink-muted)">Класс показателя, положенного в основу оси</caption>
+          <thead>
+            <tr><th>Ось</th><th>Чем измеряется</th><th>Класс</th><th class="num">Сдвиг</th><th>Статус</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Инфляция (Merrill Lynch, Gavekal)</td>
+              <td>CPI, PCE, цены</td>
+              <td>запаздывающий</td>
+              <td class="num">до +24 мес.</td>
+              <td>отвергнута</td>
+            </tr>
+            <tr>
+              <td>Политика ФРС (BofA, автор)</td>
+              <td>implied terminal FFR, <span class="ticker">US02Y</span>, дельта dot plot, реальные ставки, <span class="ticker">DXY</span></td>
+              <td>опережающий</td>
+              <td class="num">отыгрывается по первому упоминанию</td>
+              <td>вертикальная ось</td>
+            </tr>
+            <tr>
+              <td>MACRO sentiment (автор)</td>
+              <td>NAHB, Permits, ISM New Orders, LEI, fwd EPS, Claims</td>
+              <td>опережающий</td>
+              <td class="num">до −24 мес.</td>
+              <td>горизонтальная ось</td>
+            </tr>
+            <tr>
+              <td colspan="5" style="color:var(--ink-muted)">Опорные лиды из курса: NAHB → безработица <b>10 мес.</b>; NAHB YoY → US10Y YoY <b>18 мес.</b>; Philly Fed future new orders → fwd EPS <b>5 мес.</b>; Core CPI — последнее звено, лаг до <b>+24 мес.</b></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </figure>
+
+    <p>
+      Разберём отказ по механизму, а не по формулировке. Возьмём вершину цикла.
+      Спрос уже сжимается, новые заказы падают, прибыли пересматривают вниз —
+      но цены ещё растут, потому что издержки в них доезжают с задержкой.
+      Инфляционная ось в этот момент показывает «вверх», а рост показывает
+      «вниз»: получается <b>Stagflationary</b>, где предписаны сырьё и защитные
+      сектора. И это буквально худший из возможных советов, потому что впереди
+      уже разворот ФРС, за которым исторически идёт другой набор.
+    </p>
+    <p>
+      На дне зеркально: цены ещё падают по инерции, рост уже нащупал дно,
+      квадрант выдаёт <b>Reflationary</b> — и он, наоборот, оказывается прав,
+      но с опозданием, потому что признать «рост развернулся» инфляционная ось
+      может только после того, как это увидят все.
+    </p>
+    <p>
+      Ось на запаздывающем показателе не бесполезна — она честно описывает
+      <em>только что закончившийся</em> режим. Она бесполезна ровно в тот момент,
+      когда от инструмента есть польза: на смене режима.
+    </p>
+
+    <div class="callout callout--beyond">
+      <div class="callout__label" data-icon="✚">«Инфляция запаздывает» — это не мнение автора, а официальная классификация</div>
+      <p>
+        Деление показателей на опережающие, совпадающие и запаздывающие ввели
+        Бёрнс и Митчелл в исследовании NBER (<i>Burns, Mitchell, «Measuring
+        Business Cycles», 1946</i>), а сегодня оно поддерживается как публикуемая
+        методика: The Conference Board считает три композитных индекса для США —
+        Leading, Coincident и Lagging.
+      </p>
+      <p>
+        Достаточно посмотреть на их состав. В <b>опережающий</b> индекс входят
+        разрешения на строительство, новые заказы (в том числе компонента New
+        Orders обзора ISM), первичные заявки на пособие, средняя рабочая неделя
+        в обработке, цены акций и спред между десятилетней доходностью и ставкой
+        ФРС. В <b>запаздывающий</b> — средняя продолжительность безработицы,
+        отношение запасов к продажам, удельные издержки на труд и
+        <b>потребительские цены на услуги</b>. <b>[ДОПОЛНЕНО]</b>
+      </p>
+      <p style="margin-bottom:0">
+        То есть входы горизонтальной оси шпаргалки — это почти дословно состав
+        опережающего индекса, а показатель, который Merrill Lynch поставил
+        второй осью, институционально числится в запаздывающих. Автор курса
+        пришёл к тому же выводу практическим путём и через цепочку H-O-P-E;
+        общепринятая классификация говорит то же самое и с той же расстановкой.
+        Совпадение двух независимых аргументов — лучшее, что можно получить
+        в макро.
+      </p>
+    </div>
+
+    <div class="callout callout--trap">
+      <div class="callout__label" data-icon="⚠">Не возвращайте инфляцию в оси</div>
+      <p>
+        Соблазн возникает дважды: при чтении главы 10 («вот же прекрасные ряды —
+        CPI, PCE, PPI, все с историей») и при написании кода в главе 24 («три оси
+        дадут более тонкую классификацию»). Оба раза ответ один.
+      </p>
+      <p style="margin-bottom:0">
+        Тонкость классификации ограничена не числом осей, а <b>сдвигом самого
+        медленного из входов</b>. Добавив ось на показателе с лагом в двадцать
+        четыре месяца, вы не получаете восемь состояний вместо четырёх — вы
+        получаете четыре состояния, которые опаздывают.
+      </p>
+    </div>
+
+    <h3>Куда делись инфляционные ожидания</h3>
+    <p>
+      Автор поступил тоньше, чем «выбросил инфляцию». Из <em>осей</em> она ушла;
+      внутри квадрантов осталась — но не как факт (CPI), а как
+      <b>ожидания</b> (<span class="ticker">T5YIE</span>, breakeven-ставки).
+      Разница принципиальна: ожидания — рыночная величина, она переоценивается
+      непрерывно и вперёд, тогда как CPI выходит раз в месяц и описывает прошлое.
+      <b>[КАНОН]</b>
+    </p>
+    <p>
+      Более того, ожидания встроены в проверку когерентности квадранта. Реальная
+      ставка тождественно равна номинальной минус ожидаемая инфляция; на этом
+      построено правило <span class="rule-id">R31</span>: если знаки трёх
+      величин не складываются в тождество, состояние считается неподтверждённым.
+      Инфляция, таким образом, из координаты превратилась в <em>предохранитель</em> —
+      и в этом качестве работает лучше, чем в качестве оси.
+    </p>
+
+    <div class="callout callout--rule">
+      <div class="callout__label" data-icon="⌘">Тождество-валидатор</div>
+      <p style="margin-bottom:0">
+        <span class="rule-id">R31</span> <code>R.Yields = N.Yields − Inf.exp</code>.
+        Проверка по квадрантам: Q-I <span class="dir dir--down"></span> − <span class="dir dir--flat"></span> = <span class="dir dir--flat"></span><span class="dir dir--down"></span>;
+        Q-II <span class="dir dir--down"></span> − <span class="dir dir--up"></span> = сильно вниз;
+        Q-III <span class="dir dir--up"></span> − <span class="dir dir--down"></span> = сильно вверх;
+        Q-IV <span class="dir dir--up"></span> − <span class="dir dir--up"></span> = неопределённо.
+        Все четыре внутренне непротиворечивы. <b>[КАНОН]</b> по знакам,
+        <b>[ВЫВЕДЕНО]</b> как проверка.
+      </p>
+    </div>
+
+    <h3>Чем за это заплачено</h3>
+    <p>
+      Честности ради: замена не бесплатна, и книга не станет делать вид, что
+      новая ось идеальна. Инфляция — величина <em>наблюдаемая</em>: её публикует
+      статистическое агентство, и спорить с числом нельзя. Политика ФРС в том
+      виде, в каком она стоит на оси, — величина <em>ожидаемая</em>: это мнение
+      рынка о будущих действиях ФРС, считываемое из фьючерсов на ставку, из
+      двухлетней доходности и из дельты dot plot. <b>[ВЫВЕДЕНО]</b>
+    </p>
+    <p>
+      Значит, ось может ошибаться вместе с рынком — и ошибается регулярно.
+      Плата принята сознательно: лучше опережающая величина, которая иногда
+      неправа, чем запаздывающая, которая права всегда, но поздно. Частично
+      это компенсируется валидатором формы кривой
+      (<span class="rule-id">R24</span>–<span class="rule-id">R28</span>):
+      если рынок «передумал» насчёт ФРС, кривая сдвинется, и несовпадение формы
+      с предписанной квадранту переведёт инструмент в центр.
+    </p>
+
+    <div class="callout callout--beyond">
+      <div class="callout__label" data-icon="✚">Почему «ожидания» — это не то же самое, что «ставка»</div>
+      <p>
+        Курс формулирует это как практическое наблюдение: «рынок отыгрывает первое
+        упоминание, а не факт» (<span class="rule-id">R07</span>). Механизм за
+        наблюдением разобран в академической литературе, и он сильнее, чем звучит
+        у автора.
+      </p>
+      <p>
+        Кен Каттнер (<i>Kuttner, «Monetary policy surprises and interest rates:
+        evidence from the Fed funds futures market», Journal of Monetary Economics,
+        2001</i>) разложил изменение ставки ФРС на две части — ожидаемую, извлечённую
+        из фьючерсов на федеральные фонды, и неожиданную. Реакция доходностей
+        оказалась почти целиком привязана к <b>сюрпризу</b>: ожидаемая часть решения
+        рынок не двигает вовсе, потому что она уже в цене.
+      </p>
+      <p style="margin-bottom:0">
+        Гюркайнак, Сак и Свонсон (<i>«Do actions speak louder than words?», 2005</i>)
+        пошли дальше и показали, что за реакцией активов стоят <em>два</em>
+        независимых фактора: собственно решение по ставке и «фактор траектории» —
+        то, что заявление меняет в ожиданиях по будущим шагам. Второй фактор
+        объясняет движение длинных доходностей лучше первого. Это и есть точное
+        описание вертикальной оси шпаргалки: она измеряет не ставку, а траекторию.
+        <b>[ДОПОЛНЕНО]</b>
+      </p>
+    </div>
+
+    <!-- ================================================================= -->
+    <h2 id="s4">Шесть шагов авторской сборки</h2>
+
+    <p>
+      Дальше начинается собственная работа автора. Он показывает её как
+      мультипликацию: семь слайдов подряд, на каждом матрица чуть богаче
+      предыдущей. <b>[КАНОН]</b> Это редкая удача для реконструкции — обычно
+      инструмент показывают собранным, и понять, что было решением, а что
+      случайностью, невозможно.
+    </p>
+    <p>
+      Ниже — все семь состояний. Колонка «что появилось» — <b>[КАНОН]</b>:
+      это буквально содержимое слайдов 10–16. Колонка «зачем» —
+      <b>[ВЫВЕДЕНО]</b>: причин автор не проговаривает, они восстановлены из
+      того, какую дыру предыдущих схем закрывает каждый шаг.
+    </p>
+
+    <figure class="figure" id="fig-19-3">
+      <div class="figure__frame">
+        <svg viewBox="0 0 900 724" role="img" aria-labelledby="fig193-title fig193-desc">
+          <title id="fig193-title">Шесть шагов сборки МЕГА-шпаргалки</title>
+          <desc id="fig193-desc">Семь состояний матрицы по нарастанию. Сначала только две оси. Затем формы кривой доходности по углам. Затем направления макро-индикаторов. Затем широкие классы активов. Затем плашки режима риска в двух углах. Затем стилевые ярлыки и парные сделки в двух других углах. И наконец центральный блок Quality, превративший инструмент из четырёхклассового в пятиклассовый. Полный текст — в таблице значений.</desc>
+
+          <text class="viz-q-sub" x="16"  y="24">СХЕМА</text>
+          <text class="viz-q-sub" x="116" y="24">ШАГ</text>
+          <text class="viz-q-sub" x="264" y="24">ЧТО ПОЯВИЛОСЬ</text>
+          <text class="viz-q-sub" x="566" y="24">ЗАЧЕМ ЭТО НУЖНО</text>
+
+          <!-- ===== v0 ===== -->
+          <g tabindex="0" data-tip="<b>v0 · слайд 10</b><br>Пустое поле с двумя осями: FED Policy по вертикали, MACRO sentiment по горизонтали. Больше ничего.">
+            <line class="viz-grid" x1="16" y1="40" x2="884" y2="40"/>
+            <rect class="viz-box" x="16" y="44" width="88" height="88" rx="6"/>
+            <line class="viz-axisline" x1="60" y1="52" x2="60" y2="124"/>
+            <line class="viz-axisline" x1="24" y1="88" x2="96" y2="88"/>
+            <text class="viz-title" x="116" y="74">v0 · оси</text>
+            <text class="viz-axis"  x="116" y="92">слайд 10</text>
+            <text class="viz-label" x="264" y="70">Только две оси: FED Policy —</text>
+            <text class="viz-label" x="264" y="86">вертикаль, MACRO sentiment —</text>
+            <text class="viz-label" x="264" y="102">горизонталь</text>
+            <text class="viz-annot" x="566" y="70">Зафиксировать два и только два входа.</text>
+            <text class="viz-annot" x="566" y="86">Всё остальное — следствие, а не вход.</text>
+          </g>
+
+          <!-- ===== v1 ===== -->
+          <g tabindex="0" data-tip="<b>v1 · слайд 11</b><br>Четыре миниатюры кривой доходности по углам. Стрелки на коротком и длинном конце разной величины — именно разница величин задаёт flattener или steepener.">
+            <line class="viz-grid" x1="16" y1="136" x2="884" y2="136"/>
+            <rect class="viz-box" x="16" y="140" width="88" height="88" rx="6"/>
+            <line class="viz-axisline" x1="60" y1="148" x2="60" y2="220"/>
+            <line class="viz-axisline" x1="24" y1="184" x2="96" y2="184"/>
+            <path d="M28,166 Q38,158 56,157" fill="none" stroke="var(--axis)" stroke-width="1"/>
+            <path d="M28,171 Q38,165 56,163" fill="none" stroke="var(--series-1)" stroke-width="1.2"/>
+            <path d="M64,166 Q74,158 92,157" fill="none" stroke="var(--axis)" stroke-width="1"/>
+            <path d="M64,173 Q74,161 92,160" fill="none" stroke="var(--series-1)" stroke-width="1.2"/>
+            <path d="M28,202 Q38,194 56,193" fill="none" stroke="var(--axis)" stroke-width="1"/>
+            <path d="M28,197 Q38,190 56,190" fill="none" stroke="var(--series-8)" stroke-width="1.2"/>
+            <path d="M64,202 Q74,194 92,193" fill="none" stroke="var(--axis)" stroke-width="1"/>
+            <path d="M64,199 Q74,188 92,186" fill="none" stroke="var(--series-8)" stroke-width="1.2"/>
+            <text class="viz-title" x="116" y="170">v1 · формы кривой</text>
+            <text class="viz-axis"  x="116" y="188">слайд 11</text>
+            <text class="viz-label" x="264" y="166">Четыре миниатюры кривой</text>
+            <text class="viz-label" x="264" y="182">доходности по углам, стрелки</text>
+            <text class="viz-label" x="264" y="198">разной величины на концах</text>
+            <text class="viz-annot" x="566" y="166">Форма кривой — независимая проверка</text>
+            <text class="viz-annot" x="566" y="182">квадранта, а не его следствие. Отсюда</text>
+            <text class="viz-annot" x="566" y="198">правила R24–R28 и «неподтверждение».</text>
+          </g>
+
+          <!-- ===== v2 ===== -->
+          <g tabindex="0" data-tip="<b>v2 · слайд 12</b><br>Макро-индикаторы по квадрантам: R. Yields, Inf. exp., N. Yields, EPS, LEI, Fwd P/E. Цветовой код стрелок: ▲ рост, ▼ снижение, ► боковик.">
+            <line class="viz-grid" x1="16" y1="232" x2="884" y2="232"/>
+            <rect class="viz-box" x="16" y="236" width="88" height="88" rx="6"/>
+            <line class="viz-axisline" x1="60" y1="244" x2="60" y2="316"/>
+            <line class="viz-axisline" x1="24" y1="280" x2="96" y2="280"/>
+            <path d="M28,262 Q38,254 56,253" fill="none" stroke="var(--axis)" stroke-width="1"/>
+            <path d="M28,267 Q38,261 56,259" fill="none" stroke="var(--series-1)" stroke-width="1.2"/>
+            <path d="M64,262 Q74,254 92,253" fill="none" stroke="var(--axis)" stroke-width="1"/>
+            <path d="M64,269 Q74,257 92,256" fill="none" stroke="var(--series-1)" stroke-width="1.2"/>
+            <path d="M28,298 Q38,290 56,289" fill="none" stroke="var(--axis)" stroke-width="1"/>
+            <path d="M28,293 Q38,286 56,286" fill="none" stroke="var(--series-8)" stroke-width="1.2"/>
+            <path d="M64,298 Q74,290 92,289" fill="none" stroke="var(--axis)" stroke-width="1"/>
+            <path d="M64,295 Q74,284 92,282" fill="none" stroke="var(--series-8)" stroke-width="1.2"/>
+            <g stroke="var(--ink-muted)" stroke-width="1">
+              <line x1="32" y1="272" x2="32" y2="277"/><line x1="38" y1="272" x2="38" y2="277"/><line x1="44" y1="272" x2="44" y2="277"/>
+              <line x1="68" y1="272" x2="68" y2="277"/><line x1="74" y1="272" x2="74" y2="277"/><line x1="80" y1="272" x2="80" y2="277"/>
+              <line x1="32" y1="308" x2="32" y2="313"/><line x1="38" y1="308" x2="38" y2="313"/><line x1="44" y1="308" x2="44" y2="313"/>
+              <line x1="68" y1="308" x2="68" y2="313"/><line x1="74" y1="308" x2="74" y2="313"/><line x1="80" y1="308" x2="80" y2="313"/>
+            </g>
+            <text class="viz-title" x="116" y="266">v2 · индикаторы</text>
+            <text class="viz-axis"  x="116" y="284">слайд 12</text>
+            <text class="viz-label" x="264" y="262">R. Yields, Inf. exp., N. Yields,</text>
+            <text class="viz-label" x="264" y="278">EPS, LEI, Fwd P/E со стрелками</text>
+            <text class="viz-label" x="264" y="294">▲ ▼ ► по квадрантам</text>
+            <text class="viz-annot" x="566" y="262">Связать квадрант с наблюдаемыми</text>
+            <text class="viz-annot" x="566" y="278">рядами, а не только с формой кривой.</text>
+            <text class="viz-annot" x="566" y="294">Здесь же появляется тождество R31.</text>
+          </g>
+
+          <!-- ===== v3 ===== -->
+          <g tabindex="0" data-tip="<b>v3 · слайд 13</b><br>Широкие классы активов: золото, сырьё, гособлигации, VIX, доллар. Здесь же видны два кросс-квадрантных инварианта: золото зависит только от оси ФРС, сырьё — только от оси макро.">
+            <line class="viz-grid" x1="16" y1="328" x2="884" y2="328"/>
+            <rect class="viz-box" x="16" y="332" width="88" height="88" rx="6"/>
+            <line class="viz-axisline" x1="60" y1="340" x2="60" y2="412"/>
+            <line class="viz-axisline" x1="24" y1="376" x2="96" y2="376"/>
+            <path d="M28,358 Q38,350 56,349" fill="none" stroke="var(--axis)" stroke-width="1"/>
+            <path d="M28,363 Q38,357 56,355" fill="none" stroke="var(--series-1)" stroke-width="1.2"/>
+            <path d="M64,358 Q74,350 92,349" fill="none" stroke="var(--axis)" stroke-width="1"/>
+            <path d="M64,365 Q74,353 92,352" fill="none" stroke="var(--series-1)" stroke-width="1.2"/>
+            <path d="M28,394 Q38,386 56,385" fill="none" stroke="var(--axis)" stroke-width="1"/>
+            <path d="M28,389 Q38,382 56,382" fill="none" stroke="var(--series-8)" stroke-width="1.2"/>
+            <path d="M64,394 Q74,386 92,385" fill="none" stroke="var(--axis)" stroke-width="1"/>
+            <path d="M64,391 Q74,380 92,378" fill="none" stroke="var(--series-8)" stroke-width="1.2"/>
+            <g stroke="var(--ink-muted)" stroke-width="1">
+              <line x1="32" y1="368" x2="32" y2="373"/><line x1="38" y1="368" x2="38" y2="373"/><line x1="44" y1="368" x2="44" y2="373"/>
+              <line x1="68" y1="368" x2="68" y2="373"/><line x1="74" y1="368" x2="74" y2="373"/><line x1="80" y1="368" x2="80" y2="373"/>
+              <line x1="32" y1="404" x2="32" y2="409"/><line x1="38" y1="404" x2="38" y2="409"/><line x1="44" y1="404" x2="44" y2="409"/>
+              <line x1="68" y1="404" x2="68" y2="409"/><line x1="74" y1="404" x2="74" y2="409"/><line x1="80" y1="404" x2="80" y2="409"/>
+            </g>
+            <g fill="var(--axis)">
+              <circle cx="33" cy="349" r="1.8"/><circle cx="40" cy="349" r="1.8"/><circle cx="47" cy="349" r="1.8"/>
+              <circle cx="69" cy="349" r="1.8"/><circle cx="76" cy="349" r="1.8"/><circle cx="83" cy="349" r="1.8"/>
+              <circle cx="33" cy="403" r="1.8"/><circle cx="40" cy="403" r="1.8"/><circle cx="47" cy="403" r="1.8"/>
+              <circle cx="69" cy="403" r="1.8"/><circle cx="76" cy="403" r="1.8"/><circle cx="83" cy="403" r="1.8"/>
+            </g>
+            <text class="viz-title" x="116" y="362">v3 · классы активов</text>
+            <text class="viz-axis"  x="116" y="380">слайд 13</text>
+            <text class="viz-label" x="264" y="358">Золото, сырьё, гособлигации,</text>
+            <text class="viz-label" x="264" y="374">VIX, доллар</text>
+            <text class="viz-annot" x="566" y="358">Сначала то, что торгуется без факторного</text>
+            <text class="viz-annot" x="566" y="374">разреза. Здесь проступают инварианты</text>
+            <text class="viz-annot" x="566" y="390">R42 (золото ← ФРС) и R43 (сырьё ← макро).</text>
+          </g>
+
+          <!-- ===== v4 ===== -->
+          <g tabindex="0" data-tip="<b>v4 · слайд 14</b><br>Плашки Risk ON (верх-право) и Risk OFF (низ-лево) с дословными формулировками аллокации: «быть в активах на 100 % и рисковать максимально» / «быть в защите и рисковать минимально».">
+            <line class="viz-grid" x1="16" y1="424" x2="884" y2="424"/>
+            <rect class="viz-box" x="16" y="428" width="88" height="88" rx="6"/>
+            <line class="viz-axisline" x1="60" y1="436" x2="60" y2="508"/>
+            <line class="viz-axisline" x1="24" y1="472" x2="96" y2="472"/>
+            <path d="M28,454 Q38,446 56,445" fill="none" stroke="var(--axis)" stroke-width="1"/>
+            <path d="M28,459 Q38,453 56,451" fill="none" stroke="var(--series-1)" stroke-width="1.2"/>
+            <path d="M64,454 Q74,446 92,445" fill="none" stroke="var(--axis)" stroke-width="1"/>
+            <path d="M64,461 Q74,449 92,448" fill="none" stroke="var(--series-1)" stroke-width="1.2"/>
+            <path d="M28,490 Q38,482 56,481" fill="none" stroke="var(--axis)" stroke-width="1"/>
+            <path d="M28,485 Q38,478 56,478" fill="none" stroke="var(--series-8)" stroke-width="1.2"/>
+            <path d="M64,490 Q74,482 92,481" fill="none" stroke="var(--axis)" stroke-width="1"/>
+            <path d="M64,487 Q74,476 92,474" fill="none" stroke="var(--series-8)" stroke-width="1.2"/>
+            <g stroke="var(--ink-muted)" stroke-width="1">
+              <line x1="32" y1="464" x2="32" y2="469"/><line x1="38" y1="464" x2="38" y2="469"/><line x1="44" y1="464" x2="44" y2="469"/>
+              <line x1="68" y1="464" x2="68" y2="469"/><line x1="74" y1="464" x2="74" y2="469"/><line x1="80" y1="464" x2="80" y2="469"/>
+              <line x1="32" y1="500" x2="32" y2="505"/><line x1="38" y1="500" x2="38" y2="505"/><line x1="44" y1="500" x2="44" y2="505"/>
+              <line x1="68" y1="500" x2="68" y2="505"/><line x1="74" y1="500" x2="74" y2="505"/><line x1="80" y1="500" x2="80" y2="505"/>
+            </g>
+            <g fill="var(--axis)">
+              <circle cx="33" cy="445" r="1.8"/><circle cx="40" cy="445" r="1.8"/><circle cx="47" cy="445" r="1.8"/>
+              <circle cx="69" cy="445" r="1.8"/><circle cx="76" cy="445" r="1.8"/><circle cx="83" cy="445" r="1.8"/>
+              <circle cx="33" cy="499" r="1.8"/><circle cx="40" cy="499" r="1.8"/><circle cx="47" cy="499" r="1.8"/>
+              <circle cx="69" cy="499" r="1.8"/><circle cx="76" cy="499" r="1.8"/><circle cx="83" cy="499" r="1.8"/>
+            </g>
+            <rect x="70" y="437" width="22" height="5" rx="2.5" fill="var(--q-riskon)"/>
+            <rect x="28" y="509" width="22" height="5" rx="2.5" fill="var(--q-riskoff)"/>
+            <text class="viz-title" x="116" y="458">v4 · режим риска</text>
+            <text class="viz-axis"  x="116" y="476">слайд 14</text>
+            <text class="viz-label" x="264" y="454">Плашки Risk ON (верх-право)</text>
+            <text class="viz-label" x="264" y="470">и Risk OFF (низ-лево)</text>
+            <text class="viz-label" x="264" y="486">с формулировками аллокации</text>
+            <text class="viz-annot" x="566" y="454">Ввести управление размером риска,</text>
+            <text class="viz-annot" x="566" y="470">а не только направлением позиции.</text>
+          </g>
+
+          <!-- ===== v5 ===== -->
+          <g tabindex="0" data-tip="<b>v5 · слайд 15</b><br>Стилевые ярлыки Growth ▲ (верх-лево) и Value ▲ (низ-право) плюс все парные сделки: Highβ/Lowβ, DM/EM, XLK/XLB, XLY/XLP, Small/Large, Cyc/non-Cyc.">
+            <line class="viz-grid" x1="16" y1="520" x2="884" y2="520"/>
+            <rect class="viz-box" x="16" y="524" width="88" height="88" rx="6"/>
+            <line class="viz-axisline" x1="60" y1="532" x2="60" y2="604"/>
+            <line class="viz-axisline" x1="24" y1="568" x2="96" y2="568"/>
+            <path d="M28,550 Q38,542 56,541" fill="none" stroke="var(--axis)" stroke-width="1"/>
+            <path d="M28,555 Q38,549 56,547" fill="none" stroke="var(--series-1)" stroke-width="1.2"/>
+            <path d="M64,550 Q74,542 92,541" fill="none" stroke="var(--axis)" stroke-width="1"/>
+            <path d="M64,557 Q74,545 92,544" fill="none" stroke="var(--series-1)" stroke-width="1.2"/>
+            <path d="M28,586 Q38,578 56,577" fill="none" stroke="var(--axis)" stroke-width="1"/>
+            <path d="M28,581 Q38,574 56,574" fill="none" stroke="var(--series-8)" stroke-width="1.2"/>
+            <path d="M64,586 Q74,578 92,577" fill="none" stroke="var(--axis)" stroke-width="1"/>
+            <path d="M64,583 Q74,572 92,570" fill="none" stroke="var(--series-8)" stroke-width="1.2"/>
+            <g stroke="var(--ink-muted)" stroke-width="1">
+              <line x1="32" y1="560" x2="32" y2="565"/><line x1="38" y1="560" x2="38" y2="565"/><line x1="44" y1="560" x2="44" y2="565"/>
+              <line x1="68" y1="560" x2="68" y2="565"/><line x1="74" y1="560" x2="74" y2="565"/><line x1="80" y1="560" x2="80" y2="565"/>
+              <line x1="32" y1="596" x2="32" y2="601"/><line x1="38" y1="596" x2="38" y2="601"/><line x1="44" y1="596" x2="44" y2="601"/>
+              <line x1="68" y1="596" x2="68" y2="601"/><line x1="74" y1="596" x2="74" y2="601"/><line x1="80" y1="596" x2="80" y2="601"/>
+            </g>
+            <g fill="var(--axis)">
+              <circle cx="33" cy="541" r="1.8"/><circle cx="40" cy="541" r="1.8"/><circle cx="47" cy="541" r="1.8"/>
+              <circle cx="69" cy="541" r="1.8"/><circle cx="76" cy="541" r="1.8"/><circle cx="83" cy="541" r="1.8"/>
+              <circle cx="33" cy="595" r="1.8"/><circle cx="40" cy="595" r="1.8"/><circle cx="47" cy="595" r="1.8"/>
+              <circle cx="69" cy="595" r="1.8"/><circle cx="76" cy="595" r="1.8"/><circle cx="83" cy="595" r="1.8"/>
+            </g>
+            <rect x="70" y="533" width="22" height="5" rx="2.5" fill="var(--q-riskon)"/>
+            <rect x="28" y="605" width="22" height="5" rx="2.5" fill="var(--q-riskoff)"/>
+            <rect x="28" y="533" width="22" height="5" rx="2.5" fill="var(--q-growth)"/>
+            <rect x="70" y="605" width="22" height="5" rx="2.5" fill="var(--q-value)"/>
+            <text class="viz-title" x="116" y="554">v5 · стили и пары</text>
+            <text class="viz-axis"  x="116" y="572">слайд 15</text>
+            <text class="viz-label" x="264" y="550">Ярлыки Growth ▲ и Value ▲</text>
+            <text class="viz-label" x="264" y="566">плюс все парные (ratio) сделки</text>
+            <text class="viz-annot" x="566" y="550">Перевести инструмент с уровня «класс</text>
+            <text class="viz-annot" x="566" y="566">актива» на уровень факторных спредов:</text>
+            <text class="viz-annot" x="566" y="582">торгуем отношения, а не абсолюты.</text>
+          </g>
+
+          <!-- ===== v6 ===== -->
+          <g tabindex="0" data-tip="<b>v6 · слайды 16 и 09</b><br>Центральный блок Quality ▲: High FCF, DM, Low P/E / High P/E, Large Cap. Правило: когда рынок «между квадрантами» — покупается качество.">
+            <line class="viz-grid" x1="16" y1="616" x2="884" y2="616"/>
+            <rect class="viz-box" x="16" y="620" width="88" height="88" rx="6"/>
+            <line class="viz-axisline" x1="60" y1="628" x2="60" y2="700"/>
+            <line class="viz-axisline" x1="24" y1="664" x2="96" y2="664"/>
+            <path d="M28,646 Q38,638 56,637" fill="none" stroke="var(--axis)" stroke-width="1"/>
+            <path d="M28,651 Q38,645 56,643" fill="none" stroke="var(--series-1)" stroke-width="1.2"/>
+            <path d="M64,646 Q74,638 92,637" fill="none" stroke="var(--axis)" stroke-width="1"/>
+            <path d="M64,653 Q74,641 92,640" fill="none" stroke="var(--series-1)" stroke-width="1.2"/>
+            <path d="M28,682 Q38,674 56,673" fill="none" stroke="var(--axis)" stroke-width="1"/>
+            <path d="M28,677 Q38,670 56,670" fill="none" stroke="var(--series-8)" stroke-width="1.2"/>
+            <path d="M64,682 Q74,674 92,673" fill="none" stroke="var(--axis)" stroke-width="1"/>
+            <path d="M64,679 Q74,668 92,666" fill="none" stroke="var(--series-8)" stroke-width="1.2"/>
+            <g stroke="var(--ink-muted)" stroke-width="1">
+              <line x1="32" y1="656" x2="32" y2="661"/><line x1="38" y1="656" x2="38" y2="661"/><line x1="44" y1="656" x2="44" y2="661"/>
+              <line x1="68" y1="656" x2="68" y2="661"/><line x1="74" y1="656" x2="74" y2="661"/><line x1="80" y1="656" x2="80" y2="661"/>
+              <line x1="32" y1="692" x2="32" y2="697"/><line x1="38" y1="692" x2="38" y2="697"/><line x1="44" y1="692" x2="44" y2="697"/>
+              <line x1="68" y1="692" x2="68" y2="697"/><line x1="74" y1="692" x2="74" y2="697"/><line x1="80" y1="692" x2="80" y2="697"/>
+            </g>
+            <g fill="var(--axis)">
+              <circle cx="33" cy="637" r="1.8"/><circle cx="40" cy="637" r="1.8"/><circle cx="47" cy="637" r="1.8"/>
+              <circle cx="69" cy="637" r="1.8"/><circle cx="76" cy="637" r="1.8"/><circle cx="83" cy="637" r="1.8"/>
+              <circle cx="33" cy="691" r="1.8"/><circle cx="40" cy="691" r="1.8"/><circle cx="47" cy="691" r="1.8"/>
+              <circle cx="69" cy="691" r="1.8"/><circle cx="76" cy="691" r="1.8"/><circle cx="83" cy="691" r="1.8"/>
+            </g>
+            <rect x="70" y="629" width="22" height="5" rx="2.5" fill="var(--q-riskon)"/>
+            <rect x="28" y="701" width="22" height="5" rx="2.5" fill="var(--q-riskoff)"/>
+            <rect x="28" y="629" width="22" height="5" rx="2.5" fill="var(--q-growth)"/>
+            <rect x="70" y="701" width="22" height="5" rx="2.5" fill="var(--q-value)"/>
+            <rect x="50" y="658" width="20" height="12" rx="3" fill="var(--surface)" stroke="var(--q-quality)" stroke-width="1.5"/>
+            <text class="viz-title" x="116" y="650">v6 · центр Quality</text>
+            <text class="viz-axis"  x="116" y="668">слайды 16 и 09</text>
+            <text class="viz-label" x="264" y="646">Центральный блок Quality ▲:</text>
+            <text class="viz-label" x="264" y="662">High FCF, DM, Large Cap,</text>
+            <text class="viz-label" x="264" y="678">Low P/E / High P/E</text>
+            <text class="viz-annot" x="566" y="646">Закрыть состояние «режима нет»:</text>
+            <text class="viz-annot" x="566" y="662">инструмент стал пятиклассовым</text>
+            <text class="viz-annot" x="566" y="678">вместо четырёхклассового.</text>
+          </g>
+        </svg>
+      </div>
+      <figcaption>
+        <span class="figure__num">Рис. 19.3.</span> <b>Матрица, собираемая на глазах.</b>
+        Каждая строка — состояние инструмента после очередного слайда; миниатюра
+        слева накапливает всё, что добавлено к этому моменту. Порядок шагов не
+        произволен: сначала входы, потом валидатор, потом наблюдаемые ряды, потом
+        то, что торгуется, и только в конце — управление риском и отказ от ответа.
+      </figcaption>
+      <div class="figure__table table-scroll" hidden>
+        <table class="data">
+          <caption class="viz-legend" style="text-align:left;padding:.5rem .75rem;color:var(--ink-muted)">Версии инструмента (L10 сл. 10–16; спецификация §3.2). «Что появилось» — [КАНОН], «зачем» — [ВЫВЕДЕНО]</caption>
+          <thead>
+            <tr><th>Шаг</th><th>Слайд</th><th>Что появилось</th><th>Зачем</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>v0</td><td class="num">10</td><td>Только оси: <span class="ticker">FED Policy +/−</span> (вертикаль), <span class="ticker">MACRO sentiment −/+</span> (горизонталь). Больше ничего</td><td>Зафиксировать два и только два входа</td></tr>
+            <tr><td>v1</td><td class="num">11</td><td>4 миниатюры кривой доходности по углам, с разными по величине стрелками на коротком и длинном конце</td><td>Форма кривой = независимая валидация квадранта, а не его следствие</td></tr>
+            <tr><td>v2</td><td class="num">12</td><td>Макро-индикаторы по квадрантам (R. Yields / Inf. exp. / N. Yields / EPS / LEI / Fwd P/E) + цветовой код стрелок ▲ ▼ ►</td><td>Связать квадрант с наблюдаемыми рядами, а не только с кривой</td></tr>
+            <tr><td>v3</td><td class="num">13</td><td>«Широкие» классы активов: GOLD, Commodities, Gov Bonds, VIX, <span class="ticker">$$$</span></td><td>Сначала то, что торгуется без факторного разреза, — макро-активы</td></tr>
+            <tr><td>v4</td><td class="num">14</td><td>Плашки <b>Risk ON</b> (верх-право) и <b>Risk OFF</b> (низ-лево) с дословными формулировками аллокации; появляется <span class="ticker">EM/DM ▲</span> в Q-IV</td><td>Ввести управление размером риска, а не только направление</td></tr>
+            <tr><td>v5</td><td class="num">15</td><td>Стилевые ярлыки <b>Growth ▲</b> (верх-лево) и <b>Value ▲</b> (низ-право) + все парные (ratio) сделки</td><td>Перевести шпаргалку с уровня «класс актива» на уровень факторных спредов</td></tr>
+            <tr><td>v6</td><td class="num">16, 09</td><td>Центральный блок <b>Quality ▲</b> + ссылка на оригинал (доска Miro)</td><td>Закрыть состояние «нет режима»: инструмент стал пятиклассовым вместо четырёхклассового</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </figure>
+
+    <h3>Шаг v0: почему осей ровно две</h3>
+    <p>
+      Первый слайд сборки — пустое поле с крестом. Это выглядит как отсутствие
+      содержания, но это и есть первое проектное решение: <b>входов ровно два</b>.
+      Не три, не пять, не «набор из двенадцати показателей с весами».
+    </p>
+    <p>
+      У экономии есть цена и есть причина. Причина арифметическая: каждая
+      дополнительная бинарная ось удваивает число состояний, а история, на которой
+      можно посмотреть поведение активов в состоянии, при этом не удваивается —
+      она делится. Полных бизнес-циклов в послевоенной истории США около десятка
+      (по датировке NBER), и это <em>весь</em> доступный материал.
+      <b>[ДОПОЛНЕНО: методология датировки NBER Business Cycle Dating Committee]</b>
+      Четыре состояния при таком объёме наблюдений ещё имеют шанс быть
+      статистически чем-то подкреплены; шестнадцать — уже точно нет.
+    </p>
+
+    <h3>Шаг v1: почему форма кривой добавлена раньше всего остального</h3>
+    <p>
+      Второй слайд — четыре миниатюры кривой доходности по углам. Порядок здесь
+      несёт смысл: форма кривой появляется <em>до</em> индикаторов, <em>до</em>
+      активов и <em>до</em> режимов риска. Она входит в конструкцию не как вывод,
+      а как <b>вторая, независимая система координат</b>, с которой первая обязана
+      совпасть.
+    </p>
+    <p>
+      Стоит заметить, чего именно нет на этих миниатюрах: уровня. Нет «кривая
+      плоская», «кривая перевёрнута». Есть только пары стрелок разной величины
+      на коротком и длинном конце, то есть <b>изменение</b>. Это прямая реализация
+      тезиса из главы 14: важна не форма кривой, а то, как к ней пришли
+      (<span class="rule-id">R30</span>).
+    </p>
+
+    <div class="callout callout--beyond">
+      <div class="callout__label" data-icon="✚">Почему «bull/bear × flat/steep» — не произвольная четвёрка</div>
+      <p>
+        Курс подаёт четыре формы как эмпирическую классификацию: так бывает,
+        запомните. У неё есть точное основание.
+      </p>
+      <p>
+        Литтерман и Шейнкман (<i>Litterman, Scheinkman, «Common Factors Affecting
+        Bond Returns», Journal of Fixed Income, 1991</i>) разложили движения кривой
+        доходности на главные компоненты и показали, что подавляющую часть их
+        дисперсии объясняют три фактора: <b>уровень</b> (параллельный сдвиг всей
+        кривой), <b>наклон</b> и <b>кривизна</b>. Причём первые два дают почти всё,
+        а уровень обычно доминирует над наклоном.
+      </p>
+      <p style="margin-bottom:0">
+        Отсюда четвёрка получается механически: bull/bear — это знак первого
+        фактора (доходности вниз или вверх), flattener/steepener — знак второго
+        (наклон уменьшается или растёт). Две главные компоненты, два знака,
+        четыре комбинации — исчерпывающе. Кривизна, третий фактор, в шпаргалке
+        не представлена, и это ровно то место, где возникает «горбатая» кривая,
+        которую инструмент классифицировать не умеет (§8.7 спецификации).
+        <b>[ДОПОЛНЕНО]</b>
+      </p>
+    </div>
+
+    <h3>Шаг v2: квадрант становится наблюдаемым</h3>
+    <p>
+      Третий слайд добавляет направления шести макро-величин: реальных и
+      номинальных доходностей, инфляционных ожиданий, прибыли, опережающего
+      индекса и форвардного мультипликатора. До этого момента квадрант можно
+      было только <em>назначить</em>; теперь его можно <em>проверить</em>.
+    </p>
+    <p>
+      Побочный, но важный результат этого шага — уже упомянутое тождество
+      <span class="rule-id">R31</span>. Три из шести величин связаны
+      арифметически, а значит, набор стрелок в квадранте не может быть
+      произвольным: он либо когерентен, либо содержит ошибку. Это первая
+      внутренняя проверка инструмента, не требующая внешних данных вообще.
+    </p>
+
+    <h3>Шаг v3: сначала то, что торгуется без факторов</h3>
+    <p>
+      Четвёртый слайд — золото, сырьё, гособлигации, VIX, доллар. Это не
+      случайный набор: всё перечисленное торгуется <em>как есть</em>, без
+      разложения на стиль, размер и сектор. Автор сначала закрывает уровень
+      макро-активов и только потом спускается на уровень акций.
+    </p>
+    <p>
+      На этом же шаге в матрице проступают два самых сильных её утверждения —
+      кросс-квадрантные инварианты. <b>[КАНОН]</b>
+    </p>
+
+    <div class="callout callout--rule">
+      <div class="callout__label" data-icon="⌘">Два инварианта, видимые только целиком</div>
+      <p>
+        <span class="rule-id">R42</span> <b>Золото зависит только от оси ФРС.</b>
+        <span class="ticker">GOLD ▲</span> в обоих верхних квадрантах,
+        <span class="ticker">GOLD ▼</span> в обоих нижних — независимо от того,
+        что делает макро.
+      </p>
+      <p style="margin-bottom:0">
+        <span class="rule-id">R43</span> <b>Сырьё зависит только от оси макро.</b>
+        <span class="ticker">Commodities ▲</span> в обоих правых квадрантах,
+        <span class="ticker">▼</span> в обоих левых — независимо от того, что
+        делает ФРС.
+      </p>
+    </div>
+
+    <p>
+      Эти два правила — единственное место, где матрица делает <em>сильное</em>
+      утверждение об одном активе, а не о паре. Оба, заметим, факторизуются:
+      каждый актив реагирует ровно на одну ось. Если бы такое свойство имели все
+      строки, инструмент был бы не матрицей, а двумя независимыми списками —
+      и никакой матрицы не понадобилось бы. Остальные строки не факторизуются,
+      и в этом смысл конструкции.
+    </p>
+
+    <h3>Шаг v4: направление ≠ размер</h3>
+    <p>
+      Пятый слайд добавляет две плашки с дословными формулировками: в верхнем
+      правом углу «<i>режим, в котором НУЖНО быть в активах на 100 % и рисковать
+      максимально</i>», в нижнем левом — «<i>режим, в котором НЕОБХОДИМО быть
+      «в защите» и рисковать минимально</i>». <b>[КАНОН]</b>
+    </p>
+    <p>
+      До этого шага инструмент отвечал только на вопрос «что покупать». После —
+      начал отвечать на вопрос «сколько риска нести», и это принципиально другой
+      класс ответа. Заметьте асимметрию: плашки стоят по диагонали Risk ON —
+      Risk OFF, а два оставшихся квадранта режимной подписи не получили вовсе.
+      Это не пропуск: Growth и Value — состояния с <em>нейтральным</em> уровнем
+      риска и разной дюрацией, а не с разным его размером.
+    </p>
+    <p>
+      Что автор не дал — это функцию размера позиции. «Сто процентов» и
+      «минимально» остаются качественными формулировками; ни от волатильности,
+      ни от расстояния до центра, ни от уверенности классификатора размер не
+      зависит. Пробел этот заполним не мы первыми: в институциональной практике
+      размер позиции давно привязывают к оценке волатильности —
+      таргетирование волатильности и паритет риска строят вес актива обратно
+      пропорционально его недавнему стандартному отклонению; изложение
+      с механикой есть у Ильманена (<i>Antti Ilmanen, «Expected Returns», 2011</i>).
+      <b>[ДОПОЛНЕНО]</b> Глава 24 выберет конкретную схему и пометит её как
+      наше решение, а не авторское.
+    </p>
+
+    <h3>Шаг v5: переход от активов к спредам</h3>
+    <p>
+      Шестой слайд добавляет стилевые ярлыки и, что важнее, <b>парные сделки</b>:
+      <span class="ticker">Highβ/Lowβ</span>, <span class="ticker">DM/EM</span>,
+      <span class="ticker">XLK/XLB</span>, <span class="ticker">XLY/XLP</span>,
+      <span class="ticker">Small/Large</span>,
+      <span class="ticker">Cyc/non-Cyc</span>. Это смена уровня, на котором
+      инструмент вообще работает.
+    </p>
+    <p>
+      Механизм выгоды простой. Пара — это разность двух доходностей, и общая
+      компонента рынка из неё вычитается. Значит, классификатору позволено
+      ошибаться в том, куда пойдёт рынок целиком, и всё равно оказываться правым
+      в том, <em>что внутри рынка будет лидировать</em>. А ротация — как раз то,
+      что макро-квадрант предсказывает лучше направления: смена лидерства между
+      стилями связана с макро-состоянием жёстче, чем абсолютная доходность
+      индекса.
+    </p>
+    <p>
+      Здесь же появляется <b>диагональ стилей</b>
+      (<span class="rule-id">R46</span>): Growth живёт в верхнем левом квадранте
+      (ФРС уже помогает, экономика ещё нет), Value — в нижнем правом (экономика
+      уже растёт, ФРС ещё давит). Стили — это диагональ, а не половины матрицы;
+      к этому различению мы вернёмся в следующем разделе, потому что именно
+      здесь у автора дважды разъезжалась семантика.
+    </p>
+
+    <h3>Шаг v6: право не отвечать</h3>
+    <p>
+      Последний шаг добавляет в центр блок <b>Quality ▲</b>: высокий свободный
+      денежный поток, развитые рынки, крупная капитализация. Формально это ещё
+      один набор активов. Фактически это изменение <em>типа</em> инструмента.
+    </p>
+    <p>
+      Ни у одной из восьми предковых схем состояния «режима нет» не было. Часы
+      всегда показывают время; квадрант всегда где-то находится. Классификатор,
+      обязанный отвечать всегда, в момент перехода между режимами выдаёт ответ
+      наугад — а переходы это ровно те моменты, когда цена ошибки максимальна.
+    </p>
+
+    <div class="callout callout--beyond">
+      <div class="callout__label" data-icon="✚">Центр — это отказ от классификации</div>
+      <p>
+        В теории распознавания у этого приёма есть имя и полувековая история.
+        Чоу (<i>C. K. Chow, «On optimum recognition error and reject tradeoff»,
+        IEEE Transactions on Information Theory, 1970</i>) описал классификатор
+        <b>с опцией отказа</b> (reject option): если апостериорная уверенность
+        ниже порога, система не выдаёт метку, а признаёт, что не знает.
+      </p>
+      <p>
+        Результат Чоу состоит в том, что отказ обменивается на точность
+        монотонно: чем шире зона отказа, тем ниже доля ошибок среди выданных
+        ответов. Это ровно то, что делает центр Quality — и ровно то, что делает
+        правило <span class="rule-id">R28</span>, отправляющее в центр состояние
+        с неподтверждённой формой кривой.
+      </p>
+      <p style="margin-bottom:0">
+        Практическое следствие для главы 24: порог отказа
+        (<code>θ_fed</code>, <code>θ_macro</code>) — не техническая мелочь,
+        а главный настраиваемый параметр инструмента. Он в курсе не задан
+        <b>[НЕТ В КУРСЕ]</b>, и подбирать его придётся нам. <b>[ДОПОЛНЕНО]</b>
+      </p>
+    </div>
+
+    <div class="callout callout--ours">
+      <div class="callout__label" data-icon="◆">Наблюдение о порядке шагов</div>
+      <p style="margin-bottom:0">
+        Последовательность v0 → v6 читается как чек-лист проектирования любого
+        рыночного классификатора: <b>входы → независимый валидатор → наблюдаемые
+        ряды → торгуемые объекты → размер риска → право не отвечать</b>. Мы
+        используем этот же порядок как структуру спецификации в главе 24 —
+        не потому, что так сделал автор, а потому, что каждый следующий пункт
+        бессмыслен без предыдущего. Инструмент, у которого есть списки активов,
+        но нет валидатора, — это гороскоп с тикерами. <b>[НАШЕ РЕШЕНИЕ]</b>
+      </p>
+    </div>
+
+    <!-- ================================================================= -->
+    <h2 id="s5">Дрейф семантики ярлыков</h2>
+
+    <p>
+      Матрица показана в курсе четыре раза — в лекциях 6, 8, 9 и 10 — и от показа
+      к показу <b>привязка ярлыков менялась</b>. Речь не о содержании квадрантов,
+      а о том, к чему прикреплены слова <span class="ticker">Risk ON/OFF</span>
+      и <span class="ticker">Growth/Value</span>: к <em>половине</em> матрицы
+      или к <em>углу</em>.
+    </p>
+
+    <figure class="figure" id="fig-19-4">
+      <div class="figure__frame">
+        <svg viewBox="0 0 900 340" role="img" aria-labelledby="fig194-title fig194-desc">
+          <title id="fig194-title">Дрейф привязки ярлыков между лекциями</title>
+          <desc id="fig194-desc">Четыре показа матрицы. В лекции 6 Risk ON и Risk OFF стоят в углах, а Growth и Value привязаны к верхней и нижней половинам. В лекции 8 оба измерения угловые. В лекции 9 наоборот: Risk ON и Risk OFF привязаны к половинам, а Growth и Value к квадрантам. В финальной версии лекции 10 оба измерения снова угловые — это канон. Полный текст — в таблице значений.</desc>
+
+          <!-- ===== L06 ===== -->
+          <g tabindex="0" data-tip="<b>L06 сл. 39 — первое появление</b><br>Risk ON / Risk OFF уже в углах, но стили привязаны к половинам: «верх матрицы (FED +) → Growth ▲; низ (FED −) → Value ▲».">
+            <text class="viz-title" x="20" y="22">L06 · сл. 39</text>
+            <text class="viz-axis"  x="20" y="38">первое появление</text>
+            <rect class="viz-box" x="36" y="50" width="168" height="168" rx="6"/>
+            <rect x="39" y="53" width="162" height="81" rx="4" fill="var(--surface-2)"/>
+            <rect x="39" y="135" width="162" height="80" rx="4" fill="var(--surface-2)"/>
+            <line class="viz-axisline" x1="120" y1="54" x2="120" y2="214"/>
+            <line class="viz-axisline" x1="40" y1="134" x2="200" y2="134"/>
+            <text class="viz-title" x="120" y="74"  text-anchor="middle" fill="var(--q-growth)">Growth ▲</text>
+            <text class="viz-title" x="162" y="106" text-anchor="middle" fill="var(--q-riskon)">Risk ON</text>
+            <text class="viz-title" x="78"  y="168" text-anchor="middle" fill="var(--q-riskoff)">Risk OFF</text>
+            <text class="viz-title" x="120" y="200" text-anchor="middle" fill="var(--q-value)">Value ▲</text>
+            <text class="viz-label" x="20" y="244">Risk ON / OFF — углы</text>
+            <text class="viz-label" x="20" y="262">Growth / Value — половины</text>
+            <text class="viz-annot" x="20" y="288">ранняя, самая грубая</text>
+            <text class="viz-annot" x="20" y="303">редакция</text>
+          </g>
+
+          <!-- ===== L08 ===== -->
+          <g tabindex="0" data-tip="<b>L08 сл. 02 / 54 / 73</b><br>Три показа подряд в лекции о корреляциях. Оба измерения угловые — как в финале.">
+            <text class="viz-title" x="240" y="22">L08 · сл. 02/54/73</text>
+            <text class="viz-axis"  x="240" y="38">три повтора подряд</text>
+            <rect class="viz-box" x="256" y="50" width="168" height="168" rx="6"/>
+            <line class="viz-axisline" x1="340" y1="54" x2="340" y2="214"/>
+            <line class="viz-axisline" x1="260" y1="134" x2="420" y2="134"/>
+            <text class="viz-title" x="298" y="90"  text-anchor="middle" fill="var(--q-growth)">Growth ▲</text>
+            <text class="viz-title" x="382" y="90"  text-anchor="middle" fill="var(--q-riskon)">Risk ON</text>
+            <text class="viz-title" x="298" y="186" text-anchor="middle" fill="var(--q-riskoff)">Risk OFF</text>
+            <text class="viz-title" x="382" y="186" text-anchor="middle" fill="var(--q-value)">Value ▲</text>
+            <text class="viz-label" x="240" y="244">Risk ON / OFF — углы</text>
+            <text class="viz-label" x="240" y="262">Growth / Value — квадранты</text>
+            <text class="viz-annot" x="240" y="288">стили уже угловые,</text>
+            <text class="viz-annot" x="240" y="303">режим риска — тоже</text>
+          </g>
+
+          <!-- ===== L09 ===== -->
+          <g tabindex="0" data-tip="<b>L09 сл. 02</b><br>Откат в другую сторону: теперь к половинам привязан режим риска — «верх (FED +) → Risk ON; низ (FED −) → Risk OFF», а стили остались угловыми.">
+            <text class="viz-title" x="460" y="22">L09 · сл. 02</text>
+            <text class="viz-axis"  x="460" y="38">факторная лекция</text>
+            <rect class="viz-box" x="476" y="50" width="168" height="168" rx="6"/>
+            <rect x="479" y="53" width="162" height="81" rx="4" fill="var(--surface-2)"/>
+            <rect x="479" y="135" width="162" height="80" rx="4" fill="var(--surface-2)"/>
+            <line class="viz-axisline" x1="560" y1="54" x2="560" y2="214"/>
+            <line class="viz-axisline" x1="480" y1="134" x2="640" y2="134"/>
+            <text class="viz-title" x="560" y="74"  text-anchor="middle" fill="var(--q-riskon)">Risk ON</text>
+            <text class="viz-title" x="518" y="106" text-anchor="middle" fill="var(--q-growth)">Growth ▲</text>
+            <text class="viz-title" x="602" y="168" text-anchor="middle" fill="var(--q-value)">Value ▲</text>
+            <text class="viz-title" x="560" y="200" text-anchor="middle" fill="var(--q-riskoff)">Risk OFF</text>
+            <text class="viz-label" x="460" y="244">Risk ON / OFF — половины</text>
+            <text class="viz-label" x="460" y="262">Growth / Value — квадранты</text>
+            <text class="viz-annot" x="460" y="288">откат к половинам</text>
+            <text class="viz-annot" x="460" y="303">по режиму риска</text>
+          </g>
+
+          <!-- ===== L10 ===== -->
+          <g tabindex="0" data-tip="<b>L10 сл. 09–16 — финал</b><br>Оба измерения угловые. Это канон: все расхождения с ранними редакциями разрешаются в пользу этой версии.">
+            <text class="viz-title" x="680" y="22">L10 · сл. 09–16</text>
+            <text class="viz-axis"  x="680" y="38">финал — канон</text>
+            <rect class="viz-box" x="696" y="50" width="168" height="168" rx="6" stroke="var(--q-quality)" stroke-width="1.5"/>
+            <line class="viz-axisline" x1="780" y1="54" x2="780" y2="214"/>
+            <line class="viz-axisline" x1="700" y1="134" x2="860" y2="134"/>
+            <text class="viz-title" x="738" y="90"  text-anchor="middle" fill="var(--q-growth)">Growth ▲</text>
+            <text class="viz-title" x="822" y="90"  text-anchor="middle" fill="var(--q-riskon)">Risk ON</text>
+            <text class="viz-title" x="738" y="186" text-anchor="middle" fill="var(--q-riskoff)">Risk OFF</text>
+            <text class="viz-title" x="822" y="186" text-anchor="middle" fill="var(--q-value)">Value ▲</text>
+            <rect x="762" y="126" width="36" height="16" rx="4" fill="var(--surface)" stroke="var(--q-quality)" stroke-width="1.2"/>
+            <text class="viz-label" x="680" y="244">Risk ON / OFF — углы</text>
+            <text class="viz-label" x="680" y="262">Growth / Value — квадранты</text>
+            <text class="viz-annot" x="680" y="288">оба измерения угловые —</text>
+            <text class="viz-annot" x="680" y="303">это канон</text>
+          </g>
+
+          <text class="viz-annot" x="20" y="328">Серая плашка = ярлык привязан к половине матрицы; без плашки — к отдельному углу.</text>
+        </svg>
+      </div>
+      <figcaption>
+        <span class="figure__num">Рис. 19.4.</span> <b>Четыре показа одной матрицы.</b>
+        Дрейф идёт в обе стороны: в лекции 6 к половинам привязаны стили,
+        в лекции 9 — режим риска, а в лекциях 8 и 10 оба измерения угловые.
+        Побеждает финальная версия: она и есть канон, ранние — черновики.
+      </figcaption>
+      <div class="figure__table table-scroll" hidden>
+        <table class="data">
+          <caption class="viz-legend" style="text-align:left;padding:.5rem .75rem;color:var(--ink-muted)">Привязка ярлыков по показам матрицы (спецификация §3.3)</caption>
+          <thead>
+            <tr><th>Лекция / слайд</th><th>Risk ON / Risk OFF</th><th>Growth / Value</th><th>Статус</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>L06 сл. 39 — первое появление</td><td>углы: ON = верх-право, OFF = низ-лево</td><td><b>половины:</b> «верх (FED +) → Growth ▲; низ (FED −) → Value ▲»</td><td>ранняя редакция</td></tr>
+            <tr><td>L08 сл. 02 / 54 / 73</td><td>углы (как в финале)</td><td><b>квадранты:</b> Growth = верх-лево, Value = низ-право</td><td>совпадает с финалом</td></tr>
+            <tr><td>L09 сл. 02</td><td><b>половины:</b> «верх (FED +) → Risk ON; низ (FED −) → Risk OFF»</td><td>квадранты</td><td>откат</td></tr>
+            <tr><td>L09 сл. 32 · L10 сл. 09–16</td><td>углы</td><td>квадранты</td><td><b>канон</b></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </figure>
+
+    <h3>Почему это не мелочь</h3>
+    <p>
+      Разница между «половиной» и «углом» — это разница между одномерным
+      и двумерным утверждением. «Верхняя половина — Growth» означает: достаточно
+      мягкой ФРС, состояние макро не важно. «Верхний левый угол — Growth»
+      означает: нужна мягкая ФРС <em>и</em> слабое макро; при мягкой ФРС и
+      сильном макро работает не Growth, а весь рисковый набор целиком.
+      Это разные портфели.
+    </p>
+    <p>
+      Дрейф стоил дорого не только читателю. Между лекциями разъехались и
+      <em>знаки</em> внутри квадрантов: в разных редакциях матрицы
+      <span class="ticker">Highβ/Lowβ</span> в квадранте Growth стоит то со
+      стрелкой вверх, то вниз, и конспекты по этому пункту делятся ровно пополам.
+      Конфликт был закрыт единственным честным способом — возвратом к финальному
+      слайду и прямым его прочтением (§8.1 спецификации). <b>[КАНОН]</b>
+    </p>
+
+    <div class="callout callout--rule">
+      <div class="callout__label" data-icon="⌘">Правило разрешения противоречий</div>
+      <p style="margin-bottom:0">
+        Канон — <b>финальная версия</b>, лекция 10, слайд 16. Любое расхождение
+        с лекциями 6–9 трактуется как черновик, отменённый финалом. Разрешать
+        конфликт в пользу более ранней редакции только потому, что она встречается
+        чаще, методологически неверно: три повтора черновика не делают его
+        итогом.
+      </p>
+    </div>
+
+    <h3>Что в «половинчатом» прочтении всё-таки было верно</h3>
+    <p>
+      Соблазн привязать стили к половинам возник не на пустом месте, и стоит
+      понять, почему автор дважды в него впадал. Дело в том, что спред
+      Growth минус Value действительно нагружен преимущественно
+      <em>вертикальной</em> осью.
+    </p>
+
+    <div class="callout callout--beyond">
+      <div class="callout__label" data-icon="✚">Дюрация акции — почему Growth так чувствителен к ставке</div>
+      <p>
+        Курс пользуется словом «дюрация» применительно к акциям, но нигде его
+        не выводит. Механизм такой. Цена акции — приведённая стоимость будущих
+        денежных потоков; у компании роста основная их масса отнесена далеко
+        в будущее, у стоимостной — распределена ближе к настоящему. Значит,
+        <b>средневзвешенный срок поступления денег у growth-компании длиннее</b>,
+        и её цена реагирует на изменение ставки дисконтирования сильнее — ровно
+        как длинная облигация против короткой.
+      </p>
+      <p>
+        Величину можно оценить количественно: Дечоу, Слоан и Солиман
+        (<i>Dechow, Sloan, Soliman, «Implied Equity Duration: A New Measure of
+        Equity Risk», Review of Accounting Studies, 2004</i>) построили меру
+        «подразумеваемой дюрации акции» из финансовой отчётности и показали, что
+        она объясняет различие в чувствительности акций к ставкам и что
+        стоимостные бумаги систематически короче growth-бумаг.
+      </p>
+      <p style="margin-bottom:0">
+        Отсюда и «половинчатая» интуиция: как только ФРС смягчает, ставка
+        дисконтирования падает, и длинная дюрация выигрывает — вся верхняя
+        половина матрицы дружелюбна к Growth. Но выигрывает она <em>сильнее
+        всего</em> тогда, когда макро при этом слабое: рост денежных потоков
+        у циклических компаний в таком состоянии не растёт, и вся выгода
+        достаётся ставочной компоненте. Поэтому канон — угол, а не половина.
+        <b>[ДОПОЛНЕНО]</b>
+      </p>
+    </div>
+
+    <div class="callout callout--ours">
+      <div class="callout__label" data-icon="◆">Как мы кодируем это в главе 24</div>
+      <p style="margin-bottom:0">
+        Половинчатое прочтение сохраняется как <b>мягкое правило и проверка
+        на вменяемость</b>: верхняя половина в целом благоприятна для риска
+        и длинной дюрации, нижняя — для защиты и стоимости. Классификация же
+        делается строго по квадранту
+        (<span class="rule-id">R19</span>–<span class="rule-id">R23</span>).
+        Если мягкое правило и квадрант расходятся — это не ошибка, а сигнал,
+        что состояние близко к границе; такой случай логируется и добавляет вес
+        в пользу центра. <b>[НАШЕ РЕШЕНИЕ]</b>
+      </p>
+    </div>
+
+    <!-- ================================================================= -->
+    <h2 id="s6">Что вся эта линия так и не закрыла</h2>
+
+    <p>
+      Восемь предков и шесть шагов сборки дали инструмент. Чего они не дали —
+      стоит перечислить прямо, потому что в главе 24 эти дыры придётся закрывать
+      своими руками.
+    </p>
+
+    <p>
+      <b>Ни в одной схеме нет проверки.</b> Ни у Merrill Lynch, ни у Gavekal,
+      ни у BofA, ни у автора курса нет ответа на вопрос «а насколько часто
+      квадрант оказывался прав». Единственные числа во всей родословной —
+      фазовые hit rates BofA (<span class="rule-id">R85</span>–<span class="rule-id">R88</span>),
+      но они привязаны к <em>их</em> индикатору фазы цикла, а не к осям
+      FED × MACRO, и переносить их на шпаргалку нельзя. <b>[КАНОН]</b>
+    </p>
+
+    <div class="callout callout--beyond">
+      <div class="callout__label" data-icon="✚">Почему «красивые» схемы режимов надо проверять особенно строго</div>
+      <p>
+        Все восемь схем построены одинаково: взяли историю, разметили её на фазы
+        задним числом, посмотрели, что в каждой фазе работало, и нарисовали
+        картинку. Проблема этого метода известна: разметка использует информацию,
+        которой в реальном времени не было, поэтому «точность» такой схемы
+        завышена по построению.
+      </p>
+      <p>
+        Формальная альтернатива существует с 1989 года. Гамильтон
+        (<i>Hamilton, «A New Approach to the Economic Analysis of Nonstationary
+        Time Series and the Business Cycle», Econometrica, 1989</i>) предложил
+        модель с переключением режимов, в которой режим не размечается рукой,
+        а <b>оценивается как скрытое состояние</b>, и на выходе получается не
+        ярлык, а вероятность нахождения в каждом режиме плюс вероятности
+        перехода.
+      </p>
+      <p style="margin-bottom:0">
+        Для нашей задачи это важно двумя вещами. Во-первых, вероятность вместо
+        ярлыка — естественный способ задать зону отказа (центр Quality): низкая
+        максимальная вероятность и есть «режима нет». Во-вторых, матрица переходов
+        даёт то, чего у автора нет вовсе, — <b>частоту смены квадрантов</b>,
+        то есть основание для гистерезиса (§8.4 спецификации). Мы не будем
+        заменять шпаргалку моделью Гамильтона: книга реконструирует конкретный
+        метод. Но проверять шпаргалку будем именно так. <b>[ДОПОЛНЕНО]</b>
+      </p>
+    </div>
+
+    <p>
+      <b>Не задан ни один порог.</b> Оси имеют знак, но не имеют шкалы: неизвестно,
+      при каком значении <code>FED_score</code> ось считается «около нуля» и
+      инструмент уходит в центр. Веса входов внутри осей тоже не заданы.
+      <b>[НЕТ В КУРСЕ]</b> Это самая крупная дыра, и она блокирующая: без порогов
+      правило <span class="rule-id">R23</span> не исполнимо машиной.
+    </p>
+    <p>
+      <b>Нет частоты пересчёта и гистерезиса.</b> Ни одна схема не говорит,
+      как часто пересматривать состояние и что делать, если оно скачет туда-сюда
+      на границе. Для инструмента, у которого входы обновляются от нескольких раз
+      в неделю до раза в месяц, это не косметика: без гистерезиса классификатор
+      будет дребезжать.
+    </p>
+    <p>
+      <b>Нет пятой формы кривой.</b> Четвёрка bull/bear × flat/steep исчерпывает
+      комбинации двух главных компонент, но не описывает «горбатую» кривую,
+      которую сам автор в лекции 7 комментирует как явную аномалию. В матрице
+      такого состояния нет, и инструменту нужен шестой класс — отказ по причине
+      аномалии, а не по причине неопределённости (§8.7). <b>[ВЫВЕДЕНО]</b>
+    </p>
+    <p>
+      <b>Оригинал недоступен.</b> На финальном слайде есть кнопка «Ссылка на
+      оригинал» — интерактивная доска Miro с эталонной шпаргалкой, — но самой
+      ссылки в материалах нет. <b>[НЕТ В КУРСЕ]</b> Поэтому все спорные знаки
+      разрешаются прямым прочтением слайда 16, а не сверкой с эталоном.
+    </p>
+
+    <!-- ================================================================= -->
+    <div class="callout callout--crypto">
+      <div class="callout__label" data-icon="₿">Крипто-слой</div>
+      <p>
+        В этой главе крипто-слоя почти нет — и это само по себе факт, который
+        стоит зафиксировать. Крипта не появляется <b>ни в одном</b> из восьми
+        предков просто потому, что все они — институциональные схемы аллокации,
+        написанные sell-side-стратегами для мандатов, в которых такого класса
+        активов не существует. Даже самая поздняя из них, BofA 2.0, датирует свои
+        фазы периодом с марта 2020 по вторую половину 2021 года — крипта в это
+        время уже была огромным рынком, но в квадранты не попала. <b>[КАНОН]</b>
+      </p>
+      <p style="margin-bottom:0">
+        Любопытнее другое: на <em>экране</em> у автора биткоин есть. В лекции 10
+        он читает внутридневную динамику фьючерсов вместе с
+        <span class="ticker">BTCUSDT</span> и по расхождению «Nasdaq и биткоин
+        сильно вверх, Russell вниз» ставит диагноз «квадрант Growth». <b>[КАНОН]</b>
+        То есть крипта уже работает у него как <b>индикатор риск-аппетита</b>,
+        но так и не получает собственной строки в матрице. Эту работу за него
+        делаем мы: глава 22 определяет место крипты на лестнице риска и её
+        поведение по квадрантам.
+      </p>
+    </div>
+
+    <div class="callout callout--2026">
+      <div class="callout__label" data-icon="↻">2023 → 2026</div>
+      <p>
+        Курс записан в феврале–апреле 2023 года, то есть внутри цикла ужесточения.
+        С тех пор ФРС завершила повышения на диапазоне <b>5.25–5.50 %</b> летом
+        2023-го, кривая <span class="ticker">10Y−2Y</span> дезинвертировалась
+        в 2024-м, а в сентябре 2024-го начался цикл снижения ставки.
+        <b>[ДОПОЛНЕНО: заявления и SEP FOMC]</b> Инструмент за это время прошёл
+        через верхнюю половину матрицы, которой автор почти не иллюстрировал.
+      </p>
+      <p>
+        <b>Главное решение главы этот период скорее подтвердил.</b> Пик инфляции
+        в США пришёлся на середину 2022 года (CPI год к году <b>9.1 %</b> в июне
+        2022-го, <i>BLS</i>), а разворот ожиданий по ставке — на существенно более
+        поздний момент. Часы с осью «инфляция» переключились бы в «дезинфляцию»
+        задолго до того, как ФРС хотя бы прекратила повышать, — то есть выдали бы
+        сигнал смены режима там, где режим ещё не менялся. Ось ожиданий по ставке
+        такой ошибки не делает: она меняет знак тогда, когда меняется траектория,
+        а не когда выходит очередной отчёт. <b>[ВЫВЕДЕНО]</b> — это разбор
+        механизма, а не бэктест; бэктеста ни у автора, ни у нас пока нет.
+      </p>
+      <p style="margin-bottom:0">
+        <b>Но у новой оси вылезла своя слабость, которой в 2023-м не было видно.</b>
+        Когда ставка стояла на пути вверх, знак вертикальной оси читался
+        однозначно. Когда цикл закончился и политика подошла к нейтральной зоне,
+        ожидания стали колебаться вокруг нуля — и ось всё чаще оказывается
+        в области <code>Ready!</code>, то есть инструмент уходит в центр.
+        Плюс появился второй канал политики, который курс не измеряет вовсе:
+        ФРС сначала замедлила, а затем свернула сокращение баланса, и жёсткость
+        стала задаваться не только ставкой, но и объёмом резервов. Наблюдаемая
+        величина для этого есть — недельный релиз <i>H.4.1</i> и баланс резервов
+        банковской системы. <b>[ДОПОЛНЕНО]</b> Наш вывод: вертикальная ось
+        нуждается в ликвидностной компоненте, а порог <code>θ_fed</code> —
+        в аккуратной калибровке, иначе классификатор будет проводить в центре
+        больше времени, чем полезно. <b>[НАШЕ РЕШЕНИЕ]</b>
+      </p>
+    </div>
+
+    <!-- ================================================================= -->
+    <h2 id="s7">Что сделать перед следующей главой</h2>
+
+    <ul class="checklist">
+      <li>Откройте рис. 19.1 и для каждой из восьми схем ответьте одним предложением: какой <em>вход</em> она требует измерить. Там, где ответа нет, схема не операционна — именно это и отсеивало версии.</li>
+      <li>Сформулируйте вслух, почему ось на запаздывающем показателе слепа на развороте. Если объяснение получается через слова «инфляция важна», значит, механизм ещё не собрался: он про <em>порядок звеньев</em>, а не про важность.</li>
+      <li>Пройдите семь строк рис. 19.3 и на каждой спросите: что сломается в инструменте, если этот шаг убрать. Для шагов v1 и v6 ответ должен быть «инструмент потеряет право не отвечать» и «потеряет независимую проверку».</li>
+      <li>Найдите в своих заметках или в чужой аналитике формулировку вида «ФРС мягкая — значит, Growth». Это половинчатое прочтение. Уточните его до квадранта: мягкая ФРС <em>и какое</em> макро?</li>
+      <li>Запишите три числа, которых в курсе нет и которые придётся задать самим: <code>θ_fed</code>, <code>θ_macro</code>, окно расчёта Δ кривой. В главе 24 они станут первыми строками спецификации.</li>
+    </ul>
+
+    <!-- ================================================================= -->
+    <h2 id="s8">Что читать дальше</h2>
+
+    <p>
+      Шесть источников, закрывающих ровно те места, где курс показывает схему,
+      но не показывает её происхождение или основание.
+    </p>
+
+    <ul>
+      <li>
+        <b>Trevor Greetham и соавторы, «The Investment Clock: Making Money from
+        Macro», Merrill Lynch Global Asset Allocation, ноябрь 2004.</b>
+        Оригинал предка № 5. Смотреть фазы в авторских именах —
+        <i>Reflation → Recovery → Overheat → Stagflation</i> — и порядок лидерства
+        классов активов по кругу. Нужно, чтобы увидеть, что курс воспроизводит
+        схему в переименованном виде, и чтобы понять исходную логику обхода
+        по часовой стрелке.
+      </li>
+      <li>
+        <b>Robert Litterman, José Scheinkman, «Common Factors Affecting Bond
+        Returns», Journal of Fixed Income, 1991.</b>
+        Главные компоненты кривой доходности: уровень, наклон, кривизна. Смотреть
+        долю дисперсии, которую забирают первые две. Это основание, по которому
+        четвёрка bull/bear × flattener/steepener оказывается исчерпывающей, —
+        и одновременно объяснение, откуда берётся неклассифицируемая «горбатая»
+        кривая.
+      </li>
+      <li>
+        <b>Kenneth Kuttner, «Monetary policy surprises and interest rates:
+        evidence from the Fed funds futures market», Journal of Monetary
+        Economics, 2001</b> — и <b>Refet Gürkaynak, Brian Sack, Eric Swanson,
+        «Do actions speak louder than words?», 2005.</b>
+        Разложение решения ФРС на ожидаемую часть и сюрприз, а затем на «фактор
+        уровня» и «фактор траектории». Читать как строгое обоснование
+        <span class="rule-id">R07</span>: рынок отыгрывает изменение траектории,
+        а не факт решения.
+      </li>
+      <li>
+        <b>John J. Murphy, «Intermarket Analysis: Profiting from Global Market
+        Relationships».</b>
+        Первоисточник порядка ротации «облигации → акции → сырьё», который
+        в курсе подан схемой StockCharts. Смотреть главы о взаимодействии
+        четырёх рынков и о том, при каких условиях порядок нарушается, —
+        курс об исключениях не говорит.
+      </li>
+      <li>
+        <b>The Conference Board, методология Leading / Coincident / Lagging
+        Economic Indexes.</b>
+        Официальный состав трёх композитных индексов США. Смотреть, какие ряды
+        отнесены к <b>запаздывающим</b>: там и средняя продолжительность
+        безработицы, и потребительские цены на услуги. Это эмпирическая опора
+        под решением убрать инфляцию из осей — оно не авторская прихоть,
+        а следствие общепринятой классификации.
+      </li>
+      <li>
+        <b>C. K. Chow, «On optimum recognition error and reject tradeoff»,
+        IEEE Transactions on Information Theory, 1970</b> — и
+        <b>James Hamilton, «A New Approach to the Economic Analysis of
+        Nonstationary Time Series and the Business Cycle», Econometrica, 1989.</b>
+        Первое — теория классификатора с правом на отказ (это и есть центр
+        Quality); второе — модель переключения режимов, дающая вероятности
+        и матрицу переходов вместо ярлыков. Вместе они образуют формальный
+        каркас, в который мы будем укладывать шпаргалку в главе 24.
+      </li>
+    </ul>
+
+    <nav class="chapter-nav" id="chapter-nav"></nav>
+
+  </article>
+  </main>
+</div>
+
+<script src="assets/chapters.js"></script>
+<script src="assets/book.js"></script>
+</body>
+</html>

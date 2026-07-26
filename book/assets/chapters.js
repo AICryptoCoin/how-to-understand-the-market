@@ -37,7 +37,7 @@ window.BOOK_CHAPTERS = [
   { n: 17, part: 4, file: "ch17-faktory.html",               title: "Факторы и факторная ротация",        status: "todo" },
   { n: 18, part: 4, file: "ch18-sentiment.html",             title: "Сентимент, широта, позиционирование",status: "todo" },
 
-  { n: 19, part: 5, file: "ch19-evolyuciya-shpargalki.html", title: "Эволюция шпаргалки",                 status: "todo" },
+  { n: 19, part: 5, file: "ch19-evolyuciya-shpargalki.html", title: "Эволюция шпаргалки",                 status: "done" },
   { n: 20, part: 5, file: "ch20-anatomiya-shpargalki.html",  title: "Анатомия шпаргалки",                 status: "todo" },
   { n: 21, part: 5, file: "ch21-framework.html",             title: "Framework макро-трейдера",           status: "todo" },
 
