@@ -42,6 +42,6 @@ window.BOOK_CHAPTERS = [
   { n: 21, part: 5, file: "ch21-framework.html",             title: "Framework макро-трейдера",           status: "todo" },
 
   { n: 22, part: 6, file: "ch22-kripta-kak-makro-aktiv.html",title: "Крипта как макро-актив",             status: "done" },
-  { n: 23, part: 6, file: "ch23-istochniki-dannyh.html",     title: "Источники данных и гигиена",         status: "todo" },
+  { n: 23, part: 6, file: "ch23-istochniki-dannyh.html",     title: "Источники данных и гигиена",         status: "done" },
   { n: 24, part: 6, file: "ch24-ot-shpargalki-k-kodu.html",  title: "От шпаргалки к коду",                status: "todo" },
 ];
