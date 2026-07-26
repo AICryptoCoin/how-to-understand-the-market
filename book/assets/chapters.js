@@ -32,7 +32,7 @@ window.BOOK_CHAPTERS = [
   { n: 13, part: 3, file: "ch13-krivaya-mehanika.html",      title: "Кривая доходности: механика",        status: "done" },
   { n: 14, part: 3, file: "ch14-formy-i-realnye-stavki.html",title: "Формы, режимы и реальные ставки",    status: "done" },
 
-  { n: 15, part: 4, file: "ch15-mezhrynochnyy-analiz.html",  title: "Межрыночный анализ",                 status: "todo" },
+  { n: 15, part: 4, file: "ch15-mezhrynochnyy-analiz.html",  title: "Межрыночный анализ",                 status: "done" },
   { n: 16, part: 4, file: "ch16-dollar-zoloto-syryo.html",   title: "Доллар, золото, сырьё",              status: "done" },
   { n: 17, part: 4, file: "ch17-faktory.html",               title: "Факторы и факторная ротация",        status: "done" },
   { n: 18, part: 4, file: "ch18-sentiment.html",             title: "Сентимент, широта, позиционирование",status: "todo" },
