@@ -34,7 +34,7 @@ window.BOOK_CHAPTERS = [
 
   { n: 15, part: 4, file: "ch15-mezhrynochnyy-analiz.html",  title: "Межрыночный анализ",                 status: "todo" },
   { n: 16, part: 4, file: "ch16-dollar-zoloto-syryo.html",   title: "Доллар, золото, сырьё",              status: "done" },
-  { n: 17, part: 4, file: "ch17-faktory.html",               title: "Факторы и факторная ротация",        status: "todo" },
+  { n: 17, part: 4, file: "ch17-faktory.html",               title: "Факторы и факторная ротация",        status: "done" },
   { n: 18, part: 4, file: "ch18-sentiment.html",             title: "Сентимент, широта, позиционирование",status: "todo" },
 
   { n: 19, part: 5, file: "ch19-evolyuciya-shpargalki.html", title: "Эволюция шпаргалки",                 status: "done" },
