@@ -18,7 +18,7 @@ window.BOOK_CHAPTERS = [
 
   { n:  2, part: 1, file: "ch02-ekonomika-kak-potok.html",   title: "Экономика как поток: ВВП",           status: "done" },
   { n:  3, part: 1, file: "ch03-biznes-cikl.html",           title: "Бизнес-цикл и иерархия циклов",      status: "done" },
-  { n:  4, part: 1, file: "ch04-dengi-i-kredit.html",        title: "Деньги, кредит и ликвидность",       status: "todo" },
+  { n:  4, part: 1, file: "ch04-dengi-i-kredit.html",        title: "Деньги, кредит и ликвидность",       status: "done" },
 
   { n:  5, part: 2, file: "ch05-hope.html",                  title: "H-O-P-E: скелет опережения",         status: "done" },
   { n:  6, part: 2, file: "ch06-zhilyo.html",                title: "Жильё — первое звено",               status: "done" },
