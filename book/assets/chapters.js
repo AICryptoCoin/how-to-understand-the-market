@@ -27,7 +27,7 @@ window.BOOK_CHAPTERS = [
   { n:  9, part: 2, file: "ch09-trud-i-potrebitel.html",     title: "Труд, доходы и потребитель",         status: "todo" },
   { n: 10, part: 2, file: "ch10-ceny-i-inflyaciya.html",     title: "Цены и инфляция",                    status: "done" },
 
-  { n: 11, part: 3, file: "ch11-frs-ustroystvo.html",        title: "ФРС: устройство и каналы",           status: "todo" },
+  { n: 11, part: 3, file: "ch11-frs-ustroystvo.html",        title: "ФРС: устройство и каналы",           status: "done" },
   { n: 12, part: 3, file: "ch12-kak-chitat-frs.html",        title: "Как читать ФРС",                     status: "todo" },
   { n: 13, part: 3, file: "ch13-krivaya-mehanika.html",      title: "Кривая доходности: механика",        status: "done" },
   { n: 14, part: 3, file: "ch14-formy-i-realnye-stavki.html",title: "Формы, режимы и реальные ставки",    status: "done" },
