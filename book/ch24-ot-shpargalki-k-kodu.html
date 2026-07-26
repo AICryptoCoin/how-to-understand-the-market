@@ -1,0 +1,1848 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>24. От шпаргалки к коду — Как понимать рынок</title>
+<meta name="description" content="Архитектура классификатора, каталог 88 правил, десять незакрытых дыр спецификации и наши проектные решения по каждой.">
+<link rel="stylesheet" href="assets/book.css">
+</head>
+<body data-chapter="24">
+
+<header class="topbar">
+  <button class="btn sidebar-toggle" id="sidebar-btn" type="button" aria-expanded="false">☰</button>
+  <a class="topbar__book" href="index.html">Как понимать рынок</a>
+  <span class="topbar__sep">·</span>
+  <span class="topbar__where" id="topbar-where"></span>
+  <span class="topbar__spacer"></span>
+  <button class="btn" id="theme-btn" type="button">◐&nbsp;&nbsp;Тема: авто</button>
+</header>
+
+<div class="layout">
+  <aside class="sidebar"><nav id="book-nav"></nav></aside>
+
+  <main class="content">
+  <article class="prose">
+
+    <p class="chapter-eyebrow">Часть VI · Мост к нашей разработке · Глава 24</p>
+    <h1>От шпаргалки к коду</h1>
+    <p class="chapter-lede">
+      Двадцать три главы объясняли, как читать рынок глазами. Эта — про то, что
+      придётся дописать, чтобы то же самое делала программа. Здесь заканчивается
+      учебник и начинается техническое задание, поэтому тон меняется: вместо
+      «почему это работает» — «чего не хватает и что мы с этим делаем».
+    </p>
+
+    <nav class="chapter-map">
+      <h2>В этой главе</h2>
+      <ol>
+        <li><a href="#s1">Что именно мы кодируем</a></li>
+        <li><a href="#s2">Архитектура инструмента</a></li>
+        <li><a href="#s3">Дерево решений: от входов к состоянию</a></li>
+        <li><a href="#s4">Каталог: 88 правил в тринадцати группах</a></li>
+        <li><a href="#s5">Десять дыр и что мы с ними делаем</a></li>
+        <li><a href="#s6">Что уже разрешено и как</a></li>
+        <li><a href="#s7">План реализации</a></li>
+        <li><a href="#s8">Чек-лист</a></li>
+        <li><a href="#s9">Что читать дальше</a></li>
+      </ol>
+    </nav>
+
+    <!-- ================================================================= -->
+    <h2 id="s1">Что именно мы кодируем</h2>
+
+    <p>
+      Все предыдущие главы обслуживали отдельные входы матрицы: части II и III
+      собирали по одной оси, часть IV объясняла, чем полученное состояние торгуется,
+      часть V соединила это в классификатор. Эта глава не обслуживает вход — она
+      обслуживает <em>весь</em> инструмент целиком и отвечает на единственный
+      вопрос: что нужно дописать к <a href="../synthesis/cheatsheet-spec.md">спецификации
+      шпаргалки</a>, чтобы правила <span class="rule-id">R01</span>–<span class="rule-id">R88</span>
+      выполнялись машиной без участия человека.
+    </p>
+    <p>
+      Разница между «понятно» и «исполнимо» больше, чем кажется. Правило
+      <span class="rule-id">R19</span> («FED = «+» и MACRO = «−» → Q-I») исполнимо
+      как есть: это чистая функция от двух знаков. Правило <span class="rule-id">R01</span>
+      («если Δ терминальной ставки за окно W &lt; 0, то FED_score += w₁») —
+      неисполнимо: не задано ни окно <em>W</em>, ни вес <em>w₁</em>, ни то, как
+      сумма превращается в знак. Таких мест в спецификации ровно десять групп,
+      и они разобраны в разделе 5.
+    </p>
+    <p>
+      Важно, чем эта глава <b>не</b> является. Она не содержит кода, не выбирает язык
+      и библиотеки и не описывает интеграцию с торговым контуром. Она фиксирует
+      контракт: какие ряды на входе, какая функция в середине, какие значения
+      на выходе — и где в этом контракте сейчас пустые места, заполненные нами,
+      а не автором курса.
+    </p>
+    <p>
+      Плотность пометок здесь выше, чем в любой другой главе, и это нормально:
+      <b>[КАНОН]</b> тут мало, а <b>[НАШЕ РЕШЕНИЕ]</b> и <b>[ДОПОЛНЕНО]</b> много.
+      Правило простое: всё, что вы читаете без пометки, — общая логика изложения;
+      всё, что становится числом, порогом или формулой, помечено обязательно.
+    </p>
+
+    <div class="callout callout--beyond">
+      <div class="callout__label" data-icon="✚">Чужие решения той же задачи</div>
+      <p>
+        Задача «свернуть десятки макро-рядов в одно состояние экономики» решалась
+        задолго до курса, и решалась публично. Прежде чем изобретать свою схему
+        весов, полезно посмотреть на три работающих ответа — <b>[ДОПОЛНЕНО]</b>:
+      </p>
+      <ul>
+        <li><b>CFNAI</b> (Chicago Fed National Activity Index, ФРБ Чикаго) — взвешенное
+          среднее 85 месячных рядов, сведённое в <em>одно</em> число со средним 0
+          и единичным стандартным отклонением. Веса не назначаются экспертно, а
+          извлекаются как первая главная компонента. У индекса есть опубликованные
+          пороги-конвенции: трёхмесячное среднее ниже <b>−0.70</b> после расширения —
+          признак начавшейся рецессии, выше <b>+0.20</b> после сжатия — признак её
+          окончания.</li>
+        <li><b>Composite Leading Index</b> (Conference Board) — набор из десяти
+          опережающих компонент, стандартизованных так, чтобы ни одна волатильная
+          серия не доминировала в сумме, плюс качественное «правило трёх D»
+          (duration, depth, diffusion) для сигнала о рецессии.</li>
+        <li><b>Марковское переключение режимов</b> (Hamilton, <i>Econometrica</i>, 1989;
+          практическая реализация в реальном времени — Chauvet и Piger, чей индекс
+          вероятности рецессии публикуется в FRED) — состояние не назначается
+          порогом, а оценивается как <em>вероятность</em>, и модель сама выучивает,
+          сколько времени экономика обычно проводит в каждом режиме.</li>
+      </ul>
+      <p style="margin-bottom:0">
+        Ни один из трёх не заменяет шпаргалку: у CFNAI и CLI нет второй оси
+        (политики ФРС), а марковская модель не даёт торговых списков. Но каждый
+        закрывает ровно ту дыру, которую нам предстоит закрывать, и делает это
+        лучше, чем «придумаем веса на глаз».
+      </p>
+    </div>
+
+    <!-- ================================================================= -->
+    <h2 id="s2">Архитектура инструмента</h2>
+
+    <p>
+      Конструкция задана в §0 спецификации и состоит из четырёх частей: входы,
+      ядро из двух осей, независимый валидатор формы кривой и выходы. Ключевое
+      свойство — <b>валидатор не подчинён ядру</b>. Он получает свои данные
+      напрямую с рынка облигаций и имеет право отменить вывод классификатора,
+      но не имеет права его сформировать.
+    </p>
+
+    <figure class="figure" id="fig-24-1">
+      <div class="figure__frame">
+        <svg viewBox="0 0 900 420" role="img" aria-labelledby="fig241-title fig241-desc">
+          <title id="fig241-title">Архитектура инструмента: входы, ядро из двух осей, валидатор, выходы</title>
+          <desc id="fig241-desc">Три блока входов слева. Два верхних питают ядро: ось FED Policy и ось MACRO sentiment, каждая даёт знак плюс, минус или ноль. Третий вход — кривая государственных облигаций США — питает независимый валидатор формы. Классификатор соединяет обе оси и валидатор и выдаёт одно из шести состояний. Справа перечислены выходы: класс состояния, форма кривой, уверенность, списки покупок и продаж, множитель размера риска и флаги.</desc>
+
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+              <path d="M0,0 L10,5 L0,10 z" fill="var(--axis)"/>
+            </marker>
+          </defs>
+
+          <text class="viz-q-sub" x="12" y="20">ВХОДЫ</text>
+          <text class="viz-q-sub" x="240" y="20">ЯДРО · ДВЕ ОСИ</text>
+          <text class="viz-q-sub" x="448" y="20">КЛАССИФИКАТОР</text>
+          <text class="viz-q-sub" x="656" y="20">ВЫХОДЫ</text>
+
+          <!-- входы -->
+          <rect class="viz-box" x="12" y="36" width="196" height="92" rx="7"/>
+          <text class="viz-title" x="26" y="58">Ставки и ожидания ФРС</text>
+          <text class="viz-label" x="26" y="78">терминальная FFR, US02Y</text>
+          <text class="viz-label" x="26" y="96">реальная 5Y, DXY, SEP</text>
+          <text class="viz-label" x="26" y="114">фаза режима ДКП</text>
+
+          <rect class="viz-box" x="12" y="146" width="196" height="92" rx="7"/>
+          <text class="viz-title" x="26" y="168">Макро-активность</text>
+          <text class="viz-label" x="26" y="188">NAHB, Permits, ISM, LEI</text>
+          <text class="viz-label" x="26" y="206">пересмотры fwd EPS</text>
+          <text class="viz-label" x="26" y="224">Claims, Cu/Au, Oil/Au</text>
+
+          <rect class="viz-box" x="12" y="286" width="196" height="92" rx="7"/>
+          <text class="viz-title" x="26" y="308">Кривая UST</text>
+          <text class="viz-label" x="26" y="328">узлы 2Y и 10Y</text>
+          <text class="viz-label" x="26" y="346">Δ за 5 / 10 / 21 день</text>
+          <text class="viz-label" x="26" y="364">контроль: 3M, 30Y</text>
+
+          <!-- оси -->
+          <rect class="viz-box viz-box--accent" x="240" y="54" width="176" height="56" rx="7" stroke="var(--series-1)" stroke-width="1.5"/>
+          <text class="viz-title" x="254" y="76" fill="var(--series-1)">ОСЬ 1 · FED Policy</text>
+          <text class="viz-label" x="254" y="96">знак + / − / 0</text>
+
+          <rect class="viz-box viz-box--accent" x="240" y="164" width="176" height="56" rx="7" stroke="var(--series-2)" stroke-width="1.5"/>
+          <text class="viz-title" x="254" y="186" fill="var(--series-2)">ОСЬ 2 · MACRO</text>
+          <text class="viz-label" x="254" y="206">знак − / + / 0</text>
+
+          <!-- валидатор -->
+          <rect class="viz-box" x="240" y="296" width="176" height="72" rx="7" stroke="var(--series-7)" stroke-width="1.5"/>
+          <text class="viz-title" x="254" y="318" fill="var(--series-7)">ВАЛИДАТОР</text>
+          <text class="viz-label" x="254" y="338">форма кривой —</text>
+          <text class="viz-label" x="254" y="356">независимо от осей</text>
+
+          <!-- классификатор -->
+          <rect class="viz-box" x="448" y="86" width="176" height="144" rx="7" stroke="var(--axis)"/>
+          <text class="viz-title" x="462" y="110">6 состояний</text>
+          <text class="viz-label" x="462" y="132">Q-I · Growth <tspan class="viz-up">▲</tspan></text>
+          <text class="viz-label" x="462" y="150">Q-II · Risk ON</text>
+          <text class="viz-label" x="462" y="168">Q-III · Risk OFF</text>
+          <text class="viz-label" x="462" y="186">Q-IV · Value <tspan class="viz-up">▲</tspan></text>
+          <text class="viz-label" x="462" y="204">Центр · Quality <tspan class="viz-up">▲</tspan></text>
+          <text class="viz-label" x="462" y="222">ANOMALY ◆</text>
+
+          <!-- выходы -->
+          <rect class="viz-box" x="656" y="64" width="232" height="182" rx="7"/>
+          <text class="viz-title" x="670" y="88">Что отдаёт инструмент</text>
+          <text class="viz-label" x="670" y="110">класс состояния (1 из 6)</text>
+          <text class="viz-label" x="670" y="128">форма кривой и её проверка</text>
+          <text class="viz-label" x="670" y="146">уверенность: |score| / θ</text>
+          <text class="viz-label" x="670" y="164">списки long / short (R37–R41)</text>
+          <text class="viz-label" x="670" y="182">множитель размера риска</text>
+          <text class="viz-label" x="670" y="200">флаги: неподтверждение,</text>
+          <text class="viz-label" x="670" y="218">TRANSITION_WATCH, ANOMALY</text>
+
+          <!-- потоки -->
+          <path class="viz-flow" d="M208,82 H240"/>
+          <path class="viz-flow" d="M208,192 H240"/>
+          <path class="viz-flow" d="M208,332 H240"/>
+          <path class="viz-flow" d="M416,82 H432 V130 H448"/>
+          <path class="viz-flow" d="M416,192 H432 V186 H448"/>
+          <path class="viz-flow" d="M416,332 H536 V232"/>
+          <path class="viz-flow" d="M624,158 H656"/>
+
+          <text class="viz-annot" x="546" y="272">форма ≠ предписанной → центр</text>
+          <text class="viz-annot" x="12" y="400">Пересчёт — раз в сутки после закрытия рынка США; внеочередной — после FOMC и ключевых релизов.</text>
+        </svg>
+      </div>
+      <figcaption>
+        <span class="figure__num">Рис. 24.1.</span> <b>Архитектура инструмента.</b>
+        Две оси считаются из разных наборов рядов и никогда не делят входы между собой.
+        Кривая доходности идёт третьим, независимым каналом: она не участвует
+        в определении квадранта, а только подтверждает или отменяет его
+        (<span class="rule-id">R28</span>). Шестое состояние ANOMALY — наше добавление,
+        см. раздел 5.
+      </figcaption>
+      <div class="figure__table table-scroll" hidden>
+        <table class="data">
+          <caption class="viz-legend" style="text-align:left;padding:.5rem .75rem;color:var(--ink-muted)">Блоки архитектуры: вход, содержание, выход</caption>
+          <thead><tr><th>Блок</th><th>Что получает</th><th>Что отдаёт</th></tr></thead>
+          <tbody>
+            <tr><td>Ось 1 · FED Policy</td><td>терминальная FFR, US02Y, реальная 5Y, DXY, фаза режима, дельта SEP</td><td>знак «+» / «−» / 0 и величина |score|</td></tr>
+            <tr><td>Ось 2 · MACRO sentiment</td><td>NAHB и Permits, ISM Mfg/Svc/NO, пересмотры fwd EPS, Claims, LEI, Cu/Au и Oil/Au</td><td>знак «−» / «+» / 0 и величина |score|</td></tr>
+            <tr><td>Валидатор формы</td><td>доходности узлов 2Y и 10Y, Δ за 5 / 10 / 21 торговый день</td><td>одна из четырёх форм либо «не читается»</td></tr>
+            <tr><td>Классификатор</td><td>два знака + форма</td><td>одно из шести состояний</td></tr>
+            <tr><td>Выходы</td><td>состояние, |score|, форма</td><td>класс, уверенность, списки long/short, множитель размера, флаги</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </figure>
+
+    <p>
+      Асимметрия входов не случайна. Ось FED строится по <em>короткому</em> концу
+      кривой и по ожиданиям, потому что ФРС управляет только им: месячное изменение
+      ставки почти не объясняет доходность длинных бумаг (<b>[КАНОН]</b>, L07 сл. 11).
+      Длинный конец поэтому не входит в ось — он уходит в валидатор, где вместе
+      с коротким образует форму. Один и тот же ряд <span class="ticker">US02Y</span>
+      участвует и там, и там, и это единственное пересечение во всей схеме; оно
+      осознанное и разобрано в дыре&nbsp;4.
+    </p>
+
+    <div class="callout callout--beyond">
+      <div class="callout__label" data-icon="✚">Почему архитектура из трёх каналов — не произвол</div>
+      <p>
+        Автор нигде не объясняет, почему кривая идёт отдельным каналом, а не
+        входит в оси. Объяснение есть за пределами курса, и оно точное.
+        Литтерман и Шейнкман (<i>Common Factors Affecting Bond Returns</i>,
+        Journal of Fixed Income, 1991) показали, что почти всю вариацию
+        доходностей государственных облигаций описывают три независимых фактора:
+        <b>уровень</b> (вся кривая двигается параллельно), <b>наклон</b> (концы
+        расходятся) и <b>кривизна</b> (середина двигается против концов). Львиная
+        доля вариации приходится на уровень, наклон идёт вторым, кривизна —
+        остаточным. <b>[ДОПОЛНЕНО]</b>
+      </p>
+      <p style="margin-bottom:0">
+        Наложение на нашу схему прямое: ось FED ловит <em>уровень</em> короткого
+        конца, валидатор ловит <em>наклон</em>, а третий фактор — кривизна — и есть
+        та самая «горбатая» кривая, которую автор называет нечитаемой (дыра 7).
+        Каналы разделены не для красоты: факторы ортогональны, и смешивать их
+        в одну сумму означает терять информацию. Параметрическое описание
+        той же тройки — модель Нельсона и Сигеля (1987) и её динамическая версия
+        у Дибольда и Ли (2006), где уровень, наклон и кривизна — три явных
+        коэффициента подгонки кривой.
+      </p>
+    </div>
+
+    <!-- ================================================================= -->
+    <h2 id="s3">Дерево решений: от входов к состоянию</h2>
+
+    <p>
+      Классификатор — это последовательность из пяти проверок, каждая из которых
+      может закончить вычисление досрочно. Порядок проверок важен: сначала
+      отсекаются состояния, в которых данные вообще нельзя читать, и только потом
+      определяется квадрант.
+    </p>
+
+    <figure class="figure" id="fig-24-2">
+      <div class="figure__frame">
+        <svg viewBox="0 0 880 540" role="img" aria-labelledby="fig242-title fig242-desc">
+          <title id="fig242-title">Дерево решений классификатора: пять проверок и шесть исходов</title>
+          <desc id="fig242-desc">Пять последовательных проверок. Первая: доступны ли данные. Вторая: монотонна ли кривая. Отрицательный ответ на любую из них ведёт в состояние ANOMALY. Третья: обе ли оси вне зоны центра. Четвёртая: читается ли форма кривой. Пятая: совпала ли форма с предписанной квадрантом. Отрицательный ответ на любую из этих трёх ведёт в центр Quality. Третье подряд неподтверждение переводит из центра в ANOMALY. Все проверки пройдены — состояние подтверждено, выдаётся один из четырёх квадрантов.</desc>
+
+          <rect class="viz-box" x="30" y="36" width="380" height="52" rx="7"/>
+          <text class="viz-title" x="44" y="58">Данные полны?</text>
+          <text class="viz-label" x="44" y="78">покрытие ≥ 60 % веса на обеих осях</text>
+
+          <rect class="viz-box" x="30" y="118" width="380" height="52" rx="7"/>
+          <text class="viz-title" x="44" y="140">Кривая монотонна?</text>
+          <text class="viz-label" x="44" y="160">нет горба / провала &gt; 25 б.п. на узлах</text>
+
+          <rect class="viz-box" x="30" y="200" width="380" height="52" rx="7"/>
+          <text class="viz-title" x="44" y="222">Обе оси вне зоны центра?</text>
+          <text class="viz-label" x="44" y="242">|FED| &gt; θ_fed И |MACRO| &gt; θ_macro</text>
+
+          <rect class="viz-box" x="30" y="282" width="380" height="52" rx="7"/>
+          <text class="viz-title" x="44" y="304">Форма кривой читается?</text>
+          <text class="viz-label" x="44" y="324">согласие ≥ 2 из 3 окон: 5 / 10 / 21 день</text>
+
+          <rect class="viz-box" x="30" y="364" width="380" height="52" rx="7"/>
+          <text class="viz-title" x="44" y="386">Форма совпала с квадрантом?</text>
+          <text class="viz-label" x="44" y="406">R24–R28: bull/bear × flat/steep</text>
+
+          <rect class="viz-box" x="30" y="448" width="380" height="76" rx="7" stroke="var(--series-1)" stroke-width="1.5"/>
+          <text class="viz-title" x="44" y="470" fill="var(--series-1)">Состояние подтверждено</text>
+          <text class="viz-label" x="44" y="492">Q-I Growth <tspan class="viz-up">▲</tspan> · Q-II Risk ON</text>
+          <text class="viz-label" x="44" y="510">Q-III Risk OFF · Q-IV Value <tspan class="viz-up">▲</tspan></text>
+
+          <rect class="viz-box" x="560" y="60" width="310" height="64" rx="7" stroke="var(--st-critical)" stroke-width="1.5"/>
+          <text class="viz-title" x="576" y="84" fill="var(--st-critical)">ANOMALY — не классифицируется</text>
+          <text class="viz-label" x="576" y="104">аллокация не выдаётся, только алерт</text>
+
+          <rect class="viz-box" x="560" y="250" width="310" height="88" rx="7" stroke="var(--q-quality)" stroke-width="1.5"/>
+          <text class="viz-title" x="576" y="274" fill="var(--q-quality)">Центр · Quality <tspan class="viz-up">▲</tspan></text>
+          <text class="viz-label" x="576" y="294">режима нет, но данные читаются</text>
+          <text class="viz-label" x="576" y="312">High FCF · DM · Large Cap (R41)</text>
+          <text class="viz-label" x="576" y="330">счётчик неподтверждений + 1</text>
+
+          <path class="viz-flow" d="M220,88 V118"/>
+          <path class="viz-flow" d="M220,170 V200"/>
+          <path class="viz-flow" d="M220,252 V282"/>
+          <path class="viz-flow" d="M220,334 V364"/>
+          <path class="viz-flow" d="M220,416 V448"/>
+
+          <path class="viz-flow" d="M410,62 H490 V88 H560"/>
+          <path class="viz-flow" d="M410,144 H490 V104 H560"/>
+          <path class="viz-flow" d="M410,226 H500 V262 H560"/>
+          <path class="viz-flow" d="M410,308 H520 V290 H560"/>
+          <path class="viz-flow" d="M410,390 H500 V320 H560"/>
+          <path class="viz-flow" d="M715,250 V126"/>
+
+          <text class="viz-axis" x="228" y="108">да</text>
+          <text class="viz-axis" x="228" y="190">да</text>
+          <text class="viz-axis" x="228" y="272">да</text>
+          <text class="viz-axis" x="228" y="354">да</text>
+          <text class="viz-axis" x="228" y="436">да</text>
+
+          <text class="viz-axis" x="418" y="56">нет</text>
+          <text class="viz-axis" x="418" y="138">нет</text>
+          <text class="viz-axis" x="418" y="220">нет</text>
+          <text class="viz-axis" x="418" y="302">нет</text>
+          <text class="viz-axis" x="418" y="384">нет</text>
+
+          <text class="viz-annot" x="725" y="190">3-е неподтверждение</text>
+        </svg>
+      </div>
+      <figcaption>
+        <span class="figure__num">Рис. 24.2.</span> <b>Дерево решений.</b>
+        Первые две проверки отвечают на вопрос «читаются ли данные», три следующие —
+        «есть ли режим». Шестое состояние <b>ANOMALY</b> и порог немонотонности
+        в 25 базисных пунктов — <b>[НАШЕ РЕШЕНИЕ]</b>: в матрице автора места
+        для нечитаемой кривой нет. Центр и ANOMALY выглядят похоже (оба не дают
+        сигнала), но означают разное: в центре инструмент говорит «режима нет»,
+        в ANOMALY — «я не знаю».
+      </figcaption>
+      <div class="figure__table table-scroll" hidden>
+        <table class="data">
+          <caption class="viz-legend" style="text-align:left;padding:.5rem .75rem;color:var(--ink-muted)">Проверки классификатора: условие, порог, исход при отрицательном ответе</caption>
+          <thead><tr><th>#</th><th>Проверка</th><th>Порог</th><th>Если «нет»</th><th>Статус</th></tr></thead>
+          <tbody>
+            <tr><td class="num">1</td><td>Полнота данных</td><td class="num">≥ 60 % веса каждой оси</td><td>ANOMALY</td><td>[НАШЕ РЕШЕНИЕ]</td></tr>
+            <tr><td class="num">2</td><td>Монотонность кривой</td><td class="num">отклонение узла ≤ 25 б.п.</td><td>ANOMALY</td><td>[НАШЕ РЕШЕНИЕ]</td></tr>
+            <tr><td class="num">3</td><td>Обе оси вне зоны центра</td><td class="num">|score| &gt; θ</td><td>Центр · Quality</td><td>R08, R18, R23 · θ [НАШЕ РЕШЕНИЕ]</td></tr>
+            <tr><td class="num">4</td><td>Форма кривой читается</td><td class="num">≥ 2 из 3 окон</td><td>Центр · Quality</td><td>[НАШЕ РЕШЕНИЕ]</td></tr>
+            <tr><td class="num">5</td><td>Форма = предписанной</td><td>—</td><td>Центр + счётчик</td><td>R24–R28 [КАНОН]</td></tr>
+            <tr><td class="num">—</td><td>3-е неподтверждение подряд</td><td class="num">3</td><td>ANOMALY + алерт</td><td>[НАШЕ РЕШЕНИЕ]</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </figure>
+
+    <div class="callout callout--rule">
+      <div class="callout__label" data-icon="⌘">Ядро остаётся канонным</div>
+      <p style="margin-bottom:0">
+        Проверки 3 и 5 — это буквально <span class="rule-id">R19</span>–<span class="rule-id">R23</span>
+        и <span class="rule-id">R24</span>–<span class="rule-id">R28</span> из спецификации,
+        без изменений. Наши добавления сидят по краям: две проверки на читаемость
+        данных сверху и один счётчик снизу. Ни одно из них не меняет того, как
+        определяется квадрант, — они только расширяют множество исходов, в которых
+        инструмент отказывается отвечать.
+      </p>
+    </div>
+
+    <p>
+      У этой конструкции есть развилка, о которой стоит знать заранее. Мы строим
+      <b>жёсткий пороговый классификатор</b>: знак либо есть, либо нет. Альтернатива —
+      <b>вероятностная</b>: вместо «мы в Q-III» инструмент выдаёт «вероятность Q-III
+      равна 0.7». Так устроены марковские модели переключения режимов
+      (Hamilton, 1989), и у них есть объективное преимущество: они не дребезжат
+      на границе, потому что границы у них нет вовсе, а инерция состояния
+      оценивается по данным, а не назначается руками. <b>[ДОПОЛНЕНО]</b>
+    </p>
+    <p>
+      Мы всё же выбираем пороговый вариант, и вот почему. Весь каталог
+      <span class="rule-id">R01</span>–<span class="rule-id">R88</span> написан
+      в форме «если — то»; вероятностная модель потребовала бы переписать его целиком
+      и потеряла бы главное свойство инструмента — <em>проверяемость руками</em>.
+      Трейдер должен уметь взять сегодняшние цифры, посчитать на бумаге и получить
+      тот же ответ, что программа. Плата за это — необходимость самим вводить
+      гистерезис и инерцию, которые вероятностной модели достаются даром
+      (дыра&nbsp;5). Это честный размен, а не недосмотр, и если инструмент когда-нибудь
+      будет переписан как вероятностный, начинать нужно будет именно отсюда.
+    </p>
+
+    <!-- ================================================================= -->
+    <h2 id="s4">Каталог: 88 правил в тринадцати группах</h2>
+
+    <p>
+      Полный текст всех правил — в §7 <a href="../synthesis/cheatsheet-spec.md">спецификации</a>;
+      пересказывать его здесь бессмысленно. Полезнее увидеть <em>структуру</em>:
+      сколько правил приходится на каждую задачу и какие из них вообще определяют
+      ответ, а какие только его украшают.
+    </p>
+
+    <figure class="figure" id="fig-24-3">
+      <div class="figure__frame">
+        <svg viewBox="0 0 880 470" role="img" aria-labelledby="fig243-title fig243-desc">
+          <title id="fig243-title">Распределение 88 правил по тринадцати группам</title>
+          <desc id="fig243-desc">Горизонтальная столбчатая диаграмма. Тринадцать групп правил от A до M. Самая большая группа — межрыночные связки, двенадцать правил. Самые маленькие — риск и валидация идеи, а также фазовый слой BofA, по четыре правила. Группы объединены в три блока: ядро классификации тридцать правил, семантика состояния двадцать пять, подтверждение и риск тридцать три.</desc>
+
+          <g class="viz-legend" transform="translate(10,22)">
+            <rect x="0" y="-9" width="11" height="3" rx="1.5" fill="var(--series-1)"/>
+            <text x="18" y="0">Ядро классификации (30)</text>
+            <rect x="200" y="-9" width="11" height="3" rx="1.5" fill="var(--series-3)"/>
+            <text x="218" y="0">Семантика состояния (25)</text>
+            <rect x="420" y="-9" width="11" height="3" rx="1.5" fill="var(--series-7)"/>
+            <text x="438" y="0">Подтверждение и риск (33)</text>
+          </g>
+
+          <line class="viz-axisline" x1="280" y1="46" x2="700" y2="46"/>
+          <text class="viz-axis" x="280" y="40" text-anchor="middle">0</text>
+          <text class="viz-axis" x="420" y="40" text-anchor="middle">4</text>
+          <text class="viz-axis" x="560" y="40" text-anchor="middle">8</text>
+          <text class="viz-axis" x="700" y="40" text-anchor="middle">12</text>
+          <line class="viz-grid" x1="420" y1="46" x2="420" y2="414"/>
+          <line class="viz-grid" x1="560" y1="46" x2="560" y2="414"/>
+          <line class="viz-grid" x1="700" y1="46" x2="700" y2="414"/>
+
+          <text class="viz-label" x="10" y="66">A · Знак оси FED</text>
+          <rect x="280" y="55" width="280" height="15" rx="2" fill="var(--series-1)"/>
+          <text class="viz-axis" x="568" y="66">8</text>
+
+          <text class="viz-label" x="10" y="94">B · Знак оси MACRO</text>
+          <rect x="280" y="83" width="350" height="15" rx="2" fill="var(--series-1)"/>
+          <text class="viz-axis" x="638" y="94">10</text>
+
+          <text class="viz-label" x="10" y="122">C · Классификация квадранта</text>
+          <rect x="280" y="111" width="175" height="15" rx="2" fill="var(--series-1)"/>
+          <text class="viz-axis" x="463" y="122">5</text>
+
+          <text class="viz-label" x="10" y="150">D · Валидация формой кривой</text>
+          <rect x="280" y="139" width="245" height="15" rx="2" fill="var(--series-1)"/>
+          <text class="viz-axis" x="533" y="150">7</text>
+
+          <text class="viz-label" x="10" y="178">E · Когерентность индикаторов</text>
+          <rect x="280" y="167" width="210" height="15" rx="2" fill="var(--series-3)"/>
+          <text class="viz-axis" x="498" y="178">6</text>
+
+          <text class="viz-label" x="10" y="206">F · Аллокация по квадрантам</text>
+          <rect x="280" y="195" width="175" height="15" rx="2" fill="var(--series-3)"/>
+          <text class="viz-axis" x="463" y="206">5</text>
+
+          <text class="viz-label" x="10" y="234">G · Кросс-квадрантные инварианты</text>
+          <rect x="280" y="223" width="245" height="15" rx="2" fill="var(--series-3)"/>
+          <text class="viz-axis" x="533" y="234">7</text>
+
+          <text class="viz-label" x="10" y="262">H · Переходы между квадрантами</text>
+          <rect x="280" y="251" width="245" height="15" rx="2" fill="var(--series-3)"/>
+          <text class="viz-axis" x="533" y="262">7</text>
+
+          <text class="viz-label" x="10" y="290">I · Пороги сентимента и ТА</text>
+          <rect x="280" y="279" width="245" height="15" rx="2" fill="var(--series-7)"/>
+          <text class="viz-axis" x="533" y="290">7</text>
+
+          <text class="viz-label" x="10" y="318">J · Подтверждающие ratio</text>
+          <rect x="280" y="307" width="210" height="15" rx="2" fill="var(--series-7)"/>
+          <text class="viz-axis" x="498" y="318">6</text>
+
+          <text class="viz-label" x="10" y="346">K · Межрыночные связки</text>
+          <rect x="280" y="335" width="420" height="15" rx="2" fill="var(--series-7)"/>
+          <text class="viz-axis" x="708" y="346">12</text>
+
+          <text class="viz-label" x="10" y="374">L · Риск и валидация идеи</text>
+          <rect x="280" y="363" width="140" height="15" rx="2" fill="var(--series-7)"/>
+          <text class="viz-axis" x="428" y="374">4</text>
+
+          <text class="viz-label" x="10" y="402">M · Фазовый слой BofA</text>
+          <rect x="280" y="391" width="140" height="15" rx="2" fill="var(--series-7)"/>
+          <text class="viz-axis" x="428" y="402">4</text>
+
+          <text class="viz-annot" x="10" y="444">Всего 88 правил. Полный текст каждого — в §7 спецификации.</text>
+        </svg>
+      </div>
+      <figcaption>
+        <span class="figure__num">Рис. 24.3.</span> <b>Карта каталога.</b>
+        Три цвета — три роли. <b>Ядро классификации</b> (A–D) отвечает на вопрос
+        «в каком мы состоянии», и без него инструмента нет. <b>Семантика</b> (E–H)
+        отвечает «что это состояние означает и куда оно перейдёт».
+        <b>Подтверждение и риск</b> (I–M) — слой проверок и размера, самый большой
+        по числу правил и самый необязательный по существу.
+      </figcaption>
+      <div class="figure__table table-scroll" hidden>
+        <table class="data">
+          <caption class="viz-legend" style="text-align:left;padding:.5rem .75rem;color:var(--ink-muted)">Тринадцать групп каталога: диапазон, объём, назначение</caption>
+          <thead><tr><th>Группа</th><th>Правила</th><th class="num">Кол-во</th><th>Что определяет</th><th>Блок</th></tr></thead>
+          <tbody>
+            <tr><td>A · Знак оси FED</td><td>R01–R08</td><td class="num">8</td><td>направление ожиданий по ДКП, зона <code>Ready!</code></td><td>ядро</td></tr>
+            <tr><td>B · Знак оси MACRO</td><td>R09–R18</td><td class="num">10</td><td>направление макро-настроения, пороги ISM и LEI</td><td>ядро</td></tr>
+            <tr><td>C · Классификация квадранта</td><td>R19–R23</td><td class="num">5</td><td>два знака → одно из пяти состояний</td><td>ядро</td></tr>
+            <tr><td>D · Валидация формой кривой</td><td>R24–R30</td><td class="num">7</td><td>четыре формы, неподтверждение, расчёт по Δ, а не по уровню</td><td>ядро</td></tr>
+            <tr><td>E · Когерентность индикаторов</td><td>R31–R36</td><td class="num">6</td><td>тождество R = N − Inf.exp, направления EPS/LEI/Fwd P/E</td><td>семантика</td></tr>
+            <tr><td>F · Аллокация по квадрантам</td><td>R37–R41</td><td class="num">5</td><td>списки long/short для каждого состояния</td><td>семантика</td></tr>
+            <tr><td>G · Кросс-квадрантные инварианты</td><td>R42–R48</td><td class="num">7</td><td>золото зависит только от FED, сырьё только от MACRO</td><td>семантика</td></tr>
+            <tr><td>H · Переходы между квадрантами</td><td>R49–R55</td><td class="num">7</td><td>обход по часовой стрелке, смежность, проход через центр</td><td>семантика</td></tr>
+            <tr><td>I · Пороги сентимента и ТА</td><td>R56–R62</td><td class="num">7</td><td>VIX 20, Put/Call 1.20 и 0.80, % выше SMA</td><td>подтверждение</td></tr>
+            <tr><td>J · Подтверждающие ratio</td><td>R63–R68</td><td class="num">6</td><td>корзины риск-аппетита, секторальные и факторные отношения</td><td>подтверждение</td></tr>
+            <tr><td>K · Межрыночные связки</td><td>R69–R80</td><td class="num">12</td><td>золото ↔ реальные ставки, медь ↔ Китай, порядок ротации</td><td>подтверждение</td></tr>
+            <tr><td>L · Риск и валидация идеи</td><td>R81–R84</td><td class="num">4</td><td>лестница риска, схождение макро и техники</td><td>подтверждение</td></tr>
+            <tr><td>M · Фазовый слой BofA</td><td>R85–R88</td><td class="num">4</td><td>факторные доходности и hit rates по четырём фазам</td><td>подтверждение</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </figure>
+
+    <p>
+      Из карты видно то, чего не видно из текста спецификации. <b>Решение принимают
+      тридцать правил из восьмидесяти восьми</b> — группы A–D. Остальные пятьдесят
+      восемь либо описывают следствия уже принятого решения (E–H), либо проверяют
+      его сторонними наблюдениями (I–M). Для первой версии инструмента это означает
+      понятный приоритет: A–D должны быть реализованы полностью и точно, F и G —
+      как справочные таблицы, а I–M можно на первом этапе вообще не кодировать,
+      выводя их как подсказки оператору.
+    </p>
+    <p>
+      Второе наблюдение менее приятное. Самая большая группа — <b>K, межрыночные
+      связки</b> — состоит почти целиком из корреляционных наблюдений на конкретном
+      историческом отрезке: золото против реальных ставок, медь против Китая,
+      нефть против прибыли энергетиков. Автор сам предупреждает, что корреляция
+      не причинность (L08 сл. 74), и приводит нарочито абсурдные примеры ложных
+      связей. Но собственные его связки той же проверке не подвергаются, и часть
+      из них с 2023 года сломалась — см. врезку «2023 → 2026». В коде группа K
+      должна жить как <em>наблюдаемые гипотезы с датой проверки</em>, а не как
+      константы.
+    </p>
+
+    <div class="callout callout--trap">
+      <div class="callout__label" data-icon="⚠">Числа группы I — не пороги, а снимок</div>
+      <p style="margin-bottom:0">
+        Правила <span class="rule-id">R56</span>–<span class="rule-id">R62</span>
+        содержат единственные жёсткие числа во всём каталоге: VIX&nbsp;20,
+        Put/Call 1.2000 и 0.8000, доли акций выше скользящих средних 25 / 75 и 25 / 65.
+        Соблазн вбить их в код как константы велик, и это ошибка. Уровень VIX,
+        соответствующий «стрессу», сам дрейфует вместе с режимом волатильности:
+        то, что было экстремумом в спокойном 2017-м, было нормой в 2008-м и 2020-м.
+        <b>[ВЫВЕДЕНО]</b> Правильная форма для кода — не абсолютный уровень,
+        а перцентиль на скользящем окне в несколько лет; авторские числа при этом
+        сохраняются как исторический ориентир и печатаются рядом.
+      </p>
+    </div>
+
+    <!-- ================================================================= -->
+    <h2 id="s5">Десять дыр и что мы с ними делаем</h2>
+
+    <p>
+      Это главный раздел главы. Спецификация фиксирует десять мест, где инструмент
+      нельзя запустить, не приняв решения, которого автор не принимал. По каждому
+      разбираем три вещи: <b>в чём проблема</b>, <b>почему источник молчит</b> —
+      и наше <b>решение с обоснованием</b>. Все решения помечены
+      <b>[НАШЕ РЕШЕНИЕ]</b> и все спорны: спорить с ними — правильная реакция,
+      а не грубость.
+    </p>
+    <p>
+      Перед разбором — карта критичности. Она нужна, чтобы не тратить силы
+      равномерно: четыре дыры не дают инструменту запуститься вообще, три
+      искажают его ответ, две ограничивают применимость, и одна блокирует не код,
+      а право выпустить его в контур, где решения влияют на деньги.
+    </p>
+
+    <figure class="figure" id="fig-24-4">
+      <div class="figure__frame">
+        <svg viewBox="0 0 880 430" role="img" aria-labelledby="fig244-title fig244-desc">
+          <title id="fig244-title">Десять незакрытых мест спецификации и критичность каждого</title>
+          <desc id="fig244-desc">Список из десяти пунктов с оценкой критичности в трёх уровнях. Блокируют запуск: веса свёртки, пороги отделения центра, окно расчёта формы кривой, теноры концов кривой, а также отсутствие бэктеста и метрик. Искажают результат: гистерезис и частота пересчёта, приоритет между макро-данными и рыночными прокси, отсутствие шестого класса для аномальной кривой. Ограничивают применимость: пропуски в матрице активов и отсутствие правил размера позиции.</desc>
+
+          <g class="viz-legend" transform="translate(10,22)">
+            <rect x="0" y="-9" width="11" height="3" rx="1.5" fill="var(--st-critical)"/>
+            <text x="18" y="0">● блокирует — не запускается</text>
+            <rect x="230" y="-9" width="11" height="3" rx="1.5" fill="var(--st-serious)"/>
+            <text x="248" y="0">◐ искажает — ответ нестабилен</text>
+            <rect x="470" y="-9" width="11" height="3" rx="1.5" fill="var(--st-warning)"/>
+            <text x="488" y="0">○ ограничивает — применимость</text>
+          </g>
+
+          <text class="viz-q-sub" x="58" y="50">ЧТО НЕ ОПРЕДЕЛЕНО</text>
+          <text class="viz-q-sub" x="520" y="50">КРИТИЧНОСТЬ</text>
+          <text class="viz-q-sub" x="790" y="50">§ СПЕКИ</text>
+          <line class="viz-axisline" x1="10" y1="58" x2="870" y2="58"/>
+
+          <text class="viz-title" x="16" y="80">●</text>
+          <text class="viz-axis" x="36" y="80">1</text>
+          <text class="viz-title" x="58" y="80">Веса и формула свёртки в знак оси</text>
+          <rect x="520" y="71" width="24" height="9" rx="2" fill="var(--st-critical)"/>
+          <rect x="548" y="71" width="24" height="9" rx="2" fill="var(--st-critical)"/>
+          <rect x="576" y="71" width="24" height="9" rx="2" fill="var(--st-critical)"/>
+          <text class="viz-label" x="626" y="80">блокирует</text>
+          <text class="viz-axis" x="790" y="80">§ 8.3</text>
+
+          <text class="viz-title" x="16" y="113">●</text>
+          <text class="viz-axis" x="36" y="113">2</text>
+          <text class="viz-title" x="58" y="113">Пороги θ: где кончается центр</text>
+          <rect x="520" y="104" width="24" height="9" rx="2" fill="var(--st-critical)"/>
+          <rect x="548" y="104" width="24" height="9" rx="2" fill="var(--st-critical)"/>
+          <rect x="576" y="104" width="24" height="9" rx="2" fill="var(--st-critical)"/>
+          <text class="viz-label" x="626" y="113">блокирует</text>
+          <text class="viz-axis" x="790" y="113">§ 8.3</text>
+
+          <text class="viz-title" x="16" y="146">●</text>
+          <text class="viz-axis" x="36" y="146">3</text>
+          <text class="viz-title" x="58" y="146">Окно Δ для расчёта формы кривой</text>
+          <rect x="520" y="137" width="24" height="9" rx="2" fill="var(--st-critical)"/>
+          <rect x="548" y="137" width="24" height="9" rx="2" fill="var(--st-critical)"/>
+          <rect x="576" y="137" width="24" height="9" rx="2" fill="var(--st-critical)"/>
+          <text class="viz-label" x="626" y="146">блокирует</text>
+          <text class="viz-axis" x="790" y="146">§ 8.3</text>
+
+          <text class="viz-title" x="16" y="179">●</text>
+          <text class="viz-axis" x="36" y="179">4</text>
+          <text class="viz-title" x="58" y="179">Теноры короткого и длинного конца</text>
+          <rect x="520" y="170" width="24" height="9" rx="2" fill="var(--st-critical)"/>
+          <rect x="548" y="170" width="24" height="9" rx="2" fill="var(--st-critical)"/>
+          <rect x="576" y="170" width="24" height="9" rx="2" fill="var(--st-critical)"/>
+          <text class="viz-label" x="626" y="179">блокирует</text>
+          <text class="viz-axis" x="790" y="179">§ 8.3</text>
+
+          <text class="viz-title" x="16" y="212">◐</text>
+          <text class="viz-axis" x="36" y="212">5</text>
+          <text class="viz-title" x="58" y="212">Гистерезис и частота пересчёта</text>
+          <rect x="520" y="203" width="24" height="9" rx="2" fill="var(--st-serious)"/>
+          <rect x="548" y="203" width="24" height="9" rx="2" fill="var(--st-serious)"/>
+          <rect x="576" y="203" width="24" height="9" rx="2" fill="var(--grid)"/>
+          <text class="viz-label" x="626" y="212">искажает</text>
+          <text class="viz-axis" x="790" y="212">§ 8.4</text>
+
+          <text class="viz-title" x="16" y="245">◐</text>
+          <text class="viz-axis" x="36" y="245">6</text>
+          <text class="viz-title" x="58" y="245">Приоритет: данные против рынка</text>
+          <rect x="520" y="236" width="24" height="9" rx="2" fill="var(--st-serious)"/>
+          <rect x="548" y="236" width="24" height="9" rx="2" fill="var(--st-serious)"/>
+          <rect x="576" y="236" width="24" height="9" rx="2" fill="var(--grid)"/>
+          <text class="viz-label" x="626" y="245">искажает</text>
+          <text class="viz-axis" x="790" y="245">§ 8.4</text>
+
+          <text class="viz-title" x="16" y="278">◐</text>
+          <text class="viz-axis" x="36" y="278">7</text>
+          <text class="viz-title" x="58" y="278">Шестой класс для аномальной кривой</text>
+          <rect x="520" y="269" width="24" height="9" rx="2" fill="var(--st-serious)"/>
+          <rect x="548" y="269" width="24" height="9" rx="2" fill="var(--st-serious)"/>
+          <rect x="576" y="269" width="24" height="9" rx="2" fill="var(--grid)"/>
+          <text class="viz-label" x="626" y="278">искажает</text>
+          <text class="viz-axis" x="790" y="278">§ 8.7</text>
+
+          <text class="viz-title" x="16" y="311">○</text>
+          <text class="viz-axis" x="36" y="311">8</text>
+          <text class="viz-title" x="58" y="311">Пропуски в матрице активов</text>
+          <rect x="520" y="302" width="24" height="9" rx="2" fill="var(--st-warning)"/>
+          <rect x="548" y="302" width="24" height="9" rx="2" fill="var(--grid)"/>
+          <rect x="576" y="302" width="24" height="9" rx="2" fill="var(--grid)"/>
+          <text class="viz-label" x="626" y="311">ограничивает</text>
+          <text class="viz-axis" x="790" y="311">§ 8.5</text>
+
+          <text class="viz-title" x="16" y="344">○</text>
+          <text class="viz-axis" x="36" y="344">9</text>
+          <text class="viz-title" x="58" y="344">Размер позиции и риск-менеджмент</text>
+          <rect x="520" y="335" width="24" height="9" rx="2" fill="var(--st-warning)"/>
+          <rect x="548" y="335" width="24" height="9" rx="2" fill="var(--grid)"/>
+          <rect x="576" y="335" width="24" height="9" rx="2" fill="var(--grid)"/>
+          <text class="viz-label" x="626" y="344">ограничивает</text>
+          <text class="viz-axis" x="790" y="344">§ 8.8</text>
+
+          <text class="viz-title" x="16" y="377">●</text>
+          <text class="viz-axis" x="36" y="377">10</text>
+          <text class="viz-title" x="58" y="377">Бэктест, метрики, ложные срабатывания</text>
+          <rect x="520" y="368" width="24" height="9" rx="2" fill="var(--st-critical)"/>
+          <rect x="548" y="368" width="24" height="9" rx="2" fill="var(--st-critical)"/>
+          <rect x="576" y="368" width="24" height="9" rx="2" fill="var(--st-critical)"/>
+          <text class="viz-label" x="626" y="377">блокирует</text>
+          <text class="viz-axis" x="790" y="377">§ 8.9</text>
+
+          <text class="viz-annot" x="16" y="408">По всем десяти источник молчит: каждое решение ниже — наше.</text>
+        </svg>
+      </div>
+      <figcaption>
+        <span class="figure__num">Рис. 24.4.</span> <b>Карта незакрытых мест.</b>
+        Уровень несёт значок и подпись, цвет только усиливает. «Блокирует» —
+        инструмент не выдаёт числа вовсе. «Искажает» — число есть, но систематически
+        неверное или нестабильное. «Ограничивает» — число верное, но применимость
+        уже, чем требуется. Дыра 10 отнесена к блокирующим не по технической
+        причине: без измеренного качества классификатор нельзя пускать туда,
+        где по нему принимают решения о деньгах.
+      </figcaption>
+      <div class="figure__table table-scroll" hidden>
+        <table class="data">
+          <caption class="viz-legend" style="text-align:left;padding:.5rem .75rem;color:var(--ink-muted)">Десять дыр: критичность, раздел спецификации, принятое решение</caption>
+          <thead><tr><th class="num">#</th><th>Что не определено</th><th>Критичность</th><th>§</th><th>Наше решение — одной строкой</th></tr></thead>
+          <tbody>
+            <tr><td class="num">1</td><td>Веса и формула свёртки входов в знак оси</td><td>● блокирует</td><td>8.3</td><td>взвешенная сумма нормированных вкладов, веса по порядку H-O-P-E</td></tr>
+            <tr><td class="num">2</td><td>Пороги θ, отделяющие знак от центра</td><td>● блокирует</td><td>8.3</td><td>перцентиль распределения |score| + требование к длительности состояния</td></tr>
+            <tr><td class="num">3</td><td>Окно Δ для формы кривой</td><td>● блокирует</td><td>8.3</td><td>три окна 5 / 10 / 21 день, решение большинством</td></tr>
+            <tr><td class="num">4</td><td>Теноры короткого и длинного конца</td><td>● блокирует</td><td>8.3</td><td>пара 2Y / 10Y как решающая, 3M / 10Y как контрольная</td></tr>
+            <tr><td class="num">5</td><td>Гистерезис и частота пересчёта</td><td>◐ искажает</td><td>8.4</td><td>суточный пересчёт, триггер Шмитта 0.6·θ на выход, минимум 10 дней в состоянии</td></tr>
+            <tr><td class="num">6</td><td>Приоритет: макро-данные против рыночных прокси</td><td>◐ искажает</td><td>8.4</td><td>решает версия на данных; расхождение — отдельный флаг, а не смена квадранта</td></tr>
+            <tr><td class="num">7</td><td>Шестой класс для аномальной кривой</td><td>◐ искажает</td><td>8.7</td><td>состояние ANOMALY с четырьмя триггерами, отдельное от центра</td></tr>
+            <tr><td class="num">8</td><td>Пропуски в матрице активов</td><td>○ ограничивает</td><td>8.5</td><td>заполнить выводом из инвариантов R42–R47; что не выводится — не заполнять</td></tr>
+            <tr><td class="num">9</td><td>Размер позиции и риск-менеджмент</td><td>○ ограничивает</td><td>8.8</td><td>произведение четырёх множителей: база квадранта × уверенность × вола × штраф</td></tr>
+            <tr><td class="num">10</td><td>Бэктест, метрики, ложные срабатывания</td><td>● блокирует</td><td>8.9</td><td>оценка по условной доходности корзин, блочный бутстрап, порог t ≈ 3</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </figure>
+
+    <h3 id="d1">1. Не заданы веса и формула свёртки входов в знак оси</h3>
+
+    <p>
+      <b>Проблема.</b> У оси FED девять входов, у оси MACRO — больше десяти.
+      Спецификация перечисляет их состав как <b>[КАНОН]</b>, но не говорит,
+      что делать, когда терминальная ставка ушла вниз, а доллар вырос: какой
+      из двух сигналов сильнее и во сколько раз. Правило
+      <span class="rule-id">R01</span> буквально содержит символ <em>w₁</em>,
+      значение которого нигде не определено.
+    </p>
+    <p>
+      <b>Почему источник молчит.</b> Автор читает шпаргалку глазами. Человеку
+      весов не нужно: он смотрит на восемь графиков одновременно и выносит
+      суждение, в котором вес каждого входа зависит от контекста — на неделе
+      заседания FOMC главным становится dot plot, в спокойный период — динамика
+      двухлетки. Формализовать этот контекстный вес трудно, и курс, будучи
+      практическим, честно этого не делает. Проблема начинается ровно в тот
+      момент, когда суждение нужно заменить функцией.
+    </p>
+
+    <div class="callout callout--ours">
+      <div class="callout__label" data-icon="◆">[НАШЕ РЕШЕНИЕ] Взвешенная сумма нормированных вкладов</div>
+      <p>Три шага, каждый проверяемый на бумаге.</p>
+      <p>
+        <b>Шаг 1. Каждый вход даёт число от −1 до +1.</b> Для входов-скоростей
+        (Δ терминальной ставки, Δ US02Y, Δ DXY) берём изменение за окно и делим
+        на робастную оценку его собственного разброса — медианное абсолютное
+        отклонение того же приращения за два года, умноженное на 1.4826, — затем
+        обрезаем по ±3 и делим на 3. Для входов-уровней (ISM против 50, NAHB против 50,
+        LEI YoY против нуля) вклад складывается пополам из положения относительно
+        порога и из направления движения: <code>0.5·sign(уровень − порог) + 0.5·sign(Δ)</code>.
+        Второе слагаемое обязательно — ось измеряет <em>направление</em>, а не уровень,
+        и ISM 47 растущий должен давать вклад, отличный от ISM 47 падающего.
+      </p>
+      <p>
+        <b>Шаг 2. Свёртка.</b> <code>score = Σ wᵢ·cᵢ / Σ wᵢ</code>, результат в диапазоне
+        [−1, +1]. Если какой-то вход недоступен, его вес исключается из знаменателя.
+        Если доступных весов меньше 60 % — ось не считается, состояние ANOMALY
+        (проверка 1 на рис. 24.2).
+      </p>
+      <p style="margin-bottom:0">
+        <b>Шаг 3. Веса не подбираются, а выводятся из порядка опережения.</b>
+        Это принципиально: подбор весов по исторической доходности — прямая дорога
+        к переобучению (дыра 10). Мы назначаем их по <span class="rule-id">R77</span>
+        (H-O-P-E) и по механической близости входа к тому, что ось измеряет.
+      </p>
+    </div>
+
+    <div class="table-scroll">
+      <table class="data">
+        <thead><tr><th>Ось FED · вход</th><th class="num">Вес</th><th>Почему такой</th></tr></thead>
+        <tbody>
+          <tr><td>Δ implied terminal FFR (окно 10 дней)</td><td class="num">0.30</td><td>прямая мера того, что ось и определяет: ожидания по ставке</td></tr>
+          <tr><td>Δ <span class="ticker">US02Y</span></td><td class="num">0.25</td><td>канонический прокси ожиданий (<span class="rule-id">R03</span>), торгуется непрерывно</td></tr>
+          <tr><td>Δ реальной 5Y (<span class="ticker">US05Y−T5YIE</span>)</td><td class="num">0.15</td><td><span class="rule-id">R04</span>; канал передачи политики в оценку акций (<span class="rule-id">R36</span>)</td></tr>
+          <tr><td>Фаза режима ДКП</td><td class="num">0.15</td><td><span class="rule-id">R05</span>; медленный якорь против шума котировок</td></tr>
+          <tr><td>Δ <span class="ticker">DXY</span></td><td class="num">0.10</td><td><span class="rule-id">R06</span> — подтверждение, а не драйвер</td></tr>
+          <tr><td>Дельта медианы SEP</td><td class="num">0.05</td><td>высокая ценность, но выходит четыре раза в год</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="table-scroll">
+      <table class="data">
+        <thead><tr><th>Ось MACRO · вход</th><th class="num">Вес</th><th>Почему такой</th></tr></thead>
+        <tbody>
+          <tr><td>Заказы: ISM Mfg, ISM Services, ISM New Orders</td><td class="num">0.28</td><td>«O» в H-O-P-E; месячная частота, прямая мера деловой активности</td></tr>
+          <tr><td>Жильё: NAHB + Building Permits</td><td class="num">0.22</td><td>«H» — самое раннее звено (<span class="rule-id">R15</span>), лид до 24 месяцев</td></tr>
+          <tr><td>Прибыль: пересмотры 12M forward EPS</td><td class="num">0.18</td><td>«P» (<span class="rule-id">R13</span>)</td></tr>
+          <tr><td>Рыночные прокси: <span class="ticker">HG1!/GC1!</span>, <span class="ticker">CL1!/GC1!</span></td><td class="num">0.12</td><td><span class="rule-id">R16</span>; обновляются ежедневно, но коррелированы с торгуемым</td></tr>
+          <tr><td>Initial Claims, 4-недельная средняя</td><td class="num">0.12</td><td>единственный лидирующий из блока «E» (<span class="rule-id">R14</span>)</td></tr>
+          <tr><td>LEI YoY</td><td class="num">0.08</td><td>композит, частично дублирующий остальные входы</td></tr>
+          <tr><td>Занятость (кроме Claims), инфляция</td><td class="num">0.00</td><td><span class="rule-id">R77</span>: подтверждение постфактум, не сигнал входа</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout--beyond">
+      <div class="callout__label" data-icon="✚">Как ту же задачу решают те, кто делает это давно</div>
+      <p>
+        Наша схема — экспертные веса. Есть два признанных альтернативных подхода,
+        и оба стоит знать. <b>[ДОПОЛНЕНО]</b>
+      </p>
+      <p>
+        <b>Первый — извлекать веса из данных.</b> Метод главных компонент и
+        динамические факторные модели (Stock и Watson, <i>Macroeconomic Forecasting
+        Using Diffusion Indexes</i>, 2002) находят общий фактор десятков рядов
+        без единого экспертного решения. Так устроен CFNAI ФРБ Чикаго. Преимущество —
+        отсутствие произвола; недостаток — веса нестабильны при пересчёте и
+        не поддаются экономической интерпретации, а это ровно то, за что мы
+        держимся: трейдер должен понимать, почему сегодня знак сменился.
+      </p>
+      <p>
+        <b>Второй — стандартизация по волатильности.</b> Conference Board при сборке
+        своего опережающего композита приводит компоненты к сопоставимой изменчивости,
+        чтобы одна волатильная серия не определяла итог. Наш шаг 1 делает именно это,
+        только робастной мерой разброса вместо стандартного отклонения — макро-ряды
+        полны выбросов, а MAD к ним устойчив.
+      </p>
+      <p style="margin-bottom:0">
+        <b>Расхождение с курсом называем прямо.</b> Автор весов не даёт вовсе, и наша
+        таблица — не реконструкция его мнения, а конструкция поверх его логики
+        опережения. Если бы он расставил веса сам, они могли бы оказаться другими.
+      </p>
+    </div>
+
+    <h3 id="d2">2. Не заданы пороги, отделяющие «есть знак» от центра</h3>
+
+    <p>
+      <b>Проблема.</b> Правила <span class="rule-id">R08</span> и
+      <span class="rule-id">R18</span> вводят θ_fed и θ_macro, ниже которых ось
+      считается нулевой и состояние уходит в центр. Значения не названы. Между тем
+      именно они определяют, сколько времени инструмент проводит в Quality: при
+      θ = 0 центра не существует и классификатор становится четырёхклассовым,
+      при θ = 1 он всегда в центре и не говорит ничего.
+    </p>
+    <p>
+      <b>Почему источник молчит.</b> У автора зона центра описана качественно —
+      это зоны <code>Ready!</code> вокруг горизонтальной оси, «точки смены режима,
+      к которым нужно готовиться заранее» (L06 сл. 16/36). Готовность — состояние
+      психологическое, у него нет числового края. Для человека это работает,
+      для функции — нет.
+    </p>
+
+    <div class="callout callout--ours">
+      <div class="callout__label" data-icon="◆">[НАШЕ РЕШЕНИЕ] Калибровать θ по поведению самой оси, а не по доходности</div>
+      <p>
+        Соблазн — подобрать θ так, чтобы историческая доходность вышла максимальной.
+        Это запрещено: θ станет функцией прошлого цикла и на следующем развалится.
+        Калибруем по двум требованиям к <em>самому классификатору</em>, ни одно
+        из которых не смотрит на прибыль.
+      </p>
+      <p>
+        <b>Требование A — доля времени.</b> θ выбирается так, чтобы на истории
+        не менее пятнадцати лет инструмент проводил в центре порядка пятой части
+        времени. Обоснование числа: центр обязан быть достаточно редким, чтобы
+        не съесть все режимы, и достаточно частым, чтобы ловить переходы; при
+        четырёх квадрантах и клиновидной зоне вокруг обеих осей пятая часть —
+        консервативный компромисс. Технически θ = 20-й перцентиль распределения |score|.
+      </p>
+      <p>
+        <b>Требование B — длительность.</b> Средняя продолжительность непрерывного
+        пребывания в одном квадранте должна быть не меньше месяца. Квадрант,
+        живущий неделю, не режим, а шум: входы обновляются раз в месяц, состояние
+        не может меняться чаще входов.
+      </p>
+      <p>
+        <b>Разрешение конфликта.</b> Требования тянут в разные стороны: A хочет θ
+        поменьше, B — побольше. Берём наименьшее θ, удовлетворяющее B, и проверяем,
+        что A не нарушено грубо. Пороги двух осей считаются независимо: θ_fed
+        выходит шире, потому что ось FED по природе ступенчатая — восемь заседаний
+        в год плюс четыре SEP, между ними ось живёт только котировками.
+      </p>
+      <p style="margin-bottom:0">
+        <b>Дисциплина.</b> Калибровка — на отрезке до 2015 года, проверка — на
+        2015–2026, и по результатам проверки θ <em>не</em> перекалибруется. Иначе
+        вся конструкция превращается в подгонку, замаскированную под методику.
+      </p>
+    </div>
+
+    <div class="callout callout--beyond">
+      <div class="callout__label" data-icon="✚">Пороги, которые кто-то уже откалибровал</div>
+      <p style="margin-bottom:0">
+        Опубликованные пороги на композитных индексах существуют, и на них полезно
+        посмотреть как на ориентир порядка величины. У CFNAI это <b>−0.70</b> и
+        <b>+0.20</b> для трёхмесячного среднего — заметно <em>несимметричные</em>
+        значения: вход в сжатие распознаётся строже, чем выход из него. У правила
+        Сам (Sahm, 2019) порог — рост трёхмесячной средней безработицы на
+        <b>0.50 п.п.</b> над минимумом предыдущего года. Общее у обоих: порог
+        задан в единицах собственного разброса ряда и подтверждён на многих циклах,
+        а не выведен из доходности стратегии. Это ровно та дисциплина, которой мы
+        следуем. И оба, кстати, дали осечку в 2022–2024 годах — см. врезку
+        «2023 → 2026»: даже хорошо откалиброванный порог не бессмертен. <b>[ДОПОЛНЕНО]</b>
+      </p>
+    </div>
+
+    <h3 id="d3">3. Не задано окно для расчёта изменения кривой</h3>
+
+    <p>
+      <b>Проблема.</b> Правило <span class="rule-id">R30</span> требует определять
+      форму <em>только</em> по изменению за окно, а не по уровню кривой, — и это
+      главная мысль всей главы про кривую: «важна не форма, а то, как к ней пришли».
+      Но само окно не зафиксировано. На слайдах встречаются срезы 1, 5, 6, 10, 25
+      и 30 дней, шаг 6 конвейера называет «5 / 10 / 30 дней». Разные окна дают
+      разные формы: неделя может показывать bull steepener внутри месячного
+      bear flattener.
+    </p>
+    <p>
+      <b>Почему источник молчит.</b> Слайд — это снимок терминала, где срезы
+      переключаются кнопкой. Автор смотрит на все сразу и синтезирует ответ.
+      Ему не нужно выбирать одно окно, потому что он не пишет функцию.
+    </p>
+
+    <div class="callout callout--ours">
+      <div class="callout__label" data-icon="◆">[НАШЕ РЕШЕНИЕ] Не выбирать окно, а требовать согласия трёх</div>
+      <p>
+        Форма считается независимо по трём окнам: <b>5, 10 и 21 торговый день</b> —
+        примерно неделя, две недели и месяц. Двадцать один торговый день выбран
+        как рабочий эквивалент «30 дней» со слайдов: месяц календарный и месяц
+        торговый различаются, и для кода нужен второй.
+      </p>
+      <ul>
+        <li><b>Три из трёх совпали</b> → форма подтверждена, флаг «сильная».</li>
+        <li><b>Два из трёх</b> → форма принимается, флаг «слабая»; размер позиции
+          получает штрафной множитель (дыра 9).</li>
+        <li><b>Согласия нет</b> → форма не читается, состояние уходит в центр
+          (проверка 4 на рис. 24.2).</li>
+      </ul>
+      <p style="margin-bottom:0">
+        Почему так, а не одно окно: пятидневное окно шумит и переворачивает форму
+        на каждом выступлении члена FOMC, месячное запаздывает и пропускает
+        быстрые развороты. Правило большинства формализует то, что автор делает
+        глазами, — и, что важнее, естественным образом порождает шестой класс:
+        состояние «кривая говорит три разные вещи» существует и заслуживает
+        отдельного имени.
+      </p>
+    </div>
+
+    <p>
+      Отдельный случай, которого в правилах <span class="rule-id">R24</span>–<span class="rule-id">R27</span>
+      нет вовсе, — <b>параллельный сдвиг</b>. Все четыре правила формулируются через
+      строгое неравенство между модулями изменений на концах, но если оба конца
+      сдвинулись почти одинаково, форма не flat и не steep. <b>[НАШЕ РЕШЕНИЕ]:</b>
+      если разница изменений концов меньше 5 базисных пунктов, форма считается
+      параллельной, а параллельный сдвиг не подтверждает ни один квадрант — состояние
+      понижается до центра. Это осознанно консервативно: параллельный сдвиг означает,
+      что двигался фактор уровня, а не наклона, то есть валидатор просто не получил
+      информации о наклоне.
+    </p>
+
+    <h3 id="d4">4. Не зафиксированы теноры короткого и длинного конца</h3>
+
+    <p>
+      <b>Проблема.</b> Чтобы сказать «длинный конец упал сильнее короткого», нужно
+      знать, какие именно две точки кривой сравниваются. Спецификация фиксирует,
+      что модель кривой сворачивается в четыре узла (месяцы / 1–2 года / 3–7 лет /
+      10–30 лет), но пару для расчёта Δ не называет. Кандидаты разные: 2Y против 10Y,
+      3M против 10Y, 1Y против 20Y — и они не эквивалентны.
+    </p>
+    <p>
+      <b>Почему источник молчит.</b> На слайдах кривая рисуется целиком, всеми
+      узлами сразу, и наклон виден глазом. Спреды в конвейере перечислены во
+      множественном числе — <span class="ticker">US10Y-US03MY</span>,
+      <span class="ticker">US10Y-US02Y</span>, <span class="ticker">US10Y-US05Y</span> —
+      без указания главного.
+    </p>
+
+    <div class="callout callout--ours">
+      <div class="callout__label" data-icon="◆">[НАШЕ РЕШЕНИЕ] Решает пара 2Y / 10Y, контролирует 3M / 10Y</div>
+      <p>
+        <b>Короткий конец — <span class="ticker">US02Y</span>, длинный —
+        <span class="ticker">US10Y</span>.</b> Два аргумента.
+      </p>
+      <p>
+        <em>Первый.</em> Двухлетка — канонический прокси ожиданий по ФРС
+        (<span class="rule-id">R03</span>, L07 сл. 10), то есть тот же ряд, который
+        уже стоит на оси FED с весом 0.25. Это делает связку «ось — валидатор»
+        механически прозрачной: когда ось FED идёт вверх, короткий конец падает,
+        и мы точно знаем, какой именно ряд обязан это показать.
+      </p>
+      <p>
+        <em>Второй.</em> Трёхмесячная ставка отвергнута потому, что она привязана
+        к <em>текущей</em> ставке ФРС, а не к ожиданиям: на плато между заседаниями
+        она почти неподвижна, и валидатор получил бы мёртвую зону длиной
+        в шесть-семь недель. Тридцатилетка отвергнута потому, что её движения
+        в заметной части объясняются премией за срок и предложением бумаги —
+        факторами, к циклу отношения не имеющими (см. врезку «2023 → 2026»).
+      </p>
+      <p style="margin-bottom:0">
+        <b>Контрольная пара.</b> 3M / 10Y считается параллельно и пишется в журнал,
+        но в решение не входит. Расхождение двух пар — содержательный сигнал:
+        оно означает, что движение локализовано в самой ближней части кривой,
+        то есть речь о ближайшем заседании, а не о цикле.
+      </p>
+    </div>
+
+    <div class="callout callout--beyond">
+      <div class="callout__label" data-icon="✚">Академический стандарт — другой, и это стоит знать</div>
+      <p>
+        В литературе о предсказании рецессий канонический спред — <b>не</b> 10Y−2Y,
+        а <b>10Y минус 3M</b>. Эстрелла и Мишкин (<i>Predicting U.S. Recessions:
+        Financial Variables as Leading Indicators</i>, 1998) показали, что именно
+        эта пара даёт лучшую предсказательную силу на горизонте около года,
+        и модель вероятности рецессии, которую публикует ФРБ Нью-Йорка, построена
+        на ней. <b>[ДОПОЛНЕНО]</b>
+      </p>
+      <p style="margin-bottom:0">
+        Расхождение объяснимо и не отменяет нашего выбора: это <em>разные задачи</em>.
+        Эстрелла и Мишкин предсказывают рецессию на год вперёд, и там сильная
+        сторона трёхмесячной ставки — её жёсткая привязка к текущей политике —
+        работает в плюс. Наш валидатор решает другую задачу: определить, куда
+        сдвинулись <em>ожидания</em> за последние недели. Для неё нужен торгуемый,
+        подвижный короткий конец. Обе пары считаем, решение принимает 2Y/10Y,
+        и это <b>[НАШЕ РЕШЕНИЕ]</b>, а не следствие литературы.
+      </p>
+    </div>
+
+    <h3 id="d5">5. Нет гистерезиса и частоты пересчёта</h3>
+
+    <p>
+      <b>Проблема.</b> Не сказано, как часто пересчитывать состояние и что делать,
+      когда score колеблется вокруг порога. Без ответа на второй вопрос
+      классификатор будет переключаться ежедневно на границе — «дребезжать», —
+      выдавая серию противоположных сигналов там, где рынок просто стоит.
+      В торговом контуре это не косметика: каждое ложное переключение стоит
+      комиссии и проскальзывания.
+    </p>
+    <p>
+      <b>Почему источник молчит.</b> У человека гистерезис встроен и бесплатен:
+      никто не меняет мнение о режиме рынка из-за движения двухлетки на два
+      базисных пункта. Более того, слайды используют одновременно пятиминутные,
+      дневные, недельные и месячные лейауты, и вопрос «на каком таймфрейме живёт
+      квадрант» в курсе не ставится, потому что для читателя ответ очевиден
+      из контекста.
+    </p>
+
+    <div class="callout callout--ours">
+      <div class="callout__label" data-icon="◆">[НАШЕ РЕШЕНИЕ] Суточный такт, триггер Шмитта и минимальное время жизни</div>
+      <ul>
+        <li><b>Частота.</b> Пересчёт раз в сутки после закрытия рынка США.
+          Внеочередной — после заседания FOMC и после выхода ISM, NAHB и LEI.
+          Внутридневной пересчёт запрещён: входы обновляются от раза в неделю
+          до раза в месяц, и классифицировать квадрант внутри дня — то же, что
+          измерять климат термометром за окном.</li>
+        <li><b>Гистерезис.</b> Порог на вход в состояние — θ, на выход — <b>0.6·θ</b>.
+          Чтобы покинуть квадрант, ось должна не просто вернуться к порогу, а уйти
+          заметно ниже него. Это классический триггер Шмитта: два разных порога
+          вместо одного — стандартный способ подавить дребезг в любой пороговой
+          системе. <b>[ДОПОЛНЕНО:</b> приём заимствован из схемотехники и обработки
+          сигналов, где он и называется триггером Шмитта.<b>]</b></li>
+        <li><b>Подтверждение серией.</b> Смена квадранта требует трёх подряд
+          суточных пересчётов с новым знаком. Дешевле, чем сглаживание, и меньше
+          сдвигает момент срабатывания.</li>
+        <li><b>Минимальное время жизни.</b> Десять торговых дней. Раньше срока
+          состояние меняется только по событийному переопределению: первое
+          вербальное упоминание разворота политики (<span class="rule-id">R07</span> —
+          единственное правило курса, прямо требующее реагировать немедленно)
+          и решение FOMC против ожиданий.</li>
+      </ul>
+      <p style="margin-bottom:0">
+        Числа 0.6, 3 и 10 — наши и подлежат проверке по метрике «средняя
+        длительность состояния» из дыры 10. Обоснование их порядка: минимальное
+        время жизни должно быть меньше типичной длительности квадранта (месяцы),
+        но больше типичного интервала между релизами (неделя-две).
+      </p>
+    </div>
+
+    <h3 id="d6">6. Не задан приоритет при конфликте двух версий оси MACRO</h3>
+
+    <p>
+      <b>Проблема.</b> Горизонтальную ось можно считать двумя способами: по
+      макро-релизам (NAHB, ISM, LEI, EPS, Claims) и по рыночным заменителям
+      (медь к золоту, нефть к золоту, циклические сектора к защитным). Эти версии
+      расходятся регулярно — и должны расходиться: рынок опережает экономику.
+      Спецификация фиксирует само явление (<span class="rule-id">R78</span>,
+      §4.2 п. 8), но не говорит, чей знак берётся в момент расхождения.
+    </p>
+    <p>
+      <b>Почему источник молчит.</b> Автор трактует расхождение как содержательную
+      информацию — «ранний сигнал предстоящей смены квадранта», — и для человека
+      этого достаточно: он видит обе картинки и держит в голове обе. Функция
+      обязана вернуть один знак.
+    </p>
+
+    <div class="callout callout--ours">
+      <div class="callout__label" data-icon="◆">[НАШЕ РЕШЕНИЕ] Решают данные, расхождение становится отдельным выходом</div>
+      <p>
+        <b>Основное правило: решающий знак берёт версия на макро-данных.</b>
+        Причина не в том, что она точнее, а в том, что рыночная версия по построению
+        коррелирована с тем, что мы собираемся торговать. Дать ей приоритет —
+        значит превратить классификатор в трендследящую систему, которая
+        подтверждает саму себя: секторальные ratio растут → ось говорит «+» →
+        инструмент велит покупать те же сектора. Такая петля даёт красивый
+        бэктест и разваливается на первом развороте.
+      </p>
+      <p>
+        <b>Расхождение не игнорируется, а публикуется.</b> Если знаки двух версий
+        различаются два пересчёта подряд, выставляется флаг
+        <code>TRANSITION_WATCH</code>: квадрант не меняется, но множитель размера
+        позиции получает штраф (дыра 9). Это буквальная реализация авторского
+        тезиса — расхождение есть ранний сигнал перехода, а правильная реакция
+        на ранний сигнал перехода — сократить риск, а не развернуть позицию.
+      </p>
+      <p style="margin-bottom:0">
+        <b>Единственное исключение.</b> Если рыночная версия держит противоположный
+        знак пятнадцать торговых дней подряд <em>и</em> одновременно сменила знак
+        ось FED — приоритет переходит к рыночной версии. Это случай марта 2020 года:
+        режим сломался быстрее, чем вышел хоть один релиз, и ждать данных означало
+        опоздать на месяц. Условие намеренно узкое — два независимых события сразу.
+      </p>
+    </div>
+
+    <h3 id="d7">7. Нет шестого класса для аномальной кривой</h3>
+
+    <p>
+      <b>Проблема.</b> Лекция о кривой описывает пять форм, и одна из них —
+      <b>горбатая</b> (humped), с авторской пометкой «явно херня какая-то…»
+      (L07 сл. 25). То есть автор сам считает это состояние нечитаемым. Но
+      в матрице два на два места для него нет: четыре угла заняты четырьмя
+      комбинациями «bull/bear × flat/steep», центр занят состоянием «режима нет».
+      Классификатор, встретив горб, обязан вернуть что-то — и вернёт неправду.
+    </p>
+    <p>
+      <b>Почему источник молчит.</b> Матрица построена на предпосылке, что кривая
+      описывается наклоном. Горб эту предпосылку нарушает: он не про наклон,
+      а про третий фактор — кривизну. Уложить его в двумерную схему нельзя
+      в принципе, поэтому автор его описывает и отбрасывает.
+    </p>
+
+    <div class="callout callout--ours">
+      <div class="callout__label" data-icon="◆">[НАШЕ РЕШЕНИЕ] Класс ANOMALY — отдельный от центра</div>
+      <p>
+        Шестое состояние вводится не как подвид Quality, а как самостоятельный
+        терминальный статус с другим смыслом. Разница принципиальна:
+      </p>
+      <ul>
+        <li><b>Центр / Quality</b> = «данные читаются, режима нет». Инструмент даёт
+          нейтральный портфель качества (<span class="rule-id">R41</span>,
+          <span class="rule-id">R83</span>).</li>
+        <li><b>ANOMALY</b> = «данные не читаются». Инструмент не выдаёт аллокацию
+          вовсе — только оповещение оператору. Отсутствие ответа честнее плохого
+          ответа.</li>
+      </ul>
+      <p>Четыре триггера:</p>
+      <ol>
+        <li><b>Немонотонность кривой.</b> Существует внутренний узел, отклоняющийся
+          от линейной интерполяции соседей более чем на 25 базисных пунктов.
+          Проверяется по узлам 3M, 6M, 1Y, 2Y, 5Y, 10Y, 20Y, 30Y. Порог 25 б.п. — наш;
+          он подобран как величина, заметно превышающая обычную неровность кривой,
+          но меньшая, чем настоящий горб.</li>
+        <li><b>Стрессовый режим.</b> Экстремальная волатильность одновременно
+          с расширением кредитных спредов. В таких эпизодах режимные корреляции
+          ломаются целиком, и матрица, построенная на них, неприменима.</li>
+        <li><b>Недостаток данных.</b> Покрытие весов ниже 60 % на любой оси.</li>
+        <li><b>Третье подряд неподтверждение формой.</b> Систематическое расхождение
+          осей и кривой означает, что сломана либо калибровка, либо предпосылка.</li>
+      </ol>
+      <p style="margin-bottom:0">
+        Выход из ANOMALY — только после снятия триггера плюс один полный такт
+        с чистыми данными.
+      </p>
+    </div>
+
+    <div class="callout callout--beyond">
+      <div class="callout__label" data-icon="✚">Горб — не поломка, а третий фактор</div>
+      <p style="margin-bottom:0">
+        Авторская оценка «херня какая-то» описывает ощущение, но не механизм.
+        Механизм известен: в разложении Литтермана и Шейнкмана горбатая кривая —
+        это проявление третьего фактора, <b>кривизны</b>, ортогонального и уровню,
+        и наклону. Он мал по вкладу в вариацию, но не бессмыслен: горб на середине
+        кривой возникает, когда рынок ждёт, что ставка сначала вырастет, а потом
+        снизится, — то есть закладывает <em>цикл целиком</em> внутрь одной кривой.
+        В параметризации Нельсона—Сигеля это третий коэффициент модели, у которого
+        есть собственная динамика. <b>[ДОПОЛНЕНО]</b> Практический вывод для нас
+        от этого не меняется — двумерная матрица такое состояние не описывает, —
+        но меняется формулировка: ANOMALY означает «сработал фактор, которого нет
+        в модели», а не «данные испорчены». Со временем это состояние заслуживает
+        не отказа, а собственного разбора.
+      </p>
+    </div>
+
+    <h3 id="d8">8. Пропуски в матрице активов</h3>
+
+    <p>
+      <b>Проблема.</b> Четыре клетки матрицы заполнены неравномерно. Доллар и
+      волатильность выписаны только в Risk ON и Risk OFF — в Growth и Value их нет.
+      Кредит не выписан в Q-I. Крипты нет ни в одном квадранте. Недвижимости
+      и валют кроме доллара нет тоже.
+    </p>
+    <p>
+      <b>Почему источник молчит.</b> Шпаргалка — рабочая доска, а не справочник.
+      Автор выписывал то, что торгует и что в данном углу главное. Пустая клетка
+      означает «здесь это не самое интересное», а не «здесь этого нет» — и вот эту
+      разницу код воспроизвести не может.
+    </p>
+
+    <div class="callout callout--ours">
+      <div class="callout__label" data-icon="◆">[НАШЕ РЕШЕНИЕ] Заполнять выводом из инвариантов, а не догадкой</div>
+      <p>
+        Каждая пустая клетка выводится из уже утверждённых кросс-квадрантных правил
+        и помечается как выведенная — с уровнем доверия ниже, чем у канонных.
+        Что не выводится — не заполняется.
+      </p>
+      <ul>
+        <li><b>Доллар.</b> <span class="rule-id">R44</span> обобщается: DXY
+          противофазен знаку оси FED, потому что он производная от дифференциала
+          доходностей. Значит Q-I → <span class="dir dir--down">вниз</span> (мягко),
+          Q-IV → <span class="dir dir--up">вверх</span> (мягко). Сильные версии
+          остаются там, где они выписаны у автора.</li>
+        <li><b>Волатильность.</b> VIX противофазен риск-аппетиту, а в Q-I и Q-IV
+          риск-аппетит смешанный: одна ось за риск, другая против. Ставим
+          нейтрально с уклоном — Q-I <span class="dir dir--flat">вбок</span>,
+          Q-IV <span class="dir dir--flat">вбок</span> — и <em>не</em> используем
+          в аллокации, только пишем в журнал. Слабый вывод честнее сильного.</li>
+        <li><b>Кредит в Q-I.</b> Клетку приходится расщепить, чего у автора нет.
+          По <span class="rule-id">R47</span> спреды сужаются только при FED «+»
+          <em>и</em> MACRO «+», значит в Q-I спред нейтрален. Но цена облигаций
+          инвестиционного рейтинга при падении ставок растёт за счёт дюрации:
+          по калибровке курса IG даёт <b>+12.6 %</b> при сдвиге ставок на −1 %
+          (L07 сл. 17, <b>[КАНОН]</b>). Итог: <b>IG <span class="dir dir--up">вверх</span>
+          дюрационно, HY <span class="dir dir--flat">вбок</span></b>. Это единственное
+          место, где мы разделяем то, что автор писал слитно как
+          <code>H.G./Y.C. Bonds</code>.</li>
+        <li><b>Крипта</b> — отдельный слой, см. крипто-врезку ниже.</li>
+        <li><b>REITs и не-долларовые валюты</b> остаются незаполненными.
+          Они есть на лестнице риска, но в квадранты не заносились, и вывести их
+          из инвариантов нельзя: недвижимость чувствительна и к ставкам, и к макро
+          одновременно, а валюты требуют второй экономики, которой в матрице нет.
+          В первую версию инструмента не входят. Придумать сюда знаки было бы
+          легко и неправильно.</li>
+      </ul>
+      <p style="margin-bottom:0">
+        Общий принцип: <b>выведенная клетка не равна канонной</b>. В коде у каждой
+        клетки есть поле происхождения, и аллокация умеет работать в режиме
+        «только канон» — это единственный способ потом измерить, сколько наши
+        достройки добавили или отняли.
+      </p>
+    </div>
+
+    <h3 id="d9">9. Нет правил размера позиции и риск-менеджмента</h3>
+
+    <p>
+      <b>Проблема.</b> «Сто процентов в активах и рисковать максимально»
+      (<span class="rule-id">R81</span>) и «быть в защите, рисковать минимально»
+      (<span class="rule-id">R82</span>) — описания режима, а не инструкции.
+      Ни функции размера позиции, ни правил расчёта стопа в конспектах нет:
+      стоп-лосс упомянут как этап конвейера, но методика отнесена автором
+      во вторую часть курса, которой у нас нет.
+    </p>
+    <p>
+      <b>Почему источник молчит.</b> Это сознательное разделение: первая часть
+      курса — про диагноз, вторая — про исполнение. Мы читаем только первую.
+    </p>
+
+    <div class="callout callout--ours">
+      <div class="callout__label" data-icon="◆">[НАШЕ РЕШЕНИЕ] Размер — произведение четырёх множителей</div>
+      <p>
+        <code>size = base(состояние) × conf × vol_target × penalty</code>,
+        каждый множитель в диапазоне от 0 до 1 (кроме <code>vol_target</code>,
+        см. ниже).
+      </p>
+      <ul>
+        <li><b>base</b> — базовый вес состояния: Q-II 1.00 · Q-I 0.70 · Q-IV 0.70 ·
+          Центр 0.35 · Q-III 0.15 · ANOMALY 0. Ряд воспроизводит авторскую
+          лестницу «максимум риска в Risk ON, минимум в Risk OFF» и ставит
+          диагональ стилей посередине.</li>
+        <li><b>conf</b> — уверенность: <code>min(|FED_score|, |MACRO_score|) / θ</code>,
+          обрезанная единицей. Буквально «насколько глубоко мы внутри квадранта»:
+          у самой границы размер близок к нулю, в углу — к базовому.</li>
+        <li><b>vol_target</b> — целевая волатильность портфеля, делённая
+          на реализованную волатильность корзины за 20 дней, с обрезкой в разумных
+          пределах. Без этого множителя одинаковый «размер» означает разный риск
+          в спокойном и в турбулентном режиме.</li>
+        <li><b>penalty</b> — штрафы: 0.5 при флаге <code>TRANSITION_WATCH</code>
+          (дыра 6) и 0.5 при слабой форме кривой, два из трёх окон (дыра 3).
+          Перемножаются.</li>
+      </ul>
+      <p style="margin-bottom:0">
+        <b>Стоп — не ценовой уровень, а инвалидация состояния.</b> Позиция открыта
+        по режиму, значит закрывается сменой режима, а не процентом просадки.
+        Ценовой стоп остаётся только как аварийный: он ловит случай, когда рынок
+        разошёлся с классификатором быстрее, чем классификатор успел пересчитаться.
+      </p>
+    </div>
+
+    <div class="callout callout--beyond">
+      <div class="callout__label" data-icon="✚">Откуда взяты два из четырёх множителей</div>
+      <p style="margin-bottom:0">
+        <code>vol_target</code> — не изобретение: масштабирование позиции обратно
+        реализованной волатильности изучено и описано (Moreira и Muir,
+        <i>Volatility-Managed Portfolios</i>, Journal of Finance, 2017; там показано,
+        что снижение экспозиции в периоды высокой волатильности улучшает
+        риск-скорректированный результат на широком наборе стратегий). Множитель
+        <code>conf</code> — это по сути дробный Келли: критерий Келли (1956) даёт
+        оптимальный размер как функцию преимущества, а практика требует брать
+        от него долю, потому что преимущество оценено с ошибкой. У нас оценка
+        преимущества — расстояние до границы квадранта. <b>[ДОПОЛНЕНО]</b>
+        Курс не даёт ни того, ни другого; вся конструкция размера — наша.
+      </p>
+    </div>
+
+    <h3 id="d10">10. Нет бэктеста, метрик качества и обработки повторного неподтверждения</h3>
+
+    <p>
+      <b>Проблема.</b> Историческая точность классификатора неизвестна. Доля ложных
+      срабатываний неизвестна. Что делать, когда форма кривой не подтверждает
+      квадрант второй раз подряд, не сказано. Единственные численные оценки
+      качества во всём материале — hit rates факторов по фазам
+      (<span class="rule-id">R85</span>–<span class="rule-id">R88</span>), но они
+      посчитаны для <em>чужого</em> индикатора режима, а не для осей FED × MACRO,
+      и переносить их на нашу конструкцию нельзя.
+    </p>
+    <p>
+      <b>Почему источник молчит.</b> Курс учит читать, а не измерять. Автор
+      предупреждает о ложных корреляциях и требует «экономической логики связи»,
+      но критерия проверки не даёт — и это, пожалуй, самый крупный методологический
+      пробел всего материала: инструмент предъявлен без единого свидетельства,
+      что он работает.
+    </p>
+
+    <div class="callout callout--ours">
+      <div class="callout__label" data-icon="◆">[НАШЕ РЕШЕНИЕ] Три части: метка истины, метрики, обработка повторов</div>
+      <p>
+        <b>1. Что считать правильным ответом.</b> Объективной разметки состояний
+        рынка не существует — «мы были в Q-III в марте» не проверяемо. Поэтому
+        классификатор оценивается не по «угадал квадрант», а по <em>условной
+        доходности предписанных корзин</em>: для каждого дня в состоянии Q считается
+        форвардная доходность за 21 день по длинной корзине минус по короткой
+        (<span class="rule-id">R37</span>–<span class="rule-id">R40</span>). Если
+        инструмент полезен, эта разность в среднем положительна в каждом состоянии.
+        Наблюдения перекрываются, поэтому значимость считается блочным бутстрапом
+        с блоком в длину горизонта, а не обычным t-тестом.
+      </p>
+      <p>
+        <b>2. Метрики самого классификатора</b> — независимо от доходности:
+        доля времени в каждом из шести классов; средняя длительность состояния;
+        доля переходов, прошедших через центр (по <span class="rule-id">R51</span>
+        она обязана быть высокой — диагональные скачки запрещены); доля
+        неподтверждений формой; устойчивость к сдвигу окна (пересчёт с окнами
+        5 / 10 / 21 → доля дней, где класс не меняется).
+      </p>
+      <p>
+        <b>3. Повторное неподтверждение.</b> Первое → центр. Второе подряд → центр
+        плюс флаг. Третье подряд → ANOMALY плюс оповещение оператору. Логика:
+        однократное расхождение осей и кривой — нормальный шум, троекратное
+        означает, что либо веса сбились, либо рынок в режиме, которого в матрице
+        нет. Второе случалось на нашей памяти — см. врезку «2023 → 2026».
+      </p>
+      <p style="margin-bottom:0">
+        <b>Дисциплина против подгонки.</b> Калибровка на 2004–2015, проверка
+        на 2015–2026, перекалибровка не чаще раза в год и только с записью в журнал
+        (что менялось, почему, какой был результат до и после). Без журнала
+        через год никто не сможет отличить методику от подгонки, включая нас самих.
+      </p>
+    </div>
+
+    <div class="callout callout--beyond">
+      <div class="callout__label" data-icon="✚">Почему обычного бэктеста недостаточно</div>
+      <p>
+        Два внешних результата, которые стоит принять до, а не после написания
+        кода. <b>[ДОПОЛНЕНО]</b>
+      </p>
+      <p>
+        <b>Множественная проверка гипотез.</b> Бейли, Борвейн, Лопес де Прадо и Чжу
+        (<i>Pseudo-Mathematics and Financial Charlatanism</i>, Notices of the AMS,
+        2014) показали, что при переборе достаточного числа вариантов стратегии
+        почти любой шум даёт впечатляющий бэктест, и ввели поправку —
+        «дефлированный коэффициент Шарпа», учитывающую число испытанных
+        конфигураций. Харви, Лю и Чжу (2016) на материале факторной литературы
+        предложили поднять порог значимости примерно до t ≈ 3 вместо привычных 2,
+        именно из-за масштаба перебора. Практический вывод для нас: <b>число
+        протестированных вариантов θ, окон и весов должно записываться</b>,
+        иначе итоговая значимость не интерпретируема.
+      </p>
+      <p style="margin-bottom:0">
+        <b>Данные должны быть теми, что были доступны в тот день.</b> Макро-ряды
+        пересматриваются, иногда сильно. Дибольд и Рудебуш
+        (<i>Forecasting Output with the Composite Leading Index: A Real-Time
+        Analysis</i>, JASA, 1991) обнаружили, что предсказательная сила
+        композитного опережающего индекса заметно падает, если брать не
+        окончательные, а реально доступные на тот момент значения. Инфраструктура
+        для этого существует и бесплатна: архив винтажей ALFRED в FRED и набор
+        данных реального времени ФРБ Филадельфии. Бэктест на пересмотренных
+        данных — не «слегка оптимистичный», а систематически неверный.
+      </p>
+    </div>
+
+    <!-- ================================================================= -->
+    <h2 id="s6">Что уже разрешено и как</h2>
+
+    <p>
+      Не все противоречия источника остаются открытыми. Пять разобраны и закрыты —
+      их решения зафиксированы в §8 плана книги и в спецификации, и код должен
+      следовать им, а не первоисточнику буквально. Каждое разобрано в своей главе;
+      здесь — сводка с тем, что из этого следует для реализации.
+    </p>
+
+    <div class="table-scroll">
+      <table class="data">
+        <thead>
+          <tr><th>Противоречие</th><th>Как разрешено</th><th>Что это значит для кода</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>Знак <code>Highβ/Lowβ</code> в Q-I и Q-IV</b><br>Конспекты расходятся ровно пополам: четыре источника дают Q-I <span class="dir dir--down">вниз</span> / Q-IV <span class="dir dir--up">вверх</span>, три — наоборот</td>
+            <td>Сверено по финальному слайду (L10 сл. 16): <b>Q-I <span class="dir dir--up">вверх</span>, Q-IV <span class="dir dir--down">вниз</span></b>. Ранние редакции матрицы отменены финальной — разрешать конфликт в пользу черновика методологически неверно</td>
+            <td>Кодировать по финалу. Контраргумент («бета ниже своей средней в марте 2023») снят: стрелки кодируют <em>направление</em>, а не уровень относительно средней, и отношение в тот период росло</td>
+          </tr>
+          <tr>
+            <td><b>Нотация <code>H.G. / Y.C. Bonds</code></b><br>«против» или «и»?</td>
+            <td>Читается как <b>«и», по цене обоих</b>. При прочтении «спред» знаки по квадрантам становятся внутренне противоречивыми; при прочтении «и» картина когерентна</td>
+            <td>Одна строка матрицы превращается в две позиции. Для Q-I мы её дополнительно расщепляем на IG и HY (дыра 8) — единственное отступление от авторской слитной записи</td>
+          </tr>
+          <tr>
+            <td><b>Ярлыки Growth / Value и Risk ON / OFF</b><br>привязаны к половинам матрицы или к углам?</td>
+            <td>В финальной версии оба измерения <b>угловые</b>. Формулировки «по половинам» из ранних лекций — более грубая редакция</td>
+            <td>Классификация строго по квадранту (<span class="rule-id">R19</span>–<span class="rule-id">R22</span>). Половинчатые формулировки допустимы только как пояснение в тексте отчёта, не как правило</td>
+          </tr>
+          <tr>
+            <td><b>Порог <code>HIGH BETA ≥ 1.5</code> и <code>LOW BETA ≤ 1.5</code></b></td>
+            <td>Порог <b>неоперационален</b>: границы пересекаются в точке 1.5, а вся приведённая на слайде выборка бет S&amp;P 500 лежит ниже 1.5 (максимум 1.36). По этому определению «высокобетовых» акций в индексе почти нет</td>
+            <td>Абсолютную бету не использовать. Работать с отношением <span class="ticker">SPHB/SPLV</span> относительно его скользящей средней — так фактически и делает сам автор (<span class="rule-id">R64</span>)</td>
+          </tr>
+          <tr>
+            <td><b>«M2 = M1 + M0»</b></td>
+            <td>Ошибка слайда; корректное определение агрегатов дано в главе 4</td>
+            <td>На классификатор не влияет — денежные агрегаты не входят ни в одну ось. Значение для книги: показывает, что арифметику слайдов нужно проверять, а не переносить</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>
+      Общее у всех пяти — способ разрешения. Ни одно не решено голосованием
+      источников и ни одно — «здравым смыслом». В трёх случаях решил
+      <b>приоритет финальной версии над черновиком</b>, в одном — <b>внутренняя
+      когерентность</b> (единственное прочтение, при котором знаки по квадрантам
+      не противоречат друг другу), в одном — <b>проверка арифметики</b>. Это
+      воспроизводимые процедуры, и когда обнаружится шестое противоречие,
+      разрешать его нужно так же.
+    </p>
+
+    <!-- ================================================================= -->
+    <h2 id="s7">План реализации</h2>
+
+    <h3 id="s71">Какие ряды нужны минимально</h3>
+
+    <p>
+      Приложение §9 спецификации перечисляет полный набор тикеров. Для первой
+      версии он избыточен: половина рядов обслуживает группы I–M, без которых
+      классификатор работает. Ниже — минимум, разложенный по каналам архитектуры,
+      с честной пометкой о доступности. Тикеры в левой колонке — как в курсе
+      (терминальные), в правой — где это же лежит машиночитаемо.
+    </p>
+
+    <div class="table-scroll">
+      <table class="data">
+        <thead>
+          <tr><th>Канал</th><th>Ряды (как в курсе)</th><th>Где брать программно</th><th>Доступность</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Ось FED</td>
+            <td><span class="ticker">100-ZQ1!</span>, <span class="ticker">100-ZQ2!</span>, <span class="ticker">US01Y</span>, <span class="ticker">US02Y</span>, <span class="ticker">USINTR</span>, CME FedWatch, SEP</td>
+            <td>котировки фьючерсов на ставку — CME; доходности казначейских бумаг и целевой диапазон — FRED; SEP — публикации ФРС</td>
+            <td>открыто, кроме терминальной кривой — её придётся считать из фьючерсов самим</td>
+          </tr>
+          <tr>
+            <td>Реальные ставки</td>
+            <td><span class="ticker">US05Y−T5YIE</span>, <span class="ticker">US10Y−T10YIE</span></td>
+            <td>FRED: доходности TIPS и вменённая инфляция публикуются ежедневно</td>
+            <td>открыто</td>
+          </tr>
+          <tr>
+            <td>Кривая (валидатор)</td>
+            <td>узлы <span class="ticker">US01M</span> … <span class="ticker">US30Y</span>, спреды 10Y−2Y и 10Y−3M</td>
+            <td>FRED, дневная сетка констант-погашений</td>
+            <td>открыто, глубокая история</td>
+          </tr>
+          <tr>
+            <td>Ось MACRO — жильё</td>
+            <td>NAHB <span class="ticker">USHMI</span>, Permits <span class="ticker">USBP</span>, Starts <span class="ticker">USHST</span></td>
+            <td>Permits и Starts — Бюро переписи через FRED; <b>NAHB HMI — данные ассоциации, лицензируются</b></td>
+            <td>частично закрыто</td>
+          </tr>
+          <tr>
+            <td>Ось MACRO — заказы</td>
+            <td>ISM Mfg, ISM Services, ISM New Orders</td>
+            <td><b>ISM — платная подписка.</b> Открытый заменитель близкого смысла — индексы деловой активности S&amp;P Global и региональные обзоры ФРБ (Филадельфия, Нью-Йорк, Даллас), которые публикуются свободно</td>
+            <td>закрыто, есть заменители</td>
+          </tr>
+          <tr>
+            <td>Ось MACRO — прибыль</td>
+            <td>пересмотры 12M forward EPS</td>
+            <td><b>консенсус-оценки аналитиков — платные данные</b> (поставщики финансовых терминалов). Открытого эквивалента нужного качества нет</td>
+            <td>закрыто</td>
+          </tr>
+          <tr>
+            <td>Ось MACRO — труд и композит</td>
+            <td>Claims <span class="ticker">ICSA</span>, JOLTS, LEI</td>
+            <td>Claims и JOLTS — FRED; <b>LEI — индекс Conference Board, лицензируется</b></td>
+            <td>частично закрыто</td>
+          </tr>
+          <tr>
+            <td>Рыночные прокси и доллар</td>
+            <td><span class="ticker">HG1!/GC1!</span>, <span class="ticker">CL1!/GC1!</span>, <span class="ticker">DXY</span></td>
+            <td>биржевые котировки фьючерсов; индекс доллара</td>
+            <td>открыто</td>
+          </tr>
+          <tr>
+            <td>Корзины подтверждения (позже)</td>
+            <td><span class="ticker">XLY/XLP</span>, <span class="ticker">SPHB/SPLV</span>, <span class="ticker">EEM/VEA</span>, <span class="ticker">IJR/IVV</span></td>
+            <td>котировки биржевых фондов</td>
+            <td>открыто</td>
+          </tr>
+          <tr>
+            <td>Винтажи для бэктеста</td>
+            <td>— (в курсе не упоминаются)</td>
+            <td>архив ревизий FRED и набор данных реального времени ФРБ Филадельфии</td>
+            <td>открыто · <b>[ДОПОЛНЕНО]</b></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout callout--trap">
+      <div class="callout__label" data-icon="⚠">Три входа из десяти — платные, и это меняет план</div>
+      <p style="margin-bottom:0">
+        ISM, LEI и консенсус по прибыли — данные, за которые нужно платить или
+        которые нужно заменять. В сумме это <b>0.54 веса</b> оси MACRO по нашей
+        таблице из дыры 1: строить ось без них нельзя, а с заменителями она уже
+        не та ось, которую описывает курс. Вывод для порядка работ: замена
+        каждого закрытого входа — <em>отдельное решение с обоснованием и
+        пометкой</em>, а не техническая деталь. Если у проекта нет бюджета
+        на данные, честный вывод — что воспроизводится вертикальная ось и валидатор,
+        а горизонтальная строится по прокси и должна оцениваться отдельно.
+      </p>
+    </div>
+
+    <h3 id="s72">В каком порядке строить</h3>
+
+    <p>
+      Пять этапов. Порядок не переставляется: каждый следующий опирается на
+      артефакт предыдущего, и на каждом есть что показать оператору — не
+      «работает», а конкретный файл или график.
+    </p>
+
+    <div class="table-scroll">
+      <table class="data">
+        <thead><tr><th class="num">Этап</th><th>Что делается</th><th>Артефакт на выходе</th><th>Чем можно ошибиться</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="num">1</td>
+            <td><b>Ряды и хранилище.</b> Загрузчик, витрина «ряд — дата наблюдения — дата публикации». Винтажи обязательны с самого начала</td>
+            <td>таблица покрытия: какой ряд с какого года, с какой задержкой публикации, с какими пропусками</td>
+            <td>сохранить только последнее значение. Тогда бэктест увидит ревизии, которых в тот день не существовало, — переделывать придётся всё</td>
+          </tr>
+          <tr>
+            <td class="num">2</td>
+            <td><b>Оси без порогов.</b> Считать FED_score и MACRO_score как непрерывные величины. Никакой классификации, никаких сигналов</td>
+            <td>два графика за 20 лет с наложенными датами рецессий и заседаний</td>
+            <td>перейти к порогам, не посмотрев на распределения. Пороги калибруются по ним (дыра 2), а не наоборот</td>
+          </tr>
+          <tr>
+            <td class="num">3</td>
+            <td><b>Классификатор.</b> Пороги, гистерезис, минимальное время жизни, шесть классов, суточный такт</td>
+            <td>лента состояний по дням + таблица длительностей и переходов</td>
+            <td>подбирать θ по доходности. Запрещено (дыра 2)</td>
+          </tr>
+          <tr>
+            <td class="num">4</td>
+            <td><b>Валидатор.</b> Формы по трём окнам, правило большинства, неподтверждение, счётчик, ANOMALY</td>
+            <td>доля неподтверждений по состояниям; список эпизодов ANOMALY с датами</td>
+            <td>сделать валидатор частью осей. Он обязан считаться независимо, иначе теряет смысл</td>
+          </tr>
+          <tr>
+            <td class="num">5</td>
+            <td><b>Аллокация, размер, бэктест.</b> Корзины по <span class="rule-id">R37</span>–<span class="rule-id">R41</span>, четыре множителя размера, условная доходность, журнал калибровок</td>
+            <td>отчёт: доходность корзин по состояниям с интервалами, метрики классификатора, число испытанных конфигураций</td>
+            <td>показать один красивый прогон. Без числа перебранных вариантов результат не интерпретируем</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 id="s73">Как проверять</h3>
+
+    <p>Три уровня, от дешёвого к дорогому.</p>
+    <p>
+      <b>Первый — табличные тесты.</b> Правила <span class="rule-id">R19</span>–<span class="rule-id">R30</span>
+      детерминированы и не зависят ни от чего внешнего: это чистые функции от двух
+      знаков и четырёх приращений. Полный перебор входов (два знака × нуль × четыре
+      формы × «не читается») даёт небольшую таблицу «вход → ожидаемый класс», которая
+      покрывает ядро целиком. Такие тесты пишутся раньше кода и не устаревают.
+    </p>
+    <p>
+      <b>Второй — исторические реперы.</b> Единственная разметка состояний, которую
+      даёт сам курс, — датировка COVID-цикла по схеме BofA: Q2 2020 → Q-I,
+      Q3–Q4 2020 → Q-II, первое полугодие 2021 → Q-IV, второе полугодие 2021 → Q-III
+      (<b>[КАНОН]</b>, L10 сл. 08). Это четыре точки, и классификатор обязан
+      попасть в них хотя бы большинством дней. Мало для статистики, достаточно
+      для отлова грубой ошибки знака или перепутанных осей.
+    </p>
+    <p>
+      <b>Третий — теневой режим.</b> Не менее квартала работы без исполнения:
+      инструмент считает и публикует состояние, оператор смотрит, расхождения
+      разбираются. Это единственный способ увидеть отказы, которых нет в истории:
+      пропущенный релиз, изменённая методика, задержка публикации, сбой источника.
+    </p>
+
+    <div class="callout callout--ours">
+      <div class="callout__label" data-icon="◆">Это спецификация, а не обещание</div>
+      <p>
+        Всё изложенное в этой главе — <b>техническое задание, а не план работ</b>.
+        Решение о том, разрабатывать ли классификатор фазы рынка, в каком объёме
+        и в какие сроки, принимает оператор. Ни один этап отсюда не запущен
+        и не запускается автоматически по факту того, что глава дописана.
+      </p>
+      <p style="margin-bottom:0">
+        Причина осторожности конкретная. Классификатор фазы сам по себе денег
+        не двигает, но его выход влияет на торговые сигналы, а значит попадает
+        в контур, где ошибка стоит денег. Для такого контура правило одно:
+        ничего не выпускается без измеренного качества (дыра 10) и без явного
+        решения оператора. Спецификация, которую нельзя проверить, остаётся
+        документом — и это нормальное состояние документа.
+      </p>
+    </div>
+
+    <!-- ================================================================= -->
+    <div class="callout callout--crypto">
+      <div class="callout__label" data-icon="₿">Крипто-слой: что дописать в спецификацию</div>
+      <p>
+        Крипты в шпаргалке нет ни в одном квадранте — только на лестнице риска,
+        в верхнем ярусе, со знаком вопроса, поставленным самим автором. Для
+        инструмента, который строится в криптовалютном контуре, это не деталь,
+        а главный пробел. Пять пунктов, без которых классификатор останется
+        инструментом про акции и облигации.
+      </p>
+      <p>
+        <b>1. Ряды.</b> К минимальному набору добавляются
+        <span class="ticker">BTCUSDT</span> и капитализационные агрегаты
+        <span class="ticker">TOTAL</span> / <span class="ticker">TOTAL2</span> /
+        <span class="ticker">TOTAL3</span>. Отношение
+        <span class="ticker">TOTAL3/TOTAL</span> — прямой аналог
+        <code>Small/Large</code> из факторного слоя <b>[КАНОН]</b>, и работает оно
+        так же: опережение мелких капитализаций означает высокий риск-аппетит.
+      </p>
+      <p>
+        <b>2. Размещение по квадрантам — выведенное, не канонное.</b> Q-II: крипта
+        максимальным весом, альты обгоняют биткоин (аналог
+        <code>Small+Micro Cap</code> и <code>Highβ</code>). Q-I: крипта избирательно —
+        биткоин и крупные капитализации, отношение
+        <span class="ticker">TOTAL3/TOTAL</span> <span class="dir dir--down">вниз</span>
+        (аналог <code>Large/Small</code> и длинной дюрации). Q-IV: нейтрально или
+        <span class="dir dir--down">вниз</span> — реальные ставки не падают.
+        Q-III: худший квадрант. Опора — эмпирика самого курса: в цикле ужесточения
+        биткоин потерял <b>−48.66 %</b> против <b>−26.21 %</b> у Nasdaq и
+        <b>−10.52 %</b> у Dow, а в марте 2023 (диагноз Q-I) вырос на
+        <b>+16.46…16.97 %</b> вместе с Nasdaq <b>+4.19…5.04 %</b>, тогда как
+        Russell дал <b>−5.08 %</b>. То есть крипта ведёт себя как актив с самой
+        длинной дюрацией и самой высокой бетой, и в Growth-квадранте идёт
+        с Nasdaq, а не с Russell.
+      </p>
+      <p>
+        <b>3. Крипта — выход, а не вход.</b> Соблазн добавить её в ось MACRO
+        как «прокси риск-аппетита» надо отвергнуть: это тот же самопотверждающийся
+        контур, что и в дыре 6, только хуже — мы будем торговать ровно то,
+        по чему классифицируем.
+      </p>
+      <p>
+        <b>4. Переключатель режима корреляции.</b> <b>[НАШЕ РЕШЕНИЕ]:</b> пока
+        скользящая корреляция биткоина с Nasdaq за 60 дней держится высокой,
+        крипта наследует квадрант акций и матрица к ней применима. Когда
+        корреляция уходит к нулю, крипта живёт своим циклом, и честный ответ
+        инструмента — «матрица неприменима», а не выведенный знак. Конкретные
+        границы режимов подлежат калибровке по той же дисциплине, что θ (дыра 2),
+        и до калибровки числами не заполняются.
+      </p>
+      <p style="margin-bottom:0">
+        <b>5. Календарь.</b> Крипта торгуется непрерывно, кривая доходности —
+        по торговым дням. Такт пересчёта остаётся суточным и привязанным к закрытию
+        рынка США: крипто-сигнал не может опережать пересчёт квадранта, иначе
+        валидатор будет сравнивать наблюдения из разных дней. Выходные и праздники
+        квадрант не меняют.
+      </p>
+    </div>
+
+    <div class="callout callout--2026">
+      <div class="callout__label" data-icon="↻">2023 → 2026</div>
+      <p>
+        Курс записан в феврале–апреле 2023 года. Для этой главы важно не то,
+        что устарели примеры, а то, что <b>часть правил каталога за прошедшее
+        время дала сбой</b> — и спецификация обязана это учитывать, а не
+        переносить их в код как константы. <b>[ДОПОЛНЕНО]</b>
+      </p>
+      <p>
+        <b>Инверсия кривой перестала быть таймером.</b> Спред 10Y−2Y был
+        отрицательным рекордно долго — с середины 2022 до осени 2024, —
+        и обещанной рецессии в США за ним не последовало; 10Y−3M вернулся
+        в положительную зону ещё позже. Правило <span class="rule-id">R29</span>
+        («спред &lt; 0 → рецессионный флаг») остаётся диагностикой <em>формы</em>,
+        но в аллокацию как самостоятельный сигнал идти не должно. Заметим:
+        это не опровергает Эстреллу и Мишкина — их результат вероятностный
+        и на горизонте около года, а один эпизод не отменяет статистику.
+        Но использовать инверсию как переключатель режима теперь нельзя.
+      </p>
+      <p>
+        <b>Композитные индикаторы дали ложный сигнал.</b> Опережающий индекс
+        Conference Board по собственному правилу сигналил рецессию в 2022–2023
+        годах, и её не случилось; правило Сам сработало в 2024 году, и его автор
+        публично усомнилась в применимости этого сигнала к текущему циклу.
+        Прямой вывод для дыры 10: <b>ложное срабатывание — не гипотетика</b>,
+        и обработка повторного неподтверждения нужна не для красоты.
+      </p>
+      <p>
+        <b>Длинным концом двигали не ожидания.</b> В 2023–2025 годах заметная
+        часть движения дальних сроков объяснялась премией за срок и параметрами
+        размещения госдолга, а не циклом. Это прямой аргумент за наш выбор
+        десятилетки, а не тридцатилетки, как длинного узла (дыра 4), и за
+        отдельный флаг «движение длинного конца не объясняется ожиданиями».
+        Модельные оценки премии за срок публикуются ФРБ Нью-Йорка (модель ACM)
+        и ФРС; их стоит подключить как контрольный ряд.
+      </p>
+      <p>
+        <b>Золото разошлось с реальными ставками.</b> Инвариант
+        <span class="rule-id">R42</span> / <span class="rule-id">R69</span>
+        (золото обратно реальным ставкам) в 2024–2026 работал плохо: металл рос
+        при высоких реальных ставках. Главное объяснение — устойчивые
+        нетто-покупки центральных банков, по данным World Gold Council превышавшие
+        тысячу тонн в год несколько лет подряд, то есть спрос, не чувствительный
+        к ставке. Для кода: проверять <span class="rule-id">R42</span> на подпериодах,
+        а не в среднем по истории, и держать группу K как гипотезы с датой проверки.
+      </p>
+      <p>
+        <b>Качество макро-данных снизилось.</b> Доля ответов в деловых опросах
+        и обследованиях занятости устойчиво падает, что признано самими
+        публикаторами; методики пересматривались. Веса H и O из дыры 1 нельзя
+        просто перенести из 2023 года — их нужно ре-валидировать на свежих данных.
+      </p>
+      <p style="margin-bottom:0">
+        <b>Крипта сменила режим доступа.</b> Спотовые биржевые фонды на биткоин
+        начали торговаться в январе 2024 года после одобрения регулятором, на эфир —
+        летом 2024-го. Крипта стала доступна тем же счетам и тем же распределителям
+        активов, что и акции, — а значит корреляционный режим из пункта 4
+        крипто-слоя стал не теоретическим допущением, а параметром, который нужно
+        мерить постоянно.
+      </p>
+    </div>
+
+    <!-- ================================================================= -->
+    <h2 id="s8">Чек-лист</h2>
+
+    <ul class="checklist">
+      <li>Прочитайте §7 спецификации целиком, подряд, один раз — не выборочно.
+        Восемьдесят восемь правил в один присест дают ощущение объёма, которого
+        не даёт ни одна схема; после этого понятно, почему тридцать из них важнее
+        остальных пятидесяти восьми.</li>
+      <li>Выпишите для своего сетапа таблицу доступности рядов из раздела 7:
+        что у вас уже есть, чего нет, что стоит денег и чем это можно заменить.
+        Пока эта таблица не заполнена, обсуждать сроки разработки бессмысленно.</li>
+      <li>Посчитайте обе оси руками за один любой месяц по формуле из дыры 1 —
+        на бумаге, шесть входов на ось. Сравните полученный квадрант с тем,
+        который вы помните по ощущениям. Расхождение здесь дороже, чем любой
+        последующий бэктест.</li>
+      <li>Зафиксируйте письменно θ, окна и веса <b>до</b> первого прогона —
+        и не меняйте после. Если поменяли, запишите: что, почему, каким был
+        результат до и после. Журнал калибровок начинается с первой строчки,
+        а не когда станет нужен.</li>
+      <li>Отметьте в этой главе решения, с которыми вы не согласны, и напишите
+        рядом своё. Десять дыр — не догма, а десять мест, где кто-то обязан был
+        принять решение. Если ваше лучше обосновано, оно и должно попасть в код.</li>
+    </ul>
+
+    <!-- ================================================================= -->
+    <h2 id="s9">Что читать дальше</h2>
+
+    <p>
+      Шесть источников, закрывающих ровно те места, где курс останавливается.
+      Каждый — про конкретную дыру из раздела 5, а не «для общего развития».
+    </p>
+
+    <ul>
+      <li>
+        <b>Litterman, Scheinkman. «Common Factors Affecting Bond Returns»</b>
+        (Journal of Fixed Income, 1991). Разложение кривой на уровень, наклон
+        и кривизну. Смотреть ради одного: почему валидатор формы обязан быть
+        отдельным каналом, а горбатая кривая — не поломка, а третий фактор
+        (дыры 4 и 7).
+      </li>
+      <li>
+        <b>Estrella, Mishkin. «Predicting U.S. Recessions: Financial Variables
+        as Leading Indicators»</b> (1998), плюс текущая модель вероятности рецессии
+        ФРБ Нью-Йорка. Смотреть выбор пары 10Y−3M и — важнее — <em>как</em>
+        предсказательная сила измеряется: вероятностно, на горизонте, с интервалами.
+        Это образец для дыры 10.
+      </li>
+      <li>
+        <b>Методическая записка к CFNAI</b> (ФРБ Чикаго) и <b>методология
+        композитных индексов Conference Board</b>. Смотреть, как 85 и 10 рядов
+        соответственно сворачиваются в одно число: стандартизация, извлечение
+        общего фактора, опубликованные пороги. Прямой ответ на дыры 1 и 2 —
+        и заодно повод сравнить наши экспертные веса с извлечёнными из данных.
+      </li>
+      <li>
+        <b>Hamilton. «A New Approach to the Economic Analysis of Nonstationary
+        Time Series and the Business Cycle»</b> (Econometrica, 1989), и как
+        практическое продолжение — индекс вероятности рецессии Chauvet и Piger
+        в FRED. Смотреть альтернативу пороговому классификатору: состояние как
+        вероятность, инерция режима, оцененная из данных, а не назначенная
+        руками (развилка из раздела 3 и дыра 5).
+      </li>
+      <li>
+        <b>Bailey, Borwein, López de Prado, Zhu. «Pseudo-Mathematics and Financial
+        Charlatanism»</b> (Notices of the AMS, 2014). Короткая и неприятная статья
+        о том, сколько именно перебора нужно, чтобы шум выглядел как стратегия.
+        Читать до написания бэктеста, а не после (дыра 10).
+      </li>
+      <li>
+        <b>Архив винтажей ALFRED</b> (FRED) и <b>набор данных реального времени
+        ФРБ Филадельфии</b>, вместе со статьёй Diebold, Rudebusch о реальном
+        времени против пересмотренных данных (JASA, 1991). Смотреть, насколько
+        расходятся «данные, доступные тогда» и «данные, которые мы видим сейчас».
+        Это этап 1 плана реализации, и пропустить его нельзя.
+      </li>
+    </ul>
+
+    <p>
+      И, отдельно, — вернитесь к <a href="../synthesis/cheatsheet-spec.md">самой
+      спецификации</a>. Она короче этой главы и содержит всё, о чём здесь
+      говорилось, в форме, пригодной для правки. Книга закончилась; работа —
+      нет.
+    </p>
+
+    <nav class="chapter-nav" id="chapter-nav"></nav>
+
+  </article>
+  </main>
+</div>
+
+<script src="assets/chapters.js"></script>
+<script src="assets/book.js"></script>
+</body>
+</html>
