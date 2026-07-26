@@ -25,7 +25,7 @@ window.BOOK_CHAPTERS = [
   { n:  7, part: 2, file: "ch07-zakazy-proizvodstvo.html",   title: "Заказы, производство, запасы",       status: "todo" },
   { n:  8, part: 2, file: "ch08-pribyl.html",                title: "Прибыль корпораций",                 status: "todo" },
   { n:  9, part: 2, file: "ch09-trud-i-potrebitel.html",     title: "Труд, доходы и потребитель",         status: "todo" },
-  { n: 10, part: 2, file: "ch10-ceny-i-inflyaciya.html",     title: "Цены и инфляция",                    status: "todo" },
+  { n: 10, part: 2, file: "ch10-ceny-i-inflyaciya.html",     title: "Цены и инфляция",                    status: "done" },
 
   { n: 11, part: 3, file: "ch11-frs-ustroystvo.html",        title: "ФРС: устройство и каналы",           status: "todo" },
   { n: 12, part: 3, file: "ch12-kak-chitat-frs.html",        title: "Как читать ФРС",                     status: "todo" },
