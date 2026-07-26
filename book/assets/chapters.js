@@ -22,7 +22,7 @@ window.BOOK_CHAPTERS = [
 
   { n:  5, part: 2, file: "ch05-hope.html",                  title: "H-O-P-E: скелет опережения",         status: "done" },
   { n:  6, part: 2, file: "ch06-zhilyo.html",                title: "Жильё — первое звено",               status: "done" },
-  { n:  7, part: 2, file: "ch07-zakazy-proizvodstvo.html",   title: "Заказы, производство, запасы",       status: "todo" },
+  { n:  7, part: 2, file: "ch07-zakazy-proizvodstvo.html",   title: "Заказы, производство, запасы",       status: "done" },
   { n:  8, part: 2, file: "ch08-pribyl.html",                title: "Прибыль корпораций",                 status: "done" },
   { n:  9, part: 2, file: "ch09-trud-i-potrebitel.html",     title: "Труд, доходы и потребитель",         status: "todo" },
   { n: 10, part: 2, file: "ch10-ceny-i-inflyaciya.html",     title: "Цены и инфляция",                    status: "done" },
