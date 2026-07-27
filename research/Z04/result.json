@@ -1,0 +1,1687 @@
+{
+  "task": "Z04",
+  "verdict": "НЕОПРЕДЕЛЕНО",
+  "verdict_reason": "V0 не выполнено: парных эпизодов 2 < 5. Автоматический вердикт объявлен в HYPOTHESIS §4 до расчёта",
+  "params": {
+    "seed": 20260727,
+    "K": 3,
+    "W": 24,
+    "depths": [
+      -0.5,
+      -0.25,
+      -1.0
+    ],
+    "disinversion_rules": [
+      "zero",
+      "plus010",
+      "three"
+    ],
+    "fa_window": [
+      -12,
+      24
+    ],
+    "boot_reps": 2000,
+    "sim_reps": 2000,
+    "sim_boot": 200,
+    "family_size": 18
+  },
+  "manifest": {
+    "fetched_at": "2026-07-27T19:08:26+00:00",
+    "series": {
+      "T10Y3M": {
+        "n": 11142,
+        "first": "1982-01-04",
+        "last": "2026-07-24",
+        "source": "FRED"
+      },
+      "T10Y2Y": {
+        "n": 12533,
+        "first": "1976-06-01",
+        "last": "2026-07-24",
+        "source": "FRED"
+      },
+      "DGS10": {
+        "n": 16124,
+        "first": "1962-01-02",
+        "last": "2026-07-23",
+        "source": "FRED"
+      },
+      "DGS2": {
+        "n": 12532,
+        "first": "1976-06-01",
+        "last": "2026-07-23",
+        "source": "FRED"
+      },
+      "USREC": {
+        "n": 2059,
+        "first": "1854-12-01",
+        "last": "2026-06-01",
+        "source": "FRED"
+      },
+      "GS10": {
+        "n": 879,
+        "first": "1953-04-01",
+        "last": "2026-06-01",
+        "source": "FRED"
+      },
+      "TB3MS": {
+        "n": 1110,
+        "first": "1934-01-01",
+        "last": "2026-06-01",
+        "source": "FRED"
+      }
+    },
+    "source_crosscheck_10y2y": {
+      "days": 12532,
+      "median_abs_diff_pp": 0.0,
+      "max_abs_diff_pp": 0.02
+    }
+  },
+  "main_config": {
+    "spread": "10y-3m",
+    "depth_threshold": -0.5,
+    "disinversion_rule": "zero",
+    "n_paired": 2,
+    "ratio": 0.625,
+    "V0": false,
+    "V1": true,
+    "V2": true,
+    "V3": false
+  },
+  "configs18": [
+    {
+      "spread": "10y-3m",
+      "depth_threshold": -0.5,
+      "disinversion_rule": "zero",
+      "n_deep": 3,
+      "n_paired": 2,
+      "lag_inv": {
+        "n": 2,
+        "mean": 12.0,
+        "median": 12.0,
+        "sd": 5.657,
+        "min": 8,
+        "max": 16,
+        "range": 8,
+        "iqr": [
+          8,
+          8
+        ],
+        "mad": 4.0,
+        "cv": 0.471,
+        "values": [
+          8,
+          16
+        ]
+      },
+      "lag_dis": {
+        "n": 2,
+        "mean": 3.5,
+        "median": 3.5,
+        "sd": 3.536,
+        "min": 1,
+        "max": 6,
+        "range": 5,
+        "iqr": [
+          1,
+          1
+        ],
+        "mad": 2.5,
+        "cv": 1.01,
+        "values": [
+          1,
+          6
+        ]
+      },
+      "ratio": 0.625,
+      "bootstrap": {
+        "n": 2,
+        "boot_ok": 1002,
+        "ci90": [
+          0.625,
+          0.625
+        ],
+        "median": 0.625
+      },
+      "V0": false,
+      "V1": true,
+      "V2": true,
+      "censored_no_disinversion": [],
+      "no_peak": [
+        "2022-11"
+      ]
+    },
+    {
+      "spread": "10y-3m",
+      "depth_threshold": -0.5,
+      "disinversion_rule": "plus010",
+      "n_deep": 3,
+      "n_paired": 2,
+      "lag_inv": {
+        "n": 2,
+        "mean": 12.0,
+        "median": 12.0,
+        "sd": 5.657,
+        "min": 8,
+        "max": 16,
+        "range": 8,
+        "iqr": [
+          8,
+          8
+        ],
+        "mad": 4.0,
+        "cv": 0.471,
+        "values": [
+          8,
+          16
+        ]
+      },
+      "lag_dis": {
+        "n": 2,
+        "mean": 3.0,
+        "median": 3.0,
+        "sd": 4.243,
+        "min": 0,
+        "max": 6,
+        "range": 6,
+        "iqr": [
+          0,
+          0
+        ],
+        "mad": 3.0,
+        "cv": 1.414,
+        "values": [
+          0,
+          6
+        ]
+      },
+      "ratio": 0.75,
+      "bootstrap": {
+        "n": 2,
+        "boot_ok": 1005,
+        "ci90": [
+          0.75,
+          0.75
+        ],
+        "median": 0.75
+      },
+      "V0": false,
+      "V1": true,
+      "V2": true,
+      "censored_no_disinversion": [],
+      "no_peak": [
+        "2022-11"
+      ]
+    },
+    {
+      "spread": "10y-3m",
+      "depth_threshold": -0.5,
+      "disinversion_rule": "three",
+      "n_deep": 3,
+      "n_paired": 2,
+      "lag_inv": {
+        "n": 2,
+        "mean": 12.0,
+        "median": 12.0,
+        "sd": 5.657,
+        "min": 8,
+        "max": 16,
+        "range": 8,
+        "iqr": [
+          8,
+          8
+        ],
+        "mad": 4.0,
+        "cv": 0.471,
+        "values": [
+          8,
+          16
+        ]
+      },
+      "lag_dis": {
+        "n": 2,
+        "mean": 3.5,
+        "median": 3.5,
+        "sd": 3.536,
+        "min": 1,
+        "max": 6,
+        "range": 5,
+        "iqr": [
+          1,
+          1
+        ],
+        "mad": 2.5,
+        "cv": 1.01,
+        "values": [
+          1,
+          6
+        ]
+      },
+      "ratio": 0.625,
+      "bootstrap": {
+        "n": 2,
+        "boot_ok": 995,
+        "ci90": [
+          0.625,
+          0.625
+        ],
+        "median": 0.625
+      },
+      "V0": false,
+      "V1": true,
+      "V2": true,
+      "censored_no_disinversion": [],
+      "no_peak": [
+        "2022-11"
+      ]
+    },
+    {
+      "spread": "10y-3m",
+      "depth_threshold": -0.25,
+      "disinversion_rule": "zero",
+      "n_deep": 4,
+      "n_paired": 3,
+      "lag_inv": {
+        "n": 3,
+        "mean": 11.0,
+        "median": 9,
+        "sd": 4.359,
+        "min": 8,
+        "max": 16,
+        "range": 8,
+        "iqr": [
+          8,
+          9
+        ],
+        "mad": 1,
+        "cv": 0.396,
+        "values": [
+          8,
+          9,
+          16
+        ]
+      },
+      "lag_dis": {
+        "n": 3,
+        "mean": 3.67,
+        "median": 4,
+        "sd": 2.517,
+        "min": 1,
+        "max": 6,
+        "range": 5,
+        "iqr": [
+          1,
+          4
+        ],
+        "mad": 2,
+        "cv": 0.686,
+        "values": [
+          1,
+          4,
+          6
+        ]
+      },
+      "ratio": 0.577,
+      "bootstrap": {
+        "n": 3,
+        "boot_ok": 1784,
+        "ci90": [
+          0.286,
+          3.0
+        ],
+        "median": 0.625
+      },
+      "V0": false,
+      "V1": true,
+      "V2": false,
+      "censored_no_disinversion": [],
+      "no_peak": [
+        "2022-11"
+      ]
+    },
+    {
+      "spread": "10y-3m",
+      "depth_threshold": -0.25,
+      "disinversion_rule": "plus010",
+      "n_deep": 4,
+      "n_paired": 3,
+      "lag_inv": {
+        "n": 3,
+        "mean": 11.0,
+        "median": 9,
+        "sd": 4.359,
+        "min": 8,
+        "max": 16,
+        "range": 8,
+        "iqr": [
+          8,
+          9
+        ],
+        "mad": 1,
+        "cv": 0.396,
+        "values": [
+          8,
+          9,
+          16
+        ]
+      },
+      "lag_dis": {
+        "n": 3,
+        "mean": 3.0,
+        "median": 3,
+        "sd": 3.0,
+        "min": 0,
+        "max": 6,
+        "range": 6,
+        "iqr": [
+          0,
+          3
+        ],
+        "mad": 3,
+        "cv": 1.0,
+        "values": [
+          0,
+          3,
+          6
+        ]
+      },
+      "ratio": 0.688,
+      "bootstrap": {
+        "n": 3,
+        "boot_ok": 1763,
+        "ci90": [
+          0.429,
+          3.0
+        ],
+        "median": 0.688
+      },
+      "V0": false,
+      "V1": true,
+      "V2": false,
+      "censored_no_disinversion": [],
+      "no_peak": [
+        "2022-11"
+      ]
+    },
+    {
+      "spread": "10y-3m",
+      "depth_threshold": -0.25,
+      "disinversion_rule": "three",
+      "n_deep": 4,
+      "n_paired": 3,
+      "lag_inv": {
+        "n": 3,
+        "mean": 11.0,
+        "median": 9,
+        "sd": 4.359,
+        "min": 8,
+        "max": 16,
+        "range": 8,
+        "iqr": [
+          8,
+          9
+        ],
+        "mad": 1,
+        "cv": 0.396,
+        "values": [
+          8,
+          9,
+          16
+        ]
+      },
+      "lag_dis": {
+        "n": 3,
+        "mean": 3.67,
+        "median": 4,
+        "sd": 2.517,
+        "min": 1,
+        "max": 6,
+        "range": 5,
+        "iqr": [
+          1,
+          4
+        ],
+        "mad": 2,
+        "cv": 0.686,
+        "values": [
+          1,
+          4,
+          6
+        ]
+      },
+      "ratio": 0.577,
+      "bootstrap": {
+        "n": 3,
+        "boot_ok": 1797,
+        "ci90": [
+          0.286,
+          3.0
+        ],
+        "median": 0.577
+      },
+      "V0": false,
+      "V1": true,
+      "V2": false,
+      "censored_no_disinversion": [],
+      "no_peak": [
+        "2022-11"
+      ]
+    },
+    {
+      "spread": "10y-3m",
+      "depth_threshold": -1.0,
+      "disinversion_rule": "zero",
+      "n_deep": 1,
+      "n_paired": 0,
+      "lag_inv": {
+        "n": 0
+      },
+      "lag_dis": {
+        "n": 0
+      },
+      "ratio": null,
+      "bootstrap": {
+        "n": 0
+      },
+      "V0": false,
+      "V1": false,
+      "V2": false,
+      "censored_no_disinversion": [],
+      "no_peak": [
+        "2022-11"
+      ]
+    },
+    {
+      "spread": "10y-3m",
+      "depth_threshold": -1.0,
+      "disinversion_rule": "plus010",
+      "n_deep": 1,
+      "n_paired": 0,
+      "lag_inv": {
+        "n": 0
+      },
+      "lag_dis": {
+        "n": 0
+      },
+      "ratio": null,
+      "bootstrap": {
+        "n": 0
+      },
+      "V0": false,
+      "V1": false,
+      "V2": false,
+      "censored_no_disinversion": [],
+      "no_peak": [
+        "2022-11"
+      ]
+    },
+    {
+      "spread": "10y-3m",
+      "depth_threshold": -1.0,
+      "disinversion_rule": "three",
+      "n_deep": 1,
+      "n_paired": 0,
+      "lag_inv": {
+        "n": 0
+      },
+      "lag_dis": {
+        "n": 0
+      },
+      "ratio": null,
+      "bootstrap": {
+        "n": 0
+      },
+      "V0": false,
+      "V1": false,
+      "V2": false,
+      "censored_no_disinversion": [],
+      "no_peak": [
+        "2022-11"
+      ]
+    },
+    {
+      "spread": "10y-2y",
+      "depth_threshold": -0.5,
+      "disinversion_rule": "zero",
+      "n_deep": 3,
+      "n_paired": 2,
+      "lag_inv": {
+        "n": 2,
+        "mean": 13.0,
+        "median": 13.0,
+        "sd": 4.243,
+        "min": 10,
+        "max": 16,
+        "range": 6,
+        "iqr": [
+          10,
+          10
+        ],
+        "mad": 3.0,
+        "cv": 0.326,
+        "values": [
+          10,
+          16
+        ]
+      },
+      "lag_dis": {
+        "n": 2,
+        "mean": -4.0,
+        "median": -4.0,
+        "sd": 0.0,
+        "min": -4,
+        "max": -4,
+        "range": 0,
+        "iqr": [
+          -4,
+          -4
+        ],
+        "mad": 0.0,
+        "cv": 0.0,
+        "values": [
+          -4,
+          -4
+        ]
+      },
+      "ratio": 0.0,
+      "bootstrap": {
+        "n": 2,
+        "boot_ok": 1017,
+        "ci90": [
+          0.0,
+          0.0
+        ],
+        "median": 0.0
+      },
+      "V0": false,
+      "V1": true,
+      "V2": true,
+      "censored_no_disinversion": [],
+      "no_peak": [
+        "2022-07"
+      ]
+    },
+    {
+      "spread": "10y-2y",
+      "depth_threshold": -0.5,
+      "disinversion_rule": "plus010",
+      "n_deep": 3,
+      "n_paired": 2,
+      "lag_inv": {
+        "n": 2,
+        "mean": 13.0,
+        "median": 13.0,
+        "sd": 4.243,
+        "min": 10,
+        "max": 16,
+        "range": 6,
+        "iqr": [
+          10,
+          10
+        ],
+        "mad": 3.0,
+        "cv": 0.326,
+        "values": [
+          10,
+          16
+        ]
+      },
+      "lag_dis": {
+        "n": 2,
+        "mean": -4.0,
+        "median": -4.0,
+        "sd": 0.0,
+        "min": -4,
+        "max": -4,
+        "range": 0,
+        "iqr": [
+          -4,
+          -4
+        ],
+        "mad": 0.0,
+        "cv": 0.0,
+        "values": [
+          -4,
+          -4
+        ]
+      },
+      "ratio": 0.0,
+      "bootstrap": {
+        "n": 2,
+        "boot_ok": 998,
+        "ci90": [
+          0.0,
+          0.0
+        ],
+        "median": 0.0
+      },
+      "V0": false,
+      "V1": true,
+      "V2": true,
+      "censored_no_disinversion": [],
+      "no_peak": [
+        "2022-07"
+      ]
+    },
+    {
+      "spread": "10y-2y",
+      "depth_threshold": -0.5,
+      "disinversion_rule": "three",
+      "n_deep": 3,
+      "n_paired": 2,
+      "lag_inv": {
+        "n": 2,
+        "mean": 13.0,
+        "median": 13.0,
+        "sd": 4.243,
+        "min": 10,
+        "max": 16,
+        "range": 6,
+        "iqr": [
+          10,
+          10
+        ],
+        "mad": 3.0,
+        "cv": 0.326,
+        "values": [
+          10,
+          16
+        ]
+      },
+      "lag_dis": {
+        "n": 2,
+        "mean": -4.0,
+        "median": -4.0,
+        "sd": 0.0,
+        "min": -4,
+        "max": -4,
+        "range": 0,
+        "iqr": [
+          -4,
+          -4
+        ],
+        "mad": 0.0,
+        "cv": 0.0,
+        "values": [
+          -4,
+          -4
+        ]
+      },
+      "ratio": 0.0,
+      "bootstrap": {
+        "n": 2,
+        "boot_ok": 979,
+        "ci90": [
+          0.0,
+          0.0
+        ],
+        "median": 0.0
+      },
+      "V0": false,
+      "V1": true,
+      "V2": true,
+      "censored_no_disinversion": [],
+      "no_peak": [
+        "2022-07"
+      ]
+    },
+    {
+      "spread": "10y-2y",
+      "depth_threshold": -0.25,
+      "disinversion_rule": "zero",
+      "n_deep": 5,
+      "n_paired": 4,
+      "lag_inv": {
+        "n": 4,
+        "mean": 14.25,
+        "median": 14.5,
+        "sd": 3.5,
+        "min": 10,
+        "max": 18,
+        "range": 8,
+        "iqr": [
+          10,
+          16
+        ],
+        "mad": 3.5,
+        "cv": 0.246,
+        "values": [
+          10,
+          13,
+          16,
+          18
+        ]
+      },
+      "lag_dis": {
+        "n": 4,
+        "mean": 1.5,
+        "median": -1.0,
+        "sd": 7.55,
+        "min": -4,
+        "max": 12,
+        "range": 16,
+        "iqr": [
+          -4,
+          2
+        ],
+        "mad": 3.0,
+        "cv": 5.033,
+        "values": [
+          -4,
+          -4,
+          2,
+          12
+        ]
+      },
+      "ratio": 2.157,
+      "bootstrap": {
+        "n": 4,
+        "boot_ok": 1972,
+        "ci90": [
+          0.0,
+          8.0
+        ],
+        "median": 2.0
+      },
+      "V0": false,
+      "V1": false,
+      "V2": false,
+      "censored_no_disinversion": [],
+      "no_peak": [
+        "2022-07"
+      ]
+    },
+    {
+      "spread": "10y-2y",
+      "depth_threshold": -0.25,
+      "disinversion_rule": "plus010",
+      "n_deep": 5,
+      "n_paired": 4,
+      "lag_inv": {
+        "n": 4,
+        "mean": 14.25,
+        "median": 14.5,
+        "sd": 3.5,
+        "min": 10,
+        "max": 18,
+        "range": 8,
+        "iqr": [
+          10,
+          16
+        ],
+        "mad": 3.5,
+        "cv": 0.246,
+        "values": [
+          10,
+          13,
+          16,
+          18
+        ]
+      },
+      "lag_dis": {
+        "n": 4,
+        "mean": 1.5,
+        "median": -1.0,
+        "sd": 7.55,
+        "min": -4,
+        "max": 12,
+        "range": 16,
+        "iqr": [
+          -4,
+          2
+        ],
+        "mad": 3.0,
+        "cv": 5.033,
+        "values": [
+          -4,
+          -4,
+          2,
+          12
+        ]
+      },
+      "ratio": 2.157,
+      "bootstrap": {
+        "n": 4,
+        "boot_ok": 1973,
+        "ci90": [
+          0.0,
+          8.0
+        ],
+        "median": 2.0
+      },
+      "V0": false,
+      "V1": false,
+      "V2": false,
+      "censored_no_disinversion": [],
+      "no_peak": [
+        "2022-07"
+      ]
+    },
+    {
+      "spread": "10y-2y",
+      "depth_threshold": -0.25,
+      "disinversion_rule": "three",
+      "n_deep": 5,
+      "n_paired": 4,
+      "lag_inv": {
+        "n": 4,
+        "mean": 14.25,
+        "median": 14.5,
+        "sd": 3.5,
+        "min": 10,
+        "max": 18,
+        "range": 8,
+        "iqr": [
+          10,
+          16
+        ],
+        "mad": 3.5,
+        "cv": 0.246,
+        "values": [
+          10,
+          13,
+          16,
+          18
+        ]
+      },
+      "lag_dis": {
+        "n": 4,
+        "mean": 0.75,
+        "median": -1.0,
+        "sd": 6.185,
+        "min": -4,
+        "max": 9,
+        "range": 13,
+        "iqr": [
+          -4,
+          2
+        ],
+        "mad": 3.0,
+        "cv": 8.246,
+        "values": [
+          -4,
+          -4,
+          2,
+          9
+        ]
+      },
+      "ratio": 1.767,
+      "bootstrap": {
+        "n": 4,
+        "boot_ok": 1965,
+        "ci90": [
+          0.0,
+          6.5
+        ],
+        "median": 1.638
+      },
+      "V0": false,
+      "V1": false,
+      "V2": false,
+      "censored_no_disinversion": [],
+      "no_peak": [
+        "2022-07"
+      ]
+    },
+    {
+      "spread": "10y-2y",
+      "depth_threshold": -1.0,
+      "disinversion_rule": "zero",
+      "n_deep": 2,
+      "n_paired": 2,
+      "lag_inv": {
+        "n": 2,
+        "mean": 13.0,
+        "median": 13.0,
+        "sd": 4.243,
+        "min": 10,
+        "max": 16,
+        "range": 6,
+        "iqr": [
+          10,
+          10
+        ],
+        "mad": 3.0,
+        "cv": 0.326,
+        "values": [
+          10,
+          16
+        ]
+      },
+      "lag_dis": {
+        "n": 2,
+        "mean": -4.0,
+        "median": -4.0,
+        "sd": 0.0,
+        "min": -4,
+        "max": -4,
+        "range": 0,
+        "iqr": [
+          -4,
+          -4
+        ],
+        "mad": 0.0,
+        "cv": 0.0,
+        "values": [
+          -4,
+          -4
+        ]
+      },
+      "ratio": 0.0,
+      "bootstrap": {
+        "n": 2,
+        "boot_ok": 964,
+        "ci90": [
+          0.0,
+          0.0
+        ],
+        "median": 0.0
+      },
+      "V0": false,
+      "V1": true,
+      "V2": true,
+      "censored_no_disinversion": [],
+      "no_peak": []
+    },
+    {
+      "spread": "10y-2y",
+      "depth_threshold": -1.0,
+      "disinversion_rule": "plus010",
+      "n_deep": 2,
+      "n_paired": 2,
+      "lag_inv": {
+        "n": 2,
+        "mean": 13.0,
+        "median": 13.0,
+        "sd": 4.243,
+        "min": 10,
+        "max": 16,
+        "range": 6,
+        "iqr": [
+          10,
+          10
+        ],
+        "mad": 3.0,
+        "cv": 0.326,
+        "values": [
+          10,
+          16
+        ]
+      },
+      "lag_dis": {
+        "n": 2,
+        "mean": -4.0,
+        "median": -4.0,
+        "sd": 0.0,
+        "min": -4,
+        "max": -4,
+        "range": 0,
+        "iqr": [
+          -4,
+          -4
+        ],
+        "mad": 0.0,
+        "cv": 0.0,
+        "values": [
+          -4,
+          -4
+        ]
+      },
+      "ratio": 0.0,
+      "bootstrap": {
+        "n": 2,
+        "boot_ok": 992,
+        "ci90": [
+          0.0,
+          0.0
+        ],
+        "median": 0.0
+      },
+      "V0": false,
+      "V1": true,
+      "V2": true,
+      "censored_no_disinversion": [],
+      "no_peak": []
+    },
+    {
+      "spread": "10y-2y",
+      "depth_threshold": -1.0,
+      "disinversion_rule": "three",
+      "n_deep": 2,
+      "n_paired": 2,
+      "lag_inv": {
+        "n": 2,
+        "mean": 13.0,
+        "median": 13.0,
+        "sd": 4.243,
+        "min": 10,
+        "max": 16,
+        "range": 6,
+        "iqr": [
+          10,
+          10
+        ],
+        "mad": 3.0,
+        "cv": 0.326,
+        "values": [
+          10,
+          16
+        ]
+      },
+      "lag_dis": {
+        "n": 2,
+        "mean": -4.0,
+        "median": -4.0,
+        "sd": 0.0,
+        "min": -4,
+        "max": -4,
+        "range": 0,
+        "iqr": [
+          -4,
+          -4
+        ],
+        "mad": 0.0,
+        "cv": 0.0,
+        "values": [
+          -4,
+          -4
+        ]
+      },
+      "ratio": 0.0,
+      "bootstrap": {
+        "n": 2,
+        "boot_ok": 990,
+        "ci90": [
+          0.0,
+          0.0
+        ],
+        "median": 0.0
+      },
+      "V0": false,
+      "V1": true,
+      "V2": true,
+      "censored_no_disinversion": [],
+      "no_peak": []
+    }
+  ],
+  "main_episodes": [
+    {
+      "signal": "2000-07",
+      "last_month": "2001-01",
+      "min_month": "2000-12",
+      "depth": -0.697,
+      "disinversion": "2001-02",
+      "peak": "2001-03",
+      "lag_inv": 8,
+      "lag_dis": 1,
+      "months_inverted": 7
+    },
+    {
+      "signal": "2006-08",
+      "last_month": "2007-05",
+      "min_month": "2007-03",
+      "depth": -0.515,
+      "disinversion": "2007-06",
+      "peak": "2007-12",
+      "lag_inv": 16,
+      "lag_dis": 6,
+      "months_inverted": 10
+    }
+  ],
+  "episodes_all": {
+    "10y-3m": [
+      {
+        "signal": "1989-06",
+        "last_month": "1989-12",
+        "min_month": "1989-06",
+        "depth": -0.157,
+        "disinversion": "1989-09",
+        "peak": "1990-07",
+        "lag_inv": 13,
+        "lag_dis": 10,
+        "months_inverted": 5
+      },
+      {
+        "signal": "2000-07",
+        "last_month": "2001-01",
+        "min_month": "2000-12",
+        "depth": -0.697,
+        "disinversion": "2001-02",
+        "peak": "2001-03",
+        "lag_inv": 8,
+        "lag_dis": 1,
+        "months_inverted": 7
+      },
+      {
+        "signal": "2006-08",
+        "last_month": "2007-05",
+        "min_month": "2007-03",
+        "depth": -0.515,
+        "disinversion": "2007-06",
+        "peak": "2007-12",
+        "lag_inv": 16,
+        "lag_dis": 6,
+        "months_inverted": 10
+      },
+      {
+        "signal": "2019-05",
+        "last_month": "2019-09",
+        "min_month": "2019-08",
+        "depth": -0.364,
+        "disinversion": "2019-10",
+        "peak": "2020-02",
+        "lag_inv": 9,
+        "lag_dis": 4,
+        "months_inverted": 5
+      },
+      {
+        "signal": "2020-02",
+        "last_month": "2020-02",
+        "min_month": "2020-02",
+        "depth": -0.041,
+        "disinversion": "2020-03",
+        "peak": null,
+        "lag_inv": null,
+        "lag_dis": null,
+        "months_inverted": 1
+      },
+      {
+        "signal": "2022-11",
+        "last_month": "2025-08",
+        "min_month": "2023-05",
+        "depth": -1.735,
+        "disinversion": "2024-12",
+        "peak": null,
+        "lag_inv": null,
+        "lag_dis": null,
+        "months_inverted": 30
+      }
+    ],
+    "10y-2y": [
+      {
+        "signal": "1978-09",
+        "last_month": "1980-04",
+        "min_month": "1980-03",
+        "depth": -2.136,
+        "disinversion": "1980-05",
+        "peak": "1980-01",
+        "lag_inv": 16,
+        "lag_dis": -4,
+        "months_inverted": 20
+      },
+      {
+        "signal": "1980-09",
+        "last_month": "1982-06",
+        "min_month": "1981-05",
+        "depth": -1.357,
+        "disinversion": "1981-11",
+        "peak": "1981-07",
+        "lag_inv": 10,
+        "lag_dis": -4,
+        "months_inverted": 19
+      },
+      {
+        "signal": "1989-01",
+        "last_month": "1989-09",
+        "min_month": "1989-03",
+        "depth": -0.322,
+        "disinversion": "1989-07",
+        "peak": "1990-07",
+        "lag_inv": 18,
+        "lag_dis": 12,
+        "months_inverted": 8
+      },
+      {
+        "signal": "1990-03",
+        "last_month": "1990-03",
+        "min_month": "1990-03",
+        "depth": -0.038,
+        "disinversion": "1990-04",
+        "peak": "1990-07",
+        "lag_inv": 4,
+        "lag_dis": 3,
+        "months_inverted": 1
+      },
+      {
+        "signal": "1998-06",
+        "last_month": "1998-06",
+        "min_month": "1998-06",
+        "depth": -0.024,
+        "disinversion": "1998-07",
+        "peak": null,
+        "lag_inv": null,
+        "lag_dis": null,
+        "months_inverted": 1
+      },
+      {
+        "signal": "2000-02",
+        "last_month": "2000-12",
+        "min_month": "2000-04",
+        "depth": -0.413,
+        "disinversion": "2001-01",
+        "peak": "2001-03",
+        "lag_inv": 13,
+        "lag_dis": 2,
+        "months_inverted": 11
+      },
+      {
+        "signal": "2006-02",
+        "last_month": "2007-05",
+        "min_month": "2006-11",
+        "depth": -0.145,
+        "disinversion": "2007-04",
+        "peak": "2007-12",
+        "lag_inv": 22,
+        "lag_dis": 8,
+        "months_inverted": 13
+      },
+      {
+        "signal": "2022-07",
+        "last_month": "2024-08",
+        "min_month": "2023-07",
+        "depth": -0.929,
+        "disinversion": "2024-09",
+        "peak": null,
+        "lag_inv": null,
+        "lag_dis": null,
+        "months_inverted": 26
+      }
+    ]
+  },
+  "disinversion_false_alarms": {
+    "10y-3m": {
+      "deep_with_disinversion": 3,
+      "with_peak_in_window": 2,
+      "false": [
+        "2024-12"
+      ]
+    },
+    "10y-2y": {
+      "deep_with_disinversion": 3,
+      "with_peak_in_window": 2,
+      "false": [
+        "2024-09"
+      ]
+    }
+  },
+  "episode_2022": {
+    "10y-3m|zero": {
+      "signal": "2022-11",
+      "last_month": "2025-08",
+      "min_month": "2023-05",
+      "depth": -1.735,
+      "disinversion": "2024-12",
+      "peak": null,
+      "lag_inv": null,
+      "lag_dis": null,
+      "months_inverted": 30
+    },
+    "10y-3m|plus010": {
+      "signal": "2022-11",
+      "last_month": "2025-08",
+      "min_month": "2023-05",
+      "depth": -1.735,
+      "disinversion": "2025-01",
+      "peak": null,
+      "lag_inv": null,
+      "lag_dis": null,
+      "months_inverted": 30
+    },
+    "10y-3m|three": {
+      "signal": "2022-11",
+      "last_month": "2025-08",
+      "min_month": "2023-05",
+      "depth": -1.735,
+      "disinversion": "2024-12",
+      "peak": null,
+      "lag_inv": null,
+      "lag_dis": null,
+      "months_inverted": 30
+    },
+    "10y-2y|zero": {
+      "signal": "2022-07",
+      "last_month": "2024-08",
+      "min_month": "2023-07",
+      "depth": -0.929,
+      "disinversion": "2024-09",
+      "peak": null,
+      "lag_inv": null,
+      "lag_dis": null,
+      "months_inverted": 26
+    },
+    "10y-2y|plus010": {
+      "signal": "2022-07",
+      "last_month": "2024-08",
+      "min_month": "2023-07",
+      "depth": -0.929,
+      "disinversion": "2024-09",
+      "peak": null,
+      "lag_inv": null,
+      "lag_dis": null,
+      "months_inverted": 26
+    },
+    "10y-2y|three": {
+      "signal": "2022-07",
+      "last_month": "2024-08",
+      "min_month": "2023-07",
+      "depth": -0.929,
+      "disinversion": "2024-09",
+      "peak": null,
+      "lag_inv": null,
+      "lag_dis": null,
+      "months_inverted": 26
+    }
+  },
+  "power": {
+    "2": {
+      "n": 2,
+      "rho": 0.5,
+      "sim": 2000,
+      "boot_inner": 200,
+      "power": {
+        "0.2": 0.894,
+        "0.3": 0.839,
+        "0.4": 0.777,
+        "0.5": 0.71,
+        "0.6": 0.667,
+        "0.7": 0.604,
+        "0.8": 0.591,
+        "0.9": 0.524,
+        "1.0": 0.507
+      },
+      "size_at_ratio_1": 0.507,
+      "informative": false,
+      "min_detectable_ratio": null
+    },
+    "4": {
+      "n": 4,
+      "rho": 0.118,
+      "sim": 2000,
+      "boot_inner": 200,
+      "power": {
+        "0.2": 0.635,
+        "0.3": 0.47,
+        "0.4": 0.353,
+        "0.5": 0.276,
+        "0.6": 0.233,
+        "0.7": 0.17,
+        "0.8": 0.134,
+        "0.9": 0.1,
+        "1.0": 0.094
+      },
+      "size_at_ratio_1": 0.094,
+      "informative": true,
+      "min_detectable_ratio": null
+    },
+    "5": {
+      "n": 5,
+      "rho": 0.5,
+      "sim": 2000,
+      "boot_inner": 200,
+      "power": {
+        "0.2": 0.829,
+        "0.3": 0.672,
+        "0.4": 0.546,
+        "0.5": 0.384,
+        "0.6": 0.294,
+        "0.7": 0.216,
+        "0.8": 0.137,
+        "0.9": 0.098,
+        "1.0": 0.071
+      },
+      "size_at_ratio_1": 0.071,
+      "informative": true,
+      "min_detectable_ratio": 0.2
+    },
+    "10": {
+      "n": 10,
+      "rho": 0.5,
+      "sim": 2000,
+      "boot_inner": 200,
+      "power": {
+        "0.2": 0.997,
+        "0.3": 0.977,
+        "0.4": 0.902,
+        "0.5": 0.75,
+        "0.6": 0.559,
+        "0.7": 0.367,
+        "0.8": 0.229,
+        "0.9": 0.142,
+        "1.0": 0.079
+      },
+      "size_at_ratio_1": 0.079,
+      "informative": true,
+      "min_detectable_ratio": 0.4
+    },
+    "20": {
+      "n": 20,
+      "rho": 0.5,
+      "sim": 2000,
+      "boot_inner": 200,
+      "power": {
+        "0.2": 1.0,
+        "0.3": 1.0,
+        "0.4": 0.994,
+        "0.5": 0.951,
+        "0.6": 0.812,
+        "0.7": 0.574,
+        "0.8": 0.345,
+        "0.9": 0.175,
+        "1.0": 0.079
+      },
+      "size_at_ratio_1": 0.079,
+      "informative": true,
+      "min_detectable_ratio": 0.6
+    }
+  },
+  "extended_sample": {
+    "offset_pp": -0.116,
+    "overlap_months": 534,
+    "results": {
+      "сырая": {
+        "n_deep": 5,
+        "n_paired": 4,
+        "lag_inv": {
+          "n": 4,
+          "mean": 8.25,
+          "median": 7.5,
+          "sd": 3.403,
+          "min": 5,
+          "max": 13,
+          "range": 8,
+          "iqr": [
+            5,
+            8
+          ],
+          "mad": 2.5,
+          "cv": 0.413,
+          "values": [
+            5,
+            7,
+            8,
+            13
+          ]
+        },
+        "lag_dis": {
+          "n": 4,
+          "mean": -3.0,
+          "median": -3.0,
+          "sd": 4.163,
+          "min": -8,
+          "max": 2,
+          "range": 10,
+          "iqr": [
+            -8,
+            -2
+          ],
+          "mad": 5.0,
+          "cv": 1.388,
+          "values": [
+            -8,
+            -4,
+            -2,
+            2
+          ]
+        },
+        "ratio": 1.223,
+        "bootstrap": {
+          "n": 4,
+          "boot_ok": 1972,
+          "ci90": [
+            0.4,
+            5.0
+          ],
+          "median": 1.044
+        },
+        "episodes": [
+          {
+            "signal": "1973-06",
+            "last_month": "1974-09",
+            "min_month": "1973-08",
+            "depth": -1.27,
+            "disinversion": "1974-07",
+            "peak": "1973-11",
+            "lag_inv": 5,
+            "lag_dis": -8,
+            "months_inverted": 15
+          },
+          {
+            "signal": "1978-12",
+            "last_month": "1980-04",
+            "min_month": "1980-03",
+            "depth": -2.45,
+            "disinversion": "1980-05",
+            "peak": "1980-01",
+            "lag_inv": 13,
+            "lag_dis": -4,
+            "months_inverted": 17
+          },
+          {
+            "signal": "1980-11",
+            "last_month": "1981-08",
+            "min_month": "1980-12",
+            "depth": -2.65,
+            "disinversion": "1981-09",
+            "peak": "1981-07",
+            "lag_inv": 8,
+            "lag_dis": -2,
+            "months_inverted": 10
+          },
+          {
+            "signal": "2000-08",
+            "last_month": "2000-12",
+            "min_month": "2000-12",
+            "depth": -0.53,
+            "disinversion": "2001-01",
+            "peak": "2001-03",
+            "lag_inv": 7,
+            "lag_dis": 2,
+            "months_inverted": 5
+          }
+        ]
+      },
+      "со снятым смещением": {
+        "n_deep": 5,
+        "n_paired": 4,
+        "lag_inv": {
+          "n": 4,
+          "mean": 8.5,
+          "median": 8.0,
+          "sd": 3.317,
+          "min": 5,
+          "max": 13,
+          "range": 8,
+          "iqr": [
+            5,
+            8
+          ],
+          "mad": 3.0,
+          "cv": 0.39,
+          "values": [
+            5,
+            8,
+            8,
+            13
+          ]
+        },
+        "lag_dis": {
+          "n": 4,
+          "mean": -3.25,
+          "median": -3.0,
+          "sd": 3.775,
+          "min": -8,
+          "max": 1,
+          "range": 9,
+          "iqr": [
+            -8,
+            -2
+          ],
+          "mad": 4.0,
+          "cv": 1.162,
+          "values": [
+            -8,
+            -4,
+            -2,
+            1
+          ]
+        },
+        "ratio": 1.138,
+        "bootstrap": {
+          "n": 4,
+          "boot_ok": 1865,
+          "ci90": [
+            0.4,
+            3.0
+          ],
+          "median": 1.0
+        },
+        "episodes": [
+          {
+            "signal": "1973-06",
+            "last_month": "1974-09",
+            "min_month": "1973-08",
+            "depth": -1.386,
+            "disinversion": "1974-07",
+            "peak": "1973-11",
+            "lag_inv": 5,
+            "lag_dis": -8,
+            "months_inverted": 15
+          },
+          {
+            "signal": "1978-12",
+            "last_month": "1980-04",
+            "min_month": "1980-03",
+            "depth": -2.566,
+            "disinversion": "1980-05",
+            "peak": "1980-01",
+            "lag_inv": 13,
+            "lag_dis": -4,
+            "months_inverted": 17
+          },
+          {
+            "signal": "1980-11",
+            "last_month": "1981-08",
+            "min_month": "1980-12",
+            "depth": -2.766,
+            "disinversion": "1981-09",
+            "peak": "1981-07",
+            "lag_inv": 8,
+            "lag_dis": -2,
+            "months_inverted": 10
+          },
+          {
+            "signal": "2000-07",
+            "last_month": "2001-01",
+            "min_month": "2000-12",
+            "depth": -0.646,
+            "disinversion": "2001-02",
+            "peak": "2001-03",
+            "lag_inv": 8,
+            "lag_dis": 1,
+            "months_inverted": 7
+          }
+        ]
+      }
+    }
+  }
+}

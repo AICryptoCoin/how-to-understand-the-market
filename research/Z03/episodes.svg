@@ -1,0 +1,53 @@
+<svg viewBox="0 0 880 334" role="img" aria-labelledby="figz03t figz03d">
+<title id="figz03t">Эпизоды инверсии спреда десятилетних к трёхмесячным и их исход</title>
+<desc id="figz03d">Горизонтальная временная ось по годам. Каждый эпизод инверсии — отдельная строка: отрезок начинается в месяце сигнала. У верных срабатываний отрезок заканчивается кружком в месяце пика по датировке NBER, и его длина есть лаг. У ложных тревог отрезок протянут на всё окно ожидания длиной 24 месяцев и заканчивается крестом: пика в окне не случилось. Всего строк 6, из них верных срабатываний 4, ложных тревог 2.</desc>
+<line class="viz-grid" x1="129.8" y1="38" x2="129.8" y2="258"/>
+<text class="viz-axis" x="129.8" y="32" text-anchor="middle">1990</text>
+<line class="viz-grid" x1="230.3" y1="38" x2="230.3" y2="258"/>
+<text class="viz-axis" x="230.3" y="32" text-anchor="middle">1995</text>
+<line class="viz-grid" x1="330.8" y1="38" x2="330.8" y2="258"/>
+<text class="viz-axis" x="330.8" y="32" text-anchor="middle">2000</text>
+<line class="viz-grid" x1="431.3" y1="38" x2="431.3" y2="258"/>
+<text class="viz-axis" x="431.3" y="32" text-anchor="middle">2005</text>
+<line class="viz-grid" x1="531.8" y1="38" x2="531.8" y2="258"/>
+<text class="viz-axis" x="531.8" y="32" text-anchor="middle">2010</text>
+<line class="viz-grid" x1="632.3" y1="38" x2="632.3" y2="258"/>
+<text class="viz-axis" x="632.3" y="32" text-anchor="middle">2015</text>
+<line class="viz-grid" x1="732.8" y1="38" x2="732.8" y2="258"/>
+<text class="viz-axis" x="732.8" y="32" text-anchor="middle">2020</text>
+<line class="viz-grid" x1="833.3" y1="38" x2="833.3" y2="258"/>
+<text class="viz-axis" x="833.3" y="32" text-anchor="middle">2025</text>
+<text class="viz-axis" x="96" y="74" text-anchor="end">1989-06</text>
+<line class="viz-line" x1="118.1" y1="70" x2="139.8" y2="70" stroke="var(--series-1)" stroke-width="4"/>
+<circle cx="118.1" cy="70" r="4" fill="var(--series-1)"/>
+<circle cx="139.8" cy="70" r="6" fill="none" stroke="var(--series-1)" stroke-width="3"/>
+<text class="viz-annot" x="151.8" y="74" fill="var(--series-1)">пик 1990-07, лаг 13 мес.</text>
+<text class="viz-axis" x="96" y="108" text-anchor="end">2000-07</text>
+<line class="viz-line" x1="340.8" y1="104" x2="354.2" y2="104" stroke="var(--series-1)" stroke-width="4"/>
+<circle cx="340.8" cy="104" r="4" fill="var(--series-1)"/>
+<circle cx="354.2" cy="104" r="6" fill="none" stroke="var(--series-1)" stroke-width="3"/>
+<text class="viz-annot" x="366.2" y="108" fill="var(--series-1)">пик 2001-03, лаг 8 мес.</text>
+<text class="viz-axis" x="96" y="142" text-anchor="end">2006-08</text>
+<line class="viz-line" x1="463.1" y1="138" x2="489.9" y2="138" stroke="var(--series-1)" stroke-width="4"/>
+<circle cx="463.1" cy="138" r="4" fill="var(--series-1)"/>
+<circle cx="489.9" cy="138" r="6" fill="none" stroke="var(--series-1)" stroke-width="3"/>
+<text class="viz-annot" x="501.9" y="142" fill="var(--series-1)">пик 2007-12, лаг 16 мес.</text>
+<text class="viz-axis" x="96" y="176" text-anchor="end">2019-05</text>
+<line class="viz-line" x1="719.4" y1="172" x2="734.5" y2="172" stroke="var(--series-1)" stroke-width="4"/>
+<circle cx="719.4" cy="172" r="4" fill="var(--series-1)"/>
+<circle cx="734.5" cy="172" r="6" fill="none" stroke="var(--series-1)" stroke-width="3"/>
+<text class="viz-annot" x="746.5" y="176" fill="var(--series-1)">пик 2020-02, лаг 9 мес.</text>
+<text class="viz-axis" x="96" y="210" text-anchor="end">2020-02</text>
+<line class="viz-line" x1="734.5" y1="206" x2="774.7" y2="206" stroke="var(--series-8)" stroke-width="4"/>
+<circle cx="734.5" cy="206" r="4" fill="var(--series-8)"/>
+<line x1="769.7" y1="201" x2="779.7" y2="211" stroke="var(--series-8)" stroke-width="3"/>
+<line x1="769.7" y1="211" x2="779.7" y2="201" stroke="var(--series-8)" stroke-width="3"/>
+<text class="viz-annot" x="786.7" y="210" fill="var(--series-8)">пика нет (FA)</text>
+<text class="viz-axis" x="96" y="244" text-anchor="end">2022-11</text>
+<line class="viz-line" x1="789.7" y1="240" x2="829.9" y2="240" stroke="var(--series-8)" stroke-width="4"/>
+<circle cx="789.7" cy="240" r="4" fill="var(--series-8)"/>
+<line x1="824.9" y1="235" x2="834.9" y2="245" stroke="var(--series-8)" stroke-width="3"/>
+<line x1="824.9" y1="245" x2="834.9" y2="235" stroke="var(--series-8)" stroke-width="3"/>
+<text class="viz-annot" x="841.9" y="244" fill="var(--series-8)">пика нет (FA)</text>
+<text class="viz-annot" x="108" y="288">кружок — пик по датировке NBER; крест — окно 24 мес. истекло, пика не случилось</text>
+</svg>

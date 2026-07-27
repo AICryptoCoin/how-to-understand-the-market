@@ -1,0 +1,3814 @@
+{
+  "task": "Z03",
+  "verdict": "НЕОПРЕДЕЛЕНО",
+  "params": {
+    "seed": 20260727,
+    "K_main": 3,
+    "W_main": 24,
+    "H_main": 12,
+    "boot_reps": 2000,
+    "block_months": 24,
+    "oos_from": "1990-01"
+  },
+  "manifest": {
+    "fetched_at": "2026-07-27T19:08:19+00:00",
+    "series": {
+      "T10Y3M": {
+        "n": 11142,
+        "first": "1982-01-04",
+        "last": "2026-07-24",
+        "source": "FRED",
+        "observation_start": "1982-01-04"
+      },
+      "T10Y2Y": {
+        "n": 12533,
+        "first": "1976-06-01",
+        "last": "2026-07-24",
+        "source": "FRED",
+        "observation_start": "1976-06-01"
+      },
+      "USREC": {
+        "n": 2059,
+        "first": "1854-12-01",
+        "last": "2026-06-01",
+        "source": "FRED",
+        "observation_start": "1854-12-01"
+      },
+      "USRECM": {
+        "n": 2059,
+        "first": "1854-12-01",
+        "last": "2026-06-01",
+        "source": "FRED",
+        "observation_start": "1854-12-01"
+      },
+      "GS10": {
+        "n": 879,
+        "first": "1953-04-01",
+        "last": "2026-06-01",
+        "source": "FRED",
+        "observation_start": "1953-04-01"
+      },
+      "TB3MS": {
+        "n": 1110,
+        "first": "1934-01-01",
+        "last": "2026-06-01",
+        "source": "FRED",
+        "observation_start": "1934-01-01"
+      },
+      "GDPC1": {
+        "n": 317,
+        "first": "1947-01-01",
+        "last": "2026-01-01",
+        "source": "FRED",
+        "observation_start": "1947-01-01"
+      }
+    },
+    "nber_announcements": {
+      "url": "https://www.nber.org/research/business-cycle-dating/business-cycle-dating-committee-announcements",
+      "peaks": {
+        "1980-01-01": "1980-06-03",
+        "1981-07-01": "1982-01-06",
+        "1990-07-01": "1991-04-25",
+        "2001-03-01": "2001-11-26",
+        "2007-12-01": "2008-12-01",
+        "2020-02-01": "2020-06-08"
+      },
+      "troughs": {
+        "1980-07-01": "1981-07-08",
+        "1982-11-01": "1983-07-08",
+        "1991-03-01": "1992-12-22",
+        "2001-11-01": "2003-07-17",
+        "2009-06-01": "2010-09-20",
+        "2020-04-01": "2021-07-19"
+      }
+    },
+    "warnings": []
+  },
+  "peaks_nber": [
+    "1857-06",
+    "1860-10",
+    "1865-04",
+    "1869-06",
+    "1873-10",
+    "1882-03",
+    "1887-03",
+    "1890-07",
+    "1893-01",
+    "1895-12",
+    "1899-06",
+    "1902-09",
+    "1907-05",
+    "1910-01",
+    "1913-01",
+    "1918-08",
+    "1920-01",
+    "1923-05",
+    "1926-10",
+    "1929-08",
+    "1937-05",
+    "1945-02",
+    "1948-11",
+    "1953-07",
+    "1957-08",
+    "1960-04",
+    "1969-12",
+    "1973-11",
+    "1980-01",
+    "1981-07",
+    "1990-07",
+    "2001-03",
+    "2007-12",
+    "2020-02"
+  ],
+  "events_two_quarter": [
+    "1947-03",
+    "1948-12",
+    "1953-06",
+    "1957-09",
+    "1969-09",
+    "1974-06",
+    "1980-03",
+    "1981-09",
+    "1990-09",
+    "2008-06",
+    "2019-12"
+  ],
+  "main": {
+    "config": {
+      "spread": "10y-3m",
+      "trigger": "month<0",
+      "window": 24,
+      "event": "nber",
+      "K": 3
+    },
+    "score": {
+      "n_signals": 6,
+      "TP": 4,
+      "FA": 2,
+      "FN": 0,
+      "censored": 0,
+      "fa_per_tp": 0.5,
+      "peaks_eligible": 4,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [],
+      "lags": [
+        8,
+        9,
+        13,
+        16
+      ],
+      "lag_median": 13,
+      "lag_min": 8,
+      "lag_max": 16,
+      "lag_iqr": [
+        8,
+        13
+      ],
+      "episodes": [
+        {
+          "signal": "1989-06",
+          "outcome": "TP",
+          "peak": "1990-07",
+          "lag": 13
+        },
+        {
+          "signal": "2000-07",
+          "outcome": "TP",
+          "peak": "2001-03",
+          "lag": 8
+        },
+        {
+          "signal": "2006-08",
+          "outcome": "TP",
+          "peak": "2007-12",
+          "lag": 16
+        },
+        {
+          "signal": "2019-05",
+          "outcome": "TP",
+          "peak": "2020-02",
+          "lag": 9
+        },
+        {
+          "signal": "2020-02",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2022-11",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        }
+      ]
+    },
+    "bootstrap_lag": {
+      "n": 4,
+      "reps": 2000,
+      "median_ci90": [
+        8,
+        16
+      ],
+      "median_point": 13
+    },
+    "U1": true,
+    "U2": true
+  },
+  "grid24": [
+    {
+      "spread": "10y-3m",
+      "trigger": "day",
+      "window": 12,
+      "event": "nber",
+      "U1": false,
+      "U2": false,
+      "n_signals": 7,
+      "TP": 2,
+      "FA": 5,
+      "FN": 2,
+      "censored": 0,
+      "fa_per_tp": 2.5,
+      "peaks_eligible": 4,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [
+        "1990-07",
+        "2007-12"
+      ],
+      "lags": [
+        11,
+        11
+      ],
+      "lag_median": 11,
+      "lag_min": 11,
+      "lag_max": 11,
+      "lag_iqr": [
+        11,
+        11
+      ],
+      "episodes": [
+        {
+          "signal": "1982-02",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "1989-03",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "1998-09",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2000-04",
+          "outcome": "TP",
+          "peak": "2001-03",
+          "lag": 11
+        },
+        {
+          "signal": "2006-01",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2019-03",
+          "outcome": "TP",
+          "peak": "2020-02",
+          "lag": 11
+        },
+        {
+          "signal": "2022-10",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        }
+      ]
+    },
+    {
+      "spread": "10y-3m",
+      "trigger": "day",
+      "window": 12,
+      "event": "gdp2q",
+      "U1": false,
+      "U2": false,
+      "n_signals": 7,
+      "TP": 1,
+      "FA": 6,
+      "FN": 2,
+      "censored": 0,
+      "fa_per_tp": 6.0,
+      "peaks_eligible": 3,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [
+        "1990-09",
+        "2008-06"
+      ],
+      "lags": [
+        9
+      ],
+      "lag_median": 9,
+      "lag_min": 9,
+      "lag_max": 9,
+      "lag_iqr": [
+        9,
+        9
+      ],
+      "episodes": [
+        {
+          "signal": "1982-02",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "1989-03",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "1998-09",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2000-04",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2006-01",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2019-03",
+          "outcome": "TP",
+          "peak": "2019-12",
+          "lag": 9
+        },
+        {
+          "signal": "2022-10",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        }
+      ]
+    },
+    {
+      "spread": "10y-3m",
+      "trigger": "day",
+      "window": 24,
+      "event": "nber",
+      "U1": true,
+      "U2": false,
+      "n_signals": 7,
+      "TP": 4,
+      "FA": 3,
+      "FN": 0,
+      "censored": 0,
+      "fa_per_tp": 0.75,
+      "peaks_eligible": 4,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [],
+      "lags": [
+        11,
+        11,
+        16,
+        23
+      ],
+      "lag_median": 16,
+      "lag_min": 11,
+      "lag_max": 23,
+      "lag_iqr": [
+        11,
+        16
+      ],
+      "episodes": [
+        {
+          "signal": "1982-02",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "1989-03",
+          "outcome": "TP",
+          "peak": "1990-07",
+          "lag": 16
+        },
+        {
+          "signal": "1998-09",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2000-04",
+          "outcome": "TP",
+          "peak": "2001-03",
+          "lag": 11
+        },
+        {
+          "signal": "2006-01",
+          "outcome": "TP",
+          "peak": "2007-12",
+          "lag": 23
+        },
+        {
+          "signal": "2019-03",
+          "outcome": "TP",
+          "peak": "2020-02",
+          "lag": 11
+        },
+        {
+          "signal": "2022-10",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        }
+      ]
+    },
+    {
+      "spread": "10y-3m",
+      "trigger": "day",
+      "window": 24,
+      "event": "gdp2q",
+      "U1": true,
+      "U2": false,
+      "n_signals": 7,
+      "TP": 2,
+      "FA": 5,
+      "FN": 1,
+      "censored": 0,
+      "fa_per_tp": 2.5,
+      "peaks_eligible": 3,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [
+        "2008-06"
+      ],
+      "lags": [
+        9,
+        18
+      ],
+      "lag_median": 18,
+      "lag_min": 9,
+      "lag_max": 18,
+      "lag_iqr": [
+        9,
+        9
+      ],
+      "episodes": [
+        {
+          "signal": "1982-02",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "1989-03",
+          "outcome": "TP",
+          "peak": "1990-09",
+          "lag": 18
+        },
+        {
+          "signal": "1998-09",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2000-04",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2006-01",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2019-03",
+          "outcome": "TP",
+          "peak": "2019-12",
+          "lag": 9
+        },
+        {
+          "signal": "2022-10",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        }
+      ]
+    },
+    {
+      "spread": "10y-3m",
+      "trigger": "month",
+      "window": 12,
+      "event": "nber",
+      "U1": false,
+      "U2": false,
+      "n_signals": 6,
+      "TP": 2,
+      "FA": 4,
+      "FN": 2,
+      "censored": 0,
+      "fa_per_tp": 2.0,
+      "peaks_eligible": 4,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [
+        "1990-07",
+        "2007-12"
+      ],
+      "lags": [
+        8,
+        9
+      ],
+      "lag_median": 9,
+      "lag_min": 8,
+      "lag_max": 9,
+      "lag_iqr": [
+        8,
+        8
+      ],
+      "episodes": [
+        {
+          "signal": "1989-06",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2000-07",
+          "outcome": "TP",
+          "peak": "2001-03",
+          "lag": 8
+        },
+        {
+          "signal": "2006-08",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2019-05",
+          "outcome": "TP",
+          "peak": "2020-02",
+          "lag": 9
+        },
+        {
+          "signal": "2020-02",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2022-11",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        }
+      ]
+    },
+    {
+      "spread": "10y-3m",
+      "trigger": "month",
+      "window": 12,
+      "event": "gdp2q",
+      "U1": false,
+      "U2": false,
+      "n_signals": 6,
+      "TP": 1,
+      "FA": 5,
+      "FN": 2,
+      "censored": 0,
+      "fa_per_tp": 5.0,
+      "peaks_eligible": 3,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [
+        "1990-09",
+        "2008-06"
+      ],
+      "lags": [
+        7
+      ],
+      "lag_median": 7,
+      "lag_min": 7,
+      "lag_max": 7,
+      "lag_iqr": [
+        7,
+        7
+      ],
+      "episodes": [
+        {
+          "signal": "1989-06",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2000-07",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2006-08",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2019-05",
+          "outcome": "TP",
+          "peak": "2019-12",
+          "lag": 7
+        },
+        {
+          "signal": "2020-02",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2022-11",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        }
+      ]
+    },
+    {
+      "spread": "10y-3m",
+      "trigger": "month",
+      "window": 24,
+      "event": "nber",
+      "U1": true,
+      "U2": true,
+      "n_signals": 6,
+      "TP": 4,
+      "FA": 2,
+      "FN": 0,
+      "censored": 0,
+      "fa_per_tp": 0.5,
+      "peaks_eligible": 4,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [],
+      "lags": [
+        8,
+        9,
+        13,
+        16
+      ],
+      "lag_median": 13,
+      "lag_min": 8,
+      "lag_max": 16,
+      "lag_iqr": [
+        8,
+        13
+      ],
+      "episodes": [
+        {
+          "signal": "1989-06",
+          "outcome": "TP",
+          "peak": "1990-07",
+          "lag": 13
+        },
+        {
+          "signal": "2000-07",
+          "outcome": "TP",
+          "peak": "2001-03",
+          "lag": 8
+        },
+        {
+          "signal": "2006-08",
+          "outcome": "TP",
+          "peak": "2007-12",
+          "lag": 16
+        },
+        {
+          "signal": "2019-05",
+          "outcome": "TP",
+          "peak": "2020-02",
+          "lag": 9
+        },
+        {
+          "signal": "2020-02",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2022-11",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        }
+      ]
+    },
+    {
+      "spread": "10y-3m",
+      "trigger": "month",
+      "window": 24,
+      "event": "gdp2q",
+      "U1": true,
+      "U2": false,
+      "n_signals": 6,
+      "TP": 3,
+      "FA": 3,
+      "FN": 0,
+      "censored": 0,
+      "fa_per_tp": 1.0,
+      "peaks_eligible": 3,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [],
+      "lags": [
+        7,
+        15,
+        22
+      ],
+      "lag_median": 15,
+      "lag_min": 7,
+      "lag_max": 22,
+      "lag_iqr": [
+        7,
+        15
+      ],
+      "episodes": [
+        {
+          "signal": "1989-06",
+          "outcome": "TP",
+          "peak": "1990-09",
+          "lag": 15
+        },
+        {
+          "signal": "2000-07",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2006-08",
+          "outcome": "TP",
+          "peak": "2008-06",
+          "lag": 22
+        },
+        {
+          "signal": "2019-05",
+          "outcome": "TP",
+          "peak": "2019-12",
+          "lag": 7
+        },
+        {
+          "signal": "2020-02",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2022-11",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        }
+      ]
+    },
+    {
+      "spread": "10y-3m",
+      "trigger": "three",
+      "window": 12,
+      "event": "nber",
+      "U1": true,
+      "U2": false,
+      "n_signals": 5,
+      "TP": 3,
+      "FA": 2,
+      "FN": 1,
+      "censored": 0,
+      "fa_per_tp": 0.667,
+      "peaks_eligible": 4,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [
+        "2007-12"
+      ],
+      "lags": [
+        6,
+        7,
+        11
+      ],
+      "lag_median": 7,
+      "lag_min": 6,
+      "lag_max": 11,
+      "lag_iqr": [
+        6,
+        7
+      ],
+      "episodes": [
+        {
+          "signal": "1989-08",
+          "outcome": "TP",
+          "peak": "1990-07",
+          "lag": 11
+        },
+        {
+          "signal": "2000-09",
+          "outcome": "TP",
+          "peak": "2001-03",
+          "lag": 6
+        },
+        {
+          "signal": "2006-10",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2019-07",
+          "outcome": "TP",
+          "peak": "2020-02",
+          "lag": 7
+        },
+        {
+          "signal": "2023-01",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        }
+      ]
+    },
+    {
+      "spread": "10y-3m",
+      "trigger": "three",
+      "window": 12,
+      "event": "gdp2q",
+      "U1": false,
+      "U2": false,
+      "n_signals": 5,
+      "TP": 1,
+      "FA": 4,
+      "FN": 2,
+      "censored": 0,
+      "fa_per_tp": 4.0,
+      "peaks_eligible": 3,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [
+        "1990-09",
+        "2008-06"
+      ],
+      "lags": [
+        5
+      ],
+      "lag_median": 5,
+      "lag_min": 5,
+      "lag_max": 5,
+      "lag_iqr": [
+        5,
+        5
+      ],
+      "episodes": [
+        {
+          "signal": "1989-08",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2000-09",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2006-10",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2019-07",
+          "outcome": "TP",
+          "peak": "2019-12",
+          "lag": 5
+        },
+        {
+          "signal": "2023-01",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        }
+      ]
+    },
+    {
+      "spread": "10y-3m",
+      "trigger": "three",
+      "window": 24,
+      "event": "nber",
+      "U1": true,
+      "U2": true,
+      "n_signals": 5,
+      "TP": 4,
+      "FA": 1,
+      "FN": 0,
+      "censored": 0,
+      "fa_per_tp": 0.25,
+      "peaks_eligible": 4,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [],
+      "lags": [
+        6,
+        7,
+        11,
+        14
+      ],
+      "lag_median": 11,
+      "lag_min": 6,
+      "lag_max": 14,
+      "lag_iqr": [
+        6,
+        11
+      ],
+      "episodes": [
+        {
+          "signal": "1989-08",
+          "outcome": "TP",
+          "peak": "1990-07",
+          "lag": 11
+        },
+        {
+          "signal": "2000-09",
+          "outcome": "TP",
+          "peak": "2001-03",
+          "lag": 6
+        },
+        {
+          "signal": "2006-10",
+          "outcome": "TP",
+          "peak": "2007-12",
+          "lag": 14
+        },
+        {
+          "signal": "2019-07",
+          "outcome": "TP",
+          "peak": "2020-02",
+          "lag": 7
+        },
+        {
+          "signal": "2023-01",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        }
+      ]
+    },
+    {
+      "spread": "10y-3m",
+      "trigger": "three",
+      "window": 24,
+      "event": "gdp2q",
+      "U1": true,
+      "U2": false,
+      "n_signals": 5,
+      "TP": 3,
+      "FA": 2,
+      "FN": 0,
+      "censored": 0,
+      "fa_per_tp": 0.667,
+      "peaks_eligible": 3,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [],
+      "lags": [
+        5,
+        13,
+        20
+      ],
+      "lag_median": 13,
+      "lag_min": 5,
+      "lag_max": 20,
+      "lag_iqr": [
+        5,
+        13
+      ],
+      "episodes": [
+        {
+          "signal": "1989-08",
+          "outcome": "TP",
+          "peak": "1990-09",
+          "lag": 13
+        },
+        {
+          "signal": "2000-09",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2006-10",
+          "outcome": "TP",
+          "peak": "2008-06",
+          "lag": 20
+        },
+        {
+          "signal": "2019-07",
+          "outcome": "TP",
+          "peak": "2019-12",
+          "lag": 5
+        },
+        {
+          "signal": "2023-01",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        }
+      ]
+    },
+    {
+      "spread": "10y-2y",
+      "trigger": "day",
+      "window": 12,
+      "event": "nber",
+      "U1": false,
+      "U2": false,
+      "n_signals": 7,
+      "TP": 1,
+      "FA": 6,
+      "FN": 5,
+      "censored": 0,
+      "fa_per_tp": 6.0,
+      "peaks_eligible": 6,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [
+        "1980-01",
+        "1981-07",
+        "1990-07",
+        "2001-03",
+        "2007-12"
+      ],
+      "lags": [
+        6
+      ],
+      "lag_median": 6,
+      "lag_min": 6,
+      "lag_max": 6,
+      "lag_iqr": [
+        6,
+        6
+      ],
+      "episodes": [
+        {
+          "signal": "1978-08",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "1988-12",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "1998-05",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2000-02",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2005-12",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2019-08",
+          "outcome": "TP",
+          "peak": "2020-02",
+          "lag": 6
+        },
+        {
+          "signal": "2022-04",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        }
+      ]
+    },
+    {
+      "spread": "10y-2y",
+      "trigger": "day",
+      "window": 12,
+      "event": "gdp2q",
+      "U1": false,
+      "U2": false,
+      "n_signals": 7,
+      "TP": 1,
+      "FA": 6,
+      "FN": 4,
+      "censored": 0,
+      "fa_per_tp": 6.0,
+      "peaks_eligible": 5,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [
+        "1980-03",
+        "1981-09",
+        "1990-09",
+        "2008-06"
+      ],
+      "lags": [
+        4
+      ],
+      "lag_median": 4,
+      "lag_min": 4,
+      "lag_max": 4,
+      "lag_iqr": [
+        4,
+        4
+      ],
+      "episodes": [
+        {
+          "signal": "1978-08",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "1988-12",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "1998-05",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2000-02",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2005-12",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2019-08",
+          "outcome": "TP",
+          "peak": "2019-12",
+          "lag": 4
+        },
+        {
+          "signal": "2022-04",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        }
+      ]
+    },
+    {
+      "spread": "10y-2y",
+      "trigger": "day",
+      "window": 24,
+      "event": "nber",
+      "U1": true,
+      "U2": true,
+      "n_signals": 7,
+      "TP": 5,
+      "FA": 2,
+      "FN": 1,
+      "censored": 0,
+      "fa_per_tp": 0.4,
+      "peaks_eligible": 6,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [
+        "1981-07"
+      ],
+      "lags": [
+        6,
+        13,
+        17,
+        19,
+        24
+      ],
+      "lag_median": 17,
+      "lag_min": 6,
+      "lag_max": 24,
+      "lag_iqr": [
+        13,
+        19
+      ],
+      "episodes": [
+        {
+          "signal": "1978-08",
+          "outcome": "TP",
+          "peak": "1980-01",
+          "lag": 17
+        },
+        {
+          "signal": "1988-12",
+          "outcome": "TP",
+          "peak": "1990-07",
+          "lag": 19
+        },
+        {
+          "signal": "1998-05",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2000-02",
+          "outcome": "TP",
+          "peak": "2001-03",
+          "lag": 13
+        },
+        {
+          "signal": "2005-12",
+          "outcome": "TP",
+          "peak": "2007-12",
+          "lag": 24
+        },
+        {
+          "signal": "2019-08",
+          "outcome": "TP",
+          "peak": "2020-02",
+          "lag": 6
+        },
+        {
+          "signal": "2022-04",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        }
+      ]
+    },
+    {
+      "spread": "10y-2y",
+      "trigger": "day",
+      "window": 24,
+      "event": "gdp2q",
+      "U1": false,
+      "U2": false,
+      "n_signals": 7,
+      "TP": 3,
+      "FA": 4,
+      "FN": 2,
+      "censored": 0,
+      "fa_per_tp": 1.333,
+      "peaks_eligible": 5,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [
+        "1981-09",
+        "2008-06"
+      ],
+      "lags": [
+        4,
+        19,
+        21
+      ],
+      "lag_median": 19,
+      "lag_min": 4,
+      "lag_max": 21,
+      "lag_iqr": [
+        4,
+        19
+      ],
+      "episodes": [
+        {
+          "signal": "1978-08",
+          "outcome": "TP",
+          "peak": "1980-03",
+          "lag": 19
+        },
+        {
+          "signal": "1988-12",
+          "outcome": "TP",
+          "peak": "1990-09",
+          "lag": 21
+        },
+        {
+          "signal": "1998-05",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2000-02",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2005-12",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2019-08",
+          "outcome": "TP",
+          "peak": "2019-12",
+          "lag": 4
+        },
+        {
+          "signal": "2022-04",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        }
+      ]
+    },
+    {
+      "spread": "10y-2y",
+      "trigger": "month",
+      "window": 12,
+      "event": "nber",
+      "U1": false,
+      "U2": false,
+      "n_signals": 8,
+      "TP": 2,
+      "FA": 6,
+      "FN": 4,
+      "censored": 0,
+      "fa_per_tp": 3.0,
+      "peaks_eligible": 6,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [
+        "1980-01",
+        "2001-03",
+        "2007-12",
+        "2020-02"
+      ],
+      "lags": [
+        4,
+        10
+      ],
+      "lag_median": 10,
+      "lag_min": 4,
+      "lag_max": 10,
+      "lag_iqr": [
+        4,
+        4
+      ],
+      "episodes": [
+        {
+          "signal": "1978-09",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "1980-09",
+          "outcome": "TP",
+          "peak": "1981-07",
+          "lag": 10
+        },
+        {
+          "signal": "1989-01",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "1990-03",
+          "outcome": "TP",
+          "peak": "1990-07",
+          "lag": 4
+        },
+        {
+          "signal": "1998-06",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2000-02",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2006-02",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2022-07",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        }
+      ]
+    },
+    {
+      "spread": "10y-2y",
+      "trigger": "month",
+      "window": 12,
+      "event": "gdp2q",
+      "U1": false,
+      "U2": false,
+      "n_signals": 8,
+      "TP": 2,
+      "FA": 6,
+      "FN": 3,
+      "censored": 0,
+      "fa_per_tp": 3.0,
+      "peaks_eligible": 5,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [
+        "1980-03",
+        "2008-06",
+        "2019-12"
+      ],
+      "lags": [
+        6,
+        12
+      ],
+      "lag_median": 12,
+      "lag_min": 6,
+      "lag_max": 12,
+      "lag_iqr": [
+        6,
+        6
+      ],
+      "episodes": [
+        {
+          "signal": "1978-09",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "1980-09",
+          "outcome": "TP",
+          "peak": "1981-09",
+          "lag": 12
+        },
+        {
+          "signal": "1989-01",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "1990-03",
+          "outcome": "TP",
+          "peak": "1990-09",
+          "lag": 6
+        },
+        {
+          "signal": "1998-06",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2000-02",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2006-02",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2022-07",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        }
+      ]
+    },
+    {
+      "spread": "10y-2y",
+      "trigger": "month",
+      "window": 24,
+      "event": "nber",
+      "U1": true,
+      "U2": true,
+      "n_signals": 8,
+      "TP": 6,
+      "FA": 2,
+      "FN": 1,
+      "censored": 0,
+      "fa_per_tp": 0.333,
+      "peaks_eligible": 6,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [
+        "2020-02"
+      ],
+      "lags": [
+        4,
+        10,
+        13,
+        16,
+        18,
+        22
+      ],
+      "lag_median": 16,
+      "lag_min": 4,
+      "lag_max": 22,
+      "lag_iqr": [
+        10,
+        16
+      ],
+      "episodes": [
+        {
+          "signal": "1978-09",
+          "outcome": "TP",
+          "peak": "1980-01",
+          "lag": 16
+        },
+        {
+          "signal": "1980-09",
+          "outcome": "TP",
+          "peak": "1981-07",
+          "lag": 10
+        },
+        {
+          "signal": "1989-01",
+          "outcome": "TP",
+          "peak": "1990-07",
+          "lag": 18
+        },
+        {
+          "signal": "1990-03",
+          "outcome": "TP",
+          "peak": "1990-07",
+          "lag": 4
+        },
+        {
+          "signal": "1998-06",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2000-02",
+          "outcome": "TP",
+          "peak": "2001-03",
+          "lag": 13
+        },
+        {
+          "signal": "2006-02",
+          "outcome": "TP",
+          "peak": "2007-12",
+          "lag": 22
+        },
+        {
+          "signal": "2022-07",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        }
+      ]
+    },
+    {
+      "spread": "10y-2y",
+      "trigger": "month",
+      "window": 24,
+      "event": "gdp2q",
+      "U1": false,
+      "U2": false,
+      "n_signals": 8,
+      "TP": 4,
+      "FA": 4,
+      "FN": 2,
+      "censored": 0,
+      "fa_per_tp": 1.0,
+      "peaks_eligible": 5,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [
+        "2008-06",
+        "2019-12"
+      ],
+      "lags": [
+        6,
+        12,
+        18,
+        20
+      ],
+      "lag_median": 18,
+      "lag_min": 6,
+      "lag_max": 20,
+      "lag_iqr": [
+        6,
+        18
+      ],
+      "episodes": [
+        {
+          "signal": "1978-09",
+          "outcome": "TP",
+          "peak": "1980-03",
+          "lag": 18
+        },
+        {
+          "signal": "1980-09",
+          "outcome": "TP",
+          "peak": "1981-09",
+          "lag": 12
+        },
+        {
+          "signal": "1989-01",
+          "outcome": "TP",
+          "peak": "1990-09",
+          "lag": 20
+        },
+        {
+          "signal": "1990-03",
+          "outcome": "TP",
+          "peak": "1990-09",
+          "lag": 6
+        },
+        {
+          "signal": "1998-06",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2000-02",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2006-02",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2022-07",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        }
+      ]
+    },
+    {
+      "spread": "10y-2y",
+      "trigger": "three",
+      "window": 12,
+      "event": "nber",
+      "U1": false,
+      "U2": false,
+      "n_signals": 6,
+      "TP": 2,
+      "FA": 4,
+      "FN": 4,
+      "censored": 0,
+      "fa_per_tp": 2.0,
+      "peaks_eligible": 6,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [
+        "1980-01",
+        "1990-07",
+        "2007-12",
+        "2020-02"
+      ],
+      "lags": [
+        8,
+        11
+      ],
+      "lag_median": 11,
+      "lag_min": 8,
+      "lag_max": 11,
+      "lag_iqr": [
+        8,
+        8
+      ],
+      "episodes": [
+        {
+          "signal": "1978-11",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "1980-11",
+          "outcome": "TP",
+          "peak": "1981-07",
+          "lag": 8
+        },
+        {
+          "signal": "1989-03",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2000-04",
+          "outcome": "TP",
+          "peak": "2001-03",
+          "lag": 11
+        },
+        {
+          "signal": "2006-08",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2022-09",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        }
+      ]
+    },
+    {
+      "spread": "10y-2y",
+      "trigger": "three",
+      "window": 12,
+      "event": "gdp2q",
+      "U1": false,
+      "U2": false,
+      "n_signals": 6,
+      "TP": 1,
+      "FA": 5,
+      "FN": 4,
+      "censored": 0,
+      "fa_per_tp": 5.0,
+      "peaks_eligible": 5,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [
+        "1980-03",
+        "1990-09",
+        "2008-06",
+        "2019-12"
+      ],
+      "lags": [
+        10
+      ],
+      "lag_median": 10,
+      "lag_min": 10,
+      "lag_max": 10,
+      "lag_iqr": [
+        10,
+        10
+      ],
+      "episodes": [
+        {
+          "signal": "1978-11",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "1980-11",
+          "outcome": "TP",
+          "peak": "1981-09",
+          "lag": 10
+        },
+        {
+          "signal": "1989-03",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2000-04",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2006-08",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2022-09",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        }
+      ]
+    },
+    {
+      "spread": "10y-2y",
+      "trigger": "three",
+      "window": 24,
+      "event": "nber",
+      "U1": true,
+      "U2": true,
+      "n_signals": 6,
+      "TP": 5,
+      "FA": 1,
+      "FN": 1,
+      "censored": 0,
+      "fa_per_tp": 0.2,
+      "peaks_eligible": 6,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [
+        "2020-02"
+      ],
+      "lags": [
+        8,
+        11,
+        14,
+        16,
+        16
+      ],
+      "lag_median": 14,
+      "lag_min": 8,
+      "lag_max": 16,
+      "lag_iqr": [
+        11,
+        16
+      ],
+      "episodes": [
+        {
+          "signal": "1978-11",
+          "outcome": "TP",
+          "peak": "1980-01",
+          "lag": 14
+        },
+        {
+          "signal": "1980-11",
+          "outcome": "TP",
+          "peak": "1981-07",
+          "lag": 8
+        },
+        {
+          "signal": "1989-03",
+          "outcome": "TP",
+          "peak": "1990-07",
+          "lag": 16
+        },
+        {
+          "signal": "2000-04",
+          "outcome": "TP",
+          "peak": "2001-03",
+          "lag": 11
+        },
+        {
+          "signal": "2006-08",
+          "outcome": "TP",
+          "peak": "2007-12",
+          "lag": 16
+        },
+        {
+          "signal": "2022-09",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        }
+      ]
+    },
+    {
+      "spread": "10y-2y",
+      "trigger": "three",
+      "window": 24,
+      "event": "gdp2q",
+      "U1": true,
+      "U2": true,
+      "n_signals": 6,
+      "TP": 4,
+      "FA": 2,
+      "FN": 1,
+      "censored": 0,
+      "fa_per_tp": 0.5,
+      "peaks_eligible": 5,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [
+        "2019-12"
+      ],
+      "lags": [
+        10,
+        16,
+        18,
+        22
+      ],
+      "lag_median": 18,
+      "lag_min": 10,
+      "lag_max": 22,
+      "lag_iqr": [
+        10,
+        18
+      ],
+      "episodes": [
+        {
+          "signal": "1978-11",
+          "outcome": "TP",
+          "peak": "1980-03",
+          "lag": 16
+        },
+        {
+          "signal": "1980-11",
+          "outcome": "TP",
+          "peak": "1981-09",
+          "lag": 10
+        },
+        {
+          "signal": "1989-03",
+          "outcome": "TP",
+          "peak": "1990-09",
+          "lag": 18
+        },
+        {
+          "signal": "2000-04",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        },
+        {
+          "signal": "2006-08",
+          "outcome": "TP",
+          "peak": "2008-06",
+          "lag": 22
+        },
+        {
+          "signal": "2022-09",
+          "outcome": "FA",
+          "peak": null,
+          "lag": null
+        }
+      ]
+    }
+  ],
+  "grid24_both_ok": 6,
+  "episode_2022": {
+    "rows": [
+      {
+        "spread": "10y-3m",
+        "trigger": "day",
+        "window": 12,
+        "event": "nber",
+        "signal": "2022-10",
+        "outcome": "FA",
+        "peak": null,
+        "lag": null
+      },
+      {
+        "spread": "10y-3m",
+        "trigger": "day",
+        "window": 12,
+        "event": "gdp2q",
+        "signal": "2022-10",
+        "outcome": "FA",
+        "peak": null,
+        "lag": null
+      },
+      {
+        "spread": "10y-3m",
+        "trigger": "day",
+        "window": 24,
+        "event": "nber",
+        "signal": "2022-10",
+        "outcome": "FA",
+        "peak": null,
+        "lag": null
+      },
+      {
+        "spread": "10y-3m",
+        "trigger": "day",
+        "window": 24,
+        "event": "gdp2q",
+        "signal": "2022-10",
+        "outcome": "FA",
+        "peak": null,
+        "lag": null
+      },
+      {
+        "spread": "10y-3m",
+        "trigger": "month",
+        "window": 12,
+        "event": "nber",
+        "signal": "2022-11",
+        "outcome": "FA",
+        "peak": null,
+        "lag": null
+      },
+      {
+        "spread": "10y-3m",
+        "trigger": "month",
+        "window": 12,
+        "event": "gdp2q",
+        "signal": "2022-11",
+        "outcome": "FA",
+        "peak": null,
+        "lag": null
+      },
+      {
+        "spread": "10y-3m",
+        "trigger": "month",
+        "window": 24,
+        "event": "nber",
+        "signal": "2022-11",
+        "outcome": "FA",
+        "peak": null,
+        "lag": null
+      },
+      {
+        "spread": "10y-3m",
+        "trigger": "month",
+        "window": 24,
+        "event": "gdp2q",
+        "signal": "2022-11",
+        "outcome": "FA",
+        "peak": null,
+        "lag": null
+      },
+      {
+        "spread": "10y-3m",
+        "trigger": "three",
+        "window": 12,
+        "event": "nber",
+        "signal": "2023-01",
+        "outcome": "FA",
+        "peak": null,
+        "lag": null
+      },
+      {
+        "spread": "10y-3m",
+        "trigger": "three",
+        "window": 12,
+        "event": "gdp2q",
+        "signal": "2023-01",
+        "outcome": "FA",
+        "peak": null,
+        "lag": null
+      },
+      {
+        "spread": "10y-3m",
+        "trigger": "three",
+        "window": 24,
+        "event": "nber",
+        "signal": "2023-01",
+        "outcome": "FA",
+        "peak": null,
+        "lag": null
+      },
+      {
+        "spread": "10y-3m",
+        "trigger": "three",
+        "window": 24,
+        "event": "gdp2q",
+        "signal": "2023-01",
+        "outcome": "FA",
+        "peak": null,
+        "lag": null
+      },
+      {
+        "spread": "10y-2y",
+        "trigger": "day",
+        "window": 12,
+        "event": "nber",
+        "signal": "2022-04",
+        "outcome": "FA",
+        "peak": null,
+        "lag": null
+      },
+      {
+        "spread": "10y-2y",
+        "trigger": "day",
+        "window": 12,
+        "event": "gdp2q",
+        "signal": "2022-04",
+        "outcome": "FA",
+        "peak": null,
+        "lag": null
+      },
+      {
+        "spread": "10y-2y",
+        "trigger": "day",
+        "window": 24,
+        "event": "nber",
+        "signal": "2022-04",
+        "outcome": "FA",
+        "peak": null,
+        "lag": null
+      },
+      {
+        "spread": "10y-2y",
+        "trigger": "day",
+        "window": 24,
+        "event": "gdp2q",
+        "signal": "2022-04",
+        "outcome": "FA",
+        "peak": null,
+        "lag": null
+      },
+      {
+        "spread": "10y-2y",
+        "trigger": "month",
+        "window": 12,
+        "event": "nber",
+        "signal": "2022-07",
+        "outcome": "FA",
+        "peak": null,
+        "lag": null
+      },
+      {
+        "spread": "10y-2y",
+        "trigger": "month",
+        "window": 12,
+        "event": "gdp2q",
+        "signal": "2022-07",
+        "outcome": "FA",
+        "peak": null,
+        "lag": null
+      },
+      {
+        "spread": "10y-2y",
+        "trigger": "month",
+        "window": 24,
+        "event": "nber",
+        "signal": "2022-07",
+        "outcome": "FA",
+        "peak": null,
+        "lag": null
+      },
+      {
+        "spread": "10y-2y",
+        "trigger": "month",
+        "window": 24,
+        "event": "gdp2q",
+        "signal": "2022-07",
+        "outcome": "FA",
+        "peak": null,
+        "lag": null
+      },
+      {
+        "spread": "10y-2y",
+        "trigger": "three",
+        "window": 12,
+        "event": "nber",
+        "signal": "2022-09",
+        "outcome": "FA",
+        "peak": null,
+        "lag": null
+      },
+      {
+        "spread": "10y-2y",
+        "trigger": "three",
+        "window": 12,
+        "event": "gdp2q",
+        "signal": "2022-09",
+        "outcome": "FA",
+        "peak": null,
+        "lag": null
+      },
+      {
+        "spread": "10y-2y",
+        "trigger": "three",
+        "window": 24,
+        "event": "nber",
+        "signal": "2022-09",
+        "outcome": "FA",
+        "peak": null,
+        "lag": null
+      },
+      {
+        "spread": "10y-2y",
+        "trigger": "three",
+        "window": 24,
+        "event": "gdp2q",
+        "signal": "2022-09",
+        "outcome": "FA",
+        "peak": null,
+        "lag": null
+      }
+    ],
+    "tally": {
+      "FA": 24
+    }
+  },
+  "episode_durations": {
+    "10y-3m|день<0|K=0": [
+      {
+        "start": "2022-10",
+        "end": "2024-12",
+        "months_inverted": 27,
+        "span_months": 27
+      },
+      {
+        "start": "2006-07",
+        "end": "2007-05",
+        "months_inverted": 11,
+        "span_months": 11
+      },
+      {
+        "start": "2025-02",
+        "end": "2025-10",
+        "months_inverted": 9,
+        "span_months": 9
+      },
+      {
+        "start": "2000-07",
+        "end": "2001-02",
+        "months_inverted": 8,
+        "span_months": 8
+      },
+      {
+        "start": "2019-05",
+        "end": "2019-10",
+        "months_inverted": 6,
+        "span_months": 6
+      },
+      {
+        "start": "1989-05",
+        "end": "1989-08",
+        "months_inverted": 4,
+        "span_months": 4
+      },
+      {
+        "start": "1989-10",
+        "end": "1989-12",
+        "months_inverted": 3,
+        "span_months": 3
+      },
+      {
+        "start": "2006-01",
+        "end": "2006-03",
+        "months_inverted": 3,
+        "span_months": 3
+      },
+      {
+        "start": "2020-01",
+        "end": "2020-03",
+        "months_inverted": 3,
+        "span_months": 3
+      },
+      {
+        "start": "1998-09",
+        "end": "1998-10",
+        "months_inverted": 2,
+        "span_months": 2
+      },
+      {
+        "start": "2007-07",
+        "end": "2007-08",
+        "months_inverted": 2,
+        "span_months": 2
+      },
+      {
+        "start": "1982-02",
+        "end": "1982-02",
+        "months_inverted": 1,
+        "span_months": 1
+      },
+      {
+        "start": "1989-03",
+        "end": "1989-03",
+        "months_inverted": 1,
+        "span_months": 1
+      },
+      {
+        "start": "2000-04",
+        "end": "2000-04",
+        "months_inverted": 1,
+        "span_months": 1
+      },
+      {
+        "start": "2019-03",
+        "end": "2019-03",
+        "months_inverted": 1,
+        "span_months": 1
+      }
+    ],
+    "10y-3m|день<0|K=3": [
+      {
+        "start": "2022-10",
+        "end": "2025-10",
+        "months_inverted": 36,
+        "span_months": 37
+      },
+      {
+        "start": "2006-01",
+        "end": "2007-08",
+        "months_inverted": 16,
+        "span_months": 20
+      },
+      {
+        "start": "2019-03",
+        "end": "2020-03",
+        "months_inverted": 10,
+        "span_months": 13
+      },
+      {
+        "start": "2000-04",
+        "end": "2001-02",
+        "months_inverted": 9,
+        "span_months": 11
+      },
+      {
+        "start": "1989-03",
+        "end": "1989-12",
+        "months_inverted": 8,
+        "span_months": 10
+      },
+      {
+        "start": "1998-09",
+        "end": "1998-10",
+        "months_inverted": 2,
+        "span_months": 2
+      },
+      {
+        "start": "1982-02",
+        "end": "1982-02",
+        "months_inverted": 1,
+        "span_months": 1
+      }
+    ],
+    "10y-3m|месяц<0|K=0": [
+      {
+        "start": "2022-11",
+        "end": "2024-11",
+        "months_inverted": 25,
+        "span_months": 25
+      },
+      {
+        "start": "2006-08",
+        "end": "2007-05",
+        "months_inverted": 10,
+        "span_months": 10
+      },
+      {
+        "start": "2000-07",
+        "end": "2001-01",
+        "months_inverted": 7,
+        "span_months": 7
+      },
+      {
+        "start": "2019-05",
+        "end": "2019-09",
+        "months_inverted": 5,
+        "span_months": 5
+      },
+      {
+        "start": "1989-06",
+        "end": "1989-08",
+        "months_inverted": 3,
+        "span_months": 3
+      },
+      {
+        "start": "2025-06",
+        "end": "2025-08",
+        "months_inverted": 3,
+        "span_months": 3
+      },
+      {
+        "start": "1989-11",
+        "end": "1989-12",
+        "months_inverted": 2,
+        "span_months": 2
+      },
+      {
+        "start": "2025-03",
+        "end": "2025-04",
+        "months_inverted": 2,
+        "span_months": 2
+      },
+      {
+        "start": "2020-02",
+        "end": "2020-02",
+        "months_inverted": 1,
+        "span_months": 1
+      }
+    ],
+    "10y-3m|месяц<0|K=3": [
+      {
+        "start": "2022-11",
+        "end": "2025-08",
+        "months_inverted": 30,
+        "span_months": 34
+      },
+      {
+        "start": "2006-08",
+        "end": "2007-05",
+        "months_inverted": 10,
+        "span_months": 10
+      },
+      {
+        "start": "2000-07",
+        "end": "2001-01",
+        "months_inverted": 7,
+        "span_months": 7
+      },
+      {
+        "start": "1989-06",
+        "end": "1989-12",
+        "months_inverted": 5,
+        "span_months": 7
+      },
+      {
+        "start": "2019-05",
+        "end": "2019-09",
+        "months_inverted": 5,
+        "span_months": 5
+      },
+      {
+        "start": "2020-02",
+        "end": "2020-02",
+        "months_inverted": 1,
+        "span_months": 1
+      }
+    ],
+    "10y-3m|3 мес. подряд|K=0": [
+      {
+        "start": "2022-11",
+        "end": "2024-11",
+        "months_inverted": 25,
+        "span_months": 25
+      },
+      {
+        "start": "2006-08",
+        "end": "2007-05",
+        "months_inverted": 10,
+        "span_months": 10
+      },
+      {
+        "start": "2000-07",
+        "end": "2001-01",
+        "months_inverted": 7,
+        "span_months": 7
+      },
+      {
+        "start": "2019-05",
+        "end": "2019-09",
+        "months_inverted": 5,
+        "span_months": 5
+      },
+      {
+        "start": "1989-06",
+        "end": "1989-08",
+        "months_inverted": 3,
+        "span_months": 3
+      },
+      {
+        "start": "2025-06",
+        "end": "2025-08",
+        "months_inverted": 3,
+        "span_months": 3
+      }
+    ],
+    "10y-3m|3 мес. подряд|K=3": [
+      {
+        "start": "2022-11",
+        "end": "2025-08",
+        "months_inverted": 30,
+        "span_months": 34
+      },
+      {
+        "start": "2006-08",
+        "end": "2007-05",
+        "months_inverted": 10,
+        "span_months": 10
+      },
+      {
+        "start": "2000-07",
+        "end": "2001-01",
+        "months_inverted": 7,
+        "span_months": 7
+      },
+      {
+        "start": "1989-06",
+        "end": "1989-12",
+        "months_inverted": 5,
+        "span_months": 7
+      },
+      {
+        "start": "2019-05",
+        "end": "2019-09",
+        "months_inverted": 5,
+        "span_months": 5
+      }
+    ],
+    "10y-2y|день<0|K=0": [
+      {
+        "start": "2022-07",
+        "end": "2024-09",
+        "months_inverted": 27,
+        "span_months": 27
+      },
+      {
+        "start": "1980-09",
+        "end": "1982-07",
+        "months_inverted": 23,
+        "span_months": 23
+      },
+      {
+        "start": "1978-08",
+        "end": "1980-05",
+        "months_inverted": 22,
+        "span_months": 22
+      },
+      {
+        "start": "2000-02",
+        "end": "2000-12",
+        "months_inverted": 11,
+        "span_months": 11
+      },
+      {
+        "start": "2006-06",
+        "end": "2007-03",
+        "months_inverted": 10,
+        "span_months": 10
+      },
+      {
+        "start": "1988-12",
+        "end": "1989-06",
+        "months_inverted": 7,
+        "span_months": 7
+      },
+      {
+        "start": "1989-08",
+        "end": "1989-11",
+        "months_inverted": 4,
+        "span_months": 4
+      },
+      {
+        "start": "2005-12",
+        "end": "2006-03",
+        "months_inverted": 4,
+        "span_months": 4
+      },
+      {
+        "start": "1998-05",
+        "end": "1998-07",
+        "months_inverted": 3,
+        "span_months": 3
+      },
+      {
+        "start": "2007-05",
+        "end": "2007-06",
+        "months_inverted": 2,
+        "span_months": 2
+      },
+      {
+        "start": "1990-03",
+        "end": "1990-03",
+        "months_inverted": 1,
+        "span_months": 1
+      },
+      {
+        "start": "2019-08",
+        "end": "2019-08",
+        "months_inverted": 1,
+        "span_months": 1
+      },
+      {
+        "start": "2022-04",
+        "end": "2022-04",
+        "months_inverted": 1,
+        "span_months": 1
+      }
+    ],
+    "10y-2y|день<0|K=3": [
+      {
+        "start": "1978-08",
+        "end": "1982-07",
+        "months_inverted": 45,
+        "span_months": 48
+      },
+      {
+        "start": "2022-04",
+        "end": "2024-09",
+        "months_inverted": 28,
+        "span_months": 30
+      },
+      {
+        "start": "2005-12",
+        "end": "2007-06",
+        "months_inverted": 16,
+        "span_months": 19
+      },
+      {
+        "start": "1988-12",
+        "end": "1990-03",
+        "months_inverted": 12,
+        "span_months": 16
+      },
+      {
+        "start": "2000-02",
+        "end": "2000-12",
+        "months_inverted": 11,
+        "span_months": 11
+      },
+      {
+        "start": "1998-05",
+        "end": "1998-07",
+        "months_inverted": 3,
+        "span_months": 3
+      },
+      {
+        "start": "2019-08",
+        "end": "2019-08",
+        "months_inverted": 1,
+        "span_months": 1
+      }
+    ],
+    "10y-2y|месяц<0|K=0": [
+      {
+        "start": "2022-07",
+        "end": "2024-08",
+        "months_inverted": 26,
+        "span_months": 26
+      },
+      {
+        "start": "1978-09",
+        "end": "1980-04",
+        "months_inverted": 20,
+        "span_months": 20
+      },
+      {
+        "start": "1980-09",
+        "end": "1981-10",
+        "months_inverted": 14,
+        "span_months": 14
+      },
+      {
+        "start": "2000-02",
+        "end": "2000-12",
+        "months_inverted": 11,
+        "span_months": 11
+      },
+      {
+        "start": "2006-06",
+        "end": "2007-03",
+        "months_inverted": 10,
+        "span_months": 10
+      },
+      {
+        "start": "1989-01",
+        "end": "1989-06",
+        "months_inverted": 6,
+        "span_months": 6
+      },
+      {
+        "start": "1982-02",
+        "end": "1982-06",
+        "months_inverted": 5,
+        "span_months": 5
+      },
+      {
+        "start": "1989-08",
+        "end": "1989-09",
+        "months_inverted": 2,
+        "span_months": 2
+      },
+      {
+        "start": "2006-02",
+        "end": "2006-03",
+        "months_inverted": 2,
+        "span_months": 2
+      },
+      {
+        "start": "1990-03",
+        "end": "1990-03",
+        "months_inverted": 1,
+        "span_months": 1
+      },
+      {
+        "start": "1998-06",
+        "end": "1998-06",
+        "months_inverted": 1,
+        "span_months": 1
+      },
+      {
+        "start": "2007-05",
+        "end": "2007-05",
+        "months_inverted": 1,
+        "span_months": 1
+      }
+    ],
+    "10y-2y|месяц<0|K=3": [
+      {
+        "start": "2022-07",
+        "end": "2024-08",
+        "months_inverted": 26,
+        "span_months": 26
+      },
+      {
+        "start": "1978-09",
+        "end": "1980-04",
+        "months_inverted": 20,
+        "span_months": 20
+      },
+      {
+        "start": "1980-09",
+        "end": "1982-06",
+        "months_inverted": 19,
+        "span_months": 22
+      },
+      {
+        "start": "2006-02",
+        "end": "2007-05",
+        "months_inverted": 13,
+        "span_months": 16
+      },
+      {
+        "start": "2000-02",
+        "end": "2000-12",
+        "months_inverted": 11,
+        "span_months": 11
+      },
+      {
+        "start": "1989-01",
+        "end": "1989-09",
+        "months_inverted": 8,
+        "span_months": 9
+      },
+      {
+        "start": "1990-03",
+        "end": "1990-03",
+        "months_inverted": 1,
+        "span_months": 1
+      },
+      {
+        "start": "1998-06",
+        "end": "1998-06",
+        "months_inverted": 1,
+        "span_months": 1
+      }
+    ],
+    "10y-2y|3 мес. подряд|K=0": [
+      {
+        "start": "2022-07",
+        "end": "2024-08",
+        "months_inverted": 26,
+        "span_months": 26
+      },
+      {
+        "start": "1978-09",
+        "end": "1980-04",
+        "months_inverted": 20,
+        "span_months": 20
+      },
+      {
+        "start": "1980-09",
+        "end": "1981-10",
+        "months_inverted": 14,
+        "span_months": 14
+      },
+      {
+        "start": "2000-02",
+        "end": "2000-12",
+        "months_inverted": 11,
+        "span_months": 11
+      },
+      {
+        "start": "2006-06",
+        "end": "2007-03",
+        "months_inverted": 10,
+        "span_months": 10
+      },
+      {
+        "start": "1989-01",
+        "end": "1989-06",
+        "months_inverted": 6,
+        "span_months": 6
+      },
+      {
+        "start": "1982-02",
+        "end": "1982-06",
+        "months_inverted": 5,
+        "span_months": 5
+      }
+    ],
+    "10y-2y|3 мес. подряд|K=3": [
+      {
+        "start": "2022-07",
+        "end": "2024-08",
+        "months_inverted": 26,
+        "span_months": 26
+      },
+      {
+        "start": "1978-09",
+        "end": "1980-04",
+        "months_inverted": 20,
+        "span_months": 20
+      },
+      {
+        "start": "1980-09",
+        "end": "1982-06",
+        "months_inverted": 19,
+        "span_months": 22
+      },
+      {
+        "start": "2006-02",
+        "end": "2007-05",
+        "months_inverted": 13,
+        "span_months": 16
+      },
+      {
+        "start": "2000-02",
+        "end": "2000-12",
+        "months_inverted": 11,
+        "span_months": 11
+      },
+      {
+        "start": "1989-01",
+        "end": "1989-09",
+        "months_inverted": 8,
+        "span_months": 9
+      }
+    ]
+  },
+  "longest_daily_runs": {
+    "10y-3m": {
+      "days": 534,
+      "from": "2022-10-25",
+      "to": "2024-12-12"
+    },
+    "10y-2y": {
+      "days": 537,
+      "from": "2022-07-06",
+      "to": "2024-08-26"
+    }
+  },
+  "auc": {
+    "h6_oos": {
+      "auc_a": 0.7965,
+      "auc_b": 0.7439,
+      "auc_a_ci90": [
+        0.7135,
+        0.9509
+      ],
+      "auc_b_ci90": [
+        0.5728,
+        0.8789
+      ],
+      "delta": 0.0527,
+      "delta_ci90": [
+        0.014,
+        0.1875
+      ],
+      "p_two_sided": 0.0705,
+      "verdict": "10y-3m строго лучше",
+      "n": 396,
+      "positives": 20,
+      "boot_ok": 1986,
+      "span": [
+        "1990-01",
+        "2025-12"
+      ]
+    },
+    "h6_in_sample": {
+      "auc_a": null,
+      "auc_b": null,
+      "n": 85,
+      "positives": 0
+    },
+    "h6_oos_all_months": {
+      "auc_a": 0.6183,
+      "auc_b": 0.5752,
+      "auc_a_ci90": [
+        0.4454,
+        0.864
+      ],
+      "auc_b_ci90": [
+        0.388,
+        0.8055
+      ],
+      "delta": 0.0431,
+      "delta_ci90": [
+        -0.0007,
+        0.1365
+      ],
+      "p_two_sided": 0.1026,
+      "verdict": "различие не установлено",
+      "n": 432,
+      "positives": 36,
+      "boot_ok": 1989,
+      "span": [
+        "1990-01",
+        "2025-12"
+      ]
+    },
+    "h12_oos": {
+      "auc_a": 0.8496,
+      "auc_b": 0.8355,
+      "auc_a_ci90": [
+        0.7726,
+        0.9577
+      ],
+      "auc_b_ci90": [
+        0.7078,
+        0.9652
+      ],
+      "delta": 0.0141,
+      "delta_ci90": [
+        -0.037,
+        0.099
+      ],
+      "p_two_sided": 0.5139,
+      "verdict": "различие не установлено",
+      "n": 390,
+      "positives": 25,
+      "boot_ok": 1981,
+      "span": [
+        "1990-01",
+        "2025-06"
+      ]
+    },
+    "h12_in_sample": {
+      "auc_a": 0.9725,
+      "auc_b": 0.92,
+      "auc_a_ci90": [
+        0.9416,
+        0.9762
+      ],
+      "auc_b_ci90": [
+        0.84,
+        0.9337
+      ],
+      "delta": 0.0525,
+      "delta_ci90": [
+        0.0361,
+        0.1082
+      ],
+      "p_two_sided": 0.0,
+      "verdict": "10y-3m строго лучше",
+      "n": 85,
+      "positives": 5,
+      "boot_ok": 452,
+      "span": [
+        "1982-12",
+        "1989-12"
+      ]
+    },
+    "h12_oos_all_months": {
+      "auc_a": 0.777,
+      "auc_b": 0.7485,
+      "auc_a_ci90": [
+        0.6498,
+        0.9521
+      ],
+      "auc_b_ci90": [
+        0.5752,
+        0.965
+      ],
+      "delta": 0.0285,
+      "delta_ci90": [
+        -0.0331,
+        0.0974
+      ],
+      "p_two_sided": 0.4291,
+      "verdict": "различие не установлено",
+      "n": 426,
+      "positives": 31,
+      "boot_ok": 1990,
+      "span": [
+        "1990-01",
+        "2025-06"
+      ]
+    },
+    "h18_oos": {
+      "auc_a": 0.8099,
+      "auc_b": 0.8173,
+      "auc_a_ci90": [
+        0.6921,
+        0.9405
+      ],
+      "auc_b_ci90": [
+        0.7299,
+        0.9329
+      ],
+      "delta": -0.0074,
+      "delta_ci90": [
+        -0.1233,
+        0.0633
+      ],
+      "p_two_sided": 0.9303,
+      "verdict": "различие не установлено",
+      "n": 384,
+      "positives": 28,
+      "boot_ok": 1995,
+      "span": [
+        "1990-01",
+        "2024-12"
+      ]
+    },
+    "h18_in_sample": {
+      "auc_a": 0.974,
+      "auc_b": 0.9903,
+      "auc_a_ci90": [
+        0.974,
+        1.0
+      ],
+      "auc_b_ci90": [
+        0.987,
+        1.0
+      ],
+      "delta": -0.0162,
+      "delta_ci90": [
+        -0.0162,
+        0.0073
+      ],
+      "p_two_sided": 1.0,
+      "verdict": "различие не установлено",
+      "n": 85,
+      "positives": 8,
+      "boot_ok": 867,
+      "span": [
+        "1982-12",
+        "1989-12"
+      ]
+    },
+    "h18_oos_all_months": {
+      "auc_a": 0.8249,
+      "auc_b": 0.8325,
+      "auc_a_ci90": [
+        0.709,
+        0.9441
+      ],
+      "auc_b_ci90": [
+        0.7515,
+        0.9403
+      ],
+      "delta": -0.0076,
+      "delta_ci90": [
+        -0.1161,
+        0.0586
+      ],
+      "p_two_sided": 0.9376,
+      "verdict": "различие не установлено",
+      "n": 420,
+      "positives": 28,
+      "boot_ok": 1986,
+      "span": [
+        "1990-01",
+        "2024-12"
+      ]
+    },
+    "h24_oos": {
+      "auc_a": 0.8204,
+      "auc_b": 0.8382,
+      "auc_a_ci90": [
+        0.6464,
+        0.9558
+      ],
+      "auc_b_ci90": [
+        0.7061,
+        0.9607
+      ],
+      "delta": -0.0178,
+      "delta_ci90": [
+        -0.0918,
+        0.02
+      ],
+      "p_two_sided": 0.4935,
+      "verdict": "различие не установлено",
+      "n": 378,
+      "positives": 28,
+      "boot_ok": 1986,
+      "span": [
+        "1990-01",
+        "2024-06"
+      ]
+    },
+    "h24_in_sample": {
+      "auc_a": 0.8312,
+      "auc_b": 0.9042,
+      "auc_a_ci90": [
+        0.7143,
+        0.9525
+      ],
+      "auc_b_ci90": [
+        0.8716,
+        0.9825
+      ],
+      "delta": -0.0731,
+      "delta_ci90": [
+        -0.195,
+        0.0065
+      ],
+      "p_two_sided": 0.1609,
+      "verdict": "различие не установлено",
+      "n": 85,
+      "positives": 8,
+      "boot_ok": 1293,
+      "span": [
+        "1982-12",
+        "1989-12"
+      ]
+    },
+    "h24_oos_all_months": {
+      "auc_a": 0.8335,
+      "auc_b": 0.8529,
+      "auc_a_ci90": [
+        0.67,
+        0.9648
+      ],
+      "auc_b_ci90": [
+        0.725,
+        0.9673
+      ],
+      "delta": -0.0193,
+      "delta_ci90": [
+        -0.092,
+        0.0215
+      ],
+      "p_two_sided": 0.473,
+      "verdict": "различие не установлено",
+      "n": 414,
+      "positives": 28,
+      "boot_ok": 1983,
+      "span": [
+        "1990-01",
+        "2024-06"
+      ]
+    }
+  },
+  "auc_pvalues_raw": {
+    "h6": 0.0705,
+    "h12": 0.5139,
+    "h18": 0.9303,
+    "h24": 0.4935
+  },
+  "auc_pvalues_holm": {
+    "h6": 0.282,
+    "h24": 1.0,
+    "h12": 1.0,
+    "h18": 1.0
+  },
+  "robustness": {
+    "W12": {
+      "n_signals": 6,
+      "TP": 2,
+      "FA": 4,
+      "FN": 2,
+      "censored": 0,
+      "fa_per_tp": 2.0,
+      "peaks_eligible": 4,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [
+        "1990-07",
+        "2007-12"
+      ],
+      "lags": [
+        8,
+        9
+      ],
+      "lag_median": 9,
+      "lag_min": 8,
+      "lag_max": 9,
+      "lag_iqr": [
+        8,
+        8
+      ]
+    },
+    "W24": {
+      "n_signals": 6,
+      "TP": 4,
+      "FA": 2,
+      "FN": 0,
+      "censored": 0,
+      "fa_per_tp": 0.5,
+      "peaks_eligible": 4,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [],
+      "lags": [
+        8,
+        9,
+        13,
+        16
+      ],
+      "lag_median": 13,
+      "lag_min": 8,
+      "lag_max": 16,
+      "lag_iqr": [
+        8,
+        13
+      ]
+    },
+    "W36": {
+      "n_signals": 6,
+      "TP": 4,
+      "FA": 2,
+      "FN": 0,
+      "censored": 0,
+      "fa_per_tp": 0.5,
+      "peaks_eligible": 4,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [],
+      "lags": [
+        8,
+        9,
+        13,
+        16
+      ],
+      "lag_median": 13,
+      "lag_min": 8,
+      "lag_max": 16,
+      "lag_iqr": [
+        8,
+        13
+      ]
+    },
+    "K0": {
+      "n_signals": 9,
+      "TP": 5,
+      "FA": 2,
+      "FN": 0,
+      "censored": 2,
+      "fa_per_tp": 0.4,
+      "peaks_eligible": 4,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [],
+      "lags": [
+        8,
+        8,
+        9,
+        13,
+        16
+      ],
+      "lag_median": 9,
+      "lag_min": 8,
+      "lag_max": 16,
+      "lag_iqr": [
+        8,
+        13
+      ]
+    },
+    "K1": {
+      "n_signals": 8,
+      "TP": 5,
+      "FA": 2,
+      "FN": 0,
+      "censored": 1,
+      "fa_per_tp": 0.4,
+      "peaks_eligible": 4,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [],
+      "lags": [
+        8,
+        8,
+        9,
+        13,
+        16
+      ],
+      "lag_median": 9,
+      "lag_min": 8,
+      "lag_max": 16,
+      "lag_iqr": [
+        8,
+        13
+      ]
+    },
+    "K3": {
+      "n_signals": 6,
+      "TP": 4,
+      "FA": 2,
+      "FN": 0,
+      "censored": 0,
+      "fa_per_tp": 0.5,
+      "peaks_eligible": 4,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [],
+      "lags": [
+        8,
+        9,
+        13,
+        16
+      ],
+      "lag_median": 13,
+      "lag_min": 8,
+      "lag_max": 16,
+      "lag_iqr": [
+        8,
+        13
+      ]
+    },
+    "K6": {
+      "n_signals": 5,
+      "TP": 4,
+      "FA": 1,
+      "FN": 0,
+      "censored": 0,
+      "fa_per_tp": 0.25,
+      "peaks_eligible": 4,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [],
+      "lags": [
+        8,
+        9,
+        13,
+        16
+      ],
+      "lag_median": 13,
+      "lag_min": 8,
+      "lag_max": 16,
+      "lag_iqr": [
+        8,
+        13
+      ]
+    },
+    "1982-2001": {
+      "n_signals": 2,
+      "TP": 2,
+      "FA": 0,
+      "FN": 0,
+      "censored": 0,
+      "fa_per_tp": 0.0,
+      "peaks_eligible": 2,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [],
+      "lags": [
+        8,
+        13
+      ],
+      "lag_median": 13,
+      "lag_min": 8,
+      "lag_max": 13,
+      "lag_iqr": [
+        8,
+        8
+      ]
+    },
+    "2002-2026": {
+      "n_signals": 4,
+      "TP": 2,
+      "FA": 2,
+      "FN": 0,
+      "censored": 0,
+      "fa_per_tp": 1.0,
+      "peaks_eligible": 2,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [],
+      "lags": [
+        9,
+        16
+      ],
+      "lag_median": 16,
+      "lag_min": 9,
+      "lag_max": 16,
+      "lag_iqr": [
+        9,
+        9
+      ]
+    },
+    "без 2020 года": {
+      "n_signals": 6,
+      "TP": 3,
+      "FA": 3,
+      "FN": 0,
+      "censored": 0,
+      "fa_per_tp": 1.0,
+      "peaks_eligible": 3,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [],
+      "lags": [
+        8,
+        13,
+        16
+      ],
+      "lag_median": 13,
+      "lag_min": 8,
+      "lag_max": 16,
+      "lag_iqr": [
+        8,
+        13
+      ]
+    }
+  },
+  "extended_sample": {
+    "offset_pp": -0.116,
+    "overlap_months": 534,
+    "results": {
+      "сырая|с 1970": {
+        "n_signals": 9,
+        "TP": 6,
+        "FA": 3,
+        "FN": 1,
+        "censored": 0,
+        "fa_per_tp": 0.5,
+        "peaks_eligible": 7,
+        "peaks_left_edge_excluded": [],
+        "missed_peaks": [
+          "1990-07"
+        ],
+        "lags": [
+          5,
+          7,
+          8,
+          8,
+          13,
+          16
+        ],
+        "lag_median": 8,
+        "lag_min": 5,
+        "lag_max": 16,
+        "lag_iqr": [
+          7,
+          8
+        ]
+      },
+      "сырая|вся история": {
+        "n_signals": 11,
+        "TP": 8,
+        "FA": 3,
+        "FN": 3,
+        "censored": 0,
+        "fa_per_tp": 0.375,
+        "peaks_eligible": 10,
+        "peaks_left_edge_excluded": [
+          "1953-07"
+        ],
+        "missed_peaks": [
+          "1957-08",
+          "1960-04",
+          "1990-07"
+        ],
+        "lags": [
+          5,
+          5,
+          7,
+          8,
+          8,
+          11,
+          13,
+          16
+        ],
+        "lag_median": 8,
+        "lag_min": 5,
+        "lag_max": 16,
+        "lag_iqr": [
+          5,
+          11
+        ]
+      },
+      "со снятым смещением|с 1970": {
+        "n_signals": 8,
+        "TP": 6,
+        "FA": 2,
+        "FN": 1,
+        "censored": 0,
+        "fa_per_tp": 0.333,
+        "peaks_eligible": 7,
+        "peaks_left_edge_excluded": [],
+        "missed_peaks": [
+          "1990-07"
+        ],
+        "lags": [
+          5,
+          8,
+          8,
+          9,
+          13,
+          16
+        ],
+        "lag_median": 9,
+        "lag_min": 5,
+        "lag_max": 16,
+        "lag_iqr": [
+          8,
+          9
+        ]
+      },
+      "со снятым смещением|вся история": {
+        "n_signals": 10,
+        "TP": 7,
+        "FA": 3,
+        "FN": 3,
+        "censored": 0,
+        "fa_per_tp": 0.429,
+        "peaks_eligible": 10,
+        "peaks_left_edge_excluded": [
+          "1953-07"
+        ],
+        "missed_peaks": [
+          "1957-08",
+          "1960-04",
+          "1990-07"
+        ],
+        "lags": [
+          5,
+          8,
+          8,
+          9,
+          12,
+          13,
+          16
+        ],
+        "lag_median": 9,
+        "lag_min": 5,
+        "lag_max": 16,
+        "lag_iqr": [
+          8,
+          12
+        ]
+      }
+    }
+  },
+  "realtime": {
+    "announcement_lag_months": {
+      "1980-01": 5,
+      "1981-07": 6,
+      "1990-07": 9,
+      "2001-03": 8,
+      "2007-12": 12,
+      "2020-02": 4
+    },
+    "announcement_lag_median": 8,
+    "announcement_lag_max": 12,
+    "verdict_known_at": [
+      {
+        "signal": "1989-06",
+        "outcome": "TP",
+        "known_at": "1991-04-25",
+        "months_waiting": 22,
+        "note": "объявление пика 1991-04-25"
+      },
+      {
+        "signal": "2000-07",
+        "outcome": "TP",
+        "known_at": "2001-11-26",
+        "months_waiting": 16,
+        "note": "объявление пика 2001-11-26"
+      },
+      {
+        "signal": "2006-08",
+        "outcome": "TP",
+        "known_at": "2008-12-01",
+        "months_waiting": 28,
+        "note": "объявление пика 2008-12-01"
+      },
+      {
+        "signal": "2019-05",
+        "outcome": "TP",
+        "known_at": "2020-06-08",
+        "months_waiting": 13,
+        "note": "объявление пика 2020-06-08"
+      },
+      {
+        "signal": "2020-02",
+        "outcome": "FA",
+        "known_at": "2023-02",
+        "months_waiting": 36,
+        "note": "конец окна 2022-02 + 12 мес. на объявление"
+      },
+      {
+        "signal": "2022-11",
+        "outcome": "FA",
+        "known_at": "2025-11",
+        "months_waiting": 36,
+        "note": "конец окна 2024-11 + 12 мес. на объявление"
+      }
+    ],
+    "vintage_bounds": {
+      "_first_vintage_mi": 23590,
+      "first_vintage": "1965Q4",
+      "last_vintage": "2026Q2",
+      "last_covered_quarter": "2026Q1",
+      "_last_covered_mi": 24314,
+      "n_vintages": 243
+    },
+    "two_quarter_realtime_events": [
+      {
+        "quarter_pair_ends": "1947Q3",
+        "event_month": "1947-03",
+        "_event_mi": 23366,
+        "first_vintage": "2004Q1",
+        "recognised_month": "2004-02",
+        "recognition_lag_months": null,
+        "within_vintage_coverage": false
+      },
+      {
+        "quarter_pair_ends": "1949Q2",
+        "event_month": "1948-12",
+        "_event_mi": 23387,
+        "first_vintage": "1965Q4",
+        "recognised_month": "1965-11",
+        "recognition_lag_months": null,
+        "within_vintage_coverage": false
+      },
+      {
+        "quarter_pair_ends": "1953Q4",
+        "event_month": "1953-06",
+        "_event_mi": 23441,
+        "first_vintage": "1965Q4",
+        "recognised_month": "1965-11",
+        "recognition_lag_months": null,
+        "within_vintage_coverage": false
+      },
+      {
+        "quarter_pair_ends": "1958Q1",
+        "event_month": "1957-09",
+        "_event_mi": 23492,
+        "first_vintage": "1965Q4",
+        "recognised_month": "1965-11",
+        "recognition_lag_months": null,
+        "within_vintage_coverage": false
+      },
+      {
+        "quarter_pair_ends": "1960Q3",
+        "event_month": "1960-03",
+        "_event_mi": 23522,
+        "first_vintage": "1965Q4",
+        "recognised_month": "1965-11",
+        "recognition_lag_months": null,
+        "within_vintage_coverage": false
+      },
+      {
+        "quarter_pair_ends": "1970Q1",
+        "event_month": "1969-09",
+        "_event_mi": 23636,
+        "first_vintage": "1970Q2",
+        "recognised_month": "1970-05",
+        "recognition_lag_months": 8,
+        "within_vintage_coverage": true
+      },
+      {
+        "quarter_pair_ends": "1974Q2",
+        "event_month": "1973-12",
+        "_event_mi": 23687,
+        "first_vintage": "1974Q3",
+        "recognised_month": "1974-08",
+        "recognition_lag_months": 8,
+        "within_vintage_coverage": true
+      },
+      {
+        "quarter_pair_ends": "1980Q3",
+        "event_month": "1980-03",
+        "_event_mi": 23762,
+        "first_vintage": "1996Q1",
+        "recognised_month": "1996-02",
+        "recognition_lag_months": 191,
+        "within_vintage_coverage": true
+      },
+      {
+        "quarter_pair_ends": "1981Q3",
+        "event_month": "1981-03",
+        "_event_mi": 23774,
+        "first_vintage": "1981Q4",
+        "recognised_month": "1981-11",
+        "recognition_lag_months": 8,
+        "within_vintage_coverage": true
+      },
+      {
+        "quarter_pair_ends": "1982Q1",
+        "event_month": "1981-09",
+        "_event_mi": 23780,
+        "first_vintage": "1982Q2",
+        "recognised_month": "1982-05",
+        "recognition_lag_months": 8,
+        "within_vintage_coverage": true
+      },
+      {
+        "quarter_pair_ends": "1990Q4",
+        "event_month": "1990-06",
+        "_event_mi": 23885,
+        "first_vintage": "1992Q3",
+        "recognised_month": "1992-08",
+        "recognition_lag_months": 26,
+        "within_vintage_coverage": true
+      },
+      {
+        "quarter_pair_ends": "2001Q2",
+        "event_month": "2000-12",
+        "_event_mi": 24011,
+        "first_vintage": "2002Q3",
+        "recognised_month": "2002-08",
+        "recognition_lag_months": 20,
+        "within_vintage_coverage": true
+      },
+      {
+        "quarter_pair_ends": "2008Q4",
+        "event_month": "2008-06",
+        "_event_mi": 24101,
+        "first_vintage": "2009Q1",
+        "recognised_month": "2009-02",
+        "recognition_lag_months": 8,
+        "within_vintage_coverage": true
+      },
+      {
+        "quarter_pair_ends": "2020Q2",
+        "event_month": "2019-12",
+        "_event_mi": 24239,
+        "first_vintage": "2020Q3",
+        "recognised_month": "2020-08",
+        "recognition_lag_months": 8,
+        "within_vintage_coverage": true
+      },
+      {
+        "quarter_pair_ends": "2022Q2",
+        "event_month": "2021-12",
+        "_event_mi": 24263,
+        "first_vintage": "2022Q3",
+        "recognised_month": "2022-08",
+        "recognition_lag_months": 8,
+        "within_vintage_coverage": true
+      }
+    ],
+    "two_quarter_realtime_vs_current": {
+      "matched": [
+        {
+          "realtime": "1969-09",
+          "current_vintage": "1969-09",
+          "shift_months": 0,
+          "recognition_lag_months": 8
+        },
+        {
+          "realtime": "1973-12",
+          "current_vintage": "1974-06",
+          "shift_months": 6,
+          "recognition_lag_months": 8
+        },
+        {
+          "realtime": "1980-03",
+          "current_vintage": "1980-03",
+          "shift_months": 0,
+          "recognition_lag_months": 191
+        },
+        {
+          "realtime": "1981-09",
+          "current_vintage": "1981-09",
+          "shift_months": 0,
+          "recognition_lag_months": 8
+        },
+        {
+          "realtime": "1990-06",
+          "current_vintage": "1990-09",
+          "shift_months": 3,
+          "recognition_lag_months": 26
+        },
+        {
+          "realtime": "2008-06",
+          "current_vintage": "2008-06",
+          "shift_months": 0,
+          "recognition_lag_months": 8
+        },
+        {
+          "realtime": "2019-12",
+          "current_vintage": "2019-12",
+          "shift_months": 0,
+          "recognition_lag_months": 8
+        }
+      ],
+      "only_realtime": [
+        {
+          "realtime": "1981-03",
+          "first_vintage": "1981Q4"
+        },
+        {
+          "realtime": "2000-12",
+          "first_vintage": "2002Q3"
+        },
+        {
+          "realtime": "2021-12",
+          "first_vintage": "2022Q3"
+        }
+      ],
+      "only_current_vintage": [],
+      "coverage_from": "1965-11"
+    },
+    "score_on_realtime_event": {
+      "n_signals": 6,
+      "TP": 5,
+      "FA": 1,
+      "FN": 0,
+      "censored": 0,
+      "fa_per_tp": 0.2,
+      "peaks_eligible": 5,
+      "peaks_left_edge_excluded": [],
+      "missed_peaks": [],
+      "lags": [
+        5,
+        7,
+        12,
+        22,
+        22
+      ],
+      "lag_median": 12,
+      "lag_min": 5,
+      "lag_max": 22,
+      "lag_iqr": [
+        7,
+        22
+      ]
+    },
+    "U1": true,
+    "U2": true
+  }
+}

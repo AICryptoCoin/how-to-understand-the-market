@@ -21,7 +21,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import math
 import os
 import random
 import sys
@@ -351,11 +350,13 @@ def bootstrap_lags(lags: list[int], *, reps: int, rng: random.Random) -> dict:
 # --------------------------------------------------------------------------- #
 
 
-def realtime_two_quarter(sheet: list[list]) -> tuple[list[dict], list[str]]:
+def realtime_two_quarter(sheet: list[list]) -> tuple[list[dict], list[str], dict]:
     """Первое появление «двух кварталов спада подряд» в винтажах ROUTPUT.
 
     Возвращает список событий: экономическая дата (последний месяц квартала
     q-2, как в §5) и дата распознавания (середина винтажного квартала).
+    Третьим значением — границы самого набора винтажей: раньше первого винтажа
+    «распознавание» не существует, и лаг для таких событий бессмыслен.
     """
     header = sheet[0]
     warn: list[str] = []
@@ -373,6 +374,7 @@ def realtime_two_quarter(sheet: list[list]) -> tuple[list[dict], list[str]]:
     vint_cols.sort(key=lambda cq: cq[1])
 
     first_seen: dict[int, int] = {}             # квартал события -> квартал винтажа
+    last_covered = None
     for col, vq in vint_cols:
         vals: dict[int, float] = {}
         for row in sheet[1:]:
@@ -382,11 +384,16 @@ def realtime_two_quarter(sheet: list[list]) -> tuple[list[dict], list[str]]:
             v = S._num(row[col]) if col < len(row) else None
             if v is not None:
                 vals[int(y) * 4 + int(q) - 1] = v
+        if vals:
+            last_covered = max(vals)
         dec = {q: (q - 1 in vals and vals[q] < vals[q - 1]) for q in vals}
         for q in sorted(vals):
             if dec.get(q) and dec.get(q - 1) and q not in first_seen:
                 first_seen[q] = vq
 
+    first_vintage_q = vint_cols[0][1] if vint_cols else None
+    first_vintage_month = ((first_vintage_q // 4) * 12 + (first_vintage_q % 4) * 3 + 1
+                           if first_vintage_q is not None else None)
     events: list[dict] = []
     prev = None
     for q in sorted(first_seen):
@@ -394,16 +401,29 @@ def realtime_two_quarter(sheet: list[list]) -> tuple[list[dict], list[str]]:
             vq = first_seen[q]
             # винтаж «середина квартала»: Q1->февраль, Q2->май, Q3->август, Q4->ноябрь
             rec_month = (vq // 4) * 12 + (vq % 4) * 3 + 1
+            ev_mi = q_last_month(q - 2)
+            # Событие раньше первого винтажа: «когда его увидели» вообще
+            # не определено, ряд винтажей начинается позже самого события.
+            in_cov = first_vintage_month is not None and ev_mi >= first_vintage_month
             events.append({
                 "quarter_pair_ends": qi_str(q),
-                "event_month": mi_str(q_last_month(q - 2)),
-                "_event_mi": q_last_month(q - 2),
+                "event_month": mi_str(ev_mi),
+                "_event_mi": ev_mi,
                 "first_vintage": qi_str(vq),
                 "recognised_month": mi_str(rec_month),
-                "recognition_lag_months": rec_month - q_last_month(q - 2),
+                "recognition_lag_months": (rec_month - ev_mi if in_cov else None),
+                "within_vintage_coverage": in_cov,
             })
         prev = q
-    return events, warn
+    bounds = {
+        "_first_vintage_mi": first_vintage_month,
+        "first_vintage": qi_str(first_vintage_q) if first_vintage_q is not None else None,
+        "last_vintage": qi_str(vint_cols[-1][1]) if vint_cols else None,
+        "last_covered_quarter": qi_str(last_covered) if last_covered is not None else None,
+        "_last_covered_mi": q_last_month(last_covered) if last_covered is not None else None,
+        "n_vintages": len(vint_cols),
+    }
+    return events, warn, bounds
 
 
 # --------------------------------------------------------------------------- #
@@ -436,7 +456,7 @@ def episodes_svg(rows: list[dict], path: str, *, w: int) -> str:
         f'инверсии — отдельная строка: отрезок начинается в месяце сигнала. '
         f'У верных срабатываний отрезок заканчивается кружком в месяце пика '
         f'по датировке NBER, и его длина есть лаг. У ложных тревог отрезок '
-        f'протянут на всё окно ожидания в {w} месяцев и заканчивается крестом: '
+        f'протянут на всё окно ожидания длиной {w} месяцев и заканчивается крестом: '
         f'пика в окне не случилось. Всего строк {len(rows)}, из них верных '
         f'срабатываний {tp}, ложных тревог {fa}.</desc>',
     ]
@@ -651,6 +671,49 @@ def main() -> int:
               f"{r['event']:<7} сигнал {r['signal']} -> {r['outcome']}{tail}")
     print(f"  итого по ячейкам: {tally}")
 
+    # ---------------- продолжительность эпизодов --------------------------- #
+    # Книга (гл. 3 и гл. 28) утверждает, что инверсия 2022–2024 гг. — самая
+    # продолжительная в истории ряда, и сама помечает это [НЕ ПРОВЕРЕНО],
+    # передавая счёт сюда. Слово «непрерывная» неоднозначно, поэтому счёт
+    # даётся по всем определениям сразу.
+    print(f"\n{'=' * 78}\nПРОДОЛЖИТЕЛЬНОСТЬ ЭПИЗОДОВ (вердикта не несёт; закрывает "
+          f"счёт, переданный сюда книгой)\n{'=' * 78}")
+    durations: dict[str, list[dict]] = {}
+    for sp_name in ("10y-3m", "10y-2y"):
+        for rule in ("day", "month", "three"):
+            for k in (0, 3):
+                base = ({t: v < 0 for t, v in spreads[sp_name].items()}
+                        if rule in ("month", "three") else dict(anyneg[sp_name]))
+                rows = []
+                for ep in episodes(base, k):
+                    if rule == "three" and signal_month(ep, base, "three") is None:
+                        continue
+                    rows.append({"start": mi_str(ep[0]), "end": mi_str(ep[-1]),
+                                 "months_inverted": len(ep),
+                                 "span_months": ep[-1] - ep[0] + 1})
+                rows.sort(key=lambda r: -r["months_inverted"])
+                durations[f"{sp_name}|{rule_names[rule]}|K={k}"] = rows
+                top = rows[:3]
+                print(f"  {sp_name:<8} {rule_names[rule]:<14} K={k}: " + "; ".join(
+                    f"{r['start']}..{r['end']} — {r['months_inverted']} мес. "
+                    f"(размах {r['span_months']})" for r in top))
+    # непрерывность в торговых днях — самое строгое прочтение слова
+    daily_runs = {}
+    for sp_name, ser in (("10y-3m", t10y3m), ("10y-2y", t10y2y)):
+        best, cur, start, cur_start = (0, None, None), 0, None, None
+        for d, v in ser.observed:
+            if v < 0:
+                if cur == 0:
+                    cur_start = d
+                cur += 1
+                if cur > best[0]:
+                    best = (cur, cur_start, d)
+            else:
+                cur = 0
+        daily_runs[sp_name] = {"days": best[0], "from": best[1], "to": best[2]}
+        print(f"  {sp_name:<8} самая длинная непрерывная серия торговых дней "
+              f"ниже нуля: {best[0]} дн., {best[1]} .. {best[2]}")
+
     # ---------------- AUC -------------------------------------------------- #
     print(f"\n{'=' * 78}\nAUC ДВУХ СПРЕДОВ ВНЕ ВЫБОРКИ (с {OOS_FROM}), "
           f"цель — USREC через h месяцев\n{'=' * 78}")
@@ -786,23 +849,70 @@ def main() -> int:
     print("\n3. Реал-тайм-событие «два квартала спада по первой публикации» "
           "(винтажи ROUTPUT ФРБ Филадельфии):")
     sheet = rtds.get("ROUTPUT") or next(iter(rtds.values()))
-    rt_events, rt_warn = realtime_two_quarter(sheet)
+    rt_events, rt_warn, rt_bounds = realtime_two_quarter(sheet)
     for w in rt_warn:
         print(f"   ВНИМАНИЕ: {w}")
+    print(f"   винтажей {rt_bounds['n_vintages']}, от {rt_bounds['first_vintage']} "
+          f"до {rt_bounds['last_vintage']}; последний охваченный квартал "
+          f"{rt_bounds['last_covered_quarter']}")
     for e in rt_events:
+        lag = e["recognition_lag_months"]
+        tail = (f"распознан через {lag} мес." if lag is not None
+                else "событие раньше первого винтажа — лаг не определён")
         print(f"   спад с {e['event_month']}  впервые виден в винтаже "
-              f"{e['first_vintage']} ({e['recognised_month']}), "
-              f"распознан через {e['recognition_lag_months']} мес.")
+              f"{e['first_vintage']} ({e['recognised_month']}), {tail}")
     rt_months = [e["_event_mi"] for e in rt_events]
-    sc_rt = score(sig_main, rt_months, w=W_MAIN, t_start=t_start_main,
-                  t_end=max(rt_months) if rt_months else t_end_usrec)
-    print(f"\n4. Пересчёт на реал-тайм-событии: TP={sc_rt['TP']} FA={sc_rt['FA']} "
+    t_end_rt = rt_bounds["_last_covered_mi"] or t_end_usrec
+    sc_rt = score(sig_main, rt_months, w=W_MAIN, t_start=t_start_main, t_end=t_end_rt)
+    print(f"\n4. Пересчёт на реал-тайм-событии (окно наблюдения до "
+          f"{mi_str(t_end_rt)}): TP={sc_rt['TP']} FA={sc_rt['FA']} "
           f"FN={sc_rt['FN']} цен={sc_rt['censored']} FA/TP={sc_rt['fa_per_tp']} "
           f"лаг {sc_rt['lag_min']}–{sc_rt['lag_max']} (медиана {sc_rt['lag_median']})")
     u1_rt = sc_rt["FN"] <= 1
     u2_rt = sc_rt["fa_per_tp"] is not None and sc_rt["fa_per_tp"] <= 0.5
     print(f"   U1={'выполнено' if u1_rt else 'НЕ выполнено'}  "
           f"U2={'выполнено' if u2_rt else 'НЕ выполнено'}")
+
+    print("\n5. Разметка «два квартала спада»: текущий винтаж против первой "
+          "публикации.")
+    print("   Сопоставление по спаду, а не по месяцу: событие считается тем же,"
+          " если даты расходятся не более чем на 12 месяцев.")
+    cov0 = rt_bounds["_first_vintage_mi"]
+    rt_in = [e for e in rt_events if e["within_vintage_coverage"]]
+    cur_in = [p for p in ev2q if cov0 is None or p >= cov0]
+    # Сопоставление жадное по ВОЗРАСТАЮЩЕМУ расстоянию по всем парам сразу,
+    # а не по порядку событий: иначе двойной спад 1981-82 гг. склеивается
+    # не с тем полупериодом и даёт ложное «исчезло после пересмотров».
+    pairs = sorted((abs(p - e["_event_mi"]), i, j)
+                   for i, e in enumerate(rt_in) for j, p in enumerate(cur_in)
+                   if abs(p - e["_event_mi"]) <= 12)
+    matched, used_rt, used_cur = [], set(), set()
+    for _, i, j in pairs:
+        if i in used_rt or j in used_cur:
+            continue
+        used_rt.add(i)
+        used_cur.add(j)
+        e, p = rt_in[i], cur_in[j]
+        matched.append({"realtime": e["event_month"],
+                        "current_vintage": mi_str(p),
+                        "shift_months": p - e["_event_mi"],
+                        "recognition_lag_months": e["recognition_lag_months"]})
+    matched.sort(key=lambda m: m["realtime"])
+    only_rt = [{"realtime": e["event_month"], "first_vintage": e["first_vintage"]}
+               for i, e in enumerate(rt_in) if i not in used_rt]
+    only_cur = [mi_str(p) for j, p in enumerate(cur_in) if j not in used_cur]
+    for m in matched:
+        print(f"   есть в обоих: реал-тайм {m['realtime']} / сегодня "
+              f"{m['current_vintage']} (сдвиг {m['shift_months']:+d} мес., "
+              f"распознан через {m['recognition_lag_months']} мес.)")
+    for e in only_rt:
+        print(f"   БЫЛ в реальном времени, ИСЧЕЗ после пересмотров: "
+              f"{e['realtime']} (винтаж {e['first_vintage']})")
+    for m in only_cur:
+        print(f"   есть в сегодняшних данных, в реальном времени НЕ появлялся: {m}")
+    rt_vs_cur = {"matched": matched, "only_realtime": only_rt,
+                 "only_current_vintage": only_cur,
+                 "coverage_from": mi_str(cov0) if cov0 is not None else None}
 
     # ---------------- вердикт ---------------------------------------------- #
     if u1 and u2 and both_ok >= 18:
@@ -843,6 +953,8 @@ def main() -> int:
         "grid24": grid,
         "grid24_both_ok": both_ok,
         "episode_2022": {"rows": ep2022, "tally": tally},
+        "episode_durations": durations,
+        "longest_daily_runs": daily_runs,
         "auc": auc_blocks,
         "auc_pvalues_raw": pvals,
         "auc_pvalues_holm": adj,
@@ -855,7 +967,9 @@ def main() -> int:
             "announcement_lag_median": sorted(lags_ann)[len(lags_ann) // 2],
             "announcement_lag_max": l_max,
             "verdict_known_at": rt_verdicts,
+            "vintage_bounds": rt_bounds,
             "two_quarter_realtime_events": rt_events,
+            "two_quarter_realtime_vs_current": rt_vs_cur,
             "score_on_realtime_event": {k: v for k, v in sc_rt.items()
                                         if k != "episodes"},
             "U1": u1_rt, "U2": u2_rt,
