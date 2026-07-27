@@ -116,7 +116,7 @@ window.BOOK_CHAPTERS = [
   { id: "lid-lag",              part: "metod",        file: "lid-lag.html",                title: "Лид-лаг: оценка и её неустойчивость",                      status: "done" },
   { id: "strukturnye-razryvy",  part: "metod",        file: "strukturnye-razryvy.html",    title: "Структурные разрывы и режимы",                             status: "done" },
   { id: "vne-vyborki",          part: "metod",        file: "vne-vyborki.html",            title: "Проверка вне выборки и множественность гипотез",           status: "done" },
-  { id: "real-taym",            part: "metod",        file: "real-taym.html",              title: "Реал-тайм против пересмотренного",                         status: "todo" },
+  { id: "real-taym",            part: "metod",        file: "real-taym.html",              title: "Реал-тайм против пересмотренного",                         status: "done" },
 
   /* ── Часть XIII. Рынки — как это торгуется ──────────────────────────── */
   { id: "mezhrynochnyy",        part: "rynki",        file: "mezhrynochnyy-analiz.html",   title: "Межрыночный анализ",                                       status: "done" },
