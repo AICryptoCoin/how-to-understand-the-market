@@ -1726,7 +1726,11 @@ def nahb_hmi(table: str = "t2", *, force: bool = False) -> dict[str, Series]:
                 title=("NAHB/Wells Fargo Housing Market Index"
                        if table == "t2" else f"NAHB HMI — {key}"),
                 freq="M", units="index (50 = разделительная линия)", sa="SA",
-                fetched_at=stamp, meta={"table": table, "license": "(c) NAHB"})
+                fetched_at=stamp,
+                # url обязателен в паспорте: в пути стоит месяц выпуска, а в хвосте
+                # ревизионный хеш ?rev=…, поэтому «какой именно файл разобран»
+                # восстанавливается только отсюда
+                meta={"table": table, "license": "(c) NAHB", "url": url})
         s.dates.append(date(year, month, 1).isoformat())
         s.values.append(value)
 

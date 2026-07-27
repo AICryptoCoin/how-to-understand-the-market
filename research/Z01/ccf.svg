@@ -1,0 +1,41 @@
+<svg viewBox="0 0 860 460" role="img" aria-labelledby="figz01t figz01d">
+<title id="figz01t">Взаимная корреляция NAHB HMI с безработицей и с доходностью десятилетних по лагам</title>
+<desc id="figz01d">По горизонтали — на сколько месяцев NAHB сдвинут вперёд относительно второго ряда, от нуля до тридцати шести. По вертикали — коэффициент корреляции годовых приращений. Кривая для безработицы отрицательна на всём диапазоне и достигает минимума около семнадцатого месяца, а не десятого; вокруг минимума она почти плоская. Кривая для доходности десятилетних положительна после восьмого месяца и достигает максимума на восемнадцатом.</desc>
+<line class="viz-grid" x1="92" y1="56.0" x2="820" y2="56.0"/>
+<text class="viz-axis" x="82" y="60.0" text-anchor="end">+0.4</text>
+<line class="viz-grid" x1="92" y1="112.3" x2="820" y2="112.3"/>
+<text class="viz-axis" x="82" y="116.3" text-anchor="end">+0.2</text>
+<line class="viz-axisline" x1="92" y1="168.7" x2="820" y2="168.7"/>
+<text class="viz-axis" x="82" y="172.7" text-anchor="end">+0.0</text>
+<line class="viz-grid" x1="92" y1="225.0" x2="820" y2="225.0"/>
+<text class="viz-axis" x="82" y="229.0" text-anchor="end">-0.2</text>
+<line class="viz-grid" x1="92" y1="281.3" x2="820" y2="281.3"/>
+<text class="viz-axis" x="82" y="285.3" text-anchor="end">-0.4</text>
+<line class="viz-grid" x1="92" y1="337.7" x2="820" y2="337.7"/>
+<text class="viz-axis" x="82" y="341.7" text-anchor="end">-0.6</text>
+<line class="viz-grid" x1="92" y1="394.0" x2="820" y2="394.0"/>
+<text class="viz-axis" x="82" y="398.0" text-anchor="end">-0.8</text>
+<text class="viz-axis" x="92.0" y="418" text-anchor="middle">0</text>
+<text class="viz-axis" x="213.3" y="418" text-anchor="middle">6</text>
+<text class="viz-axis" x="334.7" y="418" text-anchor="middle">12</text>
+<text class="viz-axis" x="456.0" y="418" text-anchor="middle">18</text>
+<text class="viz-axis" x="577.3" y="418" text-anchor="middle">24</text>
+<text class="viz-axis" x="698.7" y="418" text-anchor="middle">30</text>
+<text class="viz-axis" x="820.0" y="418" text-anchor="middle">36</text>
+<text class="viz-axis" x="456" y="442" text-anchor="middle">сдвиг NAHB вперёд, месяцев →</text>
+<rect class="viz-band" x="253.8" y="56" width="80.9" height="338" fill="var(--series-8)" opacity="0.07"/>
+<polyline class="viz-line" fill="none" stroke="var(--series-8)" points="92.0,227.3 112.2,229.0 132.4,230.6 152.7,232.3 172.9,231.7 193.1,237.8 213.3,244.9 233.6,254.0 253.8,261.3 274.0,266.3 294.2,267.8 314.4,261.0 334.7,254.0 354.9,262.8 375.1,269.8 395.3,276.8 415.6,285.3 435.8,286.7 456.0,283.5 476.2,278.9 496.4,275.6 516.7,271.5 536.9,267.6 557.1,263.3 577.3,258.3 597.6,252.2 617.8,245.8 638.0,240.1 658.2,234.3 678.4,230.2 698.7,228.0 718.9,226.2 739.1,220.3 759.3,215.9 779.6,209.8 799.8,202.3 820.0,196.1"/>
+<circle class="viz-mark" cx="435.8" cy="286.7" r="5" fill="var(--series-8)"/>
+<text class="viz-annot" x="435.8" y="308.7" text-anchor="middle">максимум 17 мес.</text>
+<line class="viz-grid" x1="294.2" y1="267.8" x2="294.2" y2="168.7" stroke="var(--series-8)" stroke-dasharray="3 3"/>
+<circle cx="294.2" cy="267.8" r="4" fill="none" stroke="var(--series-8)" stroke-width="2"/>
+<text class="viz-annot" x="104" y="74" fill="var(--series-8)">NAHB → безработица (Δ12, обратная связь)</text>
+<rect class="viz-band" x="395.3" y="56" width="121.3" height="338" fill="var(--series-1)" opacity="0.07"/>
+<polyline class="viz-line" fill="none" stroke="var(--series-1)" points="92.0,226.3 112.2,210.5 132.4,200.0 152.7,191.2 172.9,182.3 193.1,171.8 213.3,159.9 233.6,148.0 253.8,136.4 274.0,127.5 294.2,122.8 314.4,120.2 334.7,118.1 354.9,118.8 375.1,115.7 395.3,110.7 415.6,105.1 435.8,100.4 456.0,100.0 476.2,101.8 496.4,109.5 516.7,119.7 536.9,128.1 557.1,137.5 577.3,147.3 597.6,150.7 617.8,151.8 638.0,152.3 658.2,154.4 678.4,157.5 698.7,157.6 718.9,155.5 739.1,148.5 759.3,140.9 779.6,135.7 799.8,132.2 820.0,130.4"/>
+<circle class="viz-mark" cx="456.0" cy="100.0" r="5" fill="var(--series-1)"/>
+<text class="viz-annot" x="456.0" y="86.0" text-anchor="middle">максимум 18 мес.</text>
+<line class="viz-grid" x1="456.0" y1="100.0" x2="456.0" y2="168.7" stroke="var(--series-1)" stroke-dasharray="3 3"/>
+<circle cx="456.0" cy="100.0" r="4" fill="none" stroke="var(--series-1)" stroke-width="2"/>
+<text class="viz-annot" x="104" y="94" fill="var(--series-1)">NAHB YoY → US10Y YoY (прямая связь)</text>
+<text class="viz-annot" x="820" y="442" text-anchor="end">кружком обведено значение на лаге, заявленном курсом</text>
+</svg>
