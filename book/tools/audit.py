@@ -31,6 +31,13 @@
 
 Карта «класс → свойство» для проверки перебитых атрибутов не зашита, а читается
 из assets/book.css: правки палитры и viz-классов подхватываются сами.
+
+Про номера глав. Номер не хранится нигде: он равен позиции главы в
+assets/chapters.js. В разметке номер всё-таки записан — страница обязана
+читаться без JavaScript, — поэтому есть что сверять, и сверку делает
+tools/linkify.py. Аудит зовёт его же (одна реализация на два инструмента) и
+показывает результат поглавно: битые слаги, разошедшиеся числа и текстовые
+«глава N», оставшиеся вне отсылок.
 """
 
 from __future__ import annotations
@@ -41,6 +48,9 @@ import re
 import sys
 from html.parser import HTMLParser
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import linkify  # noqa: E402  — сверка отсылок живёт там и только там
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Пороги вердикта. Меняются здесь и больше нигде.
@@ -55,8 +65,9 @@ EXAMPLES = 15          # сколько конкретных случаев пе
 # презентационными атрибутами SVG (STYLE-GUIDE §5 п. 6).
 TRACKED_PROPS = ("fill", "stroke", "stroke-width", "marker-end")
 
-# Пометки происхождения (STYLE-GUIDE §6).
-ORIGIN_MARKS = ("КАНОН", "ВЫВЕДЕНО", "ДОПОЛНЕНО", "НАШЕ РЕШЕНИЕ", "НЕТ В КУРСЕ")
+# Пометки происхождения (STYLE-GUIDE §6, расширение — FULL-BOOK-PLAN §5.2).
+ORIGIN_MARKS = ("КАНОН", "ВЫВЕДЕНО", "ДОПОЛНЕНО", "НАШЕ РЕШЕНИЕ", "НЕТ В КУРСЕ",
+                "СПОР", "НАШ РАСЧЁТ", "НЕ ПРОВЕРЕНО")
 
 # Типы врезок: класс → (значок, короткое имя).
 CALLOUT_KINDS = [
@@ -67,14 +78,20 @@ CALLOUT_KINDS = [
     ("callout--source", "❞", "источник"),
     ("callout--ours",   "◆", "наше"),
     ("callout--beyond", "✚", "дополнено"),
+    ("callout--test",   "⌗", "проверить"),
+    ("callout--debate", "⚖", "спор"),
 ]
 
-# Обязательные блоки структуры (STYLE-GUIDE §3).
+# Блоки структуры (STYLE-GUIDE §3). Обязательные входят в вердикт;
+# условные показываются в таблице, но главу не бракуют: крипто-слой и врезка
+# «2023 → 2026» перестали быть обязательными (FULL-BOOK-PLAN §4 п. 8, §5.1),
+# а блок «Как это проверить» нужен только главе с эмпирическим утверждением.
 STRUCTURE_KEYS = [
     ("eyebrow", "eyebrow"), ("lede", "lede"), ("map", "map"),
-    ("crypto", "крипто"), ("c2026", "2023→2026"),
+    ("crypto", "крипто"), ("c2026", "2023→2026"), ("test", "проверить"),
     ("checklist", "чек-лист"), ("further", "дальше"),
 ]
+STRUCTURE_REQUIRED = {"eyebrow", "lede", "map", "checklist", "further"}
 
 # Технические дефекты: ключ → заголовок колонки.
 DEFECT_KEYS = [
@@ -84,7 +101,25 @@ DEFECT_KEYS = [
     ("overridden", "Атрибут под классом"),
     ("tables_unscrolled", "Табл. вне scroll"),
     ("hex_colors", "Hex в SVG"),
+    ("xref_broken", "Слаг не в реестре"),
+    ("xref_stale", "Номер разошёлся"),
+    ("text_ch_ref", "Текст «глава N»"),
 ]
+
+# Классы, текст внутри которых — уже отсылка либо служебная подпись,
+# которую переписывает book.js. Текстовые «глава N» ищутся вне их.
+MUTE_CLASSES = {"xref", "figref", "xref__n", "figref__n", "chapter-eyebrow"}
+
+# «глава 7», «в главе 17», «главах 13, 14 и 20» — то, что обязано быть отсылкой.
+# Отсылка не пересекает границу блока: заголовок ячейки «Пример из главы» и
+# следующая ячейка «1» — это не «глава 1». Границу ставит \x00 (см. ChapterParser).
+TEXT_CH_REF = re.compile(r"[Гг]лав[аеиуыойх]{0,3}[^\S\x00]+\d{1,3}")
+
+# Теги, которые стоят внутри предложения и текст не разрывают.
+INLINE_TAGS = {
+    "a", "abbr", "b", "big", "br", "cite", "code", "em", "i", "kbd", "mark",
+    "q", "s", "samp", "small", "span", "strong", "sub", "sup", "time", "u", "var",
+}
 DEFECT_LABELS = dict(DEFECT_KEYS)
 DEFECT_LABELS["figures_no_twin"] = "фигуры со значениями без двойника"
 
@@ -208,6 +243,7 @@ class ChapterParser(HTMLParser):
         self.text_depth = 0        # внутри SVG <text>
 
         self.prose: list = []
+        self.plain: list = []      # проза без текста отсылок и хлебных крошек
         self.svg_words = 0
 
         self.figures: list = []    # {"id", "has_table", "texts"}
@@ -243,6 +279,9 @@ class ChapterParser(HTMLParser):
 
     def _in_scroll(self) -> bool:
         return any("table-scroll" in classes for _, classes in self.stack)
+
+    def _muted(self) -> bool:
+        return any(classes & MUTE_CLASSES for _, classes in self.stack)
 
     # — теги —
 
@@ -299,6 +338,9 @@ class ChapterParser(HTMLParser):
         if tag in ("h1", "h2", "h3"):
             self._heading_buf = []
 
+        if self.article_depth and not self.svg_depth and tag not in INLINE_TAGS:
+            self.plain.append("\x00")
+
         if self.svg_depth:
             self._check_svg_element(tag, d, classes)
             if tag == "text":
@@ -347,6 +389,9 @@ class ChapterParser(HTMLParser):
         if tag in HTML_VOID or (self.svg_depth and tag in SVG_VOID):
             return
 
+        if self.article_depth and not self.svg_depth and tag not in INLINE_TAGS:
+            self.plain.append("\x00")
+
         if tag == "text" and self.text_depth:
             self.text_depth -= 1
             txt = re.sub(r"\s+", " ", "".join(self._text_buf)).strip()
@@ -384,9 +429,10 @@ class ChapterParser(HTMLParser):
             return
         if self.article_depth:
             self.prose.append(data)
+            self.plain.append(" " if self._muted() else data)
 
 
-def audit_chapter(path: Path, meta: dict, class_props: dict) -> dict:
+def audit_chapter(path: Path, meta: dict, class_props: dict, by_id: dict = None) -> dict:
     raw = path.read_text(encoding="utf-8")
     p = ChapterParser(class_props)
     p.feed(raw)
@@ -395,9 +441,18 @@ def audit_chapter(path: Path, meta: dict, class_props: dict) -> dict:
     prose = re.sub(r"\s+", " ", "".join(p.prose)).strip()
     words = len(prose.split())
 
+    # Отсылки: сверка целиком отдана linkify — там же, где чинится.
+    xref_broken, xref_stale = linkify.refs_report(
+        raw, meta.get("id", ""), by_id if by_id is not None else {})
+    plain = re.sub(r"\s+", " ", "".join(p.plain))
+    text_ch_ref = [m.group(0) for m in TEXT_CH_REF.finditer(plain)]
+
     # Комбинированные пометки вида [ДОПОЛНЕНО: …; ВЫВЕДЕНО по следствию] —
     # это честно два голоса, поэтому считаем каждое вхождение отдельно.
-    marks = {m: len(re.findall(re.escape(m), raw)) for m in ORIGIN_MARKS}
+    # Пометка — целое слово в капсе: «СПОРНЫЙ» в подписи графики не является
+    # пометкой [СПОР], а «КАНОНИЧЕСКИЙ» — пометкой [КАНОН].
+    marks = {m: len(re.findall(r"(?<![А-ЯЁA-Z])%s(?![А-ЯЁA-Zа-яёa-z])" % re.escape(m), raw))
+             for m in ORIGIN_MARKS}
 
     with_values = [f for f in p.figures
                    if len(measured_values(f["texts"])) >= VALUE_TEXT_NODES]
@@ -412,6 +467,7 @@ def audit_chapter(path: Path, meta: dict, class_props: dict) -> dict:
         "map": p.has_map,
         "crypto": p.callouts["callout--crypto"] > 0,
         "c2026": p.callouts["callout--2026"] > 0,
+        "test": p.callouts["callout--test"] > 0,
         "checklist": p.checklists > 0,
         "further": any("Что читать дальше" in h for h in p.headings),
     }
@@ -423,11 +479,15 @@ def audit_chapter(path: Path, meta: dict, class_props: dict) -> dict:
         "overridden": len(p.overridden),
         "tables_unscrolled": len(p.tables_unscrolled),
         "hex_colors": len(p.hex_colors),
+        "xref_broken": len(xref_broken),
+        "xref_stale": len(xref_stale),
+        "text_ch_ref": len(text_ch_ref),
         "figures_no_twin": len(missing_twin),
     }
 
     reasons = [f"{DEFECT_LABELS[k]}: {n}" for k, n in defects.items() if n]
-    missing_blocks = [lbl for k, lbl in STRUCTURE_KEYS if not structure[k]]
+    missing_blocks = [lbl for k, lbl in STRUCTURE_KEYS
+                      if k in STRUCTURE_REQUIRED and not structure[k]]
     if missing_blocks:
         reasons.append("нет блоков: " + ", ".join(missing_blocks))
 
@@ -440,7 +500,7 @@ def audit_chapter(path: Path, meta: dict, class_props: dict) -> dict:
         verdict = "в норме"
 
     return {
-        "n": meta["n"], "file": path.name, "title": meta["title"],
+        "n": meta["n"], "id": meta.get("id", ""), "file": path.name, "title": meta["title"],
         "words": words, "chars": len(prose), "svg_words": p.svg_words,
         "figures": len(p.figures),
         "figures_with_values": len(with_values),
@@ -461,6 +521,9 @@ def audit_chapter(path: Path, meta: dict, class_props: dict) -> dict:
             "overridden": [f'{a}: <{b} class="{c}" {e}=…>' for a, b, c, e in p.overridden],
             "tables_unscrolled": p.tables_unscrolled,
             "hex_colors": [f'{a}: <{b} {c}="{e}">' for a, b, c, e in p.hex_colors],
+            "xref_broken": xref_broken,
+            "xref_stale": xref_stale,
+            "text_ch_ref": text_ch_ref,
         },
         "verdict": verdict,
         "reasons": reasons,
@@ -510,14 +573,11 @@ def thousands(n: int) -> str:
     return f"{n:,}".replace(",", " ")
 
 
-def load_registry(book: Path) -> list:
-    src = (book / "assets" / "chapters.js").read_text(encoding="utf-8")
-    return [
-        {"n": int(n), "part": int(part), "file": file, "title": title, "status": status}
-        for n, part, file, title, status in re.findall(
-            r"\{\s*n:\s*(\d+),\s*part:\s*(\d+),\s*file:\s*\"([^\"]+)\",\s*"
-            r"title:\s*\"([^\"]+)\",\s*status:\s*\"([^\"]+)\"\s*\}", src)
-    ]
+def load_registry() -> list:
+    """Номер главы — позиция в реестре плюс один, и больше нигде."""
+    return [{"n": c.n, "id": c.id, "part": c.part, "file": c.file,
+             "title": c.title, "status": c.status}
+            for c in linkify.load_registry()]
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -530,11 +590,13 @@ SELFTEST_EXPECT = {
     "broken.html": {
         "html_in_text": 2, "dup_ids": 1, "broken_refs": 2, "overridden": 3,
         "tables_unscrolled": 1, "hex_colors": 2, "figures_no_twin": 1,
-        "missing_blocks": 7,
+        "xref_broken": 1, "xref_stale": 1, "text_ch_ref": 1,
+        "missing_blocks": 5,
     },
     "clean.html": {
         "html_in_text": 0, "dup_ids": 0, "broken_refs": 0, "overridden": 0,
         "tables_unscrolled": 0, "hex_colors": 0, "figures_no_twin": 0,
+        "xref_broken": 0, "xref_stale": 0, "text_ch_ref": 0,
         "missing_blocks": 0,
     },
 }
@@ -542,6 +604,7 @@ SELFTEST_EXPECT = {
 
 def selftest(book: Path, class_props: dict) -> int:
     fixtures = book / "tools" / "fixtures"
+    by_id = {c.id: c for c in linkify.load_registry()}
     ok = True
     for name, expect in SELFTEST_EXPECT.items():
         path = fixtures / name
@@ -549,7 +612,7 @@ def selftest(book: Path, class_props: dict) -> int:
             print(f"НЕТ ЭТАЛОНА: {path}")
             ok = False
             continue
-        r = audit_chapter(path, {"n": 0, "title": name}, class_props)
+        r = audit_chapter(path, {"n": 0, "title": name}, class_props, by_id)
         got = dict(r["defects"])
         got["missing_blocks"] = len(r["missing_blocks"])
         print(f"\n{name}")
@@ -590,23 +653,36 @@ def main() -> int:
     if args.selftest:
         return selftest(book, class_props)
 
-    chapters = load_registry(book)
+    chapters = load_registry()
     if not chapters:
         print("Реестр глав не разобрался — проверьте assets/chapters.js", file=sys.stderr)
         return 2
+    by_id = {c.id: c for c in linkify.load_registry()}
+
+    written = [c for c in chapters if c["status"] == "done"]
+    planned = [c for c in chapters if c["status"] != "done"]
 
     results, orphan_registry = [], []
-    for meta in chapters:
+    for meta in written:
         path = book / meta["file"]
         if path.exists():
-            results.append(audit_chapter(path, meta, class_props))
+            results.append(audit_chapter(path, meta, class_props, by_id))
         else:
             orphan_registry.append(meta["file"])
-    orphan_files = sorted({p.name for p in book.glob("ch*.html")}
-                          - {c["file"] for c in chapters})
+    # Файл главы, которой нет в реестре, — сирота. Ненаписанная глава реестра
+    # файла иметь не должна: это либо забытый `status`, либо забытый файл.
+    known = {c["file"] for c in chapters}
+    service = {"index.html", "errata.html"}
+    orphan_files = sorted({p.name for p in book.glob("*.html")} - known - service)
+    orphan_files += [c["file"] for c in planned if (book / c["file"]).exists()]
+
+    dup_slugs = sorted({c["id"] for c in chapters
+                        if [x["id"] for x in chapters].count(c["id"]) > 1})
 
     if args.json:
         print(json.dumps({"chapters": results,
+                          "planned": [c["id"] for c in planned],
+                          "duplicate_ids": dup_slugs,
                           "registry_without_file": orphan_registry,
                           "file_without_registry": orphan_files},
                          ensure_ascii=False, indent=2))
@@ -615,7 +691,8 @@ def main() -> int:
     print("═" * 96)
     print("АУДИТ КНИГИ «КАК ПОНИМАТЬ РЫНОК»")
     print(f"каталог: {book}")
-    print(f"глав в реестре: {len(chapters)} · разобрано файлов: {len(results)}")
+    print(f"глав в плане: {len(chapters)} · написано: {len(written)} · "
+          f"разобрано файлов: {len(results)}")
     print("═" * 96)
 
     table(
@@ -682,7 +759,7 @@ def main() -> int:
     print("═" * 96)
     print("СВОДКА ПО КНИГЕ")
     print("═" * 96)
-    print(f"  глав: {len(results)}")
+    print(f"  глав: {len(results)} написано из {len(chapters)} по плану")
     print(f"  прозы: {thousands(sum(r['words'] for r in results))} слов · "
           f"{thousands(sum(r['chars'] for r in results))} знаков")
     print(f"  подписей внутри графики: "
@@ -698,10 +775,13 @@ def main() -> int:
     print("  дефекты: " + " · ".join(
         f"{lbl} {sum(r['defects'][k] for r in results)}" for k, lbl in DEFECT_KEYS))
 
+    if dup_slugs:
+        print("\n  Слаг встречается дважды: " + ", ".join(dup_slugs))
     if orphan_registry:
-        print("\n  В реестре есть, а файла нет: " + ", ".join(orphan_registry))
+        print("\n  Помечена done, а файла нет: " + ", ".join(orphan_registry))
     if orphan_files:
-        print("\n  Файл есть, а в реестре нет: " + ", ".join(orphan_files))
+        print("\n  Файл есть, а главы в реестре нет (или её статус не done): "
+              + ", ".join(orphan_files))
 
     attention = [r for r in results if r["verdict"] != "в норме"]
     print()
@@ -715,7 +795,8 @@ def main() -> int:
                   f"[{r['verdict']}] {'; '.join(r['reasons'])}")
     print("─" * 96)
 
-    return 1 if any(r["verdict"] == "с дефектами" for r in results) else 0
+    return 1 if (dup_slugs or orphan_registry or orphan_files
+                 or any(r["verdict"] == "с дефектами" for r in results)) else 0
 
 
 if __name__ == "__main__":

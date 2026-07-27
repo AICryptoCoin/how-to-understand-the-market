@@ -1,13 +1,47 @@
-/* Книжный рантайм: тема, боковая панель, навигация, тултипы, табличные двойники.
+/* Книжный рантайм: тема, боковая панель, навигация, перекрёстные ссылки,
+   нумерация фигур, тултипы, табличные двойники.
    Подключается ПОСЛЕ chapters.js. Ничего не требует от разметки главы, кроме
-   <body data-chapter="N"> (или data-cover для обложки). */
+   <body data-chapter-id="слаг"> (или data-cover для обложки).
+
+   ─────────────────────────────────────────────────────────────────────────
+   Номер главы нигде не хранится: он равен позиции в BOOK_CHAPTERS плюс один
+   и вычисляется здесь, на старте. Всё остальное — боковая панель, хлебные
+   крошки, переходы, перекрёстные ссылки, номера фигур — берёт число отсюда.
+   Поэтому вставка главы в середину книги не требует править ни одну главу.
+
+   Числа, записанные в разметке (в .xref__n, .figref__n, .figure__num,
+   в <title> страницы), — запасной вариант для чтения без JavaScript и для
+   печати. Скрипт их подтверждает или исправляет, `tools/linkify.py --check`
+   ловит расхождение до того, как оно попадёт читателю.
+   ───────────────────────────────────────────────────────────────────────── */
 (function () {
   "use strict";
 
   var chapters = window.BOOK_CHAPTERS || [];
   var parts = window.BOOK_PARTS || [];
-  var current = document.body.dataset.chapter ? parseInt(document.body.dataset.chapter, 10) : null;
-  var byN = function (n) { return chapters.filter(function (c) { return c.n === n; })[0]; };
+
+  /* Единственное место, где появляется номер главы. */
+  var index = {};                                   // id → позиция в массиве
+  var byFile = {};                                  // имя файла → позиция
+  chapters.forEach(function (c, i) {
+    c.n = i + 1;
+    index[c.id] = i;
+    byFile[c.file] = i;
+  });
+
+  function fileToId() {
+    var name = (location.pathname.split("/").pop() || "");
+    var i = byFile[name];
+    return i === undefined ? null : chapters[i].id;
+  }
+
+  var curId = document.body.dataset.chapterId || fileToId();
+  var curIdx = (curId != null && index[curId] !== undefined) ? index[curId] : null;
+  var cur = curIdx == null ? null : chapters[curIdx];
+
+  function partOf(c) {
+    return parts.filter(function (p) { return p.id === c.part; })[0];
+  }
 
   /* ---------- тема ---------- */
   var THEMES = ["auto", "light", "dark"];
@@ -45,34 +79,37 @@
       if (!list.length) return;
       html += '<h2>' + esc(p.label) + " · " + esc(p.title) + "</h2><ol>";
       list.forEach(function (c) {
-        var isCur = c.n === current;
+        var isCur = curIdx != null && c === cur;
         var done = c.status === "done";
-        var cls = done ? "" : ' class="todo"';
-        var cur = isCur ? ' aria-current="page"' : "";
+        var cur_ = isCur ? ' aria-current="page"' : "";
         var inner = '<span class="num">' + c.n + "</span><span>" + esc(c.title) + "</span>";
         html += "<li>" + (done
-          ? '<a href="' + c.file + '"' + cur + ">" + inner + "</a>"
-          : "<span" + cls + ' style="display:flex;gap:.55rem;padding:.3rem .5rem">' + inner + "</span>") + "</li>";
+          ? '<a href="' + c.file + '"' + cur_ + ">" + inner + "</a>"
+          : '<span class="todo">' + inner + "</span>") + "</li>";
       });
       html += "</ol>";
     });
     nav.innerHTML = html;
   }
 
-  /* ---------- хлебные крошки и переходы ---------- */
+  /* ---------- шапка, хлебные крошки и переходы ---------- */
   function buildChrome() {
-    if (current == null) return;
-    var c = byN(current);
-    if (!c) return;
-    var p = parts.filter(function (x) { return x.id === c.part; })[0];
+    if (!cur) return;
+    var p = partOf(cur);
+
     var where = document.getElementById("topbar-where");
-    if (where && p) where.textContent = p.label + " · Глава " + c.n + ". " + c.title;
+    if (where && p) where.textContent = p.label + " · Глава " + cur.n + ". " + cur.title;
+
+    /* Хлебная крошка над заголовком и заголовок вкладки — тоже из реестра:
+       иначе они расходятся с книгой при первой же вставке главы. */
+    var eyebrow = document.querySelector(".prose .chapter-eyebrow");
+    if (eyebrow && p) eyebrow.textContent = p.label + " · " + p.title + " · Глава " + cur.n;
+    document.title = cur.n + ". " + cur.title + " — Как понимать рынок";
 
     var navEl = document.getElementById("chapter-nav");
     if (!navEl) return;
-    var prev = byN(current - 1), next = byN(current + 1);
-    navEl.innerHTML =
-      cell(prev, "prev", "Предыдущая глава") + cell(next, "next", "Следующая глава");
+    navEl.innerHTML = cell(chapters[curIdx - 1], "prev", "Предыдущая глава") +
+                      cell(chapters[curIdx + 1], "next", "Следующая глава");
 
     function cell(ch, cls, label) {
       if (!ch) return '<span class="' + cls + ' empty"></span>';
@@ -80,9 +117,66 @@
         ch.n + ". " + esc(ch.title) + "</span>";
       return ch.status === "done"
         ? '<a class="' + cls + '" href="' + ch.file + '">' + body + "</a>"
-        : '<span class="' + cls + '" style="opacity:.45;padding:.9rem 1.1rem;border:1px dashed var(--hairline);border-radius:.5rem;display:block">' +
-          body + '<span class="dirn">ещё не написана</span></span>';
+        : '<span class="' + cls + ' stub">' + body +
+          '<span class="dirn">ещё не написана</span></span>';
     }
+  }
+
+  /* ---------- перекрёстные ссылки ----------
+     Автор пишет слаг и падеж, скрипт пишет цифру:
+
+       см. <a class="xref" data-ch="faktory">главу <b class="xref__n">56</b></a>
+       см. <a class="xref" data-ch="hope" data-anchor="s8">…</a>
+
+     Ссылка на саму себя или подпись внутри графики обходится без <a>:
+     достаточно <b class="xref__n" data-ch="k-kodu">71</b> — в SVG роль <b>
+     играет <tspan> (HTML-теги внутри <text> не рендерятся). */
+  function fillXrefs() {
+    document.querySelectorAll("a.xref[data-ch]").forEach(function (a) {
+      var c = chapters[index[a.dataset.ch]];
+      if (!c) { a.classList.add("xref--broken"); return; }
+      var frag = a.dataset.anchor ? "#" + a.dataset.anchor : "";
+      a.setAttribute("href", (c === cur ? "" : c.file) + frag);
+      a.setAttribute("title", c.n + ". " + c.title);
+      if (c.status !== "done") a.classList.add("xref--todo");
+      setNum(a.querySelector(".xref__n"), c.n);
+    });
+    /* Голые номера: самоссылки в прозе и подписи в SVG. */
+    document.querySelectorAll(".xref__n[data-ch]").forEach(function (el) {
+      var c = chapters[index[el.dataset.ch]];
+      if (c) setNum(el, c.n);
+    });
+  }
+
+  function setNum(el, value) {
+    if (el && el.textContent !== String(value)) el.textContent = value;
+  }
+
+  /* ---------- нумерация фигур ----------
+     id фигуры — fig-<слаг главы>-<k>. Номер «N.k» рисуется из позиции главы,
+     поэтому переезд главы не требует править ни подпись, ни отсылки к ней. */
+  function numberFigures() {
+    if (curIdx == null) return;
+    var k = 0;
+    document.querySelectorAll("figure.figure").forEach(function (f) {
+      k++;
+      var num = (curIdx + 1) + "." + k;
+      f.dataset.fignum = num;
+      setNum(f.querySelector(".figure__num"), "Рис. " + num + ".");
+    });
+  }
+
+  /* Отсылка к фигуре: <a class="figref" data-ch="hope" data-fig="2">…</a>.
+     Цифру и адрес считает скрипт — в том числе для фигур чужой главы. */
+  function fillFigrefs() {
+    document.querySelectorAll("a.figref[data-ch][data-fig]").forEach(function (a) {
+      var c = chapters[index[a.dataset.ch]];
+      if (!c) { a.classList.add("xref--broken"); return; }
+      var frag = "#fig-" + c.id + "-" + a.dataset.fig;
+      a.setAttribute("href", (c === cur ? "" : c.file) + frag);
+      a.setAttribute("title", "Рис. " + c.n + "." + a.dataset.fig + " · глава " + c.n + ". " + c.title);
+      setNum(a.querySelector(".figref__n"), c.n + "." + a.dataset.fig);
+    });
   }
 
   /* ---------- якоря у заголовков ---------- */
@@ -197,7 +291,7 @@
         var inner = '<span class="num">' + c.n + '</span><span>' + esc(c.title) + "</span>";
         html += "<li>" + (c.status === "done"
           ? '<a href="' + c.file + '">' + inner + '<span class="status status--done">готова</span></a>'
-          : '<span class="stub">' + inner + '<span class="status status--todo">в работе</span></span>') + "</li>";
+          : '<span class="stub">' + inner + '<span class="status status--todo">не написана</span></span>') + "</li>";
       });
       html += "</ul>";
     });
@@ -212,6 +306,7 @@
 
   function boot() {
     initTheme(); buildSidebar(); buildChrome(); buildAnchors();
+    fillXrefs(); numberFigures(); fillFigrefs();
     initTips(); initTableToggles(); initSidebarToggle(); buildCover();
   }
 

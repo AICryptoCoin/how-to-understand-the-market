@@ -72,6 +72,22 @@
       записью об ошибке она не является.
     </p>
 
+    <div class="callout callout--trap">
+      <div class="callout__label" data-icon="⚠">Номера глав в старых записях</div>
+      <p style="margin-bottom:0">
+        В редакции <b>2.0</b> книга выросла с 24 глав до 71, и 20 глав из 24
+        сменили номер. Записи ниже сделаны <b>до</b> этого и называют главы по
+        нумерации первой редакции — так же, как парные им записи в
+        <a href="CHANGELOG.md">журнале изменений</a>. Перенумеровать их значило бы
+        разойтись с журналом и с историей git. Таблица соответствия старых
+        и новых номеров — <code>FULL-BOOK-PLAN.md</code> §2; например,
+        «гл. 24» первой редакции — это
+        <a class="xref" data-ch="k-kodu" href="ot-shpargalki-k-kodu.html" title="71. От шпаргалки к коду">глава&nbsp;<b class="xref__n">71</b></a>,
+        а «гл. 5» — <a class="xref" data-ch="hope" href="hope.html" title="12. H-O-P-E: скелет опережения">глава&nbsp;<b class="xref__n">12</b></a>.
+        Записи начиная с редакции 2.0 идут в текущей нумерации.
+      </p>
+    </div>
+
     <div class="table-scroll">
       <table class="data">
         <thead>
@@ -265,7 +281,7 @@
 
     <h2 id="s3">Как добавить запись</h2>
     <ul class="checklist">
-      <li>Почините саму главу — файл <code>chNN-slug.html</code>. Пока текст не
+      <li>Почините саму главу — файл <code>слаг.html</code>. Пока текст не
           исправлен, записи здесь быть не должно.</li>
       <li>Добавьте <code>&lt;tr&gt;</code> <b>первой строкой</b> в
           <code>&lt;tbody&gt;</code> этой страницы. Дата — в формате

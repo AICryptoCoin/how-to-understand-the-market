@@ -200,13 +200,15 @@ hr { border: 0; border-top: 1px solid var(--grid); margin: 3rem 0; }
 .sidebar h2:first-child { margin-top: 0; }
 .sidebar ol { list-style: none; margin: 0; padding: 0; }
 .sidebar li { margin: 0; }
-.sidebar a {
+.sidebar a, .sidebar .todo {
   display: flex; gap: .55rem; padding: .3rem .5rem;
   color: var(--ink-2); text-decoration: none; border-radius: .3rem;
 }
 .sidebar a:hover { background: var(--surface-2); color: var(--ink); }
 .sidebar a[aria-current="page"] { background: var(--surface-2); color: var(--ink); font-weight: 600; }
-.sidebar .num { color: var(--ink-muted); font-variant-numeric: tabular-nums; min-width: 1.4rem; }
+/* То же, что в оглавлении: длинное название переносится внутри панели. */
+.sidebar a > span, .sidebar .todo > span { min-width: 0; overflow-wrap: break-word; }
+.sidebar .num { color: var(--ink-muted); font-variant-numeric: tabular-nums; min-width: 1.4rem; flex: none; }
 .sidebar a[aria-current="page"] .num { color: var(--series-1); }
 .sidebar .todo { opacity: .48; }
 
@@ -292,6 +294,26 @@ blockquote cite { display: block; margin-top: .5rem; font-style: normal; font-fa
 .callout--source  { --accent: var(--ink-muted); }
 .callout--ours    { --accent: var(--series-3); }
 .callout--beyond  { --accent: var(--series-5); }
+.callout--test    { --accent: var(--series-6); }
+.callout--debate  { --accent: var(--series-8); }
+
+/* ===================== ПЕРЕКРЁСТНЫЕ ССЫЛКИ =====================
+   Номер главы и номер фигуры внутри ссылки проставляет book.js по реестру:
+   в разметке стоит .xref__n / .figref__n с запасным значением для печати
+   и для чтения без JavaScript. Оформление — как у обычной ссылки: читатель
+   не должен видеть разницы между «главой 12» и любой другой ссылкой. */
+
+/* Слово и номер не расходятся по строкам за счёт &nbsp; в разметке, а не
+   `white-space: nowrap` на всей ссылке: nowrap запрещает перенос и внутри
+   остального текста ссылки и на 320 px выталкивает страницу в скролл. */
+.xref__n, .figref__n {
+  font: inherit; font-weight: inherit; font-style: inherit;
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+/* Глава есть в плане, но ещё не написана: вести некуда, поэтому не ссылка. */
+.xref--todo { color: var(--ink-muted); text-decoration-style: dotted; cursor: default; }
+/* Слаг не резолвится реестром — брак, который обязан быть виден. */
+.xref--broken { color: var(--st-critical); text-decoration: line-through wavy; }
 
 /* Правило R## */
 .rule-id {
@@ -437,13 +459,18 @@ table.data .num { text-align: right; font-variant-numeric: tabular-nums; }
   margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--grid);
   font-family: var(--font-ui);
 }
-.chapter-nav a {
+.chapter-nav a, .chapter-nav .stub {
   display: block; padding: .9rem 1.1rem; border: 1px solid var(--hairline);
   border-radius: .5rem; background: var(--surface); text-decoration: none; color: var(--ink);
   /* Grid-элемент по умолчанию не сжимается уже своего min-content (min-width:auto).
-     Длинное название главы («18. Сентимент, широта, позиционирование») тогда
-     распирает колонку и скроллит страницу на 320 px. */
+     Длинное название главы («18. Ожидания: адаптивные, рациональные,
+     заякоренные») тогда распирает колонку и скроллит страницу на 320 px.
+     Соседняя глава может быть ещё не написана — тогда это не ссылка,
+     и правило обязано действовать на неё тоже. */
   min-width: 0; overflow-wrap: break-word;
+}
+.chapter-nav .stub {
+  background: transparent; border-style: dashed; color: var(--ink-muted); opacity: .55;
 }
 .chapter-nav a:hover { border-color: var(--axis); }
 .chapter-nav .dirn { display: block; font-size: .6875rem; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-muted); margin-bottom: .2rem; }
@@ -492,8 +519,12 @@ table.data .num { text-align: right; font-variant-numeric: tabular-nums; }
 }
 .toc-list a:hover { border-color: var(--axis); }
 .toc-list .stub { color: var(--ink-muted); background: transparent; border-style: dashed; }
-.toc-list .num { color: var(--ink-muted); font-variant-numeric: tabular-nums; min-width: 1.6rem; }
-.toc-list .status { margin-left: auto; font-size: .6875rem; text-transform: uppercase; letter-spacing: .06em; }
+/* Название главы обязано переноситься, а не выталкивать страницу в
+   горизонтальный скролл: у flex-элемента min-width по умолчанию равен ширине
+   самого длинного слова, а в оглавлении есть «производительность». */
+.toc-list a > span, .toc-list .stub > span { min-width: 0; overflow-wrap: break-word; }
+.toc-list .num { color: var(--ink-muted); font-variant-numeric: tabular-nums; min-width: 1.6rem; flex: none; }
+.toc-list .status { margin-left: auto; font-size: .6875rem; text-transform: uppercase; letter-spacing: .06em; flex: none; }
 .toc-list .status--done { color: var(--st-good); }
 .toc-list .status--todo { color: var(--ink-muted); }
 
