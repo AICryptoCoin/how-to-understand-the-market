@@ -1182,6 +1182,93 @@ def philfed_realtime(dataset: str = "routputqvqd", *, force: bool = False
 
 
 # --------------------------------------------------------------------------- #
+# NBER — даты объявлений Комитета по датировке деловых циклов
+# --------------------------------------------------------------------------- #
+
+_NBER_ANN = ("https://www.nber.org/research/business-cycle-dating/"
+             "business-cycle-dating-committee-announcements")
+
+# «June 8, 2020 | Determination of the February 2020 Peak in US Economic Activity»
+# «December 1, 2008 | Announcement of December 2007 business cycle peak/beginning…»
+# Две формулировки на одной странице; строки «Memo from the Committee» поворотной
+# точки не содержат и отсеиваются сами.
+_NBER_ROW = re.compile(
+    r"([A-Z][a-z]+)\s+(\d{1,2}),\s*(\d{4})\s*\|\s*"
+    r"(?:Determination of the|Announcement of)\s+"
+    r"([A-Z][a-z]+)\s+(\d{4})\s+(?:business cycle\s+)?(peak|trough)",
+    re.IGNORECASE)
+
+
+def nber_announcements(*, force: bool = False) -> dict[str, Series]:
+    """Даты, когда Комитет NBER **объявил** каждый пик и каждое дно.
+
+    Зачем это отдельным источником. `USREC` даёт датировку, но не момент, когда
+    она стала известна, а Комитет объявляет поворот задним числом — от полугода
+    до полутора лет спустя. Любой бэктест, в котором рецессия «известна»
+    в момент сигнала, меряет не то, что было доступно решающему.
+
+    Возвращает два ряда: ``peaks`` и ``troughs``. **Дата — месяц самой
+    поворотной точки** (первое число), **значение — лаг объявления в месяцах**;
+    сама дата объявления лежит в ``meta['announced'][<месяц>]``.
+
+    Ограничение источника, а не загрузчика: практика публичных объявлений
+    у Комитета начинается с 1979 года, поэтому первая объявленная точка —
+    пик 1980-01. Для более ранних рецессий даты объявления не существует.
+
+    ALFRED этот вопрос не закрывает: винтажи ``USREC`` в нём начинаются
+    2014-09-18, то есть покрывают ровно одно объявление из шести.
+    """
+    body = fetch(_NBER_ANN, tag="nber-announcements", timeout=60, force=force,
+                 max_age=timedelta(days=7))
+    text = re.sub(r"(?is)<(script|style).*?</\1>", " ", body.decode("utf-8", "replace"))
+    text = re.sub(r"<[^>]+>", "|", text)
+    text = html.unescape(text)
+    text = re.sub(r"[ \t\r\n]+", " ", text)
+
+    found: dict[str, dict[str, str]] = {"peak": {}, "trough": {}}
+    for a_mon, a_day, a_year, t_mon, t_year, kind in _NBER_ROW.findall(text):
+        am, tm = _MONTHS.get(a_mon[:3].title()), _MONTHS.get(t_mon[:3].title())
+        if am is None or tm is None:
+            continue
+        turn = f"{int(t_year):04d}-{tm:02d}-01"
+        ann = f"{int(a_year):04d}-{am:02d}-{int(a_day):02d}"
+        # Одна поворотная точка объявляется один раз; при повторе побеждает
+        # более ранняя дата — переиздание страницы не должно удлинять лаг.
+        prev = found[kind.lower()].get(turn)
+        if prev is None or ann < prev:
+            found[kind.lower()][turn] = ann
+
+    out: dict[str, Series] = {}
+    for kind, key in (("peak", "peaks"), ("trough", "troughs")):
+        s = Series(series_id=f"NBER-{key.upper()}", source="NBER",
+                   title=f"NBER business cycle {kind} announcements",
+                   freq="M", units="мес. лага", fetched_at=_now(),
+                   meta={"url": _NBER_ANN, "announced": dict(sorted(found[kind].items()))})
+        for turn, ann in sorted(found[kind].items()):
+            lag = ((int(ann[:4]) - int(turn[:4])) * 12
+                   + (int(ann[5:7]) - int(turn[5:7])))
+            s.dates.append(turn)
+            s.values.append(float(lag))
+        out[key] = s
+
+    # Проверка ПО СОДЕРЖИМОМУ, а не по коду ответа: страница NBER — обычный HTML,
+    # и при подмене лендингом/капчей она отдаст 200 и правдоподобный размер.
+    # Разбор обязан дать хотя бы шесть объявленных пиков и шесть доньев,
+    # а каждый лаг — лежать в разумных границах.
+    for key in ("peaks", "troughs"):
+        n = len(out[key].observed)
+        if n < 6:
+            raise FetchError(
+                f"Страница объявлений NBER разобрана в {n} {key} (ожидалось >= 6). "
+                f"Скорее всего, телом пришла не та страница: проверьте {_NBER_ANN}")
+        bad = [(d, v) for d, v in out[key].observed if not 0 <= v <= 36]
+        if bad:
+            raise FetchError(
+                f"NBER {key}: лаг объявления вне диапазона 0..36 мес. — {bad[:3]}")
+    return out
+
+
+# --------------------------------------------------------------------------- #
 # Прочие ФРБ
 # --------------------------------------------------------------------------- #
 

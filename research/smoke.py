@@ -224,9 +224,23 @@ CHECKS: list[Check] = [
           290, "2001-07-01", 45),
     Check("activity", "CFNAI (Chikago)", "FRED",
           lambda: S.fred("CFNAI"), 700, "1967-03-01", 75),
+
+    # --- датировка цикла ----------------------------------------------------
+    Check("cycle", "Recessii NBER (USREC)", "FRED",
+          lambda: S.fred("USREC"), 2000, "1854-12-01", 75),
+    # Даты объявлений Комитета NBER. Ряд событийный, а не наблюдаемый: пик
+    # объявляют раз в десятилетие, поэтому max_lag_days здесь НЕ проверка
+    # свежести (её тут просто не существует), а верхняя граница, за которой
+    # молчание источника перестаёт быть нормой. Реальный контроль по
+    # содержимому — min_obs и границы лага внутри самого загрузчика:
+    # шесть объявленных пиков, каждый лаг в диапазоне 0..36 месяцев.
+    # Значение ряда — лаг объявления в месяцах, и он же нужен задаче Z03.
+    Check("cycle", "Obyavleniya NBER: piki", "-",
+          lambda: S.nber_announcements()["peaks"], 6, "1980-01-01", 5000),
 ]
 
-GROUP_ORDER = ["labour", "housing", "prices", "output", "curve", "markets", "activity"]
+GROUP_ORDER = ["labour", "housing", "prices", "output", "curve", "markets",
+               "activity", "cycle"]
 
 
 def _have_key(tag: str) -> bool:
@@ -306,6 +320,8 @@ def selftest() -> int:
                                 400, "1968-02-01", 75), S.fred("NEWORDER"))),
         ("HTML vmesto tablicy pri 200 (podmena po signature)",
          lambda: _html_instead_of_spreadsheet()),
+        ("ne ta stranica NBER pri 200 i 78 KB (obyavleniy v tele net)",
+         lambda: _nber_wrong_page()),
     ]
     caught = 0
     for name, run in cases:
@@ -350,6 +366,31 @@ def _html_instead_of_spreadsheet() -> str | None:
         S._spreadsheet(body)
     except Exception as exc:                                  # noqa: BLE001
         return f"{type(exc).__name__}: {exc}"
+    return None
+
+
+def _nber_wrong_page() -> str | None:
+    """Родительский раздел NBER вместо страницы объявлений: **200 и ~78 КБ**.
+
+    Реальная ошибка на один сегмент пути, а не искусственная: `/business-cycle-dating`
+    отдаёт полноценную страницу нужного раздела, в которой нет ни одной строки
+    объявления. Ни код, ни размер, ни сигнатура `<!DOCTYPE html>` подмену
+    не выдают — выдаёт только число разобранных поворотных точек.
+    """
+    import html as _html
+    import re as _re
+    try:
+        body = S.fetch("https://www.nber.org/research/business-cycle-dating",
+                       tag="selftest-nber", max_age=timedelta(hours=12))
+    except S.FetchError as exc:
+        return f"FetchError na zagruzke: {exc}"
+    text = _re.sub(r"(?is)<(script|style).*?</\1>", " ", body.decode("utf-8", "replace"))
+    text = _re.sub(r"[ \t\r\n]+", " ", _html.unescape(_re.sub(r"<[^>]+>", "|", text)))
+    rows = S._NBER_ROW.findall(text)
+    peaks = {(m, y) for _, _, _, m, y, k in rows if k.lower() == "peak"}
+    if len(peaks) < 6:
+        return (f"telo {len(body)} bayt, HTTP 200, a obyavleniy razobrano "
+                f"{len(peaks)} iz >= 6")
     return None
 
 
