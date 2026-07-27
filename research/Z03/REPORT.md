@@ -1,7 +1,8 @@
 # Z03 · Инверсия кривой доходности как признак рецессии
 
-Пред-регистрация: [`HYPOTHESIS.md`](HYPOTHESIS.md), закоммичена до расчёта
-(`d869ad6`). Расчёт: [`run.py`](run.py), результат: [`result.json`](result.json),
+Пред-регистрация: [`HYPOTHESIS.md`](HYPOTHESIS.md) — отдельный коммит
+«пред-регистрация `Z03` (инверсия) и `Z04` (дезинверсия) до расчёта», сделанный
+до первого прогона. Расчёт: [`run.py`](run.py), результат: [`result.json`](result.json),
 полный вывод прогона: [`full-run.txt`](full-run.txt), рисунок:
 [`episodes.svg`](episodes.svg).
 
