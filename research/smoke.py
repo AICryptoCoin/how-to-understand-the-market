@@ -1,13 +1,27 @@
-"""Опись рядов: скачивает ключевые показатели и печатает, чем мы располагаем.
+"""Opis' ryadov: skachivaet klyuchevye pokazateli i proveryaet ih PO SODERZHIMOMU.
 
 Двойное назначение:
 
-1. **Проверка контура.** Если что-то в ``sources.py`` сломалось или источник
-   изменил формат — это видно здесь, а не посреди проверки главы.
-2. **Опись данных.** По каждому ряду печатается число наблюдений, первая и
-   последняя дата и последнее значение. Глубина истории — главный ограничитель
-   того, что вообще можно утверждать: на 3 годах ICE-спреда нельзя говорить о
-   рецессиях, а на 58 годах Philly Fed — можно.
+1. **Проверка контура по содержимому, а не по коду ответа.** Источник считается
+   рабочим только если тело распарсилось в ожидаемое число наблюдений ожидаемого
+   типа и границы истории попали в заявленный диапазон. Это не педантизм:
+   stooq на любой символ отдаёт HTTP 200 и правдоподобный размер, а телом идёт
+   JavaScript-заглушка. Тест, который зелёный на заглушке, **хуже
+   отсутствующего** — он превращает пропажу данных в тишину.
+
+2. **Опись данных.** Глубина истории — главный ограничитель того, что вообще
+   можно утверждать: на 3 годах ICE-спреда нельзя говорить о рецессиях, а на
+   58 годах Philly Fed — можно.
+
+Что проверяется по каждому ряду (всё обязательно, иначе строка красная):
+
+* тело распарсилось в :class:`sources.Series`;
+* число наблюдений не меньше ``min_obs`` — ловит усечения и заглушки;
+* все значения — числа (``float``), а не строки и не ``NaN``;
+* первое наблюдение не позже ``starts_by`` — ловит лицензионное усечение
+  истории (именно так видно, что ICE-ряд начинается с 2023 года);
+* последнее наблюдение не старше ``max_lag_days`` — ловит замороженные ряды
+  (именно так видно, что ``USSLIND`` мёртв с 2020 года).
 
 Запуск::
 
@@ -15,109 +29,157 @@
     python smoke.py --force        # заново по сети
     python smoke.py --only curve   # только группа
     python smoke.py --list         # перечислить группы
+    python smoke.py --verbose      # полные traceback'и
 
-Ряды, требующие ключа, помечены в колонке «ключ». Если ключа нет, строка
-получает статус ``НЕТ КЛЮЧА`` и прогон продолжается — контур без ключей
-остаётся проверяемым.
+Вывод намеренно без символов вне cp1251: консоль этой машины в cp1251, и
+падение на em-dash при печати отчёта — глупый способ потерять результат.
 """
 
 from __future__ import annotations
 
 import argparse
+import math
 import sys
 import time
 import traceback
+from dataclasses import dataclass
+from datetime import date, datetime, timedelta
 from typing import Callable
 
 import sources as S
 
-# --------------------------------------------------------------------------- #
-# Опись: (группа, показатель, нужный ключ, функция -> Series)
-# --------------------------------------------------------------------------- #
+# Отчёт не должен падать из-за кодировки консоли.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(errors="replace")
+    except Exception:
+        pass
 
-Check = tuple[str, str, str, Callable[[], S.Series]]
+
+@dataclass(frozen=True)
+class Check:
+    """Один ряд описи вместе с ожиданиями, по которым он проверяется."""
+
+    group: str
+    label: str
+    key: str                       # тег нужного ключа, "-" если не нужен
+    fn: Callable[[], S.Series]
+    min_obs: int                   # минимум наблюдений
+    starts_by: str                 # первое наблюдение не позже этой даты
+    max_lag_days: int              # последнее наблюдение не старше N дней
 
 
-def _curve(tenor: str) -> Callable[[], S.Series]:
+def _curve(tenor: str, kind: str = "nominal", first_year: int = 1990):
     def go() -> S.Series:
-        years = list(range(1990, __import__("datetime").date.today().year + 1))
-        return S.treasury_curve("nominal", years=years)[tenor]
+        years = list(range(first_year, date.today().year + 1))
+        return S.treasury_curve(kind, years=years)[tenor]
     return go
 
 
-def _real_curve(tenor: str) -> Callable[[], S.Series]:
-    def go() -> S.Series:
-        years = list(range(2003, __import__("datetime").date.today().year + 1))
-        return S.treasury_curve("real", years=years)[tenor]
-    return go
-
-
+# Ожидания ниже — фактические границы, снятые с серверов 2026-07-27, с запасом
+# вниз по числу наблюдений. Если строка краснеет, это не «тест сломался»:
+# это либо источник изменился, либо историю усекли — и то, и то надо смотреть.
 CHECKS: list[Check] = [
     # --- труд ---------------------------------------------------------------
-    ("labour", "Безработица (U-3)", "FRED", lambda: S.fred("UNRATE")),
-    ("labour", "Первичные заявки на пособие", "FRED", lambda: S.fred("ICSA")),
-    ("labour", "Занятость вне сельского хоз-ва (NFP)", "FRED", lambda: S.fred("PAYEMS")),
+    Check("labour", "Bezrabotica (U-3)", "FRED",
+          lambda: S.fred("UNRATE"), 900, "1948-01-01", 75),
+    Check("labour", "Pervichnye zayavki na posobie", "FRED",
+          lambda: S.fred("ICSA"), 3000, "1967-01-07", 21),
+    Check("labour", "Zanyatost' vne sel'hoz (NFP)", "FRED",
+          lambda: S.fred("PAYEMS"), 1000, "1939-01-01", 75),
 
     # --- жильё --------------------------------------------------------------
-    ("housing", "NAHB HMI (композит)", "—", lambda: S.nahb_hmi("t2")["HMI"]),
-    ("housing", "NAHB: трафик покупателей", "—",
-     lambda: S.nahb_hmi("t3")["Traffic of Prospective Buyers"]),
-    ("housing", "Разрешения на строительство", "FRED", lambda: S.fred("PERMIT")),
-    ("housing", "Начала строительства", "FRED", lambda: S.fred("HOUST")),
-    ("housing", "Разрешения (первоисточник Census)", "CENSUS",
-     lambda: S.census_eits("resconst", category_code="APERMITS",
-                           data_type_code="TOTAL", seasonally_adj="yes",
-                           time="from 1990-01")["resconst:APERMITS:TOTAL:US:SA"]),
+    Check("housing", "NAHB HMI (kompozit)", "-",
+          lambda: S.nahb_hmi("t2")["HMI"], 480, "1985-01-01", 60),
+    Check("housing", "NAHB: trafik pokupateley", "-",
+          lambda: S.nahb_hmi("t3")["Traffic of Prospective Buyers"],
+          480, "1985-01-01", 60),
+    Check("housing", "Razresheniya na stroitel'stvo", "FRED",
+          lambda: S.fred("PERMIT"), 780, "1960-01-01", 75),
+    Check("housing", "Nachala stroitel'stva", "FRED",
+          lambda: S.fred("HOUST"), 790, "1959-01-01", 75),
+    Check("housing", "Razresheniya (pervoistochnik Census)", "CENSUS",
+          lambda: S.census_eits("resconst", category_code="APERMITS",
+                                data_type_code="TOTAL", seasonally_adj="yes",
+                                time="from 1990-01")["resconst:APERMITS:TOTAL:US:SA"],
+          420, "1990-01-01", 75),
 
     # --- цены ---------------------------------------------------------------
-    ("prices", "CPI, все статьи", "FRED", lambda: S.fred("CPIAUCSL")),
-    ("prices", "Core CPI", "FRED", lambda: S.fred("CPILFESL")),
-    ("prices", "Core PCE (базовый дефлятор)", "FRED", lambda: S.fred("PCEPILFE")),
-    ("prices", "Core PCE (первоисточник BEA)", "BEA",
-     lambda: S.bea("T20804", frequency="M")["DPCCRG"]),
+    Check("prices", "CPI, vse stat'i", "FRED",
+          lambda: S.fred("CPIAUCSL"), 930, "1947-01-01", 75),
+    Check("prices", "Core CPI", "FRED",
+          lambda: S.fred("CPILFESL"), 810, "1957-01-01", 75),
+    Check("prices", "Core PCE (deflyator)", "FRED",
+          lambda: S.fred("PCEPILFE"), 790, "1959-01-01", 100),
+    Check("prices", "Core PCE (pervoistochnik BEA)", "BEA",
+          lambda: S.bea("T20804", frequency="M")["DPCCRG"], 790, "1959-01-01", 100),
 
     # --- производство -------------------------------------------------------
-    ("output", "Промышленное производство", "FRED", lambda: S.fred("INDPRO")),
-    ("output", "Загрузка мощностей", "FRED", lambda: S.fred("TCU")),
+    Check("output", "Promyshlennoe proizvodstvo", "FRED",
+          lambda: S.fred("INDPRO"), 1270, "1919-01-01", 75),
+    Check("output", "Zagruzka moshchnostey", "FRED",
+          lambda: S.fred("TCU"), 700, "1967-01-01", 75),
 
     # --- кривая доходности --------------------------------------------------
-    ("curve", "UST 3 месяца", "—", _curve("3 Mo")),
-    ("curve", "UST 2 года", "—", _curve("2 Yr")),
-    ("curve", "UST 10 лет", "—", _curve("10 Yr")),
-    ("curve", "UST 30 лет", "—", _curve("30 Yr")),
-    ("curve", "Спред 10Y-2Y", "FRED", lambda: S.fred("T10Y2Y")),
-    ("curve", "Спред 10Y-3M", "FRED", lambda: S.fred("T10Y3M")),
-    ("curve", "TIPS 10 лет (реальная ставка)", "—", _real_curve("10 YR")),
-    ("curve", "Breakeven 5 лет", "FRED", lambda: S.fred("T5YIE")),
-    ("curve", "Breakeven 10 лет", "FRED", lambda: S.fred("T10YIE")),
-    ("curve", "Премия за срок ACM, 10 лет", "—",
-     lambda: S.nyfed_acm("daily")["ACMTP10"]),
+    Check("curve", "UST 3 mesyaca", "-", _curve("3 Mo"), 9000, "1990-01-02", 14),
+    Check("curve", "UST 2 goda", "-", _curve("2 Yr"), 9000, "1990-01-02", 14),
+    Check("curve", "UST 10 let", "-", _curve("10 Yr"), 9000, "1990-01-02", 14),
+    Check("curve", "UST 30 let", "-", _curve("30 Yr"), 8000, "1990-01-02", 14),
+    Check("curve", "Spred 10Y-2Y", "FRED",
+          lambda: S.fred("T10Y2Y"), 12000, "1976-06-01", 14),
+    Check("curve", "Spred 10Y-3M", "FRED",
+          lambda: S.fred("T10Y3M"), 11000, "1982-01-04", 14),
+    Check("curve", "TIPS 10 let (real'naya stavka)", "-",
+          _curve("10 YR", "real", 2003), 5800, "2003-01-02", 14),
+    Check("curve", "Breakeven 5 let", "FRED",
+          lambda: S.fred("T5YIE"), 5800, "2003-01-02", 14),
+    Check("curve", "Breakeven 10 let", "FRED",
+          lambda: S.fred("T10YIE"), 5800, "2003-01-02", 14),
+    Check("curve", "Premiya za srok ACM, 10 let", "-",
+          lambda: S.nyfed_acm("daily")["ACMTP10"], 16000, "1961-06-14", 21),
 
     # --- рынки --------------------------------------------------------------
-    ("markets", "Индекс доллара DXY", "—", lambda: S.yahoo("DX-Y.NYB")),
-    ("markets", "Золото (фьючерс)", "—", lambda: S.yahoo("GC=F")),
-    ("markets", "Медь (фьючерс)", "—", lambda: S.yahoo("HG=F")),
-    ("markets", "Нефть WTI", "FRED", lambda: S.fred("DCOILWTICO")),
-    ("markets", "S&P 500", "—", lambda: S.yahoo("^GSPC")),
-    ("markets", "Russell 2000", "—", lambda: S.yahoo("^RUT")),
-    ("markets", "Nasdaq Composite", "—", lambda: S.yahoo("^IXIC")),
+    Check("markets", "Indeks dollara DXY", "-",
+          lambda: S.yahoo("DX-Y.NYB"), 14000, "1971-01-04", 14),
+    Check("markets", "Zoloto (fyuchers)", "-",
+          lambda: S.yahoo("GC=F"), 6400, "2000-08-30", 14),
+    Check("markets", "Med' (fyuchers)", "-",
+          lambda: S.yahoo("HG=F"), 6400, "2000-08-30", 14),
+    Check("markets", "Neft' WTI", "FRED",
+          lambda: S.fred("DCOILWTICO"), 10000, "1986-01-02", 21),
+    Check("markets", "S&P 500", "-",
+          lambda: S.yahoo("^GSPC"), 24000, "1927-12-30", 14),
+    Check("markets", "Russell 2000", "-",
+          lambda: S.yahoo("^RUT"), 9600, "1987-09-10", 14),
+    Check("markets", "Nasdaq Composite", "-",
+          lambda: S.yahoo("^IXIC"), 13800, "1971-02-05", 14),
 
-    # --- индексы состояния экономики ---------------------------------------
-    ("activity", "Индекс деловых условий ADS", "—", lambda: S.philfed_ads()),
-    ("activity", "Philly Fed: общая активность (замена ISM)", "—",
-     lambda: S.philfed_mbos()["GAC"]),
-    ("activity", "Philly Fed: будущие новые заказы", "—",
-     lambda: S.philfed_mbos()["NOF"]),
-    ("activity", "CFNAI (Чикаго)", "FRED", lambda: S.fred("CFNAI")),
+    # --- индексы состояния экономики и панели-замена ISM --------------------
+    Check("activity", "Indeks delovyh usloviy ADS", "-",
+          lambda: S.philfed_ads(), 24000, "1960-03-01", 21),
+    Check("activity", "Philly Fed: obshchaya aktivnost'", "-",
+          lambda: S.philfed_mbos()["GAC"], 690, "1968-05-01", 45),
+    Check("activity", "Philly Fed: budushchie novye zakazy", "-",
+          lambda: S.philfed_mbos()["NOF"], 690, "1968-05-01", 45),
+    Check("activity", "Empire State: obshchie usloviya", "-",
+          lambda: S.empire_state()["GACDISA"], 290, "2001-07-31", 45),
+    Check("activity", "Dallas Fed: rost novyh zakazov", "FRED",
+          lambda: S.fred("GROSAMFRBDAL"), 255, "2004-06-01", 75),
+    Check("activity", "Richmond Fed: kompozit", "-",
+          lambda: S.richmond_fed()["sa_mfg_composite"], 380, "1993-11-01", 75),
+    Check("activity", "Kansas City Fed: kompozit", "-",
+          lambda: S.kansascity_fed()[
+              "Versus a Month Ago (seasonally adjusted) / Composite Index"],
+          290, "2001-07-01", 45),
+    Check("activity", "CFNAI (Chikago)", "FRED",
+          lambda: S.fred("CFNAI"), 700, "1967-03-01", 75),
 ]
 
 GROUP_ORDER = ["labour", "housing", "prices", "output", "curve", "markets", "activity"]
 
 
-# --------------------------------------------------------------------------- #
-
 def _have_key(tag: str) -> bool:
-    if tag in ("—", ""):
+    if tag in ("-", ""):
         return True
     try:
         S._key(tag if tag.endswith("_API_KEY") else f"{tag}_API_KEY")
@@ -126,69 +188,151 @@ def _have_key(tag: str) -> bool:
         return False
 
 
+def validate(c: Check, s: S.Series) -> str | None:
+    """Вернуть причину провала либо None, если ряд прошёл по содержимому."""
+    if not isinstance(s, S.Series):
+        return f"vernulsya {type(s).__name__}, a ne Series"
+    obs = s.observed
+    if not obs:
+        return "ryad pust (ni odnogo znacheniya) - vozmozhno, telom prishla zaglushka"
+    if len(obs) < c.min_obs:
+        return f"nablyudeniy {len(obs)}, ozhidalos' >= {c.min_obs}"
+    bad = next((v for _, v in obs
+                if not isinstance(v, float) or math.isnan(v) or math.isinf(v)), None)
+    if bad is not None or any(not isinstance(v, float) for _, v in obs):
+        return "sredi znacheniy est' ne-chisla (NaN/inf/str)"
+    first, last = obs[0][0], obs[-1][0]
+    if first > c.starts_by:
+        return (f"istoriya nachinaetsya {first}, a dolzhna ne pozzhe {c.starts_by} "
+                f"- pohozhe na usechenie")
+    lag = (date.today() - datetime.strptime(last, "%Y-%m-%d").date()).days
+    if lag > c.max_lag_days:
+        return (f"poslednee nablyudenie {last} ({lag} dn. nazad), dopustimo "
+                f"{c.max_lag_days} - ryad moglo zamorozit'")
+    return None
+
+
+def _ascii(text: str) -> str:
+    """Только ASCII: сообщения об ошибках приходят и из sources.py, где текст
+    русский, а консоль этой машины в cp1251 — без этого отчёт о падении сам
+    превращается в мусор."""
+    return text.encode("ascii", "replace").decode("ascii")
+
+
+def selftest() -> int:
+    """Негативный контроль: проверить, что детектор ЛОВИТ known-bad случаи.
+
+    Таблица из одних зелёных строк без этой проверки неотличима от сломанного
+    детектора. Здесь три реальных класса провала, каждый с известным ответом.
+    """
+    print("SELFTEST: detektor dolzhen POYMAT' kazhdyy sluchay nizhe\n")
+    cases: list[tuple[str, Callable[[], str | None]]] = [
+        ("JS-zaglushka vmesto dannyh (stooq, otdaet HTTP 200)",
+         lambda: _stub_case()),
+        ("licenzionnoe usechenie istorii (ICE HY OAS s 2023)",
+         lambda: validate(Check("x", "ICE", "FRED",
+                                lambda: S.fred("BAMLH0A0HYM2"),
+                                5000, "1996-12-31", 14), S.fred("BAMLH0A0HYM2"))),
+        ("zamorozhennyy ryad (USSLIND, mertv s 2020-02)",
+         lambda: validate(Check("x", "USSLIND", "FRED",
+                                lambda: S.fred("USSLIND"),
+                                400, "1982-01-01", 75), S.fred("USSLIND"))),
+    ]
+    caught = 0
+    for name, run in cases:
+        try:
+            reason = run()
+        except Exception as exc:                              # noqa: BLE001
+            reason = f"{type(exc).__name__}: {exc}"
+        if reason:
+            caught += 1
+            print(f"  POYMAN  {name}\n          -> {_ascii(str(reason))[:110]}")
+        else:
+            print(f"  PROPUSK {name}  <-- DETEKTOR SLOMAN")
+    print(f"\npoymano {caught} iz {len(cases)}")
+    return 0 if caught == len(cases) else 1
+
+
+def _stub_case() -> str | None:
+    """stooq отдаёт 200 и правдоподобную длину, телом — JavaScript-заглушка."""
+    try:
+        s = S.stooq("^spx")
+    except S.UpstreamBlocked as exc:
+        return f"UpstreamBlocked: {exc}"
+    return validate(Check("x", "stooq", "-", lambda: s, 5000, "2000-01-01", 14), s)
+
+
 def main(argv: list[str] | None = None) -> int:
-    ap = argparse.ArgumentParser(description="Опись доступных рядов")
-    ap.add_argument("--force", action="store_true", help="игнорировать кэш")
-    ap.add_argument("--only", metavar="GROUP", help="только указанная группа")
-    ap.add_argument("--list", action="store_true", help="перечислить группы")
-    ap.add_argument("--verbose", action="store_true", help="полный traceback ошибок")
+    ap = argparse.ArgumentParser(description="Opis' dostupnyh ryadov")
+    ap.add_argument("--force", action="store_true", help="ignorirovat' kesh")
+    ap.add_argument("--only", metavar="GROUP", help="tol'ko ukazannaya gruppa")
+    ap.add_argument("--list", action="store_true", help="perechislit' gruppy")
+    ap.add_argument("--verbose", action="store_true", help="polnyy traceback")
+    ap.add_argument("--selftest", action="store_true",
+                    help="proverit', chto detektor lovit known-bad sluchai")
     args = ap.parse_args(argv)
+
+    if args.selftest:
+        return selftest()
 
     if args.list:
         for g in GROUP_ORDER:
-            n = sum(1 for c in CHECKS if c[0] == g)
-            print(f"  {g:10} {n} рядов")
+            print(f"  {g:10} {sum(1 for c in CHECKS if c.group == g)} ryadov")
         return 0
 
-    checks = [c for c in CHECKS if not args.only or c[0] == args.only]
+    checks = [c for c in CHECKS if not args.only or c.group == args.only]
     if not checks:
-        print(f"группа {args.only!r} не найдена; см. --list", file=sys.stderr)
+        print(f"gruppa {args.only!r} ne naydena; sm. --list", file=sys.stderr)
         return 2
-
     if args.force:
         S.FORCE_ALL = True
 
-    head = (f"{'показатель':44} {'источник':22} {'ч':2} {'n':>7} "
-            f"{'первая':10} {'последняя':10} {'последнее':>14}")
+    head = (f"{'pokazatel':38} {'istochnik':22} {'ch':2} {'n':>7} "
+            f"{'pervaya':10} {'poslednyaya':11} {'poslednee':>13}")
     print(head)
     print("-" * len(head))
 
     ok = failed = nokey = 0
     problems: list[tuple[str, str]] = []
     t0 = time.time()
-    current_group = None
+    current = None
 
-    for group, label, keytag, fn in checks:
-        if group != current_group:
-            current_group = group
-            print(f"\n[{group}]")
-        if not _have_key(keytag):
+    for c in checks:
+        if c.group != current:
+            current = c.group
+            print(f"\n[{c.group}]")
+        if not _have_key(c.key):
             nokey += 1
-            print(f"{label:44} {'НЕТ КЛЮЧА (' + keytag + ')':22}")
+            print(f"{c.label:38} NET KLYUCHA ({c.key})")
             continue
         try:
-            s = fn()
-            first, last = s.first(), s.last()
-            if not first or not last:
-                raise RuntimeError("ряд пуст (нет ни одного значения)")
+            s = c.fn()
+            reason = validate(c, s)
+            if reason:
+                failed += 1
+                problems.append((c.label, _ascii(reason)))
+                print(f"{c.label:38} NE PROSHEL: {_ascii(reason)[:58]}")
+                continue
+            obs = s.observed
             ok += 1
-            print(f"{label:44} {s.source[:22]:22} {s.freq or '?':2} "
-                  f"{len(s.observed):>7} {first[0]:10} {last[0]:10} "
-                  f"{last[1]:>14,.4g}")
+            print(f"{c.label:38} {s.source[:22]:22} {s.freq or '?':2} "
+                  f"{len(obs):>7} {obs[0][0]:10} {obs[-1][0]:11} "
+                  f"{obs[-1][1]:>13,.4g}")
         except Exception as exc:                              # noqa: BLE001
             failed += 1
-            problems.append((label, f"{type(exc).__name__}: {exc}"))
-            print(f"{label:44} ОШИБКА: {type(exc).__name__}: {str(exc)[:60]}")
+            problems.append((c.label, _ascii(f"{type(exc).__name__}: {exc}")))
+            print(f"{c.label:38} OSHIBKA: {type(exc).__name__}: {_ascii(str(exc))[:44]}")
             if args.verbose:
                 traceback.print_exc()
 
     print("\n" + "=" * len(head))
-    print(f"успешно: {ok} | ошибок: {failed} | без ключа: {nokey} "
-          f"| {time.time() - t0:.1f} с | кэш: {S.CACHE_DIR}")
+    print(f"proshli po soderzhimomu: {ok} | ne proshli: {failed} | "
+          f"bez klyucha: {nokey} | {time.time() - t0:.1f} s")
+    print(f"kesh: {S.CACHE_DIR}")
     if problems:
-        print("\nчто не отдалось:")
+        print("\nCHTO NE PROSHLO (etot spisok vazhnee pervogo):")
         for label, msg in problems:
-            print(f"  - {label}: {msg[:160]}")
+            print(f"  - {label}: {msg[:150]}")
     return 1 if failed else 0
 
 

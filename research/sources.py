@@ -31,6 +31,7 @@ from __future__ import annotations
 
 import base64
 import csv
+import html
 import io
 import json
 import os
@@ -54,7 +55,8 @@ __all__ = [
     "treasury_curve", "yahoo", "stooq",
     "nyfed_acm", "nyfed_reference_rate", "nyfed_sce",
     "philfed_ads", "philfed_mbos", "philfed_nbos", "philfed_spf", "philfed_realtime",
-    "empire_state", "cfnai", "atlanta_gdpnow", "cleveland_inflation_expectations",
+    "empire_state", "richmond_fed", "kansascity_fed", "cfnai", "atlanta_gdpnow",
+    "cleveland_inflation_expectations",
     "bls", "bea", "census_eits", "census_variables", "nahb_hmi", "NAHB_TABLES",
     "ecb", "eurostat", "boe", "bis", "oecd_cli", "worldbank", "dbnomics",
     "ofr_fsi", "cftc_cot", "ken_french", "shiller", "damodaran", "eia",
@@ -1163,6 +1165,170 @@ def empire_state(*, seasonally_adjusted: bool = True, force: bool = False
                        sa="SA" if seasonally_adjusted else "NSA", id_prefix="ESMS-")
 
 
+_RICHMOND_MFG = (
+    "https://www.richmondfed.org/-/media/RichmondFedOrg/region_communities/"
+    "regional_data_analysis/regional_economy/surveys_of_business_conditions/"
+    "manufacturing/data/mfg_historicaldata.xlsx"
+)
+
+
+def richmond_fed(*, force: bool = False) -> dict[str, Series]:
+    """Fifth District Survey of Manufacturing Activity (ФРБ Ричмонда), с 1993-11.
+
+    Четвёртая панель в композите-замене ISM. На FRED ФРБ Ричмонда свой обзор
+    НЕ публикует (там от него единственный релиз — Non-Employment Index),
+    поэтому берём файл напрямую.
+
+    Ключевая колонка — ``sa_mfg_composite`` (сезонно сглаженный композит; веса
+    ФРБ Ричмонда: отгрузки 33% / новые заказы 40% / занятость 27%). Всего в
+    книге 66 колонок: префикс ``sa_``/``nsa_`` = со сглаживанием и без,
+    суффикс ``_c`` = current, ``_e`` = expectations.
+
+    Внимание к пути: рабочий URL лежит в ветке ``region_communities/
+    regional_data_analysis/``. Ветка ``research/...surveys_of_business_conditions``
+    отдаёт 404 — на неё легко наткнуться и решить, что ряда нет.
+    """
+    rows = next(iter(_spreadsheet(
+        fetch(_RICHMOND_MFG, tag="richmond-mfg", timeout=90, force=force)).values()))
+    if not rows:
+        raise FetchError("ФРБ Ричмонда: пустой лист")
+    header = [str(c).strip() if c is not None else "" for c in rows[0]]
+    try:
+        date_col = header.index("date")
+    except ValueError:
+        raise FetchError(
+            f"ФРБ Ричмонда: нет колонки 'date'; есть {header[:6]}") from None
+
+    stamp = _now()
+    out: dict[str, Series] = {}
+    for i, name in enumerate(header):
+        if i == date_col or not name:
+            continue
+        out[name] = Series(series_id=f"RICHMOND-{name}",
+                           source="FRB Richmond (Fifth District Mfg Survey)",
+                           title=name, freq="M", units="diffusion index",
+                           sa="SA" if name.startswith("sa_") else "NSA",
+                           fetched_at=stamp)
+    for row in rows[1:]:
+        if date_col >= len(row):
+            continue
+        iso = _iso(row[date_col])   # даты лежат серийными числами Excel
+        if not iso:
+            continue
+        for i, name in enumerate(header):
+            if i == date_col or not name or i >= len(row):
+                continue
+            out[name].dates.append(iso)
+            out[name].values.append(_num(row[i]))
+    return out
+
+
+_KC_SURVEY_PAGE = "https://www.kansascityfed.org/surveys/manufacturing-survey/"
+
+
+def kansascity_fed(*, force: bool = False) -> dict[str, Series]:
+    """Tenth District Manufacturing Survey (ФРБ Канзас-Сити), с 2001-07.
+
+    Пятая панель композита-замены ISM. На FRED этого обзора нет (среди релизов
+    ФРБ Канзас-Сити только Risk-On/Risk-Off, стресс и рынок труда), но файл
+    выложен открыто.
+
+    Две ловушки, из-за которых этот ряд дважды признавали закрытым:
+
+    * ссылка на месячный файл содержит дату выпуска
+      (``2026Jul23historicalmfg.xlsx``) — она меняется каждый месяц, поэтому
+      берётся со страницы обзора, а не хардкодится;
+    * страница отдаёт содержимое и через JS, поэтому осмотр отрендеренного DOM
+      ссылок не показывает — искать надо в исходном HTML.
+
+    Раскладка **транспонированная**: строки = показатели, колонки = месяцы
+    (серийные даты Excel). Три секции с повторяющимися названиями строк —
+    ``versus a month ago`` SA / NSA и ``versus a year ago`` NSA, — поэтому ключ
+    результата всегда «секция / показатель», например
+    ``"SA m/m / Composite Index"``.
+    """
+    page = fetch(_KC_SURVEY_PAGE, tag="kc-page", force=force,
+                 max_age=timedelta(days=1)).decode("utf-8", "replace")
+    hrefs = re.findall(r'href="([^"]*historicalmfg\.xlsx[^"]*)"', page, re.I)
+    if not hrefs:
+        raise FetchError(
+            "На странице обзора ФРБ Канзас-Сити не нашлось ссылки на "
+            "*historicalmfg.xlsx — вероятно, изменилась вёрстка. "
+            "Искать в ИСХОДНОМ HTML: в отрендеренном DOM ссылок не видно."
+        )
+    href = html.unescape(hrefs[0])
+    url = href if href.startswith("http") else "https://www.kansascityfed.org" + href
+    sys.stderr.write(f"[sources] KC mfg: {url}\n")
+
+    rows = next(iter(_spreadsheet(
+        fetch(url, tag="kc-mfg", timeout=90, force=force,
+              max_age=timedelta(days=1))).values()))
+    if not rows:
+        raise FetchError("ФРБ Канзас-Сити: пустой лист")
+
+    # Строка с серийными датами — та, где больше всего чисел, похожих на даты.
+    def date_count(row: list[Any]) -> int:
+        return sum(1 for c in row if (v := _num(c)) and 20000 < v < 60000)
+
+    hdr_i = max(range(min(12, len(rows))), key=lambda i: date_count(rows[i]))
+    date_at: dict[int, str] = {}
+    for i, c in enumerate(rows[hdr_i]):
+        v = _num(c)
+        if v and 20000 < v < 60000:
+            iso = _iso(v)
+            if iso:
+                date_at[i] = iso[:8] + "01"   # нормализуем на первое число месяца
+
+    section = ""
+    pending: list[str] = []
+    out: dict[str, Series] = {}
+    stamp = _now()
+    for row in rows[hdr_i + 1:]:
+        label = str(row[0]).strip() if row and isinstance(row[0], str) else ""
+        has_values = any(_num(row[i]) is not None for i in date_at if i < len(row))
+        if label and not has_values:
+            # Заголовок секции занимает две строки: «Versus a Month Ago» +
+            # «(seasonally adjusted)». Накапливаем и берём ТЕКСТ КАК ЕСТЬ.
+            # Выводить период из слов нельзя: у секции «Expected in Six Months»
+            # тоже есть слово «Month», и попытка угадать склеивала её с
+            # «Versus a Month Ago» в один ряд двойной длины.
+            pending.append(label)
+            continue
+        if pending:
+            block = re.sub(r"\s+", " ", " ".join(pending)).strip()
+            # Настоящий заголовок секции всегда несёт «(…seasonally adjusted)».
+            # Без этой проверки строка показателя, у которой в этом выпуске нет
+            # ни одного значения, назначалась «секцией» и уводила следующие
+            # показатели в несуществующую группу.
+            if "adjusted" in block.lower():
+                section = block
+            pending = []
+        if not label or not has_values:
+            continue
+        key = f"{section} / {label}" if section else label
+        s = out.get(key)
+        if s is None:
+            s = out[key] = Series(
+                series_id=f"KCFED-{key}", source="FRB Kansas City (Tenth District)",
+                title=label, freq="M", units="diffusion index",
+                sa="NSA" if "not seasonally" in section.lower() else "SA",
+                fetched_at=stamp, meta={"section": section})
+        for i, iso in sorted(date_at.items(), key=lambda kv: kv[1]):
+            if i < len(row):
+                s.dates.append(iso)
+                s.values.append(_num(row[i]))
+
+    for s in out.values():
+        dupes = {d for d, nxt in zip(s.dates, s.dates[1:]) if d == nxt}
+        if dupes:
+            raise FetchError(
+                f"ФРБ Канзас-Сити: в ряду {s.series_id} на {len(dupes)} дат пришло "
+                f"больше одного значения (например {sorted(dupes)[:3]}) — значит "
+                f"две строки файла попали в один ключ. Изменилась раскладка секций."
+            )
+    return out
+
+
 def cfnai(*, force: bool = False) -> dict[str, Series]:
     """Chicago Fed National Activity Index, с марта 1967.
 
@@ -1478,7 +1644,15 @@ def nahb_hmi(table: str = "t2", *, force: bool = False) -> dict[str, Series]:
             f"Найдено: {[h.rsplit('/', 1)[-1][:40] for h in hrefs]}. "
             f"Вероятно, NAHB поменял вёрстку — поправить nahb_hmi()."
         )
+    # В HTML амперсанды экранированы (&amp;) — без unescape в запрос уходит
+    # параметр «amp;hash», и в лог попадает URL, который нельзя скопировать
+    # и повторить руками.
+    match = html.unescape(match)
     url = match if match.startswith("http") else "https://www.nahb.org" + match
+    # Логируем фактический URL: в нём месяц выпуска и ревизионный хеш, так что
+    # он меняется каждый месяц. Без записи в лог потом не восстановить, какая
+    # ревизия файла лежит за уже посчитанным графиком.
+    sys.stderr.write(f"[sources] NAHB {table}: {url}\n")
 
     sheets = _spreadsheet(fetch(url, tag=f"nahb-{table}", timeout=90, force=force,
                                 max_age=timedelta(days=1)))
