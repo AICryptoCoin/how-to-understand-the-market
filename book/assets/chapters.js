@@ -46,7 +46,7 @@ window.BOOK_CHAPTERS = [
   /* ── Часть I. Экономика и цикл ──────────────────────────────────────── */
   { id: "vvp",                  part: "cikl",         file: "ekonomika-kak-potok.html",    title: "Экономика как поток: ВВП",                                 status: "done" },
   { id: "biznes-cikl",          part: "cikl",         file: "biznes-cikl.html",            title: "Бизнес-цикл и иерархия циклов",                            status: "done" },
-  { id: "kak-chitat-empiriku",  part: "cikl",         file: "kak-chitat-empiriku.html",    title: "Как читать эмпирическое утверждение",                      status: "todo" },
+  { id: "kak-chitat-empiriku",  part: "cikl",         file: "kak-chitat-empiriku.html",    title: "Как читать эмпирическое утверждение",                      status: "done" },
 
   /* ── Часть II. Предложение и рост ───────────────────────────────────── */
   { id: "rost-proizvoditelnost",part: "predlozhenie", file: "rost-proizvoditelnost.html",  title: "Откуда берётся рост: производительность и капитал",        status: "todo" },
