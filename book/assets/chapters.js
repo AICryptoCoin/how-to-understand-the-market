@@ -114,7 +114,7 @@ window.BOOK_CHAPTERS = [
   { id: "proverka-utverzhdeniya", part: "metod",      file: "proverka-utverzhdeniya.html", title: "Что значит проверить макро-утверждение",                   status: "done" },
   { id: "stacionarnost",        part: "metod",        file: "stacionarnost.html",          title: "Стационарность, ложная регрессия, коинтеграция",           status: "done" },
   { id: "lid-lag",              part: "metod",        file: "lid-lag.html",                title: "Лид-лаг: оценка и её неустойчивость",                      status: "done" },
-  { id: "strukturnye-razryvy",  part: "metod",        file: "strukturnye-razryvy.html",    title: "Структурные разрывы и режимы",                             status: "todo" },
+  { id: "strukturnye-razryvy",  part: "metod",        file: "strukturnye-razryvy.html",    title: "Структурные разрывы и режимы",                             status: "done" },
   { id: "vne-vyborki",          part: "metod",        file: "vne-vyborki.html",            title: "Проверка вне выборки и множественность гипотез",           status: "todo" },
   { id: "real-taym",            part: "metod",        file: "real-taym.html",              title: "Реал-тайм против пересмотренного",                         status: "todo" },
 
