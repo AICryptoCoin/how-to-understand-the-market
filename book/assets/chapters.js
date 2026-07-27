@@ -111,7 +111,7 @@ window.BOOK_CHAPTERS = [
   { id: "em",                   part: "otkrytaya",    file: "em.html",                     title: "Развивающиеся рынки",                                      status: "todo" },
 
   /* ── Часть XII. Эмпирический метод ──────────────────────────────────── */
-  { id: "proverka-utverzhdeniya", part: "metod",      file: "proverka-utverzhdeniya.html", title: "Что значит проверить макро-утверждение",                   status: "todo" },
+  { id: "proverka-utverzhdeniya", part: "metod",      file: "proverka-utverzhdeniya.html", title: "Что значит проверить макро-утверждение",                   status: "done" },
   { id: "stacionarnost",        part: "metod",        file: "stacionarnost.html",          title: "Стационарность, ложная регрессия, коинтеграция",           status: "todo" },
   { id: "lid-lag",              part: "metod",        file: "lid-lag.html",                title: "Лид-лаг: оценка и её неустойчивость",                      status: "todo" },
   { id: "strukturnye-razryvy",  part: "metod",        file: "strukturnye-razryvy.html",    title: "Структурные разрывы и режимы",                             status: "todo" },
