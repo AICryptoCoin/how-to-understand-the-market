@@ -41,7 +41,7 @@ window.BOOK_PARTS = [
 window.BOOK_CHAPTERS = [
   /* ── Часть 0. Зачем ─────────────────────────────────────────────────── */
   { id: "karta",                part: "zachem",       file: "karta-vmesto-prognoza.html",  title: "Карта вместо прогноза",                                    status: "done" },
-  { id: "chto-takoe-makro",     part: "zachem",       file: "chto-takoe-makro.html",       title: "Что такое макроэкономика и почему в ней спорят",           status: "todo" },
+  { id: "chto-takoe-makro",     part: "zachem",       file: "chto-takoe-makro.html",       title: "Что такое макроэкономика и почему в ней спорят",           status: "done" },
 
   /* ── Часть I. Экономика и цикл ──────────────────────────────────────── */
   { id: "vvp",                  part: "cikl",         file: "ekonomika-kak-potok.html",    title: "Экономика как поток: ВВП",                                 status: "done" },
