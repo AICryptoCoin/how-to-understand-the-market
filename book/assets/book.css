@@ -149,6 +149,9 @@ code, kbd, .ticker {
   border: 1px solid var(--hairline);
   border-radius: .25rem;
   padding: .08em .35em;
+  /* Длинный путь или тикер без пробелов не должен выталкивать страницу
+     в горизонтальный скролл на 320 px. */
+  overflow-wrap: break-word;
 }
 
 hr { border: 0; border-top: 1px solid var(--grid); margin: 3rem 0; }
@@ -236,6 +239,11 @@ p { margin: 0 0 1.15rem; }
 .prose ul, .prose ol { margin: 0 0 1.15rem; padding-left: 1.4rem; }
 .prose li { margin-bottom: .4rem; }
 .prose li::marker { color: var(--ink-muted); }
+
+/* Голый URL в «Что читать дальше» — неразрывное слово шире колонки на 320 px.
+   Раздел обязателен в каждой главе, поэтому правило общее, а не поштучное.
+   Таблицы намеренно не задеты: их ширину держит .table-scroll. */
+.prose p, .prose li, .prose dd, .prose figcaption, .prose blockquote { overflow-wrap: break-word; }
 
 strong { font-weight: 650; }
 .term { font-style: italic; }
@@ -405,13 +413,21 @@ table.data .num { text-align: right; font-variant-numeric: tabular-nums; }
 /* ===================== ЧЕК-ЛИСТ ===================== */
 
 .checklist { margin: 2rem 0; padding: 0; list-style: none; font-family: var(--font-ui); font-size: .9375rem; }
+/* Маркер — абсолютный, НЕ flex-элемент. Если сделать li флекс-контейнером,
+   каждый вложенный тег пункта (.rule-id, .ticker, <b>, <code>) становится
+   отдельным flex-элементом: текст рвётся на колонки с gap между ними, а
+   min-width:auto не даёт пункту сжаться — страница получает горизонтальный
+   скролл на узких экранах. Здесь пункт остаётся блоком с обычным инлайн-потоком,
+   поэтому вложенные теги внутри <li> работают сами собой, без обёрток. */
 .checklist li {
-  display: flex; gap: .7rem; align-items: flex-start;
-  padding: .6rem .9rem; margin-bottom: .4rem;
+  position: relative;
+  padding: .6rem .9rem .6rem 2.55rem; margin-bottom: .4rem;
   background: var(--surface); border: 1px solid var(--hairline); border-radius: .45rem;
+  overflow-wrap: break-word;
 }
 .checklist li::before {
   content: "□"; color: var(--ink-muted); font-size: 1.1rem; line-height: 1.35;
+  position: absolute; left: .9rem; top: .6rem; width: 1.1rem; text-align: center;
 }
 
 /* ===================== ПОДВАЛ / НАВИГАЦИЯ ===================== */
@@ -424,6 +440,10 @@ table.data .num { text-align: right; font-variant-numeric: tabular-nums; }
 .chapter-nav a {
   display: block; padding: .9rem 1.1rem; border: 1px solid var(--hairline);
   border-radius: .5rem; background: var(--surface); text-decoration: none; color: var(--ink);
+  /* Grid-элемент по умолчанию не сжимается уже своего min-content (min-width:auto).
+     Длинное название главы («18. Сентимент, широта, позиционирование») тогда
+     распирает колонку и скроллит страницу на 320 px. */
+  min-width: 0; overflow-wrap: break-word;
 }
 .chapter-nav a:hover { border-color: var(--axis); }
 .chapter-nav .dirn { display: block; font-size: .6875rem; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-muted); margin-bottom: .2rem; }
