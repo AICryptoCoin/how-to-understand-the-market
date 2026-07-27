@@ -374,8 +374,8 @@
           <rect x="112" y="60" width="110" height="300" fill="none" stroke="var(--hairline)" stroke-width="1"/>
 
           <!-- пороговые линии -->
-          <line class="viz-axisline" x1="112" y1="210" x2="560" y2="210" stroke="var(--ink-2)"/>
-          <line class="viz-axisline" x1="112" y1="229.5" x2="560" y2="229.5" stroke="var(--ink-2)"/>
+          <line class="viz-axisline" x1="112" y1="210" x2="560" y2="210" style="stroke:var(--ink-2)"/>
+          <line class="viz-axisline" x1="112" y1="229.5" x2="560" y2="229.5" style="stroke:var(--ink-2)"/>
           <rect x="112" y="300" width="448" height="15" fill="var(--ink-muted)" fill-opacity=".18"/>
           <line class="viz-axisline" x1="112" y1="300" x2="560" y2="300"/>
           <line class="viz-axisline" x1="112" y1="315" x2="560" y2="315"/>
@@ -640,7 +640,7 @@
           <rect x="60" y="60" width="5" height="56" rx="2.5" fill="var(--series-3)"/>
           <text class="viz-title" x="80" y="83">New Orders · Новые заказы</text>
           <text class="viz-label" x="80" y="103">Заказ размещён до того, как что-то произведено</text>
-          <text class="viz-label" x="548" y="83" text-anchor="end" fill="var(--series-3)">опережает</text>
+          <text class="viz-label" x="548" y="83" text-anchor="end" style="fill:var(--series-3)">опережает</text>
           <line class="viz-axisline" x1="560" y1="90" x2="760" y2="90"/>
           <path d="M682,79 L692,79 L687,86 Z" fill="var(--ink-2)"/>
           <text class="viz-axis" x="687" y="75" text-anchor="middle">52.7</text>
@@ -653,7 +653,7 @@
           <rect x="60" y="124" width="5" height="56" rx="2.5" fill="var(--series-3)"/>
           <text class="viz-title" x="80" y="147">Supplier Deliveries · Поставки поставщиков</text>
           <text class="viz-label" x="80" y="167">Рост = поставки медленнее, спрос упёрся в мощности</text>
-          <text class="viz-label" x="548" y="147" text-anchor="end" fill="var(--series-3)">опережает</text>
+          <text class="viz-label" x="548" y="147" text-anchor="end" style="fill:var(--series-3)">опережает</text>
           <line class="viz-axisline" x1="560" y1="154" x2="760" y2="154"/>
           <text class="viz-axis" x="687" y="139" text-anchor="middle">своей линии нет</text>
           <circle class="viz-mark" cx="616" cy="154" r="4.5" fill="var(--series-3)" tabindex="0"
@@ -665,7 +665,7 @@
           <rect x="60" y="188" width="5" height="56" rx="2.5" fill="var(--series-3)"/>
           <text class="viz-title" x="80" y="211">Prices Paid · Уплаченные цены</text>
           <text class="viz-label" x="80" y="231">Опережает официальные PPI и CPI: это издержки на входе</text>
-          <text class="viz-label" x="548" y="211" text-anchor="end" fill="var(--series-3)">опережает</text>
+          <text class="viz-label" x="548" y="211" text-anchor="end" style="fill:var(--series-3)">опережает</text>
           <line class="viz-axisline" x1="560" y1="218" x2="760" y2="218"/>
           <path d="M683,207 L693,207 L688,214 Z" fill="var(--ink-2)"/>
           <text class="viz-axis" x="688" y="203" text-anchor="middle">52.8</text>
@@ -678,7 +678,7 @@
           <rect x="60" y="252" width="5" height="56" rx="2.5" fill="var(--series-4)"/>
           <text class="viz-title" x="80" y="275">Production · Производство</text>
           <text class="viz-label" x="80" y="295">Это и есть выпуск; калибруется против G.17 ФРС</text>
-          <text class="viz-label" x="548" y="275" text-anchor="end" fill="var(--series-4)">совпадает</text>
+          <text class="viz-label" x="548" y="275" text-anchor="end" style="fill:var(--series-4)">совпадает</text>
           <line class="viz-axisline" x1="560" y1="282" x2="760" y2="282"/>
           <path d="M679,271 L689,271 L684,278 Z" fill="var(--ink-2)"/>
           <text class="viz-axis" x="684" y="267" text-anchor="middle">52.4</text>
@@ -691,7 +691,7 @@
           <rect x="60" y="316" width="5" height="56" rx="2.5" fill="var(--series-4)"/>
           <text class="viz-title" x="80" y="339">Inventories · Запасы</text>
           <text class="viz-label" x="80" y="359">Двусмысленный: рост бывает и намеренным, и вынужденным</text>
-          <text class="viz-label" x="548" y="339" text-anchor="end" fill="var(--series-4)">совпадает</text>
+          <text class="viz-label" x="548" y="339" text-anchor="end" style="fill:var(--series-4)">совпадает</text>
           <line class="viz-axisline" x1="560" y1="346" x2="760" y2="346"/>
           <path d="M599,335 L609,335 L604,342 Z" fill="var(--ink-2)"/>
           <text class="viz-axis" x="604" y="331" text-anchor="middle">44.4</text>
@@ -704,7 +704,7 @@
           <rect x="60" y="380" width="5" height="56" rx="2.5" fill="var(--series-5)"/>
           <text class="viz-title" x="80" y="403">Employment · Занятость</text>
           <text class="viz-label" x="80" y="423">Последнее звено H-O-P-E: подтверждает, но не предупреждает</text>
-          <text class="viz-label" x="548" y="403" text-anchor="end" fill="var(--series-5)">запаздывает</text>
+          <text class="viz-label" x="548" y="403" text-anchor="end" style="fill:var(--series-5)">запаздывает</text>
           <line class="viz-axisline" x1="560" y1="410" x2="760" y2="410"/>
           <path d="M659,399 L669,399 L664,406 Z" fill="var(--ink-2)"/>
           <text class="viz-axis" x="664" y="395" text-anchor="middle">50.4</text>
@@ -713,8 +713,8 @@
           <text class="viz-axis" x="666" y="428" text-anchor="middle">50.6</text>
 
           <!-- спред -->
-          <rect class="viz-box" x="60" y="462" width="740" height="64" rx="6" stroke="var(--series-1)" stroke-width="1.5"/>
-          <text class="viz-title" x="80" y="486" fill="var(--series-1)">Спред New Orders − Inventories</text>
+          <rect class="viz-box" x="60" y="462" width="740" height="64" rx="6" style="stroke:var(--series-1);stroke-width:1.5"/>
+          <text class="viz-title" x="80" y="486" style="fill:var(--series-1)">Спред New Orders − Inventories</text>
           <text class="viz-label" x="80" y="504">Заказы уже падают, а запасы ещё растут — производство режут следующим</text>
           <text class="viz-label" x="80" y="522">Спред уходит в минус раньше, чем сам PMI пробивает 50</text>
           <text class="viz-q-title" x="760" y="498" text-anchor="end" fill="var(--series-8)">−7.7 п.п.</text>

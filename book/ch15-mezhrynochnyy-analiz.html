@@ -138,26 +138,26 @@
 
           <!-- классы -->
           <g tabindex="0" data-tip="<b>Акции</b><br>Цена = дисконтированный поток будущей прибыли. Драйвер — выручка и прибыль; ставка дисконтирования приходит с рынка облигаций.">
-            <rect class="viz-box viz-box--accent" x="280" y="110" width="170" height="58" rx="8" stroke="var(--series-1)" stroke-width="1.5"/>
-            <text class="viz-title" x="365" y="131" text-anchor="middle" fill="var(--series-1)">Акции</text>
+            <rect class="viz-box viz-box--accent" x="280" y="110" width="170" height="58" rx="8" style="stroke:var(--series-1);stroke-width:1.5"/>
+            <text class="viz-title" x="365" y="131" text-anchor="middle" style="fill:var(--series-1)">Акции</text>
             <text class="viz-label" x="365" y="155" text-anchor="middle">equities</text>
           </g>
 
           <g tabindex="0" data-tip="<b>Облигации</b><br>Цена задаётся ожидаемой траекторией ставки и премиями. Разворачиваются первыми в цикле.">
-            <rect class="viz-box viz-box--accent" x="520" y="110" width="170" height="58" rx="8" stroke="var(--series-7)" stroke-width="1.5"/>
-            <text class="viz-title" x="605" y="131" text-anchor="middle" fill="var(--series-7)">Облигации</text>
+            <rect class="viz-box viz-box--accent" x="520" y="110" width="170" height="58" rx="8" style="stroke:var(--series-7);stroke-width:1.5"/>
+            <text class="viz-title" x="605" y="131" text-anchor="middle" style="fill:var(--series-7)">Облигации</text>
             <text class="viz-label" x="605" y="155" text-anchor="middle">bonds</text>
           </g>
 
           <g tabindex="0" data-tip="<b>Сырьё</b><br>Цена задаётся физическим спросом и запасами здесь и сейчас. Разворачивается последним и питает инфляцию с лагом около трёх месяцев.">
-            <rect class="viz-box viz-box--accent" x="280" y="280" width="170" height="58" rx="8" stroke="var(--series-3)" stroke-width="1.5"/>
-            <text class="viz-title" x="365" y="301" text-anchor="middle" fill="var(--series-3)">Сырьё</text>
+            <rect class="viz-box viz-box--accent" x="280" y="280" width="170" height="58" rx="8" style="stroke:var(--series-3);stroke-width:1.5"/>
+            <text class="viz-title" x="365" y="301" text-anchor="middle" style="fill:var(--series-3)">Сырьё</text>
             <text class="viz-label" x="365" y="325" text-anchor="middle">commodities</text>
           </g>
 
           <g tabindex="0" data-tip="<b>Валюты</b><br>Курс — производная дифференциала ставок и ожиданий по ФРС. Доллар переоценивает всё остальное, потому что сырьё котируется в нём.">
-            <rect class="viz-box viz-box--accent" x="520" y="280" width="170" height="58" rx="8" stroke="var(--series-2)" stroke-width="1.5"/>
-            <text class="viz-title" x="605" y="301" text-anchor="middle" fill="var(--series-2)">Валюты</text>
+            <rect class="viz-box viz-box--accent" x="520" y="280" width="170" height="58" rx="8" style="stroke:var(--series-2);stroke-width:1.5"/>
+            <text class="viz-title" x="605" y="301" text-anchor="middle" style="fill:var(--series-2)">Валюты</text>
             <text class="viz-label" x="605" y="325" text-anchor="middle">currencies</text>
           </g>
 
@@ -187,7 +187,7 @@
           <path d="M350,368 L620,368" stroke="var(--axis)" stroke-width="1.5" fill="none"/>
           <path d="M350,368 L350,341" stroke="var(--axis)" stroke-width="1.5" fill="none" marker-end="url(#mk-151)"/>
           <path d="M620,368 L620,341" stroke="var(--axis)" stroke-width="1.5" fill="none" marker-end="url(#mk-151)"/>
-          <rect class="viz-box" x="410" y="390" width="150" height="34" rx="17" stroke="var(--ink-muted)"/>
+          <rect class="viz-box" x="410" y="390" width="150" height="34" rx="17" style="stroke:var(--ink-muted)"/>
           <text class="viz-title" x="485" y="412" text-anchor="middle">МАКРО</text>
           <text class="viz-annot" x="485" y="448" text-anchor="middle">общий драйвер для всей системы</text>
         </svg>
@@ -375,7 +375,7 @@
 
           <text class="viz-axis" x="84" y="164" text-anchor="end">17</text>
           <rect x="92" y="155" width="8" height="8" rx="2" fill="var(--series-4)"/>
-          <text class="viz-label" x="110" y="164" fill="var(--series-4)">Криптовалюты (?)</text>
+          <text class="viz-label" x="110" y="164" style="fill:var(--series-4)">Криптовалюты (?)</text>
 
           <text class="viz-axis" x="84" y="138" text-anchor="end">18</text>
           <rect x="92" y="129" width="8" height="8" rx="2" fill="var(--seq-700)"/>
@@ -1155,20 +1155,20 @@
           <path d="M145,186 L705,186" stroke="var(--axis)" stroke-width="1.5" fill="none"/>
           <path d="M430,186 L430,207" stroke="var(--axis)" stroke-width="1.5" fill="none" marker-end="url(#mk-155)"/>
 
-          <rect class="viz-box viz-box--accent" x="250" y="210" width="360" height="52" rx="8" stroke="var(--series-7)" stroke-width="1.5"/>
-          <text class="viz-title" x="430" y="242" text-anchor="middle" fill="var(--series-7)">Есть ли экономический механизм связи?</text>
+          <rect class="viz-box viz-box--accent" x="250" y="210" width="360" height="52" rx="8" style="stroke:var(--series-7);stroke-width:1.5"/>
+          <text class="viz-title" x="430" y="242" text-anchor="middle" style="fill:var(--series-7)">Есть ли экономический механизм связи?</text>
 
           <path d="M430,262 L430,282" stroke="var(--axis)" stroke-width="1.5" fill="none"/>
           <path d="M215,282 L645,282" stroke="var(--axis)" stroke-width="1.5" fill="none"/>
           <path d="M215,282 L215,297" stroke="var(--axis)" stroke-width="1.5" fill="none" marker-end="url(#mk-155)"/>
           <path d="M645,282 L645,297" stroke="var(--axis)" stroke-width="1.5" fill="none" marker-end="url(#mk-155)"/>
 
-          <rect class="viz-box" x="20" y="300" width="390" height="70" rx="8" stroke="var(--st-critical)" stroke-width="1.5"/>
-          <text class="viz-title" x="215" y="332" text-anchor="middle" fill="var(--st-critical)">НЕТ — связь отбрасывается</text>
+          <rect class="viz-box" x="20" y="300" width="390" height="70" rx="8" style="stroke:var(--st-critical);stroke-width:1.5"/>
+          <text class="viz-title" x="215" y="332" text-anchor="middle" style="fill:var(--st-critical)">НЕТ — связь отбрасывается</text>
           <text class="viz-label" x="215" y="354" text-anchor="middle">сколь бы высокой ни была ρ</text>
 
-          <rect class="viz-box" x="450" y="300" width="390" height="70" rx="8" stroke="var(--st-good)" stroke-width="1.5"/>
-          <text class="viz-title" x="645" y="332" text-anchor="middle" fill="var(--st-good)">ДА — связь входит в инструмент</text>
+          <rect class="viz-box" x="450" y="300" width="390" height="70" rx="8" style="stroke:var(--st-good);stroke-width:1.5"/>
+          <text class="viz-title" x="645" y="332" text-anchor="middle" style="fill:var(--st-good)">ДА — связь входит в инструмент</text>
           <text class="viz-label" x="645" y="354" text-anchor="middle">даже при скромной ρ</text>
         </svg>
       </div>
