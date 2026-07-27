@@ -76,6 +76,51 @@ def _curve(tenor: str, kind: str = "nominal", first_year: int = 1990):
     return go
 
 
+def _shiller_cape() -> S.Series:
+    """CAPE Шиллера как Series.
+
+    В описи он стоит не ради самого CAPE, а как страж свежести: прямая ссылка
+    на `ie_data.xls` без UUID отдаёт корректный, но устаревший на 22 месяца
+    файл. Такую подмену видно только по последнему наблюдению.
+    """
+    sheets = S.shiller()
+    rows = sheets.get("Data") or next(iter(sheets.values()))
+    # Шапка многострочная, и слово "CAPE" встречается в ДВУХ колонках: у самого
+    # CAPE (подписан "P/E10 or" + "CAPE") и у "Excess CAPE Yield". Поиск по
+    # слову "CAPE" даёт вторую и молча возвращает доходность вместо индекса
+    # (0.014 вместо 37). Опознаём по метке "P/E10", исключая вариант "TR".
+    width = max(len(r) for r in rows[:12])
+    joined = {
+        c: " ".join(str(r[c]) for r in rows[:12]
+                    if c < len(r) and isinstance(r[c], str)).upper()
+        for c in range(width)
+    }
+    col = next(c for c, text in joined.items()
+               if "P/E10" in text and "TR " not in text)
+    hdr = max(i for i, r in enumerate(rows[:12])
+              if col < len(r) and isinstance(r[col], str))
+
+    s = S.Series(series_id="SHILLER-CAPE", source="Shiller (shillerdata.com)",
+                 title="CAPE (Shiller P/E)", freq="M", units="ratio",
+                 fetched_at=S._now())
+    for r in rows[hdr + 1:]:
+        # Дата лежит СТРОКОЙ формата "ГГГГ.ММ" ("2026.07"), а не числом.
+        stamp = S._num(r[0]) if r else None
+        if stamp is None:
+            continue
+        year, month = int(stamp), round(round(stamp - int(stamp), 4) * 100)
+        if not (1871 <= year <= 2100 and 1 <= month <= 12):
+            continue
+        # Ранние CAPE помечены "NA": индекс требует 10 лет предыстории и
+        # реально начинается с 1881-01, хотя таблица идёт с 1871-01.
+        val = S._num(r[col]) if col < len(r) else None
+        if val is None:
+            continue
+        s.dates.append(date(year, month, 1).isoformat())
+        s.values.append(val)
+    return s
+
+
 # Ожидания ниже — фактические границы, снятые с серверов 2026-07-27, с запасом
 # вниз по числу наблюдений. Если строка краснеет, это не «тест сломался»:
 # это либо источник изменился, либо историю усекли — и то, и то надо смотреть.
@@ -153,6 +198,12 @@ CHECKS: list[Check] = [
           lambda: S.yahoo("^RUT"), 9600, "1987-09-10", 14),
     Check("markets", "Nasdaq Composite", "-",
           lambda: S.yahoo("^IXIC"), 13800, "1971-02-05", 14),
+    # CAPE стоит в описи как страж свежести: прямая ссылка без UUID отдаёт
+    # корректный, но отставший на 22 месяца файл, и видно это только по
+    # последнему наблюдению. Начало 1881-01, а не 1871-01: индексу нужно
+    # 10 лет предыстории, и ранние строки помечены "NA".
+    Check("markets", "CAPE Shillera (strazh svezhesti)", "-",
+          _shiller_cape, 1700, "1881-01-01", 75),
 
     # --- индексы состояния экономики и панели-замена ISM --------------------
     Check("activity", "Indeks delovyh usloviy ADS", "-",
@@ -205,6 +256,16 @@ def validate(c: Check, s: S.Series) -> str | None:
     if first > c.starts_by:
         return (f"istoriya nachinaetsya {first}, a dolzhna ne pozzhe {c.starts_by} "
                 f"- pohozhe na usechenie")
+    # Сверка с паспортом ряда. FRED в конверте наблюдений отдаёт ранние строки
+    # с value="." — если считать их за данные, ряд «начинается» на годы раньше,
+    # чем на самом деле (AWHMAN: 1134 строки против 1050 чисел, 1932 против
+    # 1939; NEWORDER: 700 против 412, 1968 против 1992). Первое ЧИСЛОВОЕ
+    # наблюдение обязано совпасть с observation_start из паспорта.
+    declared = (s.meta or {}).get("observation_start")
+    if declared and first != declared:
+        return (f"pervoe chislovoe nablyudenie {first}, a v pasporte ryada "
+                f"observation_start={declared} - libo v ryad popali dyry "
+                f"(value=\".\"), libo istoriya usechena")
     lag = (date.today() - datetime.strptime(last, "%Y-%m-%d").date()).days
     if lag > c.max_lag_days:
         return (f"poslednee nablyudenie {last} ({lag} dn. nazad), dopustimo "
@@ -237,6 +298,14 @@ def selftest() -> int:
          lambda: validate(Check("x", "USSLIND", "FRED",
                                 lambda: S.fred("USSLIND"),
                                 400, "1982-01-01", 75), S.fred("USSLIND"))),
+        ("Yahoo range=max molcha ponizhaet granulyarnost' (^GSPC)",
+         lambda: _granularity_case()),
+        ("dyry value='.' v konverte FRED (NEWORDER: 700 strok, 412 chisel)",
+         lambda: validate(Check("x", "NEWORDER", "FRED",
+                                lambda: S.fred("NEWORDER"),
+                                400, "1968-02-01", 75), S.fred("NEWORDER"))),
+        ("HTML vmesto tablicy pri 200 (podmena po signature)",
+         lambda: _html_instead_of_spreadsheet()),
     ]
     caught = 0
     for name, run in cases:
@@ -251,6 +320,37 @@ def selftest() -> int:
             print(f"  PROPUSK {name}  <-- DETEKTOR SLOMAN")
     print(f"\npoymano {caught} iz {len(cases)}")
     return 0 if caught == len(cases) else 1
+
+
+def _granularity_case() -> str | None:
+    """``range=max`` игнорирует ``interval`` и отдаёт квартальные точки."""
+    try:
+        s = S.yahoo("^GSPC", range_="max", interval="1d")
+    except S.FetchError as exc:
+        return f"FetchError: {exc}"
+    return validate(Check("x", "^GSPC", "-", lambda: s, 24000, "1927-12-30", 14), s)
+
+
+def _html_instead_of_spreadsheet() -> str | None:
+    """Сервер отвечает **200** и присылает HTML там, где ожидался архив.
+
+    Настоящий случай, не искусственный: этот путь к обзорам ЕК отдаёт
+    200 и 68 154 байта с сигнатурой ``<!DO``. Ни код, ни размер подмену не
+    выдают — только сигнатура. Ровно поэтому проверка идёт по телу.
+    """
+    try:
+        body = S.fetch("https://ec.europa.eu/economy_finance/db_indicators/"
+                       "surveys/documents/series/main_indicators_nace2.zip",
+                       tag="selftest-html", max_age=timedelta(hours=12))
+    except S.FetchError as exc:
+        return f"FetchError na zagruzke: {exc}"
+    if body[:2] == b"PK":
+        return None            # внезапно приехал настоящий архив - не поймали
+    try:
+        S._spreadsheet(body)
+    except Exception as exc:                                  # noqa: BLE001
+        return f"{type(exc).__name__}: {exc}"
+    return None
 
 
 def _stub_case() -> str | None:

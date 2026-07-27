@@ -78,10 +78,22 @@ DEFAULT_MAX_AGE = timedelta(hours=12)
 FORCE_ALL = False
 
 # Заголовки HTTP кодируются latin-1 — кириллице здесь не место.
-USER_AGENT = (
+#
+# Переопределяется переменной окружения RESEARCH_USER_AGENT. Это не украшение:
+# **www.bls.gov отдаёт 403, если в User-Agent нет адреса электронной почты.**
+# Проверено прямым перебором — дело не в длине строки и не в кавычках:
+#   "...(contact: github.com/loodo)"     -> 403   (ссылка вместо почты)
+#   "...(educational research)"          -> 403   (контакта нет вовсе)
+#   "...(contact: name@example.com)"     -> 200
+# По умолчанию почта не подставляется: UA уходит на каждый сервер, и зашивать
+# сюда чей-то личный адрес нельзя. Нужен www.bls.gov — задайте свой:
+#   set RESEARCH_USER_AGENT=my-research/1.0 (you@example.com)
+# Данные BLS при этом доступны и без него: api.bls.gov работает с общим UA,
+# почта нужна только для HTML-страниц сайта.
+USER_AGENT = os.environ.get("RESEARCH_USER_AGENT") or (
     "loodo-market-cycle-research/1.0 "
     "(educational research for the book 'How to Read the Market'; "
-    "contact: github.com/loodo)"
+    "non-commercial)"
 )
 
 #: Минимальная пауза между двумя запросами к одному хосту, сек.
@@ -770,11 +782,24 @@ def _xls_sheets(body: bytes) -> dict[str, list[list[Any]]]:
 
 
 def _spreadsheet(body: bytes) -> dict[str, list[list[Any]]]:
-    """Автовыбор парсера по «магическим» байтам (сайты часто врут расширением)."""
+    """Автовыбор парсера по «магическим» байтам (сайты часто врут расширением).
+
+    Отдельно назван самый частый случай — HTML вместо таблицы. Сервер при этом
+    отвечает 200 и присылает солидный объём (страница ошибки бывает на сотни
+    килобайт), так что ни код, ни размер подмену не выдают: единственный
+    надёжный признак — сигнатура.
+    """
     if body[:2] == b"PK":
         return _xlsx_sheets(body)
     if body[:8] == b"\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1":
         return _xls_sheets(body)
+    head = body[:512].lstrip()[:16].lower()
+    if head.startswith((b"<!do", b"<html", b"<?xml", b"<")):
+        raise UpstreamBlocked(
+            f"вместо таблицы пришёл HTML ({len(body)} байт). Обычно это "
+            f"страница ошибки или заглушка, отданная с кодом 200 — проверять "
+            f"надо сигнатуру, а не статус и не размер."
+        )
     raise ValueError(f"неизвестный формат таблицы (magic={body[:8]!r})")
 
 
@@ -929,7 +954,7 @@ _YAHOO_FLOOR = -2208988800
 
 
 def yahoo(symbol: str, *, range_: str | None = None, interval: str = "1d",
-          force: bool = False) -> Series:
+          allow_coarser: bool = False, force: bool = False) -> Series:
     """Дневной ряд закрытий с Yahoo Finance chart API.
 
     Индексы: ``^GSPC``, ``^RUT``, ``^IXIC``, ``^VIX``, ``DX-Y.NYB``.
@@ -938,9 +963,15 @@ def yahoo(symbol: str, *, range_: str | None = None, interval: str = "1d",
     По умолчанию (``range_=None``) запрашивается вся история через
     ``period1``/``period2``. Так сделано намеренно: **``range=max`` молча
     понижает гранулярность** — на ``^GSPC`` с ``range=max&interval=1d`` Yahoo
-    отдаёт 168 точек с шагом ``3mo``, а через ``period1`` — 14 261 дневную
-    точку. Фактическую гранулярность ответа функция сверяет с запрошенной и
-    предупреждает при расхождении.
+    отдаёт 168 точек с шагом ``3mo``, а через ``period1`` — полную дневную
+    историю с 1927-12-30. На ``^VIX3M`` тот же ``range=max`` возвращает
+    **ровно одну** точку. Фактическую гранулярность функция сверяет с
+    запрошенной и **падает** при расхождении (``allow_coarser=True`` — если
+    грубый шаг нужен осознанно).
+
+    Даты берутся из самого ряда, а не из ``meta.firstTradeDate``: они не
+    совпадают. У ``^HGX``, ``XHB`` и ``ITB`` первый бар примерно на месяц
+    позже даты первой сделки из метаданных.
     """
     base = f"https://query1.finance.yahoo.com/v8/finance/chart/{urllib.parse.quote(symbol)}"
     if range_:
@@ -961,10 +992,15 @@ def yahoo(symbol: str, *, range_: str | None = None, interval: str = "1d",
               or (res.get("indicators") or {}).get("quote") or [{}])[0]
     vals = closes.get("adjclose") or closes.get("close") or []
     got = meta.get("dataGranularity")
-    if got and got != interval:
-        sys.stderr.write(
-            f"[sources] ВНИМАНИЕ: Yahoo вернул шаг {got!r} вместо запрошенного "
-            f"{interval!r} для {symbol}. Ряд грубее, чем ожидалось.\n"
+    if got and got != interval and not allow_coarser:
+        raise FetchError(
+            f"Yahoo вернул шаг {got!r} вместо запрошенного {interval!r} для "
+            f"{symbol}: это другой ряд, а не тот же с оговоркой. Обычная "
+            f"причина — range=max, при котором interval молча игнорируется "
+            f"(на '^GSPC' так выходит 168 квартальных точек вместо дневных, "
+            f"а на '^VIX3M' — ровно одна). Не задавайте range_, тогда история "
+            f"берётся через period1/period2. Осознанно нужен грубый шаг — "
+            f"allow_coarser=True."
         )
     s = Series(series_id=symbol, source="Yahoo Finance",
                title=meta.get("shortName") or symbol, freq=got or interval,
@@ -1593,8 +1629,13 @@ NAHB_TABLES = {
     "t2": "национальный HMI, история (композит, SA); строки = годы, колонки = месяцы",
     "t3": "компоненты (present sales / expected sales / traffic); ТРАНСПОНИРОВАНА: "
           "строки = месяцы, колонки = годы, блоки разделены заголовками",
-    "t4": "регионы, уровни; полосная раскладка (не поддерживается, см. docstring)",
-    "t5": "регионы, 3-месячное среднее; полосная раскладка (не поддерживается)",
+    # ВНИМАНИЕ: t4 и t5 — НЕ «две части одного набора регионов». В каждом лежат
+    # все четыре региона; t5 это трёхмесячная скользящая средняя тех же рядов,
+    # что и в t4. Склеить их как один источник — значит получить дубли и
+    # смешать сырой ряд со сглаженным.
+    "t4": "все 4 региона, уровни, с 2004-12; полосная раскладка (не разбирается)",
+    "t5": "те же 4 региона, 3-месячная скользящая средняя, с 2005-02 "
+          "(не разбирается)",
 }
 
 
@@ -1628,10 +1669,13 @@ def nahb_hmi(table: str = "t2", *, force: bool = False) -> dict[str, Series]:
         raise ValueError(f"table должен быть одним из {sorted(NAHB_TABLES)}")
     if table in ("t4", "t5"):
         raise NotImplementedError(
-            f"NAHB {table} (регионы) — полосная раскладка: год указан только там, "
-            f"где меняется, полосы уложены вертикально. Разбор не реализован "
-            f"намеренно: риск молча склеить полосы. Национальный композит — "
-            f"nahb_hmi('t2'), компоненты — nahb_hmi('t3')."
+            f"NAHB {table} — полосная раскладка: 22 год-блока по 4 строки "
+            f"регионов, год указан только там, где меняется. Разбор не "
+            f"реализован намеренно: риск молча склеить блоки. Учтите также, "
+            f"что t4 и t5 — не две части одного набора: в обоих все четыре "
+            f"региона, а t5 это 3-месячная скользящая средняя от t4. "
+            f"История с 1985 есть только у композита nahb_hmi('t2'); "
+            f"регионы начинаются с 2004-12 (t4) и 2005-02 (t5)."
         )
 
     page = fetch(_NAHB_INDEX, tag="nahb-index", force=force,
@@ -1968,15 +2012,59 @@ def ken_french(dataset: str = "F-F_Research_Data_Factors", *,
 
 
 def shiller(*, force: bool = False) -> dict[str, list[list[Any]]]:
-    """Данные Роберта Шиллера (Yale): S&P, дивиденды, прибыль, CAPE с 1871-01.
+    """Данные Роберта Шиллера: S&P, дивиденды, прибыль, CAPE с 1871-01.
 
     Единственный бесплатный источник глубокой истории S&P и CAPE: FRED-ряд
     ``SP500`` лицензионно урезан до 10 лет. Возвращает сырые листы;
     нужный обычно называется ``Data``.
+
+    **Ссылку обязательно брать со страницы, а не хардкодить.** Прямой путь
+    ``…/downloads/ie_data.xls`` без UUID-сегмента отвечает 200 и отдаёт
+    совершенно корректный OLE2-файл — просто **устаревший на 22 месяца**
+    (последнее наблюдение 2024.09 против 2026.07 на актуальной ссылке).
+    Такая подмена опаснее 404: файл парсится, ряд выглядит целым, и ошибка
+    всплывёт только в выводах. Поэтому здесь скрейпится ``shillerdata.com``,
+    а `smoke.py` дополнительно следит за свежестью последнего наблюдения.
     """
-    url = "https://img1.wsimg.com/blobby/go/e5e77e0b-59d1-44d9-ab25-4763ac982e53/downloads/ie_data.xls"
-    return _spreadsheet(fetch(url, tag="shiller", timeout=120, force=force,
-                              max_age=timedelta(days=7)))
+    page = fetch("https://shillerdata.com/", tag="shiller-page", force=force,
+                 max_age=timedelta(days=1)).decode("utf-8", "replace")
+    hrefs = re.findall(r'href="([^"]*ie_data[^"]*\.xls[^"]*)"', page, re.I)
+    if not hrefs:
+        raise FetchError(
+            "На shillerdata.com не нашлось ссылки на ie_data.xls — изменилась "
+            "вёрстка. Хардкодить прямой путь НЕЛЬЗЯ: он отдаёт устаревшую копию."
+        )
+    url = html.unescape(hrefs[0])
+    if url.startswith("//"):
+        url = "https:" + url
+    elif not url.startswith("http"):
+        url = "https://shillerdata.com" + url
+    sys.stderr.write(f"[sources] Shiller: {url}\n")
+    body = fetch(url, tag="shiller", timeout=120, force=force,
+                 max_age=timedelta(days=7))
+
+    # Производные колонки (CAPE, TR CAPE, реальные ряды) — это ФОРМУЛЫ Excel.
+    # Встроенный BIFF-читатель отдаёт только сохранённые значения ячеек, а
+    # формульные приходят пустыми; сырые колонки (Date, P, D, E, CPI, GS10)
+    # читаются нормально. xlrd достаёт закешированный результат формулы, поэтому
+    # используется, если установлен. Жёсткой зависимостью не делаем.
+    try:
+        import xlrd                                          # noqa: PLC0415
+    except ImportError:
+        sys.stderr.write(
+            "[sources] ВНИМАНИЕ: xlrd не установлен — у Шиллера будут пустыми "
+            "формульные колонки (CAPE, TR CAPE, реальные ряды). Сырые "
+            "(Date, P, D, E, CPI, GS10) читаются. Поставьте xlrd для CAPE.\n"
+        )
+        return _spreadsheet(body)
+
+    wb = xlrd.open_workbook(file_contents=body)
+    out: dict[str, list[list[Any]]] = {}
+    for name in wb.sheet_names():
+        sh = wb.sheet_by_name(name)
+        out[name] = [[sh.cell_value(r, c) if sh.cell_value(r, c) != "" else None
+                      for c in range(sh.ncols)] for r in range(sh.nrows)]
+    return out
 
 
 def damodaran(dataset: str = "histretSP", *, force: bool = False
@@ -2028,17 +2116,41 @@ def coingecko(coin: str = "bitcoin", *, days: str = "365", vs: str = "usd",
     return s
 
 
-def binance(symbol: str = "BTCUSDT", *, interval: str = "1d", limit: int = 1000,
-            force: bool = False) -> Series:
-    """Свечи Binance (закрытие). Без ключа."""
-    url = (f"https://api.binance.com/api/v3/klines?symbol={symbol}"
-           f"&interval={interval}&limit={int(limit)}")
-    rows = json.loads(fetch(url, tag="binance", force=force))
+def binance(symbol: str = "BTCUSDT", *, interval: str = "1d",
+            full_history: bool = True, force: bool = False) -> Series:
+    """Свечи Binance (закрытие). Без ключа.
+
+    **Одна страница — максимум 1000 свечей**, поэтому без пагинации на дневном
+    шаге получаются только последние ~2.7 года, а не история. По умолчанию
+    страницы обходятся до конца: ``startTime=0`` Binance понимает как «с начала
+    истории», дальше сдвигаемся по времени закрытия последней свечи.
+    Первая дневная свеча ``BTCUSDT`` — **2017-08-17** (не 2017-08-01: пара
+    появилась в середине месяца).
+    """
     s = Series(series_id=symbol, source="Binance", freq=interval,
                units="USDT", fetched_at=_now())
-    for k in rows:
-        s.dates.append(_from_epoch(k[0] / 1000))
-        s.values.append(_num(k[4]))
+    base = (f"https://api.binance.com/api/v3/klines?symbol={symbol}"
+            f"&interval={interval}&limit=1000")
+    start = 0
+    seen: set[str] = set()
+    while True:
+        rows = json.loads(fetch(f"{base}&startTime={start}", tag="binance",
+                                force=force, max_age=timedelta(hours=12)))
+        if not rows:
+            break
+        for k in rows:
+            iso = _from_epoch(k[0] / 1000)
+            if iso in seen:          # страницы у Binance перекрываются краями
+                continue
+            seen.add(iso)
+            s.dates.append(iso)
+            s.values.append(_num(k[4]))
+        if not full_history or len(rows) < 1000:
+            break
+        start = int(rows[-1][6]) + 1      # k[6] = время закрытия последней свечи
+    order = sorted(range(len(s.dates)), key=lambda i: s.dates[i])
+    s.dates = [s.dates[i] for i in order]
+    s.values = [s.values[i] for i in order]
     return s
 
 
