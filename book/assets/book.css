@@ -497,6 +497,29 @@ table.data .num { text-align: right; font-variant-numeric: tabular-nums; }
 .toc-list .status--done { color: var(--st-good); }
 .toc-list .status--todo { color: var(--ink-muted); }
 
+/* ===================== МАРКЕР РЕДАКЦИИ ===================== */
+
+/* Колофон обложки: версия, дата, объём и ссылки на журнал и errata.
+   Своих цветов и размеров не вводит — те же токены, что у карточки
+   индикатора. Пункт не флекс-элемент и не грид-элемент внутри себя:
+   ссылка и «≈165 тыс.» переносятся обычным инлайн-потоком. */
+.colophon {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+  margin: 0 0 3rem; padding: 0;
+  font-family: var(--font-ui); font-size: .8125rem;
+  border-top: 1px solid var(--grid); border-bottom: 1px solid var(--grid);
+}
+.colophon > div {
+  min-width: 0; padding: .8rem 1rem .8rem 0;
+  border-right: 1px solid var(--grid);
+}
+.colophon > div:last-child { border-right: 0; }
+.colophon dt {
+  color: var(--ink-muted); font-size: .6875rem;
+  text-transform: uppercase; letter-spacing: .06em; margin-bottom: .2rem;
+}
+.colophon dd { margin: 0; color: var(--ink); font-weight: 550; overflow-wrap: break-word; }
+
 /* ===================== АДАПТИВ ===================== */
 
 @media (max-width: 60rem) {

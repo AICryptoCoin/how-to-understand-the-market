@@ -28,6 +28,15 @@
 
   <div class="progress" id="cover-progress"></div>
 
+  <dl class="colophon">
+    <div><dt>Редакция</dt><dd>1.0 · 27 июля 2026</dd></div>
+    <div><dt>Объём</dt><dd>24 главы · ≈165 тыс. слов</dd></div>
+    <div><dt>Графика</dt><dd>105 фигур · 154 таблицы</dd></div>
+    <div><dt>Журнал</dt><dd><a href="CHANGELOG.md">CHANGELOG.md</a></dd></div>
+    <div><dt>Исправления</dt><dd><a href="errata.html">errata.html</a></dd></div>
+    <div><dt>Проверка</dt><dd><code>tools/audit.py</code></dd></div>
+  </dl>
+
   <div class="callout callout--ours">
     <div class="callout__label" data-icon="◆">О книге</div>
     <p>
@@ -86,12 +95,15 @@
 
   <h2>Сопутствующие материалы</h2>
   <ul>
+    <li><a href="errata.html">Исправления</a> — что и почему было исправлено в вышедших главах</li>
+    <li><a href="CHANGELOG.md">Журнал изменений</a> — история редакций книги, от каркаса до 1.0</li>
     <li><a href="../BOOK-PLAN.md">План книги</a> — структура, порядок работы, разрешённые противоречия источника</li>
     <li><a href="../synthesis/cheatsheet-spec.md">Спецификация шпаргалки</a> — оси, квадранты, 88 правил, незакрытые дыры</li>
     <li><a href="../synthesis/indicator-catalog.md">Каталог индикаторов</a> — ~185 показателей, календарь месяца, пороги</li>
     <li><a href="../synthesis/coverage-and-gaps.md">Покрытие и пробелы</a> — что курс даёт, чего в нём нет</li>
     <li><a href="../source-digests/">Послайдовые конспекты</a> — первичный разбор всех лекций</li>
     <li>Руководство по вёрстке — как писать новую главу</li>
+    <li><code>tools/audit.py</code> — аудит книги: объём, структура, дефекты вёрстки. <code>--selftest</code> проверяет сами детекторы</li>
   </ul>
 
 </main>

@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Эталон дефектов — не глава книги</title>
+<!--
+  Файл нарочно сломан: в нём по экземпляру каждого дефекта, который ищет
+  tools/audit.py. Используется только `python audit.py --selftest`.
+  Ожидаемые числа — в SELFTEST_EXPECT. Правите файл — правьте и их.
+  В assets/chapters.js этот файл не входит и в книгу не подключается.
+-->
+<link rel="stylesheet" href="../../assets/book.css">
+</head>
+<body>
+
+<!-- ни одного обязательного блока §3: нет eyebrow, lede, chapter-map,
+     крипто-слоя, врезки 2023→2026, чек-листа и «Что читать дальше» — 7 штук -->
+<article class="prose">
+
+<h1>Эталон дефектов</h1>
+
+<figure class="figure" id="fig-x-1">
+  <div class="figure__frame">
+    <svg viewBox="0 0 400 200" role="img" aria-labelledby="fx1t fx1d">
+      <title id="fx1t">Эталон</title>
+      <desc id="fx1d">Фигура со значениями и без табличного двойника.</desc>
+
+      <defs>
+        <!-- дубль id: маркер объявлен дважды -->
+        <marker id="arrow-x" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0,0 L8,4 L0,8 z" style="fill:var(--axis)"/>
+        </marker>
+        <marker id="arrow-x" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0,0 L8,4 L0,8 z" style="fill:var(--axis)"/>
+        </marker>
+      </defs>
+
+      <!-- HTML внутри <text>: два тега, ни один не отрендерится -->
+      <text class="viz-label" x="10" y="20">Строка с <b>жирным</b> и <em>курсивом</em></text>
+
+      <!-- презентационный атрибут под классом: fill у .viz-title,
+           stroke у .viz-box, marker-end у .viz-flow — три штуки -->
+      <text class="viz-title" x="10" y="40" fill="var(--series-1)">Заголовок</text>
+      <rect class="viz-box" x="10" y="50" width="120" height="30" stroke="var(--series-2)"/>
+      <path class="viz-flow" d="M10,100 L120,100" marker-end="url(#arrow-x)"/>
+
+      <!-- битая ссылка №1: такого id в документе нет -->
+      <path d="M10,120 L120,120" style="stroke:var(--axis);marker-end:url(#arrow-net)"/>
+
+      <!-- битая ссылка №2: класс .viz-flow наследует из CSS marker-end:url(#arrow),
+           а #arrow здесь не объявлен — стрелка молча не нарисуется -->
+      <path class="viz-flow" d="M10,140 L120,140"/>
+
+      <!-- хардкод hex: два случая, атрибутом и инлайн-стилем -->
+      <circle cx="200" cy="60" r="4" fill="#ff0000"/>
+      <rect x="200" y="80" width="40" height="10" style="fill:#0a0"/>
+
+      <!-- четыре числовые подписи => фигура «со значениями», двойник обязателен -->
+      <text class="viz-axis" x="300" y="20">50</text>
+      <text class="viz-axis" x="300" y="40">−1.5 %</text>
+      <text class="viz-axis" x="300" y="60">2020</text>
+      <text class="viz-axis" x="300" y="80">12 б.п.</text>
+    </svg>
+  </div>
+  <figcaption><span class="figure__num">Рис. X.1.</span> <b>Эталон.</b> Двойника нет.</figcaption>
+</figure>
+
+<!-- таблица без обёртки .table-scroll -->
+<table class="data">
+  <thead><tr><th>Что</th><th class="num">Сколько</th></tr></thead>
+  <tbody><tr><td>Строка</td><td class="num">1</td></tr></tbody>
+</table>
+
+</article>
+</body>
+</html>

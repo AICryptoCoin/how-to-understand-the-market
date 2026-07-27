@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Эталон нормы — не глава книги</title>
+<!--
+  Зеркало broken.html: то же содержание, но по правилам STYLE-GUIDE.
+  Ловит ложные срабатывания детекторов. Используется только
+  `python audit.py --selftest`. В assets/chapters.js не входит.
+-->
+<link rel="stylesheet" href="../../assets/book.css">
+</head>
+<body>
+
+<article class="prose">
+
+<p class="chapter-eyebrow">Эталон · служебный файл</p>
+<h1>Эталон нормы</h1>
+<p class="chapter-lede">Все обязательные блоки §3 на месте, дефектов §5 нет.</p>
+
+<nav class="chapter-map">
+  <h2>В этой главе</h2>
+  <ol><li><a href="#s1">Единственный раздел</a></li></ol>
+</nav>
+
+<h2 id="s1">Единственный раздел</h2>
+
+<figure class="figure" id="fig-y-1">
+  <div class="figure__frame">
+    <svg viewBox="0 0 400 200" role="img" aria-labelledby="fy1t fy1d">
+      <title id="fy1t">Эталон</title>
+      <desc id="fy1d">Фигура со значениями и с табличным двойником.</desc>
+
+      <defs>
+        <marker id="arrow-y1" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M0,0 L8,4 L0,8 z" style="fill:var(--axis)"/>
+        </marker>
+      </defs>
+
+      <text class="viz-label" x="10" y="20">Строка с <tspan font-weight="700">жирным</tspan></text>
+      <text class="viz-title" x="10" y="40" style="fill:var(--series-1)">Заголовок</text>
+      <rect class="viz-box" x="10" y="50" width="120" height="30" style="stroke:var(--series-2)"/>
+      <path class="viz-flow" d="M10,100 L120,100" style="marker-end:url(#arrow-y1)"/>
+
+      <circle cx="200" cy="60" r="4" class="viz-mark" fill="var(--series-1)"/>
+
+      <text class="viz-axis" x="300" y="20">50</text>
+      <text class="viz-axis" x="300" y="40">−1.5 %</text>
+      <text class="viz-axis" x="300" y="60">2020</text>
+      <text class="viz-axis" x="300" y="80">12 б.п.</text>
+    </svg>
+  </div>
+  <figcaption><span class="figure__num">Рис. Y.1.</span> <b>Эталон.</b> Двойник есть.</figcaption>
+  <div class="figure__table table-scroll" hidden>
+    <table class="data">
+      <thead><tr><th>Что</th><th class="num">Сколько</th></tr></thead>
+      <tbody><tr><td>Порог</td><td class="num">50</td></tr></tbody>
+    </table>
+  </div>
+</figure>
+
+<!-- Блок-схема: подписи 1..5 — нумерация шагов, а не значения.
+     Табличного двойника у неё быть не должно, и аудит не должен его требовать. -->
+<figure class="figure" id="fig-y-2">
+  <div class="figure__frame">
+    <svg viewBox="0 0 400 200" role="img" aria-labelledby="fy2t fy2d">
+      <title id="fy2t">Конвейер</title>
+      <desc id="fy2d">Пять шагов подряд, значений нет.</desc>
+      <text class="viz-axis" x="20" y="30">1</text>
+      <text class="viz-axis" x="20" y="60">2</text>
+      <text class="viz-axis" x="20" y="90">3</text>
+      <text class="viz-axis" x="20" y="120">4</text>
+      <text class="viz-axis" x="20" y="150">5</text>
+      <text class="viz-label" x="50" y="30">Шаг наблюдения</text>
+    </svg>
+  </div>
+  <figcaption><span class="figure__num">Рис. Y.2.</span> <b>Конвейер.</b> Двойник не нужен.</figcaption>
+</figure>
+
+<div class="table-scroll">
+  <table class="data">
+    <thead><tr><th>Что</th><th class="num">Сколько</th></tr></thead>
+    <tbody><tr><td>Строка</td><td class="num">1</td></tr></tbody>
+  </table>
+</div>
+
+<div class="callout callout--crypto">
+  <div class="callout__label" data-icon="₿">Крипто-слой</div>
+  <p>Что этот блок означает для BTC и альтов.</p>
+</div>
+
+<div class="callout callout--2026">
+  <div class="callout__label" data-icon="↻">2023 → 2026</div>
+  <p>Что изменилось с записи курса.</p>
+</div>
+
+<ul class="checklist">
+  <li>Проверьте <span class="rule-id">R01</span> на текущих данных.</li>
+</ul>
+
+<h2 id="s2">Что читать дальше</h2>
+<ul><li>Источник — одна строка о том, что там смотреть.</li></ul>
+
+</article>
+</body>
+</html>
