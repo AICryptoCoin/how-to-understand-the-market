@@ -55,7 +55,7 @@ __all__ = [
     "nyfed_acm", "nyfed_reference_rate", "nyfed_sce",
     "philfed_ads", "philfed_mbos", "philfed_nbos", "philfed_spf", "philfed_realtime",
     "empire_state", "cfnai", "atlanta_gdpnow", "cleveland_inflation_expectations",
-    "bls", "bea", "census_eits", "census_variables",
+    "bls", "bea", "census_eits", "census_variables", "nahb_hmi", "NAHB_TABLES",
     "ecb", "eurostat", "boe", "bis", "oecd_cli", "worldbank", "dbnomics",
     "ofr_fsi", "cftc_cot", "ken_french", "shiller", "damodaran", "eia",
     "coingecko", "binance",
@@ -1411,6 +1411,152 @@ def census_eits(program: str = "resconst", *, category_code: str | None = None,
                 f"одного значения (например {sorted(dupes)[:3]}). Значит есть ещё "
                 f"неразрешённая размерность — сузь фильтры "
                 f"(см. census_variables({program!r}))."
+            )
+    return out
+
+
+# --------------------------------------------------------------------------- #
+# NAHB — Housing Market Index (ключевой опережающий индикатор книги)
+# --------------------------------------------------------------------------- #
+
+_NAHB_INDEX = ("https://www.nahb.org/news-and-economics/housing-economics/"
+               "indices/housing-market-index")
+
+#: Таблицы на индекс-странице NAHB. У каждой СВОЯ раскладка — см. nahb_hmi().
+NAHB_TABLES = {
+    "t2": "национальный HMI, история (композит, SA); строки = годы, колонки = месяцы",
+    "t3": "компоненты (present sales / expected sales / traffic); ТРАНСПОНИРОВАНА: "
+          "строки = месяцы, колонки = годы, блоки разделены заголовками",
+    "t4": "регионы, уровни; полосная раскладка (не поддерживается, см. docstring)",
+    "t5": "регионы, 3-месячное среднее; полосная раскладка (не поддерживается)",
+}
+
+
+def nahb_hmi(table: str = "t2", *, force: bool = False) -> dict[str, Series]:
+    """NAHB/Wells Fargo Housing Market Index — месячный, с 1985-01.
+
+    **Ряд открыт и бесплатен**, хотя на FRED его нет (поиск даёт ноль
+    результатов). Это несовпадение стоило одной ошибочной записи в SOURCES.md:
+    отсутствие на FRED не означает отсутствия в природе. Файлы лежат на сайте
+    NAHB, ключ не нужен.
+
+    Две особенности, из-за которых нельзя просто захардкодить ссылку:
+
+    * URL меняется каждый месяц — в пути стоит ``/<год>-<месяц>/``, а в конце
+      ``?rev=<hash>``. Поэтому ссылка каждый раз берётся с индекс-страницы.
+    * данные лежат **широко**: строка = год, 12 колонок = месяцы. Здесь они
+      разворачиваются в обычный ряд.
+
+    Поддержаны ``t2`` (композит) и ``t3`` (компоненты). ``t4``/``t5`` (регионы)
+    сознательно НЕ разбираются: там полосная раскладка — строки это регионы,
+    колонки идут непрерывной чередой месяцев, а год стоит в отдельной строке
+    только там, где меняется, и такие полосы уложены одна под другой (151 строка).
+    Разобрать её можно, но небрежный парсер молча склеит полосы в неверный ряд,
+    поэтому функция честно отказывается, а не делает вид, что справилась.
+
+    Лицензия: «(c) NAHB, All rights reserved». График в книге с атрибуцией
+    «NAHB/Wells Fargo Housing Market Index» — нормальная практика; массовую
+    перепубликацию самого ряда согласовывать с NAHB.
+    """
+    if table not in NAHB_TABLES:
+        raise ValueError(f"table должен быть одним из {sorted(NAHB_TABLES)}")
+    if table in ("t4", "t5"):
+        raise NotImplementedError(
+            f"NAHB {table} (регионы) — полосная раскладка: год указан только там, "
+            f"где меняется, полосы уложены вертикально. Разбор не реализован "
+            f"намеренно: риск молча склеить полосы. Национальный композит — "
+            f"nahb_hmi('t2'), компоненты — nahb_hmi('t3')."
+        )
+
+    page = fetch(_NAHB_INDEX, tag="nahb-index", force=force,
+                 max_age=timedelta(days=1)).decode("utf-8", "replace")
+    hrefs = re.findall(r'href="([^"]*\.xls[x]?[^"]*)"', page, re.I)
+    match = next((h for h in hrefs if f"/{table}-" in h.lower()), None)
+    if not match:
+        raise FetchError(
+            f"На индекс-странице NAHB не нашлось ссылки на таблицу {table!r}. "
+            f"Найдено: {[h.rsplit('/', 1)[-1][:40] for h in hrefs]}. "
+            f"Вероятно, NAHB поменял вёрстку — поправить nahb_hmi()."
+        )
+    url = match if match.startswith("http") else "https://www.nahb.org" + match
+
+    sheets = _spreadsheet(fetch(url, tag=f"nahb-{table}", timeout=90, force=force,
+                                max_age=timedelta(days=1)))
+    rows = next((r for r in sheets.values() if r), [])
+    if not rows:
+        raise FetchError(f"NAHB {table}: пустая книга ({url.rsplit('/', 1)[-1][:40]})")
+
+    def is_month(c: Any) -> int | None:
+        if not isinstance(c, str):
+            return None
+        return _MONTHS.get(c.strip().rstrip(".")[:3])
+
+    def is_year(c: Any) -> int | None:
+        v = _num(c)
+        return int(v) if v is not None and 1900 < v < 2200 else None
+
+    out: dict[str, Series] = {}
+    stamp = _now()
+
+    def put(key: str, year: int, month: int, value: float | None) -> None:
+        if value is None:
+            return
+        s = out.get(key)
+        if s is None:
+            s = out[key] = Series(
+                series_id=f"NAHB-{key}", source="NAHB/Wells Fargo",
+                title=("NAHB/Wells Fargo Housing Market Index"
+                       if table == "t2" else f"NAHB HMI — {key}"),
+                freq="M", units="index (50 = разделительная линия)", sa="SA",
+                fetched_at=stamp, meta={"table": table, "license": "(c) NAHB"})
+        s.dates.append(date(year, month, 1).isoformat())
+        s.values.append(value)
+
+    if table == "t2":
+        # строки = годы, колонки = месяцы
+        hdr = next((i for i, r in enumerate(rows)
+                    if sum(1 for c in r if is_month(c)) >= 6), None)
+        if hdr is None:
+            raise FetchError("NAHB t2: не нашлась строка с месяцами")
+        month_at = {i: m for i, c in enumerate(rows[hdr]) if (m := is_month(c))}
+        for row in rows[hdr + 1:]:
+            year = is_year(row[0]) if row else None
+            if year is None:
+                continue
+            for col, mon in month_at.items():
+                if col < len(row):
+                    put("HMI", year, mon, _num(row[col]))
+    else:
+        # t3 транспонирована: строки = месяцы, колонки = годы,
+        # блоки компонент разделены строками-заголовками без чисел.
+        component = "HMI"
+        year_at: dict[int, int] = {}
+        for row in rows:
+            years = {i: y for i, c in enumerate(row) if (y := is_year(c)) and i > 0}
+            if len(years) >= 3:
+                year_at = years            # новая шапка годов для блока ниже
+                continue
+            mon = is_month(row[0]) if row else None
+            if mon is None:
+                label = next((str(c).strip() for c in row
+                              if isinstance(c, str) and str(c).strip()), "")
+                if label and not label.lower().startswith("table"):
+                    component = re.sub(r"\s+", " ", label)[:60]
+                continue
+            for col, yr in year_at.items():
+                if col < len(row):
+                    put(component, yr, mon, _num(row[col]))
+
+    for s in out.values():
+        order = sorted(range(len(s.dates)), key=lambda i: s.dates[i])
+        s.dates = [s.dates[i] for i in order]
+        s.values = [s.values[i] for i in order]
+        dupes = {d for d, nxt in zip(s.dates, s.dates[1:]) if d == nxt}
+        if dupes:
+            raise FetchError(
+                f"NAHB {table}: в ряду {s.series_id} на {len(dupes)} дат пришло "
+                f"больше одного значения (например {sorted(dupes)[:3]}) — "
+                f"раскладка файла изменилась, поправить nahb_hmi()."
             )
     return out
 

@@ -59,6 +59,9 @@ CHECKS: list[Check] = [
     ("labour", "Занятость вне сельского хоз-ва (NFP)", "FRED", lambda: S.fred("PAYEMS")),
 
     # --- жильё --------------------------------------------------------------
+    ("housing", "NAHB HMI (композит)", "—", lambda: S.nahb_hmi("t2")["HMI"]),
+    ("housing", "NAHB: трафик покупателей", "—",
+     lambda: S.nahb_hmi("t3")["Traffic of Prospective Buyers"]),
     ("housing", "Разрешения на строительство", "FRED", lambda: S.fred("PERMIT")),
     ("housing", "Начала строительства", "FRED", lambda: S.fred("HOUST")),
     ("housing", "Разрешения (первоисточник Census)", "CENSUS",
