@@ -51,8 +51,8 @@ window.BOOK_CHAPTERS = [
   /* ── Часть II. Предложение и рост ───────────────────────────────────── */
   { id: "rost-proizvoditelnost",part: "predlozhenie", file: "rost-proizvoditelnost.html",  title: "Откуда берётся рост: производительность и капитал",        status: "done" },
   { id: "demografiya",          part: "predlozhenie", file: "demografiya.html",            title: "Демография и предложение труда",                           status: "done" },
-  { id: "energiya",             part: "predlozhenie", file: "energiya.html",               title: "Энергия как макро-переменная",                             status: "todo" },
-  { id: "cepochki-postavok",    part: "predlozhenie", file: "cepochki-postavok.html",      title: "Цепочки поставок и шоки предложения",                      status: "todo" },
+  { id: "energiya",             part: "predlozhenie", file: "energiya.html",               title: "Энергия как макро-переменная",                             status: "done" },
+  { id: "cepochki-postavok",    part: "predlozhenie", file: "cepochki-postavok.html",      title: "Цепочки поставок и шоки предложения",                      status: "done" },
 
   /* ── Часть III. Спрос и разрыв ──────────────────────────────────────── */
   { id: "as-ad",                part: "spros",        file: "as-ad.html",                  title: "Совокупный спрос и совокупное предложение",                status: "todo" },
