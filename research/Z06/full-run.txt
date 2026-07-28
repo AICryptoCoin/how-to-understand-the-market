@@ -1,0 +1,306 @@
+
+====================================================================================================
+Z06 sec.0 -- PASPORT DANNYH
+====================================================================================================
+zerno=20260728  B_boot=5000  B_bp=5000  blok=24  h=3
+kovidnoe pravilo: 2020-03-01 .. 2021-12-01 (doslovno iz Z01)
+osnovnoe okno kompozita: 1993-11-01 ..;  obshchee okno masshtaba: 2004-06-01 ..
+
+  IPMAN: n=654 M [1972-01-01 .. 2026-06-01] last=98.6995 Index 2017=100
+  INDPRO: n=1290 M [1919-01-01 .. 2026-06-01] last=102.639 Index 2017=100
+  GDPC1: n=317 Q [1947-01-01 .. 2026-01-01] last=24180.4 Bil. of Chn. 2017 $
+  USREC: n=2059 M [1854-12-01 .. 2026-06-01] last=0 +1 or 0
+  CFNAI: n=712 M [1967-03-01 .. 2026-06-01] last=-0.02 Index
+
+====================================================================================================
+Z06 sec.1 -- KOMPOZIT: KONSTRUKCIYA I DIAGNOSTIKA SOSTAVA
+====================================================================================================
+[sources] KC mfg: https://www.kansascityfed.org/documents/17603/2026Jul23historicalmfg.xlsx
+osnovnoy: Z06-COMPOSITE-new_orders-FE: n=393 M [1993-11-01 .. 2026-07-01] last=1.0127 sd of panel diffusion indices (0 = mean of 2004-06+ window)
+sigma_c = 0.8577  (edinica, v kotoroy privodyatsya vse porogi)
+
+Smeshcheniya paneley b_j (FE, normirovka sum=0) i ih rol':
+  panel          kolonka                                                  n      b_j   mu_ref  sd_ref
+  dallas         GROSAMFRBDAL                                           266  -0.0037   -1.755  13.272
+  empire         NOCDISA                                                301  +0.0406   +4.858  12.850
+  kansas_city    Versus a Month Ago (seasonally adjusted) / Volume of   301  +0.0145   +3.786  13.027
+  philly         NOC                                                    699  -0.0444   +6.484  14.332
+  richmond       sa_mfg_new_orders_c                                    392  -0.0070   -0.654  13.671
+
+Smena sostava po mesyacam (lovushka nomer 1 iz zadaniya):
+  1993-11-01: 2 paneley -> philly, richmond
+  2001-07-01: 4 paneley -> empire, kansas_city, philly, richmond
+  2004-06-01: 5 paneley -> dallas, empire, kansas_city, philly, richmond
+  2026-07-01: 4 paneley -> dallas, empire, kansas_city, philly
+
+Vneshniy kontrol': corr(kompozit, CFNAI) = +0.6377 na n=370 [1993-11-01 .. 2026-06-01]  (v kalibrovku poroga ne vhodit)
+
+Soglasie tryoh konstrukciy na obshchih mesyacah (esli FE i CHAIN rashodyatsya --
+obrabotka sostava i est' istochnik raznicy):
+  FE vs CHAIN: corr=+0.9883 na n=393, sr.|raznica|=0.0854
+  FE vs BAL  : corr=+1.0000 na n=265, sr.|raznica|=0.0000
+
+====================================================================================================
+Z06 sec.2 -- OSNOVNAYA SPECIFIKACIYA: TRI POROGA
+====================================================================================================
+tau_MFG (analog 50, otklik IPMAN, h=3 mes. vperyod):
+  n=364 [1993-11-01 .. 2026-03-01]  alpha=+1.0128  beta=+3.1846  R=+0.4580
+  tau_MFG = -0.3180  = -0.3708 sigma_c
+
+tau_GDP (analog 52.7 dlya New Orders, otklik GDPC1, tekushchiy kvartal):
+  n=120 [1994-01-01 .. 2026-01-01]  alpha=+2.3482  beta=+1.3973  R=+0.5219
+  tau_GDP = -1.6806  = -1.9594 sigma_c
+
+tau_REC (analog 43.5, Yuden protiv USREC):
+  n=370 [1993-11-01 .. 2026-06-01]  mesyacev recessii=26  AUC=0.9155
+  tau_REC = -0.2004  = -0.2337 sigma_c   J=0.7326
+  vtoraya ocenka (uroven', dayushchiy medianu rosta VVP v kvartalah recessii = -1.606%): tau = -2.8298 = -3.2993 sigma_c (n_kv=9)
+
+Gde kazhdyy porog lezhit v sobstvennom raspredelenii kompozita --
+porog v dalyokom hvoste eto ekstrapolyaciya, a ne tochka razdeleniya:
+  tau_MFG: -0.3180 = -0.371 sigma_c; nizhe nego 108 mesyacev iz 371 (29.1%)
+  tau_GDP: -1.6806 = -1.959 sigma_c; nizhe nego   8 mesyacev iz 371 (2.2%)
+  tau_REC: -0.2004 = -0.234 sigma_c; nizhe nego 118 mesyacev iz 371 (31.8%)
+
+====================================================================================================
+Z06 sec.3 -- BLOCHNYY BOOTSTRAP: INTERVALY I p
+====================================================================================================
+tau_MFG (IPMAN):
+  blok=12: tau 90% [-1.3532 .. +0.0553] shirina=1.4086 (1.642 sigma_c)  beta_p=0.0004  diff_p=0.0404
+  blok=24: tau 90% [-1.3494 .. +0.0714] shirina=1.4208 (1.657 sigma_c)  beta_p=0.0008  diff_p=0.0534
+  blok=36: tau 90% [-1.3630 .. +0.0609] shirina=1.4239 (1.660 sigma_c)  beta_p=0.0004  diff_p=0.0522
+
+tau_GDP (GDPC1). Dlina bloka pred-registrirovana v MESYACAH, ryad kvartal'nyy,
+poetomu 24 mes. = 8 kvartalov (sm. blk_q): 24 KVARTALA dali by n/L = 5.0 i vyrozhdennyy bootstrap.
+  blok=12 mes. ( 4 kv., n/L=30.0): tau 90% [-3.9504 .. -0.9969] shirina=2.9534 (3.443 sigma_c)  beta_p=0.0004  diff_p=0.0006
+  blok=24 mes. ( 8 kv., n/L=15.0): tau 90% [-4.4515 .. -0.9577] shirina=3.4938 (4.074 sigma_c)  beta_p=0.0004  diff_p=0.0006
+  blok=36 mes. (12 kv., n/L=10.0): tau 90% [-4.7900 .. -0.9051] shirina=3.8849 (4.529 sigma_c)  beta_p=0.0008  diff_p=0.0006
+
+tau_REC (Yuden protiv USREC):
+  blok=12: tau 90% [-0.5642 .. -0.1891] shirina=0.3750 (0.437 sigma_c)  AUC 90% [0.848 .. 0.965] p=0.0004
+  blok=24: tau 90% [-0.5613 .. -0.1891] shirina=0.3721 (0.434 sigma_c)  AUC 90% [0.842 .. 0.968] p=0.0004
+  blok=36: tau 90% [-0.5038 .. -0.1891] shirina=0.3147 (0.367 sigma_c)  AUC 90% [0.843 .. 0.967] p=0.0004
+
+Rabochiy interval tau_GDP (90%): [-4.4515 .. -0.9577], shirina 3.4938 = 4.074 sigma_c
+
+====================================================================================================
+Z06 sec.4 -- KRITERII C1 (identificiruemost') I C2 (razdelenie)
+====================================================================================================
+gipoteza            p syroy     p Holm  vyvod
+H1_beta_IPMAN        0.0008     0.0020  otvergaet nol
+H2_beta_GDPC1        0.0004     0.0020  otvergaet nol
+H3_sep_IPMAN         0.0534     0.0534  NE otvergaet
+H4_sep_GDPC1         0.0006     0.0020  otvergaet nol
+H5_auc_USREC         0.0004     0.0020  otvergaet nol
+
+C1: beta znachimy v oboih regressiyah = True; shirina 90% intervala tau_GDP = 3.4938 protiv 1.0*sigma_c = 0.8577 -> SHIRE
+C1 = PROVALEN
+C2 = PROVALEN   (raznica srednih: IPMAN +4.653 p.p., GDPC1 +8.279 p.p.)
+
+====================================================================================================
+Z06 sec.5 -- BAI-PERRON: USTOYCHIVOST' SVYAZI VO VREMENI (C3)
+====================================================================================================
+[IPMAN] n=364 min.segment=55 max razryvov=5
+  supF(1|0) = 25.412  bootstrap-krit.95% = 37.236  p = 0.1604  -> razryva net  (kandidat 2000-02-01)
+  BIC po chislu razryvov: m=0:1228.8  m=1:1198.4  m=2:1107.4  m=3:1078.6  m=4:1059.1  m=5:1071.5
+  BIC vybiraet m = 4, razryvy: 1999-10-01, 2004-05-01, 2008-12-01, 2013-07-01
+  supF(2|1) = 37.354 (pri razryve 2000-02-01)
+    rezhim 1993-11-01 .. 1999-10-01 (n= 72): alpha=+5.8580 beta=+0.5399 R=+0.112 tau=-10.8510 = -12.651 sigma_c
+    rezhim 1999-11-01 .. 2004-05-01 (n= 55): alpha=+0.1825 beta=+2.1189 R=+0.492 tau=-0.0861 = -0.100 sigma_c
+    rezhim 2004-06-01 .. 2008-12-01 (n= 55): alpha=-4.4934 beta=+10.0298 R=+0.849 tau=+0.4480 = +0.522 sigma_c
+    rezhim 2009-01-01 .. 2013-07-01 (n= 55): alpha=+3.4342 beta=+3.3288 R=+0.541 tau=-1.0317 = -1.203 sigma_c
+    rezhim 2013-08-01 .. 2026-03-01 (n=127): alpha=-0.0358 beta=+0.4825 R=+0.129 tau=+0.0742 = +0.087 sigma_c
+
+[GDPC1] n=120 min.segment=18 max razryvov=5
+  supF(1|0) = 13.531  bootstrap-krit.95% = 9.555  p = 0.0088  -> RAZRYV EST  (kandidat 2010-04-01)
+  BIC po chislu razryvov: m=0:161.0  m=1:150.2  m=2:146.8  m=3:152.9  m=4:163.8  m=5:177.6
+  BIC vybiraet m = 2, razryvy: 2003-07-01, 2009-07-01
+  supF(2|1) = 8.088 (pri razryve 2010-04-01)
+    rezhim 1994-01-01 .. 2003-07-01 (n= 39): alpha=+2.7881 beta=+1.6178 R=+0.566 tau=-1.7233 = -2.009 sigma_c
+    rezhim 2003-10-01 .. 2009-07-01 (n= 24): alpha=+0.8915 beta=+2.4378 R=+0.873 tau=-0.3657 = -0.426 sigma_c
+    rezhim 2009-10-01 .. 2026-01-01 (n= 57): alpha=+2.4506 beta=+0.0867 R=+0.040 tau=-28.2800 = -32.972 sigma_c
+
+Interval polnoy vyborki dlya tau_GDP: [-4.4515 .. -0.9577]
+C3 = PROVALEN (schitaetsya po GDPC1, k kotoromu otnositsya tau_GDP)
+    spravochno po IPMAN: C3 = PROVALEN
+
+====================================================================================================
+Z06 sec.6 -- PROVERKA VNE VYBORKI (C4)
+====================================================================================================
+[IPMAN] obuchenie 1993-11-01..2018-01-01 (n=291), hvost 2018-02-01..2026-03-01 (n=73)
+  tau_obuchenie = -0.2535   tau_hvost = -3.4734
+  dolya vernyh znakov na hvoste = 43.8% (32/73)
+[GDPC1] obuchenie 1994-01-01..2017-10-01 (n=96), hvost 2018-01-01..2026-01-01 (n=24)
+  tau_obuchenie = -1.0842   tau_hvost = +7.8198
+  dolya vernyh znakov na hvoste = 75.0% (18/24)
+
+C4 = PROYDEN: dolya znakov 75.0% > 50% -> True; tau obucheniya v intervale -> True
+
+====================================================================================================
+Z06 sec.7 -- SETKA USTOYCHIVOSTI: 486 YACHEEK (C5)
+====================================================================================================
+yacheek vsego: 486  (3 bazy x 3 konstrukcii x 3 gorizonta x 2 kovid x 3 razbieniya x 3 dliny bloka)
+iz nih strukturno neschitaemyh (n < 20): 54
+schitaemyh: 432;  vnutri 90% intervala osnovnoy ocenki: 336
+C5 dolya (znamenatel' -- schitaemye): 77.8%
+C5 dolya (znamenatel' -- vse 486, neschitaemye kak promah): 69.1%
+
+Vnimanie na chestnost' schyota: dlina bloka na TOCHECHNUYU ocenku tau ne
+vliyaet vovse -- ona dvigaet interval. Poetomu 486 yacheek soderzhat
+162 razlichnyh tochechnyh ocenok, kazhdaya povtorena trizhdy.
+Dolya ot etogo ne menyaetsya, no nazyvat' 486 'nezavisimymi' bylo by lozh'yu.
+
+Razbros tau po setke: median=-2.0757  [p05=-5.2586 .. p95=-0.6953]  min=-8.0157 max=-0.6587
+
+Po osyam (mediana tau vnutri gruppy, dolya vnutri intervala):
+  base       =both       n=144 median tau=-2.0908 vnutri= 77.1%
+  base       =headline   n=144 median tau=-2.0757 vnutri= 79.2%
+  base       =new_orders n=144 median tau=-2.0840 vnutri= 77.1%
+  method     =BAL        n=108 median tau=-1.8036 vnutri= 83.3%
+  method     =CHAIN      n=162 median tau=-2.4829 vnutri= 74.1%
+  method     =FE         n=162 median tau=-2.1200 vnutri= 77.8%
+  h          =12         n=144 median tau=-2.7649 vnutri= 75.0%
+  h          =3          n=144 median tau=-1.6332 vnutri= 64.6%
+  h          =6          n=144 median tau=-1.9619 vnutri= 93.8%
+  split      =1993-2007  n=108 median tau=-3.8590 vnutri= 58.3%
+  split      =2008-2026  n=162 median tau=-1.8142 vnutri= 83.3%
+  split      =full       n=162 median tau=-1.9338 vnutri= 85.2%
+  drop_covid =False      n=216 median tau=-1.7946 vnutri= 68.1%
+  drop_covid =True       n=216 median tau=-2.3824 vnutri= 87.5%
+
+C5 = PROYDEN (porog 70%)
+
+====================================================================================================
+Z06 sec.8 -- LESTNICA L: CHETYRE STUPENI ILI DVE (C6)
+====================================================================================================
+tochechnye: tau_REC=-0.2004 < tau_GDP=-1.6806 < tau_MFG=-0.3180  -> poryadok NARUSHEN
+90% intervaly:
+  tau_REC [-0.5613 .. -0.1891]
+  tau_GDP [-4.4515 .. -0.9577]
+  tau_MFG [-1.3494 .. +0.0714]
+  REC/GDP ne peresekayutsya: False;  GDP/MFG ne peresekayutsya: False
+C6 = PROVALEN -> dve stupeni
+
+Lestnica, kotoraya uhodit v Z05:
+  -1.6806 < c <=   +inf   L = +1.0
+    -inf < c <= -1.6806   L = -1.0
+
+Raspredelenie 393 mesyacev po stupenyam:
+  L=+1.0: 382 mes. (97.2%)
+  L=-1.0:  11 mes. (2.8%)
+
+Planka identificiruemosti (shirina 90% intervala < 1.0 sigma_c = 0.8577):
+  tau_REC: tau=-0.2004 shirina=0.3721 (0.43 sigma_c) -> identificiruem
+  tau_MFG: tau=-0.3180 shirina=1.4208 (1.66 sigma_c) -> NE identificiruem
+  tau_GDP: tau=-1.6806 shirina=3.4938 (4.07 sigma_c) -> NE identificiruem
+
+[RESHENIE POSLE RASCHYOTA] Prakticheskaya lestnica na identificiruemyh porogah:
+  -0.2004 < c <=   +inf   L = +1.00
+    -inf < c <= -0.2004   L = -1.00
+    L=+1.00: 272 mes. (69.2%)
+    L=-1.00: 121 mes. (30.8%)
+
+====================================================================================================
+Z06 sec.9 -- VINTAZHI ALFRED
+====================================================================================================
+Glubina vintazhnogo arhiva -- proverena otdel'nym endpoint'om FRED,
+chtoby ne prinyat' 404 na ranniy vintazh za polomku dostupa:
+  ryad                    vintazhey       pervyy    posledniy
+  NOCDFSA066MSFRBPHI            144   2015-04-16   2026-07-16
+  NOCDISA066MSFRBNY             149   2014-03-17   2026-07-15
+  GROSAMFRBDAL                  126   2016-01-25   2026-07-27
+  IPMAN                         239   2007-12-14   2026-07-17
+  GDPC1                         416   1991-12-04   2026-06-25
+
+Sledstvie: trekhpanel'nyy kompozit v real'nom vremeni nachinaetsya ne ranee
+2016-01-25 -- u regional'nyh obzorov na FRED prosto NET arhiva glubzhe.
+404 na bolee ranniy vintazh -- eto granica arhiva, a ne otkaz dostupa;
+provereno vtorym, nezavisimym endpoint'om (series/vintagedates).
+
+A. Otklik peresmatrivaetsya, kompozit tot zhe (izoliruet REVIZIYU otklika).
+   vintazh      n_kv  tau vintazh  tau peresm.   raznica  v intervale?
+   2007-06-03     53      -1.8765      -1.9502   +0.0737  True
+   2008-06-03     57      -1.8849      -1.6622   -0.2227  True
+   2009-06-03     61      -1.0326      -0.9311   -0.1015  True
+   2010-06-03     65      -0.9759      -0.9222   -0.0537  True
+   2011-06-03     69      -0.9355      -0.9260   -0.0095  False
+   2012-06-03     73      -0.7961      -0.9514   +0.1553  False
+   2013-06-03     77      -0.9055      -0.9803   +0.0748  False
+   2014-06-03     81      -0.9328      -0.9619   +0.0291  False
+   2015-06-03     85      -0.9164      -1.0073   +0.0909  False
+   2016-06-03     89      -0.9588      -1.0577   +0.0988  True
+   2017-06-03     93      -0.9918      -1.0771   +0.0853  True
+   2018-06-03     97      -1.0192      -1.0870   +0.0678  True
+   2019-06-03    101      -1.0851      -1.1200   +0.0349  True
+   2020-06-03    104      -1.0898      -1.1683   +0.0786  True
+   2021-06-03    104      -1.1121      -1.1683   +0.0562  True
+   2022-06-03    104      -1.0981      -1.1683   +0.0703  True
+   2023-06-03    108      -1.2182      -1.3399   +0.1218  True
+   2024-06-03    112      -1.4987      -1.5454   +0.0467  True
+   2025-06-03    116      -1.6136      -1.6067   -0.0069  True
+   2026-06-03    120      -1.6780      -1.6806   +0.0026  True
+
+B. Trekhpanel'nyy kompozit v real'nom vremeni (Philly + Empire + Dallas)
+   -- edinstvennye tri paneli iz pyati, u kotoryh voobshche est' vintazhi.
+   vintazh      n_kv  tau 3-panel RT  tau 3-panel peresm.  v intervale?
+  [FAIL] NOCDFSA066MSFRBPHI@2007-06-03: FetchError HTTP 404 ?? https://alfred.stlouisfed.org/graph/alfredgraph.csv?id=NOCDFSA066MSFRBPHI&vint
+  [FAIL] NOCDFSA066MSFRBPHI@2008-06-03: FetchError HTTP 404 ?? https://alfred.stlouisfed.org/graph/alfredgraph.csv?id=NOCDFSA066MSFRBPHI&vint
+  [FAIL] NOCDFSA066MSFRBPHI@2009-06-03: FetchError HTTP 404 ?? https://alfred.stlouisfed.org/graph/alfredgraph.csv?id=NOCDFSA066MSFRBPHI&vint
+  [FAIL] NOCDFSA066MSFRBPHI@2010-06-03: FetchError HTTP 404 ?? https://alfred.stlouisfed.org/graph/alfredgraph.csv?id=NOCDFSA066MSFRBPHI&vint
+  [FAIL] NOCDFSA066MSFRBPHI@2011-06-03: FetchError HTTP 404 ?? https://alfred.stlouisfed.org/graph/alfredgraph.csv?id=NOCDFSA066MSFRBPHI&vint
+  [FAIL] NOCDFSA066MSFRBPHI@2012-06-03: FetchError HTTP 404 ?? https://alfred.stlouisfed.org/graph/alfredgraph.csv?id=NOCDFSA066MSFRBPHI&vint
+  [FAIL] NOCDFSA066MSFRBPHI@2013-06-03: FetchError HTTP 404 ?? https://alfred.stlouisfed.org/graph/alfredgraph.csv?id=NOCDFSA066MSFRBPHI&vint
+  [FAIL] NOCDFSA066MSFRBPHI@2014-06-03: FetchError HTTP 404 ?? https://alfred.stlouisfed.org/graph/alfredgraph.csv?id=NOCDFSA066MSFRBPHI&vint
+  [FAIL] GROSAMFRBDAL@2015-06-03: FetchError HTTP 404 ?? https://alfred.stlouisfed.org/graph/alfredgraph.csv?id=GROSAMFRBDAL&vintage_da
+   2016-06-03     59         -0.8425              -0.9617  False
+   2017-06-03     63         -0.9121              -0.9879  False
+   2018-06-03     67         -0.9900              -0.9890  True
+   2019-06-03     71         -1.1034              -1.0081  True
+   2020-06-03     74         -1.1227              -1.0450  True
+   2021-06-03     74         -1.1450              -1.0450  True
+   2022-06-03     74         -1.1420              -1.0450  True
+   2023-06-03     78         -1.1824              -1.2714  True
+   2024-06-03     82         -1.4297              -1.5335  True
+   2025-06-03     86         -1.5573              -1.5814  True
+   2026-06-03     90         -1.6724              -1.6782  True
+
+Itog A: 15 iz 20 vintazhey v 90% intervale polnoy vyborki
+Itog B: 9 iz 11 vintazhey v 90% intervale polnoy vyborki
+Chego net: u Richmond i Kansas City vintazhey ne sushchestvuet -- ih net
+na FRED vovse. Pyatipanel'nyy kompozit v real'nom vremeni nevosproizvodim.
+
+====================================================================================================
+Z06 sec.10 -- DLINNOE PLECHO 1968 I STROKI VNE SETKI
+====================================================================================================
+Dlinnoe plecho 1968-05-01 .. 2026-07-01 (do 1993-11 -- odna Filadelfiya):
+  n_kv=222  tau_GDP=-1.1843 = -1.1427 sigma (sigma_c etogo ryada = 1.0364)
+  v 90% intervale osnovnoy ocenki: True
+
+Vne setki: to zhe dlya IPMAN, no okno NAZAD [t-3, t] (sovremennoe chtenie, kak u ISM):
+  n=367  tau_MFG(nazad)=-0.1943 protiv tau_MFG(vperyod)=-0.3180  R=+0.6423 protiv +0.4580
+Vne setki: otklik INDPRO vmesto IPMAN: n=364 tau=-0.3381 R=+0.5044
+
+====================================================================================================
+Z06 sec.11 -- VERDIKT
+====================================================================================================
+  C1 = PROVALEN
+  C2 = PROVALEN
+  C3 = PROVALEN
+  C4 = PROYDEN
+  C5 = PROYDEN
+  C6 = PROVALEN (reshaet tol'ko chislo stupeney)
+
+VERDIKT: OPROVERGNUTO
+
+Vazhno: verdikt otnositsya k pereformulirovannomu utverzhdeniyu (HYPOTHESIS sec.1.2) --
+u kompozita est' identificiruemaya i ustoychivaya liniya nulevogo rosta.
+Chisla kursa 48.7 / 49.9 / 52.7 / 43.5 ostayutsya NEPROVERENNYMI: ryada ISM net.
+
+====================================================================================================
+Z06 sec.12 -- VYGRUZKA
+====================================================================================================
+ryad kompozita: D:\loodo\loodo-ai-advisor\.claude\worktrees\youthful-khorana-d7bf8d\docs\knowledge\market-cycle\research\Z06\composite.csv (393 strok)
+pasport: D:\loodo\loodo-ai-advisor\.claude\worktrees\youthful-khorana-d7bf8d\docs\knowledge\market-cycle\research\Z06\composite-passport.json
+rezultat: D:\loodo\loodo-ai-advisor\.claude\worktrees\youthful-khorana-d7bf8d\docs\knowledge\market-cycle\research\Z06\result.json
+
+gotovo za 80.0 s
