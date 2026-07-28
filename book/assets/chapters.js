@@ -49,8 +49,8 @@ window.BOOK_CHAPTERS = [
   { id: "kak-chitat-empiriku",  part: "cikl",         file: "kak-chitat-empiriku.html",    title: "Как читать эмпирическое утверждение",                      status: "done" },
 
   /* ── Часть II. Предложение и рост ───────────────────────────────────── */
-  { id: "rost-proizvoditelnost",part: "predlozhenie", file: "rost-proizvoditelnost.html",  title: "Откуда берётся рост: производительность и капитал",        status: "todo" },
-  { id: "demografiya",          part: "predlozhenie", file: "demografiya.html",            title: "Демография и предложение труда",                           status: "todo" },
+  { id: "rost-proizvoditelnost",part: "predlozhenie", file: "rost-proizvoditelnost.html",  title: "Откуда берётся рост: производительность и капитал",        status: "done" },
+  { id: "demografiya",          part: "predlozhenie", file: "demografiya.html",            title: "Демография и предложение труда",                           status: "done" },
   { id: "energiya",             part: "predlozhenie", file: "energiya.html",               title: "Энергия как макро-переменная",                             status: "todo" },
   { id: "cepochki-postavok",    part: "predlozhenie", file: "cepochki-postavok.html",      title: "Цепочки поставок и шоки предложения",                      status: "todo" },
 
