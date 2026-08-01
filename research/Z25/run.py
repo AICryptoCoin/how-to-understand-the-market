@@ -422,11 +422,16 @@ def _panel(key: str) -> Callable[[], Any]:
 
 ROSTER: tuple[Ind, ...] = (
     # --- klass S: oprosnye -------------------------------------------------
-    Ind("COMP", "Z06 kompozit 5 paneley FRB (new orders, FE)", "S", "MFG", "D",
-        +1, "cl_mfg_survey", "M", lambda: C.composite("new_orders", method="FE")),
+    # pin='frozen' -- tot samyy ryad, na kotorom poschitan Z06/REPORT.md.
+    # Prichina vybora -- HYPOTHESIS.md sec.11, Utochnenie 3.
+    Ind("COMP", "Z06 kompozit 5 paneley FRB (new orders, FE), pin=frozen", "S",
+        "MFG", "D", +1, "cl_mfg_survey", "M",
+        lambda: C.composite("new_orders", method="FE", pin="frozen")),
+    # Dlya BAL pina ne sushchestvuet (on tol'ko dlya postavlyaemoy
+    # konfiguracii new_orders/FE), poetomu tol'ko zhivaya sborka.
     Ind("COMP_BAL", "Z06 kompozit, sbalansirovannaya panel' (BAL, 2004-06+)",
         "S", "MFG", "D", +1, "cl_mfg_survey", "M",
-        lambda: C.composite("new_orders", method="BAL")),
+        lambda: C.composite("new_orders", method="BAL", pin="off")),
     Ind("PHIL", "FRB Philadelphia MBOS: new orders (NOC)", "S", "MFG", "D",
         +1, "cl_mfg_survey", "M", _panel("philly")),
     Ind("RICH", "FRB Richmond: new orders", "S", "MFG", "D",
@@ -501,6 +506,36 @@ for ind in ROSTER:
     ks = sorted(m)
     say(f"{ind.key:10s} {ind.cls:5s} {ind.sector:7s} {ind.typ:3s} "
         f"{ind.sign:+4d} {len(m):6d}  {ks[0]:10s} {ks[-1]:10s}")
+
+# --- pin kompozita: na kakoy versii dannyh stoit zadacha ------------------
+_pin = C.pin()
+say("")
+say("Pin kompozita Z06 (versiya dannyh, k kotoroy pripshpilen ryad):")
+say(f"  {_pin['version']}, zamorozhen {_pin['frozen_at']}, "
+    f"sha256 {_pin['series']['sha256'][:16]}..., sigma_c = "
+    f"{_pin['series']['sigma_c']:.4f}")
+say(f"  COMP vzyat s pin='frozen' -- eto tot samyy ryad, na kotorom poschitan "
+    f"Z06/REPORT.md.")
+_live = C.composite("new_orders", method="FE", pin="off")
+_lm = to_month_map(_live)
+_fm = RAW["COMP"]
+_both = sorted(set(_lm) & set(_fm))
+_d = [abs(_lm[t] - _fm[t]) for t in _both]
+_sigma_live = sd([v for t, v in _lm.items() if not is_covid_month(t)])
+say(f"  Zhivaya sborka na segodnya: {len(_lm)} mesyacev protiv "
+    f"{len(_fm)} v pine; sigma_c = {_sigma_live:.4f}")
+say(f"  Rashozhdenie na obshchih {len(_both)} mesyacah: srednee |d| = "
+    f"{mean(_d):.6f}, max |d| = {max(_d):.6f} = {max(_d) / _pin['series']['sigma_c']:.3f} "
+    f"sigma_c; izmenilos' znacheniy: {sum(1 for v in _d if v > 1e-9)}")
+say("  Prichina rashozhdeniya nazvana v Z06 (kommit 44c3e20): FRB Richmond")
+say("  zadnim chislom peresmotrel istoriyu, W_ref sdvinulos'.")
+RESULT["pin"] = {"version": _pin["version"], "frozen_at": _pin["frozen_at"],
+                 "sha256": _pin["series"]["sha256"],
+                 "sigma_c_pinned": _pin["series"]["sigma_c"],
+                 "sigma_c_live": _sigma_live, "n_live": len(_lm),
+                 "n_pinned": len(_fm), "mean_abs_diff": mean(_d),
+                 "max_abs_diff": max(_d),
+                 "n_changed": sum(1 for v in _d if v > 1e-9)}
 
 GDPC1 = to_month_map(S.fred("GDPC1"))
 IPMAN_RAW = to_month_map(S.fred("IPMAN"))
@@ -1136,7 +1171,13 @@ RESULT["rival_B"] = {"dR_gdp": dR_g, "dR_mfg": dR_m, "diff": dR_g - dR_m,
 
 head("Z25 sec.7 -- SOPERNIK C: SHUM IZMERENIYA I SOSTAV PANELEY")
 
-comp_series, comp_pp = C.composite_with_passport("new_orders", method="FE")
+# Ocenka shuma stroitsya iz panel'nyh ryadov, poetomu smeshcheniya i masshtaby
+# beryotsya iz ZHIVOY sborki (pin='off'): panel'nye ryady tozhe zhivye, i
+# meshat' zamorozhennye koefficienty s peresmotrennymi dannymi nel'zya.
+# Sam kompozit COMP pri etom ostayotsya pripshpilennym -- zdes' schitaetsya
+# ne on, a otnoshenie shum/signal ego konstrukcii.
+comp_series, comp_pp = C.composite_with_passport("new_orders", method="FE",
+                                                 pin="off")
 panel_z: dict[str, dict[str, float]] = {}
 for pk, info in comp_pp.panels.items():
     raw = to_month_map(C.panel_series(pk, "new_orders"))
@@ -1167,6 +1208,9 @@ say("Ocenka dispersii shuma kompozita po RASHOZHDENIYU PANELEY:")
 say("  dlya mesyaca s k>=2 panelyami s^2_t -- vyborochnaya dispersiya panel'nyh")
 say("  z posle snyatiya smeshcheniy b_j; dispersiya ih srednego = s^2_t/k_t.")
 say("  Kvartal: srednee treh mesyacev, mesyachnyy shum polagaetsya nezavisimym.")
+say("  var(c) beryotsya u PRIPSHPILENNOGO ryada (imenno ego beta ispravlyaetsya),")
+say("  var shuma -- u zhivyh paneley. Drift pina po urovnyu okolo 0.01, to est'")
+say("  okolo 1e-4 v dispersii -- na tri poryadka nizhe samoy ocenki shuma.")
 say("")
 say(f"  {'rezhim':22s} {'n_kv':>5s} {'sr. k':>6s} {'var_shum':>9s} "
     f"{'var(c)':>9s} {'lambda':>7s} {'beta':>8s} {'beta_ispr':>10s} "
@@ -1456,8 +1500,7 @@ def monthly_pairs_z06(comp: dict[str, float], resp: dict[str, float], h: int
     return ds, xs, ys
 
 
-cm = to_month_map(comp_series)
-dm, xm, ym = monthly_pairs_z06(cm, IPMAN_RAW, 3)
+dm, xm, ym = monthly_pairs_z06(RAW["COMP"], IPMAN_RAW, 3)
 pre_m = [i for i, t in enumerate(dm) if t < SPLIT]
 post_m = [i for i, t in enumerate(dm) if t >= SPLIT]
 r_pre_m = corr([xm[i] for i in pre_m], [ym[i] for i in pre_m])

@@ -26,6 +26,14 @@ ADS        H     ECON    D     +1    797  1960-03-01 2026-07-01
 CFNAI      M     ECON    D     +1    712  1967-03-01 2026-06-01
 OECD_CLI   M     ECON    D     +1    858  1955-01-01 2026-06-01
 
+Pin kompozita Z06 (versiya dannyh, k kotoroy pripshpilen ryad):
+  Z06-pin-v1, zamorozhen 2026-07-28, sha256 8c5cc0b14c6d0a28..., sigma_c = 0.8577
+  COMP vzyat s pin='frozen' -- eto tot samyy ryad, na kotorom poschitan Z06/REPORT.md.
+  Zhivaya sborka na segodnya: 393 mesyacev protiv 393 v pine; sigma_c = 0.8573
+  Rashozhdenie na obshchih 393 mesyacah: srednee |d| = 0.010133, max |d| = 0.124629 = 0.145 sigma_c; izmenilos' znacheniy: 393
+  Prichina rashozhdeniya nazvana v Z06 (kommit 44c3e20): FRB Richmond
+  zadnim chislom peresmotrel istoriyu, W_ref sdvinulos'.
+
 GDPC1      otklik   n=  318  1947-01-01 2026-04-01
 IPMAN      otklik   n=  654  1972-01-01 2026-06-01
 
@@ -39,13 +47,13 @@ posledniy kvartal, gde est' nablyudeniya u VSEH ryadov osnovnogo reestra.
 Z25 sec.1 -- VOSPROIZVEDENIE Z06 (kontrol' pribora)
 ====================================================================================================
 Para COMP -> Y_GDP na obshchem okne: n = 120 [1994Q1 .. 2026Q1]  (Z06: n = 120 [1994Q1 .. 2026Q1])
-  supF(1|0) = 13.566  krit.95% = 9.633  p = 0.0086   (Z06: supF 13.531, krit 9.555, p 0.0088)
+  supF(1|0) = 13.531  krit.95% = 9.646  p = 0.0088   (Z06: supF 13.531, krit 9.555, p 0.0088)
   BIC vybiraet m = 2; razryvy (nachalo novogo rezhima): 2003Q4, 2009Q4
   te zhe razryvy v konvencii Z06 (posledniy mesyac starogo rezhima): 2003Q3, 2009Q3   (Z06 pechatala: 2003Q3, 2009Q3)
   rezhim                        n    beta_z        R  beta_raw
-  1994Q1 .. 2003Q3             39   +1.3323   +0.564   +1.6127
-  2003Q4 .. 2009Q3             24   +2.0169   +0.873   +2.4413
-  2009Q4 .. 2026Q1             57   +0.0692   +0.039   +0.0837
+  1994Q1 .. 2003Q3             39   +1.3372   +0.566   +1.6178
+  2003Q4 .. 2009Q3             24   +2.0150   +0.873   +2.4378
+  2009Q4 .. 2026Q1             57   +0.0716   +0.040   +0.0867
   Z06 sec.5 pechatala v syryh edinicah kompozita: beta +1.6178 / +2.4378 / +0.0867, R +0.566 / +0.873 / +0.040
 
 ====================================================================================================
@@ -56,8 +64,8 @@ Data razryva -- PERVOE nablyudenie prihodyashchego rezhima (sec.4.3);
 v skobkah -- ta zhe data v konvencii Z06 (poslednee nablyudenie starogo).
 
 ryad       kl otklik    n     supF   krit95       p  razryv supF m_BIC  razryvy BIC
-COMP       S  Y_GDP   120   13.566    9.906  0.0116       2010Q3     2  2003Q4, 2009Q4  [COMPOSITION_SUSPECT]
-COMP       S  Y_MFG   120   19.832   18.201  0.0358       2010Q3     3  1999Q2, 2006Q3, 2011Q1
+COMP       S  Y_GDP   120   13.531    9.942  0.0118       2010Q3     2  2003Q4, 2009Q4  [COMPOSITION_SUSPECT]
+COMP       S  Y_MFG   120   19.667   18.226  0.0388       2010Q3     3  1999Q2, 2006Q3, 2011Q1
 COMP_BAL   S  Y_GDP    78   25.125   10.558  0.0004       2010Q3     1  2010Q3
 COMP_BAL   S  Y_MFG    78   45.509   18.500  0.0008       2010Q3     2  2007Q4, 2010Q4
 PHIL       S  Y_GDP   120   14.987    8.221  0.0020       2010Q3     2  2000Q3, 2009Q4
@@ -120,7 +128,7 @@ ICSA|Y_MFG                0.0062    0.1450  net
 NEWORDER|Y_MFG            0.0094    0.2068  net
 AMTMNO|Y_MFG              0.0108    0.2268  net
 RICH|Y_MFG                0.0110    0.2268  net
-COMP|Y_GDP                0.0116    0.2268  net
+COMP|Y_GDP                0.0118    0.2268  net
 EMPIRE|Y_MFG              0.0140    0.2519  net
 INDPRO|Y_GDP              0.0140    0.2519  net
 AMTMNO|Y_GDP              0.0178    0.2847  net
@@ -129,7 +137,7 @@ NAHB|Y_GDP                0.0230    0.3219  net
 NAHB|Y_MFG                0.0246    0.3219  net
 SLOOS|Y_GDP               0.0310    0.3719  net
 CFNAI|Y_MFG               0.0316    0.3719  net
-COMP|Y_MFG                0.0358    0.3719  net
+COMP|Y_MFG                0.0388    0.3879  net
 PAYEMS|Y_GDP              0.0432    0.3887  net
 SLOOS|Y_MFG               0.0478    0.3887  net
 NEWORDER|Y_GDP            0.0536    0.3887  net
@@ -149,7 +157,7 @@ otklonenie indikatora (indikator standartizovan na vsyom okne, sec.3.2).
 
 otklik Y_GDP, forma main, kovid isklyuchyon, razbienie 2009Q4
   ryad       kl n_pre n_post   R_pre  R_post      dR   b_pre  b_post sdx_pre sdx_post sdy_pre sdy_post
-  COMP       S     63     57  +0.718  +0.039  -0.679  +1.780  +0.069   1.096    0.840   2.715    1.494
+  COMP       S     63     57  +0.719  +0.040  -0.679  +1.780  +0.072   1.096    0.839   2.715    1.494
   COMP_BAL   S     21     57  +0.889  +0.039  -0.850  +2.183  +0.068   1.339    0.856   3.288    1.494
   PHIL       S     63     57  +0.720  +0.055  -0.664  +1.838  +0.089   1.063    0.934   2.715    1.494
   RICH       S     63     57  +0.671  +0.018  -0.653  +1.707  +0.029   1.067    0.928   2.715    1.494
@@ -172,7 +180,7 @@ otklik Y_GDP, forma main, kovid isklyuchyon, razbienie 2009Q4
 
 otklik Y_MFG, forma main, kovid isklyuchyon, razbienie 2009Q4
   ryad       kl n_pre n_post   R_pre  R_post      dR   b_pre  b_post sdx_pre sdx_post sdy_pre sdy_post
-  COMP       S     63     57  +0.810  +0.375  -0.436  +5.376  +1.360   1.096    0.840   7.268    3.051
+  COMP       S     63     57  +0.810  +0.378  -0.432  +5.371  +1.375   1.096    0.839   7.268    3.051
   COMP_BAL   S     21     57  +0.926  +0.375  -0.551  +7.090  +1.336   1.339    0.856  10.254    3.051
   PHIL       S     63     57  +0.804  +0.183  -0.621  +5.497  +0.597   1.063    0.934   7.268    3.051
   RICH       S     63     57  +0.784  +0.370  -0.414  +5.340  +1.215   1.067    0.928   7.268    3.051
@@ -198,7 +206,7 @@ Z25 sec.4 -- P1: KLASSOVOE RAZLICHIE (perestanovka po klasteram)
 ====================================================================================================
 Statistika D = srednee dR po klasteram S minus po klasteram H, otklik Y_GDP.
 klaster          klass   srednee dR   ryady
-cl_mfg_survey    S          -0.7340   COMP, COMP_BAL, PHIL, RICH, EMPIRE, KC, DALLAS
+cl_mfg_survey    S          -0.7339   COMP, COMP_BAL, PHIL, RICH, EMPIRE, KC, DALLAS
 cl_nahb          S          -0.5880   NAHB
 cl_umc           S          -0.6015   UMCSENT
 cl_sloos         S          -0.8029   SLOOS
@@ -217,16 +225,16 @@ Z25 sec.5 -- SOPERNIK A: UPALA LI DISPERSIYA OTKLIKA
 Otklik Y_GDP na obshchey vyborke: sd_pre = 2.7148 p.p., sd_post = 1.4938 p.p., otnoshenie 0.5503
 
 Tochnoe tozhdestvo R = beta * sd_x / sd_y, razlozhenie v logarifmah:
-  ln(R_post/R_pre)   = -2.9155   (vsyo nablyudaemoe izmenenie)
-  + ln(beta_post/beta_pre) = -3.2476   (+111.4% summy) -- SAMA SVYAZ'
-  + ln(sd_x_post/sd_x_pre) = -0.2652   (+9.1%) -- dispersiya indikatora
-  - ln(sd_y_post/sd_y_pre) = +0.5974   (-20.5%) -- DISPERSIYA OTKLIKA (sopernik A)
-  ostatok tozhdestva      = -1.33e-15 (dolzhen byt' nol')
+  ln(R_post/R_pre)   = -2.8830   (vsyo nablyudaemoe izmenenie)
+  + ln(beta_post/beta_pre) = -3.2131   (+111.5% summy) -- SAMA SVYAZ'
+  + ln(sd_x_post/sd_x_pre) = -0.2672   (+9.3%) -- dispersiya indikatora
+  - ln(sd_y_post/sd_y_pre) = +0.5974   (-20.7%) -- DISPERSIYA OTKLIKA (sopernik A)
+  ostatok tozhdestva      = +4.44e-16 (dolzhen byt' nol')
 
-Lineynyy kontrfakt: esli by izmenilas' TOL'KO dispersiya otklika, R_post byla by +1.3054 vmesto nablyudaemoy +0.0389 pri R_pre = +0.7183
+Lineynyy kontrfakt: esli by izmenilas' TOL'KO dispersiya otklika, R_post byla by +1.3067 vmesto nablyudaemoy +0.0402 pri R_pre = +0.7190
 
 PRAVILO sec.5.2: sopernik A obyasnyaet, esli slagaemoe -ln(sd_y) imeet tot zhe znak, chto summa, i sostavlyaet >= 50% eyo velichiny.
-  dolya = -20.5%  ->  sopernik A NE OBYASNYAET
+  dolya = -20.7%  ->  sopernik A NE OBYASNYAET
 
 Otdel'no: klassovyy test P1 k soperniku A nevospriimchiv po postroeniyu --
 oba klassa regressiruyutsya na ODIN I TOT ZHE otklik na odnoy vyborke,
@@ -235,7 +243,7 @@ ne mozhet. Sopernik A sposoben obyasnyat' tol'ko obshchiy uroven' padeniya.
 
 Razlozhenie po vsem ryadam reestra (otklik Y_GDP):
   ryad       kl     ln R  ln beta  ln sd_x  -ln sd_y dolya sd_y
-  COMP       S   -2.9155  -3.2476  -0.2652   +0.5974     -20.5%
+  COMP       S   -2.8830  -3.2131  -0.2672   +0.5974     -20.7%
   COMP_BAL   S   -3.1291  -3.4697  -0.4482   +0.7888     -25.2%
   PHIL       S   -2.5635  -3.0312  -0.1297   +0.5974     -23.3%
   RICH       S   -3.6315  -4.0893  -0.1396   +0.5974     -16.4%
@@ -268,14 +276,14 @@ Raskladka 'sektor x priroda ryada' po dR (otklik Y_GDP):
   BANK                           n=1 sred.dR=-0.803                            -
 
 Kompozit protiv dvuh otklikov (odin pribor, odno razbienie):
-  Y_GDP : R_pre=+0.718 R_post=+0.039 dR=-0.679  beta_pre=+1.780 beta_post=+0.069
-  Y_MFG : R_pre=+0.810 R_post=+0.375 dR=-0.436  beta_pre=+5.376 beta_post=+1.360
+  Y_GDP : R_pre=+0.719 R_post=+0.040 dR=-0.679  beta_pre=+1.780 beta_post=+0.072
+  Y_MFG : R_pre=+0.810 R_post=+0.378 dR=-0.432  beta_pre=+5.371 beta_post=+1.375
 
 P2: parnyy blochnyy bootstrap na obshchih kvartalah (n_pre=63, n_post=57).
     dlina bloka vnutri rezhima (ladder 12->8->4, predohranitel' n/L>=8): pre=4, post=4
-    dR(Y_GDP) = -0.6794   90% [-0.8976 .. -0.3496]
-    dR(Y_MFG) = -0.4357   90% [-0.6214 .. -0.1333]
-    raznost' dR(GDP)-dR(MFG) = -0.2437  90% [-0.4927 .. -0.0033]  dvustoronniy p = 0.0964
+    dR(Y_GDP) = -0.6788   90% [-0.8968 .. -0.3503]
+    dR(Y_MFG) = -0.4320   90% [-0.6178 .. -0.1299]
+    raznost' dR(GDP)-dR(MFG) = -0.2468  90% [-0.4965 .. -0.0057]  dvustoronniy p = 0.0924
 
 Zhyostkie ryady OBRABOTKI protiv Y_GDP: srednee dR = -0.6454 (NEWORDER -0.653, AMTMNO -0.701, DGORDER -0.622, IPMAN_X -0.603, INDPRO -0.648)
 Sopernik B podderzhan, esli svyaz' kompozita s Y_MFG derzhitsya, a zhyostkie ryady obrabotki lomayutsya tak zhe, kak oprosy.
@@ -287,21 +295,24 @@ Ocenka dispersii shuma kompozita po RASHOZHDENIYU PANELEY:
   dlya mesyaca s k>=2 panelyami s^2_t -- vyborochnaya dispersiya panel'nyh
   z posle snyatiya smeshcheniy b_j; dispersiya ih srednego = s^2_t/k_t.
   Kvartal: srednee treh mesyacev, mesyachnyy shum polagaetsya nezavisimym.
+  var(c) beryotsya u PRIPSHPILENNOGO ryada (imenno ego beta ispravlyaetsya),
+  var shuma -- u zhivyh paneley. Drift pina po urovnyu okolo 0.01, to est'
+  okolo 1e-4 v dispersii -- na tri poryadka nizhe samoy ocenki shuma.
 
   rezhim                  n_kv  sr. k  var_shum    var(c)  lambda     beta  beta_ispr       R   R_ispr
-  pre  [.. 2009Q3]          63   3.39    0.0442    0.8192  0.9461  +1.7800    +1.8814  +0.718   +0.738
-  post [2009Q4 ..]          57   5.00    0.0246    0.4819  0.9489  +0.0692    +0.0729  +0.039   +0.040
+  pre  [.. 2009Q3]          63   3.39    0.0442    0.8212  0.9462  +1.7804    +1.8816  +0.719   +0.739
+  post [2009Q4 ..]          57   5.00    0.0246    0.4812  0.9488  +0.0716    +0.0755  +0.040   +0.041
 
-Padenie ln(beta) nablyudaemoe = -3.2476, posle popravki na oslablenie = -3.2506
+Padenie ln(beta) nablyudaemoe = -3.2131, posle popravki na oslablenie = -3.2158
 Popravka ubrala -0.1% padeniya (pravilo sec.5.4: sopernik C obyasnyaet pri >= 50%)
 
 Sbalansirovannaya panel' COMP_BAL (2004-06+, sostav ne menyaetsya vovse):
   n_pre=21 [2004Q3 .. 2009Q3], n_post=57
-  R_pre=+0.8893  R_post=+0.0389  dR=-0.8504   (u COMP dR=-0.6794)
+  R_pre=+0.8893  R_post=+0.0389  dR=-0.8504   (u COMP dR=-0.6788)
   BOOTSTRAP_DEGENERATE: n_pre = 21, i ni odna obyavlennaya dlina bloka (4, 8, 12) ne prohodit predohranitel' n/L >= 8 (21/4 = 5.2).
   Eto ROVNO to ogranichenie, kotoroe zapisano v HYPOTHESIS sec.10.3 DO raschyota: u COMP_BAL do-rezhim korotkiy, i otricatel'nyy rezul'tat na nyom mozhet znachit' nehvatku nablyudeniy, a ne otsutstvie pereloma. Gipoteza P4 intervala ne poluchaet; tochechnaya ocenka nizhe prinimaetsya kak
   opisanie, a ne kak test.
-  |dR_BAL| / |dR_COMP| = 1.252; znak sohranyon
+  |dR_BAL| / |dR_COMP| = 1.253; znak sohranyon
   PRAVILO sec.5.4 (vtoraya polovina): sopernik C NE OBYASNYAET
 
 PRAVILO sec.5.4 celikom: sopernik C NE OBYASNYAET
@@ -329,7 +340,7 @@ to razryv opisyvaet sostav rezhima po fazam cikla, a ne vremya.
 
   ryad       kl R_pre vsyo    n R_pre rassh.    n   R_post    n      dolya
   ('dolya' = kakuyu chast' vsego razryva R_pre -> R_post ob'yasnyaet odno tol'ko vyrezanie recessiy iz do-rezhima)
-  COMP       S      +0.718   63       +0.448   54   +0.039   57     +39.8%
+  COMP       S      +0.719   63       +0.450   54   +0.040   57     +39.6%
   PHIL       S      +0.720   63       +0.455   54   +0.055   57     +39.9%
   RICH       S      +0.671   63       +0.388   54   +0.018   57     +43.3%
   EMPIRE     S      +0.753   33       +0.371   25   +0.143   57     +62.6%
@@ -356,7 +367,7 @@ Z25 sec.8 -- SEMEYSTVO F1 (tri gipotezy) I POPRVKA HOLMA
 ====================================================================================================
 gipoteza         p syroy    p Holm  vyvod
 P1_class          0.1746    0.3492  NE otvergaet
-P2_rivalB         0.0964    0.2891  NE otvergaet
+P2_rivalB         0.0924    0.2771  NE otvergaet
 P4_rivalC            nan       nan  NE otvergaet
 
 ====================================================================================================
@@ -368,77 +379,77 @@ poetomu setka tochechnyh ocenok stroitsya po pyati osyam bez bloka.
 kovid     forma  okno     otklik razbienie         D       p  S<H?
 isklyuchyon main   common   Y_GDP  2008Q4      -0.1381  0.0238    DA
 isklyuchyon main   common   Y_GDP  2009Q4      -0.0518  0.1746    DA
-isklyuchyon main   common   Y_GDP  2010Q4      +0.0204  0.6032   net
-isklyuchyon main   common   Y_MFG  2008Q4      -0.2130  0.0476    DA
-isklyuchyon main   common   Y_MFG  2009Q4      -0.3010  0.0873    DA
-isklyuchyon main   common   Y_MFG  2010Q4      -0.1915  0.1111    DA
+isklyuchyon main   common   Y_GDP  2010Q4      +0.0205  0.6032   net
+isklyuchyon main   common   Y_MFG  2008Q4      -0.2129  0.0476    DA
+isklyuchyon main   common   Y_MFG  2009Q4      -0.3009  0.0873    DA
+isklyuchyon main   common   Y_MFG  2010Q4      -0.1914  0.1111    DA
 isklyuchyon main   own      Y_GDP  2008Q4      -0.0738  0.0635    DA
 isklyuchyon main   own      Y_GDP  2009Q4      -0.0167  0.4206    DA
 isklyuchyon main   own      Y_GDP  2010Q4      +0.0425  0.6825   net
-isklyuchyon main   own      Y_MFG  2008Q4      -0.1984  0.0476    DA
-isklyuchyon main   own      Y_MFG  2009Q4      -0.2763  0.1190    DA
-isklyuchyon main   own      Y_MFG  2010Q4      -0.1893  0.1032    DA
-isklyuchyon alt    common   Y_GDP  2008Q4      -0.0716  0.3036    DA
-isklyuchyon alt    common   Y_GDP  2009Q4      +0.3417  0.9464   net
-isklyuchyon alt    common   Y_GDP  2010Q4      +0.3043  0.9464   net
-isklyuchyon alt    common   Y_MFG  2008Q4      +0.1039  0.7857   net
-isklyuchyon alt    common   Y_MFG  2009Q4      +0.3503  0.8929   net
-isklyuchyon alt    common   Y_MFG  2010Q4      +0.2695  0.8393   net
-isklyuchyon alt    own      Y_GDP  2008Q4      -0.0925  0.1786    DA
-isklyuchyon alt    own      Y_GDP  2009Q4      +0.2653  0.9643   net
-isklyuchyon alt    own      Y_GDP  2010Q4      +0.2503  0.9286   net
-isklyuchyon alt    own      Y_MFG  2008Q4      +0.0383  0.6786   net
-isklyuchyon alt    own      Y_MFG  2009Q4      +0.2905  0.8393   net
-isklyuchyon alt    own      Y_MFG  2010Q4      +0.2330  0.8393   net
-vklyuchyon main   common   Y_GDP  2008Q4      -0.4918  0.0079    DA
+isklyuchyon main   own      Y_MFG  2008Q4      -0.1983  0.0476    DA
+isklyuchyon main   own      Y_MFG  2009Q4      -0.2761  0.1190    DA
+isklyuchyon main   own      Y_MFG  2010Q4      -0.1891  0.1111    DA
+isklyuchyon alt    common   Y_GDP  2008Q4      -0.0721  0.2679    DA
+isklyuchyon alt    common   Y_GDP  2009Q4      +0.3413  0.9464   net
+isklyuchyon alt    common   Y_GDP  2010Q4      +0.3039  0.9464   net
+isklyuchyon alt    common   Y_MFG  2008Q4      +0.1040  0.7857   net
+isklyuchyon alt    common   Y_MFG  2009Q4      +0.3506  0.8929   net
+isklyuchyon alt    common   Y_MFG  2010Q4      +0.2699  0.8393   net
+isklyuchyon alt    own      Y_GDP  2008Q4      -0.0930  0.1786    DA
+isklyuchyon alt    own      Y_GDP  2009Q4      +0.2649  0.9643   net
+isklyuchyon alt    own      Y_GDP  2010Q4      +0.2499  0.9286   net
+isklyuchyon alt    own      Y_MFG  2008Q4      +0.0384  0.6786   net
+isklyuchyon alt    own      Y_MFG  2009Q4      +0.2909  0.8393   net
+isklyuchyon alt    own      Y_MFG  2010Q4      +0.2334  0.8393   net
+vklyuchyon main   common   Y_GDP  2008Q4      -0.4919  0.0079    DA
 vklyuchyon main   common   Y_GDP  2009Q4      -0.6399  0.0079    DA
 vklyuchyon main   common   Y_GDP  2010Q4      -0.6014  0.0079    DA
 vklyuchyon main   common   Y_MFG  2008Q4      -0.3641  0.0159    DA
 vklyuchyon main   common   Y_MFG  2009Q4      -0.5758  0.0079    DA
 vklyuchyon main   common   Y_MFG  2010Q4      -0.4950  0.0079    DA
-vklyuchyon main   own      Y_GDP  2008Q4      -0.4275  0.0079    DA
+vklyuchyon main   own      Y_GDP  2008Q4      -0.4276  0.0079    DA
 vklyuchyon main   own      Y_GDP  2009Q4      -0.6048  0.0079    DA
 vklyuchyon main   own      Y_GDP  2010Q4      -0.5794  0.0079    DA
 vklyuchyon main   own      Y_MFG  2008Q4      -0.3494  0.0079    DA
-vklyuchyon main   own      Y_MFG  2009Q4      -0.5511  0.0079    DA
+vklyuchyon main   own      Y_MFG  2009Q4      -0.5510  0.0079    DA
 vklyuchyon main   own      Y_MFG  2010Q4      -0.4927  0.0079    DA
-vklyuchyon alt    common   Y_GDP  2008Q4      +0.3514  1.0000   net
+vklyuchyon alt    common   Y_GDP  2008Q4      +0.3512  1.0000   net
 vklyuchyon alt    common   Y_GDP  2009Q4      +0.5164  0.9821   net
-vklyuchyon alt    common   Y_GDP  2010Q4      +0.4806  0.9821   net
-vklyuchyon alt    common   Y_MFG  2008Q4      +0.5700  1.0000   net
-vklyuchyon alt    common   Y_MFG  2009Q4      +0.6943  1.0000   net
-vklyuchyon alt    common   Y_MFG  2010Q4      +0.6579  1.0000   net
-vklyuchyon alt    own      Y_GDP  2008Q4      +0.3304  1.0000   net
+vklyuchyon alt    common   Y_GDP  2010Q4      +0.4805  0.9821   net
+vklyuchyon alt    common   Y_MFG  2008Q4      +0.5702  1.0000   net
+vklyuchyon alt    common   Y_MFG  2009Q4      +0.6944  1.0000   net
+vklyuchyon alt    common   Y_MFG  2010Q4      +0.6580  1.0000   net
+vklyuchyon alt    own      Y_GDP  2008Q4      +0.3302  1.0000   net
 vklyuchyon alt    own      Y_GDP  2009Q4      +0.4400  1.0000   net
 vklyuchyon alt    own      Y_GDP  2010Q4      +0.4266  1.0000   net
-vklyuchyon alt    own      Y_MFG  2008Q4      +0.5044  1.0000   net
-vklyuchyon alt    own      Y_MFG  2009Q4      +0.6345  1.0000   net
-vklyuchyon alt    own      Y_MFG  2010Q4      +0.6214  1.0000   net
+vklyuchyon alt    own      Y_MFG  2008Q4      +0.5046  1.0000   net
+vklyuchyon alt    own      Y_MFG  2009Q4      +0.6347  1.0000   net
+vklyuchyon alt    own      Y_MFG  2010Q4      +0.6216  1.0000   net
 
 Yacheek vsego 48, schitaemyh 48; D < 0 v 24 (50.0%)
-D: mediana +0.0018, [p05 -0.5937 .. p95 +0.6299]
-  kovid      isklyuchyon  mediana D = +0.0018, D<0 v 12/24
-  kovid      vklyuchyon   mediana D = -0.0095, D<0 v 12/24
-  forma      main         mediana D = -0.3252, D<0 v 22/24
+D: mediana +0.0019, [p05 -0.5937 .. p95 +0.6301]
+  kovid      isklyuchyon  mediana D = +0.0019, D<0 v 12/24
+  kovid      vklyuchyon   mediana D = -0.0096, D<0 v 12/24
+  forma      main         mediana D = -0.3251, D<0 v 22/24
   forma      alt          mediana D = +0.3460, D<0 v 2/24
   okno       common       mediana D = -0.0157, D<0 v 12/24
   okno       own          mediana D = +0.0108, D<0 v 12/24
-  otklik     Y_GDP        mediana D = +0.0018, D<0 v 12/24
-  otklik     Y_MFG        mediana D = -0.0755, D<0 v 12/24
-  razbienie  2008Q4       mediana D = -0.0832, D<0 v 10/16
-  razbienie  2009Q4       mediana D = +0.1243, D<0 v 8/16
-  razbienie  2010Q4       mediana D = +0.1377, D<0 v 6/16
+  otklik     Y_GDP        mediana D = +0.0019, D<0 v 12/24
+  otklik     Y_MFG        mediana D = -0.0754, D<0 v 12/24
+  razbienie  2008Q4       mediana D = -0.0834, D<0 v 10/16
+  razbienie  2009Q4       mediana D = +0.1241, D<0 v 8/16
+  razbienie  2010Q4       mediana D = +0.1379, D<0 v 6/16
 
 Os' 'chastota pribora': mesyachnyy pribor Z06 (otklik IPMAN, okno vperyod
 h=3) na kompozite -- spravochno, v klassovyy test ne vhodit.
-  n=364 [1993-11-01 .. 2026-03-01]; R_pre=+0.5491 R_post=+0.1733 dR=-0.3758
+  n=364 [1993-11-01 .. 2026-03-01]; R_pre=+0.5499 R_post=+0.1731 dR=-0.3768
 
 ====================================================================================================
 Z25 sec.9-bis -- IZMERENIYA POSLE RASCHYOTA (ne testy)
 ====================================================================================================
 A. Rangovaya korrelyaciya (Spirmen) -- neuyazvima k vykidnym 2020 goda.
   ryad       kl bez kovida: pre    post    dRho  | s kovidom: pre    post    dRho
-  COMP       S           +0.599  +0.026  -0.573            +0.599  +0.238  -0.361
+  COMP       S           +0.600  +0.022  -0.578            +0.600  +0.235  -0.365
   COMP_BAL   S           +0.726  +0.026  -0.700            +0.726  +0.238  -0.488
   PHIL       S           +0.625  +0.087  -0.538            +0.625  +0.279  -0.346
   RICH       S           +0.537  -0.015  -0.552            +0.537  +0.199  -0.338
@@ -459,12 +470,12 @@ A. Rangovaya korrelyaciya (Spirmen) -- neuyazvima k vykidnym 2020 goda.
   CFNAI      M           +0.671  +0.050  -0.621            +0.670  +0.292  -0.378
   OECD_CLI   M           +0.275  -0.094  -0.369            +0.275  +0.063  -0.212
 
-  Klassovaya statistika po dRho: bez kovida D = -0.1096 (p=0.0079); s kovidom D = -0.2059 (p=0.0079)
+  Klassovaya statistika po dRho: bez kovida D = -0.1098 (p=0.0079); s kovidom D = -0.2061 (p=0.0079)
 
 B. Rychag kovidnyh kvartalov: R posle-rezhima s kovidom, no bez dvuh
    samyh krupnyh po |otkloneniyu otklika| nablyudeniy.
   ryad       kl  R_post s kovidom  bez 2 vybrosov           vybroshennye
-  COMP       S             +0.424          +0.229         2020Q2, 2020Q3
+  COMP       S             +0.424          +0.228         2020Q2, 2020Q3
   COMP_BAL   S             +0.424          +0.229         2020Q2, 2020Q3
   PHIL       S             +0.405          +0.211         2020Q2, 2020Q3
   RICH       S             +0.361          +0.154         2020Q2, 2020Q3
@@ -490,7 +501,7 @@ C. Otnoshenie sd indikatora mezhdu rezhimami protiv togo zhe u otklika.
    bol'shim shumom sd upadyot MEN'SHE, chem u otklika.
    otnoshenie sd otklika = 0.5503
   ryad       kl  sdx_post/sdx_pre  / to zhe u otklika
-  COMP       S             0.7670              1.3939
+  COMP       S             0.7655              1.3912
   COMP_BAL   S             0.6388              1.1609
   PHIL       S             0.8783              1.5962
   RICH       S             0.8697              1.5806
@@ -510,19 +521,19 @@ C. Otnoshenie sd indikatora mezhdu rezhimami protiv togo zhe u otklika.
   ADS        H             0.3189              0.5795
   CFNAI      M             0.2695              0.4897
   OECD_CLI   M             0.4327              0.7864
-   Klassovaya statistika po otnosheniyu sd_x: D = +0.3650 (p odnostoronniy 'S men'she H' = 0.9762)
+   Klassovaya statistika po otnosheniyu sd_x: D = +0.3649 (p odnostoronniy 'S men'she H' = 0.9762)
 
 D. Klassovaya statistika po padeniyu naklona ln(beta_post/beta_pre)
    i po odnim tol'ko ryadam s POLNYM do-rezhimom (n_pre = 63).
-   ln(beta) : D = -0.7448 (p = 0.1587)
-   dR, tol'ko polnyy do-rezhim (16 ryadov): D = -0.0347 (p = 0.3016)
+   ln(beta) : D = -0.7436 (p = 0.1587)
+   dR, tol'ko polnyy do-rezhim (16 ryadov): D = -0.0347 (p = 0.3095)
 
 E. Tot zhe vopros na GODOVOM tempe VVP vmesto kvartal'nogo.
    Esli posle 2009 kvartal'nyy rost VVP stal shumom, kotoryy nichem ne
    otslezhivaetsya, to na chetyryohkvartal'nom roste svyaz' obyazana
    sohranit'sya. Esli ne sohranyaetsya -- delo ne v chastote.
   ryad       kl n_pre n_post    R_pre   R_post       dR   (kvartal'nyy dR dlya sravneniya)
-  COMP       S     63     54   +0.754   +0.037   -0.717     -0.679
+  COMP       S     63     54   +0.754   +0.038   -0.716     -0.679
   COMP_BAL   S     21     54   +0.818   +0.037   -0.781     -0.850
   PHIL       S     63     54   +0.758   +0.184   -0.574     -0.664
   RICH       S     63     54   +0.720   +0.060   -0.660     -0.653
@@ -543,7 +554,7 @@ E. Tot zhe vopros na GODOVOM tempe VVP vmesto kvartal'nogo.
   CFNAI      M     63     54   +0.785   +0.085   -0.700     -0.726
   OECD_CLI   M     63     54   +0.738   +0.273   -0.464     -0.599
    Klassovaya statistika po dR na godovom tempe: D = +0.1002 (p = 0.8254)
-   Median R_post: kvartal'nyy temp +0.041, godovoy temp -0.015
+   Median R_post: kvartal'nyy temp +0.042, godovoy temp -0.015
 
 ====================================================================================================
 Z25 sec.10 -- VINTAZHI: PERESMATRIVAETSYA TOL'KO OTKLIK
@@ -553,19 +564,19 @@ Pravilo vybora obyavleno v HYPOTHESIS sec.8: pervyy vintazh kazhdogo goda
 s 2016 po 2026 (ranee post-rezhim koroche 24 kvartalov).
 
   vintazh      n_pre n_post    R_pre   R_post       dR  dR peresm.
-  2016-01-29      63     25  +0.7181  +0.2623  -0.4558     -0.4952
-  2017-01-27      63     29  +0.7181  +0.2603  -0.4578     -0.5056
-  2018-01-26      63     33  +0.7182  +0.2251  -0.4930     -0.4555
-  2019-02-28      63     37  +0.7162  +0.2693  -0.4470     -0.5110
-  2020-01-30      63     41  +0.7162  +0.2734  -0.4429     -0.5475
-  2021-01-28      63     41  +0.7162  +0.2247  -0.4915     -0.5475
-  2022-01-27      63     41  +0.7198  +0.2398  -0.4801     -0.5475
-  2023-01-26      63     44  +0.7198  +0.1851  -0.5347     -0.5752
-  2024-01-25      63     48  +0.7183  +0.0865  -0.6318     -0.6755
-  2025-01-30      63     52  +0.7183  +0.0549  -0.6634     -0.6619
-  2026-01-22      63     55  +0.7183  +0.0314  -0.6869     -0.6869
+  2016-01-29      63     25  +0.7188  +0.2611  -0.4577     -0.4971
+  2017-01-27      63     29  +0.7188  +0.2595  -0.4593     -0.5072
+  2018-01-26      63     33  +0.7189  +0.2245  -0.4943     -0.4570
+  2019-02-28      63     37  +0.7168  +0.2687  -0.4482     -0.5120
+  2020-01-30      63     41  +0.7168  +0.2727  -0.4442     -0.5483
+  2021-01-28      63     41  +0.7168  +0.2239  -0.4929     -0.5483
+  2022-01-27      63     41  +0.7205  +0.2396  -0.4809     -0.5483
+  2023-01-26      63     44  +0.7205  +0.1840  -0.5365     -0.5767
+  2024-01-25      63     48  +0.7190  +0.0854  -0.6336     -0.6770
+  2025-01-30      63     52  +0.7190  +0.0542  -0.6648     -0.6628
+  2026-01-22      63     55  +0.7190  +0.0319  -0.6871     -0.6871
 
-Razbros dR po vintazham: mediana -0.4915, min -0.6869, max -0.4429; na peresmotrennyh dannyh -0.6794
+Razbros dR po vintazham: mediana -0.4929, min -0.6871, max -0.4442; na peresmotrennyh dannyh -0.6788
 
 Chego net i ne budet (Z06 sec.8): u Richmond i Kansas City vintazhey NE
 sushchestvuet, u ostal'nyh tryoh arhiv FRED s 2014-2016. Pyatipanel'nyy
@@ -579,7 +590,7 @@ Obuchenie -- pervye 80% nablyudeniy obshchego okna, hvost uderzhan.
 Na obuchenii ocenivayutsya dve modeli: do-rezhimnaya i posle-rezhimnaya.
 
   ryad       kl  n_tr  n_te  RMSE pre  RMSE post  luchshe
-  COMP       S     96    24    2.5996     1.6119  post
+  COMP       S     96    24    2.5941     1.6087  post
   COMP_BAL   S     62    16    3.9442     1.5673  post
   PHIL       S     96    24    2.5411     1.5282  post
   RICH       S     96    24    2.4640     1.6064  post
@@ -624,7 +635,7 @@ Z25 sec.13 -- OBYEDINYONNAYA POPRVKA HOLMA NA 45 GIPOTEZ
 ====================================================================================================
 Obyavlennyy razmer obyedineniya: 3 + 40 + 2 = 45; poschitano 44.
 gipoteza                     p syroy Holm v svoyom Holm obyedin.
-F1:P2_rivalB                  0.0964        0.2891        1.0000
+F1:P2_rivalB                  0.0924        0.2771        1.0000
 F1:P4_rivalC                     nan           nan           nan
 F2:INDPRO|Y_MFG               0.0002        0.0080        0.0090
 F2:COMP_BAL|Y_GDP             0.0004        0.0156        0.0176
@@ -650,7 +661,7 @@ Z25 sec.14 -- VETV' 'KOVID VKLYUCHYON': POLNYY SCHYOT
 ====================================================================================================
 otklik Y_GDP, forma main, kovid VKLYUCHYON, razbienie 2009Q4
   ryad       kl n_pre n_post   R_pre  R_post      dR   b_pre  b_post sdx_pre sdx_post sdy_pre sdy_post
-  COMP       S     63     66  +0.718  +0.424  -0.294  +1.861  +2.659   1.048    0.938   2.715    5.878
+  COMP       S     63     66  +0.719  +0.424  -0.295  +1.861  +2.661   1.049    0.937   2.715    5.878
   COMP_BAL   S     21     66  +0.889  +0.424  -0.465  +2.362  +2.703   1.238    0.923   3.288    5.878
   PHIL       S     63     66  +0.720  +0.405  -0.314  +1.940  +2.383   1.007    1.000   2.715    5.878
   RICH       S     63     66  +0.671  +0.361  -0.310  +1.739  +2.207   1.047    0.961   2.715    5.878
@@ -672,15 +683,15 @@ otklik Y_GDP, forma main, kovid VKLYUCHYON, razbienie 2009Q4
   OECD_CLI   M     63     66  +0.507  +0.433  -0.074  +1.149  +3.296   1.197    0.772   2.715    5.878
 
 D = -0.6399, odnostoronniy p = 0.0079 (pri isklyuchyonnom kovide: D = -0.0518, p = 0.1746)
-Razlozhenie COMP pri vklyuchyonnom kovide: ln R = -0.5263 = ln beta +0.3567 + ln sd_x -0.1105 - ln sd_y +0.7726; dolya sd_y = +146.8%
+Razlozhenie COMP pri vklyuchyonnom kovide: ln R = -0.5275 = ln beta +0.3575 + ln sd_x -0.1125 - ln sd_y +0.7726; dolya sd_y = +146.5%
 sd_y: pre 2.7148, post 5.8785
 
 ====================================================================================================
 Z25 sec.15 -- VERDIKT PO PRAVILU HYPOTHESIS sec.6.5
 ====================================================================================================
 1. P1: Holm-p = 0.3492 < 0.05 i D = -0.0518 < 0 -> False
-2. Sopernik A ne obyasnyaet (dolya sd_y = -20.5%) -> True
-3. Sopernik B otvergnut: dR(Y_MFG) = -0.4357 -> True
+2. Sopernik A ne obyasnyaet (dolya sd_y = -20.7%) -> True
+3. Sopernik B otvergnut: dR(Y_MFG) = -0.4320 -> True
 4. Sopernik C ne obyasnyaet i P4 otvergaet nol' (Holm-p = nan) -> False   [P4 ne poschitan: bootstrap vyrozhden, sec.7]
 
 Osnovaniya OPROVERZHENIYA:
@@ -690,9 +701,9 @@ Osnovaniya OPROVERZHENIYA:
   4. sopernik C obyasnyaet -> False
 
 Otdel'no -- sushchestvo, ne pravilo: srednee dR po klassam.
-  oprosnye (n=10): srednee -0.7130, razmah [-0.8542 .. -0.5880]
+  oprosnye (n=10): srednee -0.7129, razmah [-0.8542 .. -0.5880]
   zhyostkie (n=8): srednee -0.6364, razmah [-0.7011 .. -0.5719]
 
 VERDIKT: NEOPREDELENO
 
-Gotovo za 38.6 s. result.json zapisan.
+Gotovo za 40.6 s. result.json zapisan.
