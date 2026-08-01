@@ -1,0 +1,698 @@
+
+====================================================================================================
+Z25 sec.0 -- PASPORT DANNYH
+====================================================================================================
+Zerno 20260801; bootstrap B=5000 (BP 5000); quick=False
+
+klyuch     klass sektor  tip znak      n  pervoe     poslednee 
+COMP       S     MFG     D     +1    393  1993-11-01 2026-07-01
+COMP_BAL   S     MFG     D     +1    266  2004-06-01 2026-07-01
+PHIL       S     MFG     D     +1    699  1968-05-01 2026-07-01
+RICH       S     MFG     D     +1    393  1993-11-01 2026-07-01
+EMPIRE     S     MFG     D     +1    301  2001-07-01 2026-07-01
+KC         S     MFG     D     +1    301  2001-07-01 2026-07-01
+DALLAS     S     MFG     D     +1    266  2004-06-01 2026-07-01
+NAHB       S     HOUSE   D     +1    499  1985-01-01 2026-07-01
+UMCSENT    S     CONSUM  D     +1    674  1952-11-01 2026-06-01
+SLOOS      S     BANK    D     -1    145  1990-04-01 2026-04-01
+NEWORDER   H     MFG     L     +1    413  1992-02-01 2026-06-01
+AMTMNO     H     MFG     L     +1    412  1992-02-01 2026-05-01
+DGORDER    H     MFG     L     +1    413  1992-02-01 2026-06-01
+IPMAN_X    H     MFG     L     +1    654  1972-01-01 2026-06-01
+INDPRO     H     MFG     L     +1   1290  1919-01-01 2026-06-01
+PAYEMS     H     ECON    L     +1   1050  1939-01-01 2026-06-01
+ICSA       H     ECON    L     -1    715  1967-01-01 2026-07-01
+ADS        H     ECON    D     +1    797  1960-03-01 2026-07-01
+CFNAI      M     ECON    D     +1    712  1967-03-01 2026-06-01
+OECD_CLI   M     ECON    D     +1    858  1955-01-01 2026-06-01
+
+GDPC1      otklik   n=  318  1947-01-01 2026-04-01
+IPMAN      otklik   n=  654  1972-01-01 2026-06-01
+
+Obshchee okno (HYPOTHESIS sec.4.1): nachalo obyavleno 1994Q1, konec --
+posledniy kvartal, gde est' nablyudeniya u VSEH ryadov osnovnogo reestra.
+  WIN_START = 1994Q1   WIN_END = 2026Q1 (ogranichitel': AMTMNO)
+  SPLIT = 2009Q4 -- pervoe nablyudenie prihodyashchego rezhima
+  Ozhidanie pred-registracii: 2026Q1 -- SOVPALO
+
+====================================================================================================
+Z25 sec.1 -- VOSPROIZVEDENIE Z06 (kontrol' pribora)
+====================================================================================================
+Para COMP -> Y_GDP na obshchem okne: n = 120 [1994Q1 .. 2026Q1]  (Z06: n = 120 [1994Q1 .. 2026Q1])
+  supF(1|0) = 13.566  krit.95% = 9.633  p = 0.0086   (Z06: supF 13.531, krit 9.555, p 0.0088)
+  BIC vybiraet m = 2; razryvy (nachalo novogo rezhima): 2003Q4, 2009Q4
+  te zhe razryvy v konvencii Z06 (posledniy mesyac starogo rezhima): 2003Q3, 2009Q3   (Z06 pechatala: 2003Q3, 2009Q3)
+  rezhim                        n    beta_z        R  beta_raw
+  1994Q1 .. 2003Q3             39   +1.3323   +0.564   +1.6127
+  2003Q4 .. 2009Q3             24   +2.0169   +0.873   +2.4413
+  2009Q4 .. 2026Q1             57   +0.0692   +0.039   +0.0837
+  Z06 sec.5 pechatala v syryh edinicah kompozita: beta +1.6178 / +2.4378 / +0.0867, R +0.566 / +0.873 / +0.040
+
+====================================================================================================
+Z25 sec.2 -- SVOBODNYY POISK RAZRYVA: VES' REESTR, ODIN PRIBOR (F2)
+====================================================================================================
+Trim 0.15, do 5 razryvov, bootstrap-kriticheskie znacheniya, blok 8 kv.
+Data razryva -- PERVOE nablyudenie prihodyashchego rezhima (sec.4.3);
+v skobkah -- ta zhe data v konvencii Z06 (poslednee nablyudenie starogo).
+
+ryad       kl otklik    n     supF   krit95       p  razryv supF m_BIC  razryvy BIC
+COMP       S  Y_GDP   120   13.566    9.906  0.0116       2010Q3     2  2003Q4, 2009Q4  [COMPOSITION_SUSPECT]
+COMP       S  Y_MFG   120   19.832   18.201  0.0358       2010Q3     3  1999Q2, 2006Q3, 2011Q1
+COMP_BAL   S  Y_GDP    78   25.125   10.558  0.0004       2010Q3     1  2010Q3
+COMP_BAL   S  Y_MFG    78   45.509   18.500  0.0008       2010Q3     2  2007Q4, 2010Q4
+PHIL       S  Y_GDP   120   14.987    8.221  0.0020       2010Q3     2  2000Q3, 2009Q4
+PHIL       S  Y_MFG   120   29.348   16.678  0.0026       2010Q3     3  1999Q1, 2006Q3, 2011Q1
+RICH       S  Y_GDP   120   13.029   10.501  0.0184       2010Q1     2  2005Q1, 2009Q3
+RICH       S  Y_MFG   120   24.684   17.654  0.0110       2010Q4     3  1999Q2, 2007Q3, 2012Q3
+EMPIRE     S  Y_GDP    90   17.485   11.308  0.0058       2011Q4     1  2011Q4
+EMPIRE     S  Y_MFG    90   23.065   16.505  0.0140       2009Q3     2  2007Q1, 2010Q3
+KC         S  Y_GDP    90   29.967   11.834  0.0004       2009Q4     1  2009Q4
+KC         S  Y_MFG    90   34.635   16.848  0.0020       2009Q3     3  2005Q3, 2009Q3, 2013Q2
+DALLAS     S  Y_GDP    78   18.234    8.461  0.0006       2009Q3     1  2009Q3
+DALLAS     S  Y_MFG    78   26.910   15.534  0.0046       2009Q3     2  2007Q3, 2010Q3
+NAHB       S  Y_GDP   120   12.220   10.172  0.0230       2009Q3     1  2009Q3
+NAHB       S  Y_MFG   120   28.174   23.352  0.0246       2009Q3     2  1998Q3, 2009Q3
+UMCSENT    S  Y_GDP   120   17.406   10.955  0.0060       2009Q3     1  2009Q3
+UMCSENT    S  Y_MFG   120   34.312   21.174  0.0052       2009Q3     4  2000Q1, 2004Q4, 2009Q3, 2019Q1
+SLOOS      S  Y_GDP   120   11.609   10.431  0.0310       2000Q3     2  2004Q1, 2009Q3
+SLOOS      S  Y_MFG   120   17.457   17.216  0.0478       2010Q4     3  2003Q2, 2009Q3, 2014Q4
+NEWORDER   H  Y_GDP   120    9.371    9.498  0.0536       2009Q3     2  2006Q2, 2011Q4
+NEWORDER   H  Y_MFG   120   17.862   11.908  0.0094       2000Q2     3  2000Q2, 2007Q4, 2012Q2
+AMTMNO     H  Y_GDP   120   13.656   10.924  0.0178       2009Q3     2  2005Q2, 2010Q1
+AMTMNO     H  Y_MFG   120   21.051   14.521  0.0108       2000Q2     2  2000Q2, 2010Q4
+DGORDER    H  Y_GDP   120   15.703    9.557  0.0026       2009Q3     2  2005Q2, 2009Q4
+DGORDER    H  Y_MFG   120   26.957   12.916  0.0006       2010Q1     2  2000Q4, 2012Q2
+IPMAN_X    H  Y_GDP   120    5.550    6.580  0.1024       2009Q3     0  -
+IPMAN_X    H  Y_MFG   -- propushcheno: indikator i otklik postroeny iz odnogo ryada (tavtologiya)
+INDPRO     H  Y_GDP   120    8.335    6.479  0.0140       2009Q3     1  2009Q3
+INDPRO     H  Y_MFG   120   34.238   10.560  0.0002       2012Q2     2  2012Q2, 2017Q3
+PAYEMS     H  Y_GDP   120    6.964    6.737  0.0432       2009Q2     0  -
+PAYEMS     H  Y_MFG   120   41.402   18.336  0.0008       2009Q3     3  2005Q1, 2009Q3, 2015Q1
+ICSA       H  Y_GDP   120   17.486   10.002  0.0022       2009Q2     2  2001Q3, 2009Q2
+ICSA       H  Y_MFG   120   25.520   15.517  0.0062       2010Q4     3  1999Q2, 2008Q1, 2012Q4
+ADS        H  Y_GDP   120    2.435    5.168  0.4737       2009Q1     0  -
+ADS        H  Y_MFG   120   17.694   10.620  0.0022       2012Q4     1  2012Q4
+CFNAI      M  Y_GDP   120    2.630    4.742  0.3621       2009Q3     0  -
+CFNAI      M  Y_MFG   120   16.352   14.604  0.0316       2013Q2     3  2002Q3, 2007Q1, 2012Q2
+OECD_CLI   M  Y_GDP   120    7.263   11.545  0.2110       2000Q3     2  2004Q1, 2009Q2
+OECD_CLI   M  Y_MFG   120   12.526   21.871  0.2523       1999Q2     4  1999Q2, 2005Q1, 2009Q3, 2014Q2
+
+Poprvka Holma vnutri F2 na obyavlennye 40 gipotez (poschitano 39; propushchena tavtologicheskaya para).
+para                     p syroy    p Holm  otvergaet nol'?
+INDPRO|Y_MFG              0.0002    0.0080  DA
+COMP_BAL|Y_GDP            0.0004    0.0156  DA
+KC|Y_GDP                  0.0004    0.0156  DA
+DALLAS|Y_GDP              0.0006    0.0222  DA
+DGORDER|Y_MFG             0.0006    0.0222  DA
+COMP_BAL|Y_MFG            0.0008    0.0280  DA
+PAYEMS|Y_MFG              0.0008    0.0280  DA
+PHIL|Y_GDP                0.0020    0.0660  net
+KC|Y_MFG                  0.0020    0.0660  net
+ICSA|Y_GDP                0.0022    0.0682  net
+ADS|Y_MFG                 0.0022    0.0682  net
+PHIL|Y_MFG                0.0026    0.0754  net
+DGORDER|Y_GDP             0.0026    0.0754  net
+DALLAS|Y_MFG              0.0046    0.1242  net
+UMCSENT|Y_MFG             0.0052    0.1352  net
+EMPIRE|Y_GDP              0.0058    0.1450  net
+UMCSENT|Y_GDP             0.0060    0.1450  net
+ICSA|Y_MFG                0.0062    0.1450  net
+NEWORDER|Y_MFG            0.0094    0.2068  net
+AMTMNO|Y_MFG              0.0108    0.2268  net
+RICH|Y_MFG                0.0110    0.2268  net
+COMP|Y_GDP                0.0116    0.2268  net
+EMPIRE|Y_MFG              0.0140    0.2519  net
+INDPRO|Y_GDP              0.0140    0.2519  net
+AMTMNO|Y_GDP              0.0178    0.2847  net
+RICH|Y_GDP                0.0184    0.2847  net
+NAHB|Y_GDP                0.0230    0.3219  net
+NAHB|Y_MFG                0.0246    0.3219  net
+SLOOS|Y_GDP               0.0310    0.3719  net
+CFNAI|Y_MFG               0.0316    0.3719  net
+COMP|Y_MFG                0.0358    0.3719  net
+PAYEMS|Y_GDP              0.0432    0.3887  net
+SLOOS|Y_MFG               0.0478    0.3887  net
+NEWORDER|Y_GDP            0.0536    0.3887  net
+IPMAN_X|Y_GDP             0.1024    0.6143  net
+OECD_CLI|Y_GDP            0.2110    1.0000  net
+OECD_CLI|Y_MFG            0.2523    1.0000  net
+CFNAI|Y_GDP               0.3621    1.0000  net
+ADS|Y_GDP                 0.4737    1.0000  net
+
+Otklik Y_GDP: supF otverg nol' u 3 iz 10 oprosnyh i u 0 iz 8 zhyostkih (posle Holma vnutri F2).
+
+====================================================================================================
+Z25 sec.3 -- FIKSIROVANNOE RAZBIENIE 2009Q4: ODNA DATA NA VSE RYADY
+====================================================================================================
+Naklon beta -- v p.p. godovogo tempa otklika na odno standartnoe
+otklonenie indikatora (indikator standartizovan na vsyom okne, sec.3.2).
+
+otklik Y_GDP, forma main, kovid isklyuchyon, razbienie 2009Q4
+  ryad       kl n_pre n_post   R_pre  R_post      dR   b_pre  b_post sdx_pre sdx_post sdy_pre sdy_post
+  COMP       S     63     57  +0.718  +0.039  -0.679  +1.780  +0.069   1.096    0.840   2.715    1.494
+  COMP_BAL   S     21     57  +0.889  +0.039  -0.850  +2.183  +0.068   1.339    0.856   3.288    1.494
+  PHIL       S     63     57  +0.720  +0.055  -0.664  +1.838  +0.089   1.063    0.934   2.715    1.494
+  RICH       S     63     57  +0.671  +0.018  -0.653  +1.707  +0.029   1.067    0.928   2.715    1.494
+  EMPIRE     S     33     57  +0.753  +0.143  -0.610  +1.830  +0.283   1.209    0.755   2.939    1.494
+  KC         S     33     57  +0.824  -0.030  -0.854  +2.280  -0.051   1.062    0.880   2.939    1.494
+  DALLAS     S     21     57  +0.826  -0.001  -0.827  +1.865  -0.002   1.456    0.786   3.288    1.494
+  NAHB       S     63     57  +0.631  +0.043  -0.588  +1.718  +0.066   0.997    0.983   2.715    1.494
+  UMCSENT    S     63     57  +0.657  +0.055  -0.601  +2.104  +0.084   0.847    0.979   2.715    1.494
+  SLOOS      S     63     57  +0.590  -0.213  -0.803  +1.373  -0.428   1.167    0.742   2.715    1.494
+  NEWORDER   H     63     57  +0.687  +0.034  -0.653  +1.532  +0.073   1.217    0.695   2.715    1.494
+  AMTMNO     H     63     57  +0.728  +0.027  -0.701  +1.695  +0.051   1.166    0.787   2.715    1.494
+  DGORDER    H     63     57  +0.731  +0.110  -0.622  +1.804  +0.186   1.100    0.879   2.715    1.494
+  IPMAN_X    H     63     57  +0.793  +0.189  -0.603  +1.681  +0.526   1.280    0.538   2.715    1.494
+  INDPRO     H     63     57  +0.777  +0.129  -0.648  +1.700  +0.299   1.241    0.643   2.715    1.494
+  PAYEMS     H     63     57  +0.691  +0.039  -0.651  +1.460  +0.115   1.284    0.511   2.715    1.494
+  ICSA       H     63     57  +0.684  +0.043  -0.641  +1.658  +0.082   1.121    0.784   2.715    1.494
+  ADS        H     63     57  +0.836  +0.264  -0.572  +1.711  +0.932   1.326    0.423   2.715    1.494
+  CFNAI      M     63     57  +0.802  +0.076  -0.726  +1.622  +0.313   1.342    0.362   2.715    1.494
+  OECD_CLI   M     63     57  +0.507  -0.092  -0.599  +1.075  -0.248   1.280    0.554   2.715    1.494
+
+otklik Y_MFG, forma main, kovid isklyuchyon, razbienie 2009Q4
+  ryad       kl n_pre n_post   R_pre  R_post      dR   b_pre  b_post sdx_pre sdx_post sdy_pre sdy_post
+  COMP       S     63     57  +0.810  +0.375  -0.436  +5.376  +1.360   1.096    0.840   7.268    3.051
+  COMP_BAL   S     21     57  +0.926  +0.375  -0.551  +7.090  +1.336   1.339    0.856  10.254    3.051
+  PHIL       S     63     57  +0.804  +0.183  -0.621  +5.497  +0.597   1.063    0.934   7.268    3.051
+  RICH       S     63     57  +0.784  +0.370  -0.414  +5.340  +1.215   1.067    0.928   7.268    3.051
+  EMPIRE     S     33     57  +0.801  +0.404  -0.397  +5.637  +1.632   1.209    0.755   8.513    3.051
+  KC         S     33     57  +0.824  +0.351  -0.473  +6.600  +1.217   1.062    0.880   8.513    3.051
+  DALLAS     S     21     57  +0.845  +0.354  -0.491  +5.951  +1.372   1.456    0.786  10.254    3.051
+  NAHB       S     63     57  +0.570  -0.502  -1.073  +4.156  -1.559   0.997    0.983   7.268    3.051
+  UMCSENT    S     63     57  +0.674  -0.205  -0.879  +5.781  -0.638   0.847    0.979   7.268    3.051
+  SLOOS      S     63     57  +0.718  +0.216  -0.501  +4.470  +0.889   1.167    0.742   7.268    3.051
+  NEWORDER   H     63     57  +0.781  +0.471  -0.310  +4.663  +2.067   1.217    0.695   7.268    3.051
+  AMTMNO     H     63     57  +0.837  +0.562  -0.275  +5.218  +2.180   1.166    0.787   7.268    3.051
+  DGORDER    H     63     57  +0.866  +0.534  -0.332  +5.719  +1.854   1.100    0.879   7.268    3.051
+  IPMAN_X    H  propushcheno: indikator i otklik postroeny iz odnogo ryada
+  INDPRO     H     63     57  +0.989  +0.885  -0.104  +5.792  +4.202   1.241    0.643   7.268    3.051
+  PAYEMS     H     63     57  +0.806  -0.254  -1.060  +4.564  -1.519   1.284    0.511   7.268    3.051
+  ICSA       H     63     57  +0.776  +0.324  -0.453  +5.034  +1.260   1.121    0.784   7.268    3.051
+  ADS        H     63     57  +0.960  +0.718  -0.243  +5.266  +5.179   1.326    0.423   7.268    3.051
+  CFNAI      M     63     57  +0.952  +0.562  -0.390  +5.157  +4.740   1.342    0.362   7.268    3.051
+  OECD_CLI   M     63     57  +0.603  +0.085  -0.518  +3.425  +0.469   1.280    0.554   7.268    3.051
+
+====================================================================================================
+Z25 sec.4 -- P1: KLASSOVOE RAZLICHIE (perestanovka po klasteram)
+====================================================================================================
+Statistika D = srednee dR po klasteram S minus po klasteram H, otklik Y_GDP.
+klaster          klass   srednee dR   ryady
+cl_mfg_survey    S          -0.7340   COMP, COMP_BAL, PHIL, RICH, EMPIRE, KC, DALLAS
+cl_nahb          S          -0.5880   NAHB
+cl_umc           S          -0.6015   UMCSENT
+cl_sloos         S          -0.8029   SLOOS
+cl_orders        H          -0.6585   NEWORDER, AMTMNO, DGORDER
+cl_output        H          -0.6257   IPMAN_X, INDPRO
+cl_pay           H          -0.6513   PAYEMS
+cl_claims        H          -0.6413   ICSA
+cl_ads           H          -0.5719   ADS
+
+D = -0.0518;  perestanovok 126 (polnyy perebor), odnostoronniy p = 0.1746
+Minimal'no dostizhimyy p pri 4 + 5 klasterah = 0.0079 (zapisano v HYPOTHESIS sec.6.1 DO raschyota)
+
+====================================================================================================
+Z25 sec.5 -- SOPERNIK A: UPALA LI DISPERSIYA OTKLIKA
+====================================================================================================
+Otklik Y_GDP na obshchey vyborke: sd_pre = 2.7148 p.p., sd_post = 1.4938 p.p., otnoshenie 0.5503
+
+Tochnoe tozhdestvo R = beta * sd_x / sd_y, razlozhenie v logarifmah:
+  ln(R_post/R_pre)   = -2.9155   (vsyo nablyudaemoe izmenenie)
+  + ln(beta_post/beta_pre) = -3.2476   (+111.4% summy) -- SAMA SVYAZ'
+  + ln(sd_x_post/sd_x_pre) = -0.2652   (+9.1%) -- dispersiya indikatora
+  - ln(sd_y_post/sd_y_pre) = +0.5974   (-20.5%) -- DISPERSIYA OTKLIKA (sopernik A)
+  ostatok tozhdestva      = -1.33e-15 (dolzhen byt' nol')
+
+Lineynyy kontrfakt: esli by izmenilas' TOL'KO dispersiya otklika, R_post byla by +1.3054 vmesto nablyudaemoy +0.0389 pri R_pre = +0.7183
+
+PRAVILO sec.5.2: sopernik A obyasnyaet, esli slagaemoe -ln(sd_y) imeet tot zhe znak, chto summa, i sostavlyaet >= 50% eyo velichiny.
+  dolya = -20.5%  ->  sopernik A NE OBYASNYAET
+
+Otdel'no: klassovyy test P1 k soperniku A nevospriimchiv po postroeniyu --
+oba klassa regressiruyutsya na ODIN I TOT ZHE otklik na odnoy vyborke,
+znachit sd_y v nih bukval'no odno chislo i raznicu mezhdu klassami sozdat'
+ne mozhet. Sopernik A sposoben obyasnyat' tol'ko obshchiy uroven' padeniya.
+
+Razlozhenie po vsem ryadam reestra (otklik Y_GDP):
+  ryad       kl     ln R  ln beta  ln sd_x  -ln sd_y dolya sd_y
+  COMP       S   -2.9155  -3.2476  -0.2652   +0.5974     -20.5%
+  COMP_BAL   S   -3.1291  -3.4697  -0.4482   +0.7888     -25.2%
+  PHIL       S   -2.5635  -3.0312  -0.1297   +0.5974     -23.3%
+  RICH       S   -3.6315  -4.0893  -0.1396   +0.5974     -16.4%
+  EMPIRE     S   -1.6593  -1.8650  -0.4712   +0.6769     -40.8%
+  KC         S   -3.3061  -3.7946  -0.1883   +0.6769     -20.5%
+  DALLAS     S   -6.6527  -6.8258  -0.6158   +0.7888     -11.9%
+  NAHB       S   -2.6830  -3.2663  -0.0141   +0.5974     -22.3%
+  UMCSENT    S   -2.4757  -3.2177  +0.1446   +0.5974     -24.1%
+  SLOOS      S   -1.0218  -1.1668  -0.4524   +0.5974     -58.5%
+  NEWORDER   H   -3.0004  -3.0379  -0.5598   +0.5974     -19.9%
+  AMTMNO     H   -3.2939  -3.4978  -0.3934   +0.5974     -18.1%
+  DGORDER    H   -1.8986  -2.2711  -0.2248   +0.5974     -31.5%
+  IPMAN_X    H   -1.4314  -1.1614  -0.8673   +0.5974     -41.7%
+  INDPRO     H   -1.7970  -1.7365  -0.6579   +0.5974     -33.2%
+  PAYEMS     H   -2.8657  -2.5408  -0.9223   +0.5974     -20.8%
+  ICSA       H   -2.7671  -3.0066  -0.3579   +0.5974     -21.6%
+  ADS        H   -1.1535  -0.6079  -1.1430   +0.5974     -51.8%
+  CFNAI      M   -2.3580  -1.6440  -1.3113   +0.5974     -25.3%
+  OECD_CLI   M   -1.7049  -1.4646  -0.8377   +0.5974     -35.0%
+
+====================================================================================================
+Z25 sec.6 -- SOPERNIK B: SEKTORNYY SDVIG
+====================================================================================================
+Raskladka 'sektor x priroda ryada' po dR (otklik Y_GDP):
+                                          opros (S)                zhyostkiy (H)
+  MFG                            n=7 sred.dR=-0.734           n=5 sred.dR=-0.645
+  ECON                                            -           n=3 sred.dR=-0.622
+  HOUSE                          n=1 sred.dR=-0.588                            -
+  CONSUM                         n=1 sred.dR=-0.601                            -
+  BANK                           n=1 sred.dR=-0.803                            -
+
+Kompozit protiv dvuh otklikov (odin pribor, odno razbienie):
+  Y_GDP : R_pre=+0.718 R_post=+0.039 dR=-0.679  beta_pre=+1.780 beta_post=+0.069
+  Y_MFG : R_pre=+0.810 R_post=+0.375 dR=-0.436  beta_pre=+5.376 beta_post=+1.360
+
+P2: parnyy blochnyy bootstrap na obshchih kvartalah (n_pre=63, n_post=57).
+    dlina bloka vnutri rezhima (ladder 12->8->4, predohranitel' n/L>=8): pre=4, post=4
+    dR(Y_GDP) = -0.6794   90% [-0.8976 .. -0.3496]
+    dR(Y_MFG) = -0.4357   90% [-0.6214 .. -0.1333]
+    raznost' dR(GDP)-dR(MFG) = -0.2437  90% [-0.4927 .. -0.0033]  dvustoronniy p = 0.0964
+
+Zhyostkie ryady OBRABOTKI protiv Y_GDP: srednee dR = -0.6454 (NEWORDER -0.653, AMTMNO -0.701, DGORDER -0.622, IPMAN_X -0.603, INDPRO -0.648)
+Sopernik B podderzhan, esli svyaz' kompozita s Y_MFG derzhitsya, a zhyostkie ryady obrabotki lomayutsya tak zhe, kak oprosy.
+
+====================================================================================================
+Z25 sec.7 -- SOPERNIK C: SHUM IZMERENIYA I SOSTAV PANELEY
+====================================================================================================
+Ocenka dispersii shuma kompozita po RASHOZHDENIYU PANELEY:
+  dlya mesyaca s k>=2 panelyami s^2_t -- vyborochnaya dispersiya panel'nyh
+  z posle snyatiya smeshcheniy b_j; dispersiya ih srednego = s^2_t/k_t.
+  Kvartal: srednee treh mesyacev, mesyachnyy shum polagaetsya nezavisimym.
+
+  rezhim                  n_kv  sr. k  var_shum    var(c)  lambda     beta  beta_ispr       R   R_ispr
+  pre  [.. 2009Q3]          63   3.39    0.0442    0.8192  0.9461  +1.7800    +1.8814  +0.718   +0.738
+  post [2009Q4 ..]          57   5.00    0.0246    0.4819  0.9489  +0.0692    +0.0729  +0.039   +0.040
+
+Padenie ln(beta) nablyudaemoe = -3.2476, posle popravki na oslablenie = -3.2506
+Popravka ubrala -0.1% padeniya (pravilo sec.5.4: sopernik C obyasnyaet pri >= 50%)
+
+Sbalansirovannaya panel' COMP_BAL (2004-06+, sostav ne menyaetsya vovse):
+  n_pre=21 [2004Q3 .. 2009Q3], n_post=57
+  R_pre=+0.8893  R_post=+0.0389  dR=-0.8504   (u COMP dR=-0.6794)
+  BOOTSTRAP_DEGENERATE: n_pre = 21, i ni odna obyavlennaya dlina bloka (4, 8, 12) ne prohodit predohranitel' n/L >= 8 (21/4 = 5.2).
+  Eto ROVNO to ogranichenie, kotoroe zapisano v HYPOTHESIS sec.10.3 DO raschyota: u COMP_BAL do-rezhim korotkiy, i otricatel'nyy rezul'tat na nyom mozhet znachit' nehvatku nablyudeniy, a ne otsutstvie pereloma. Gipoteza P4 intervala ne poluchaet; tochechnaya ocenka nizhe prinimaetsya kak
+  opisanie, a ne kak test.
+  |dR_BAL| / |dR_COMP| = 1.252; znak sohranyon
+  PRAVILO sec.5.4 (vtoraya polovina): sopernik C NE OBYASNYAET
+
+PRAVILO sec.5.4 celikom: sopernik C NE OBYASNYAET
+
+====================================================================================================
+Z25 sec.7-bis -- SOPERNIK D: SOSTAV REZHIMA PO FAZAM CIKLA
+====================================================================================================
+Etot sopernik v pred-registracii NE obyavlen. On dobavlen posle togo, kak
+progon pokazal odinakovoe padenie R u VSEH ryadov, vklyuchaya zhyostkie:
+takoy rezul'tat trebuet ob'yasneniya, kotoroe ne razlichaet ryady voobshche.
+Nikakoy gipotezy on ne testiruet i v semeystva F1/F2/F3 ne vhodit --
+eto izmerenie, i ono nazvano izmereniem.
+
+Skol'ko recessionnyh kvartalov (razmetka NBER, USREC) v kazhdom rezhime:
+  kovid isklyuchyon: do-rezhim 9 iz 63, posle-rezhim 0 iz 57
+  kovid vklyuchyon : do-rezhim 9 iz 63, posle-rezhim 2 iz 66
+
+To est' v osnovnoy vetvi posle-rezhim ne soderzhit NI ODNOY recessii, a
+do-rezhim soderzhit dve (2001 i 2007-12). Sravnenie rezhimov okazyvaetsya
+sravneniem 's recessiyami' protiv 'bez recessiy'.
+
+Reshayushchee izmerenie: pereschitat' do-rezhim TOL'KO po kvartalam
+rasshireniya. Esli R do-rezhima pri etom padaet do urovnya posle-rezhima,
+to razryv opisyvaet sostav rezhima po fazam cikla, a ne vremya.
+
+  ryad       kl R_pre vsyo    n R_pre rassh.    n   R_post    n      dolya
+  ('dolya' = kakuyu chast' vsego razryva R_pre -> R_post ob'yasnyaet odno tol'ko vyrezanie recessiy iz do-rezhima)
+  COMP       S      +0.718   63       +0.448   54   +0.039   57     +39.8%
+  PHIL       S      +0.720   63       +0.455   54   +0.055   57     +39.9%
+  RICH       S      +0.671   63       +0.388   54   +0.018   57     +43.3%
+  EMPIRE     S      +0.753   33       +0.371   25   +0.143   57     +62.6%
+  KC         S      +0.824   33       +0.526   25   -0.030   57     +34.9%
+  NAHB       S      +0.631   63       +0.390   54   +0.043   57     +41.1%
+  UMCSENT    S      +0.657   63       +0.378   54   +0.055   57     +46.4%
+  SLOOS      S      +0.590   63       +0.225   54   -0.213   57     +45.5%
+  NEWORDER   H      +0.687   63       +0.431   54   +0.034   57     +39.1%
+  AMTMNO     H      +0.728   63       +0.342   54   +0.027   57     +55.1%
+  DGORDER    H      +0.731   63       +0.423   54   +0.110   57     +49.5%
+  IPMAN_X    H      +0.793   63       +0.514   54   +0.189   57     +46.2%
+  INDPRO     H      +0.777   63       +0.518   54   +0.129   57     +40.0%
+  PAYEMS     H      +0.691   63       +0.392   54   +0.039   57     +45.9%
+  ICSA       H      +0.684   63       +0.468   54   +0.043   57     +33.7%
+  ADS        H      +0.836   63       +0.664   54   +0.264   57     +30.1%
+  CFNAI      M      +0.802   63       +0.550   54   +0.076   57     +34.7%
+  OECD_CLI   M      +0.507   63       +0.187   54   -0.092   57     +53.4%
+
+Razryv 'ischezaet bol'she chem napolovinu' pri vyrezanii recessiy iz do-rezhima u 3 ryadov iz 18.
+Median R_pre po vsem kvartalam = +0.719; tol'ko po rasshireniyu = +0.427; posle-rezhim = +0.043
+
+====================================================================================================
+Z25 sec.8 -- SEMEYSTVO F1 (tri gipotezy) I POPRVKA HOLMA
+====================================================================================================
+gipoteza         p syroy    p Holm  vyvod
+P1_class          0.1746    0.3492  NE otvergaet
+P2_rivalB         0.0964    0.2891  NE otvergaet
+P4_rivalC            nan       nan  NE otvergaet
+
+====================================================================================================
+Z25 sec.9 -- USTOYCHIVOST': SETKA
+====================================================================================================
+Tochechnaya ocenka dR ot dliny bloka ne zavisit (blok dvigaet interval),
+poetomu setka tochechnyh ocenok stroitsya po pyati osyam bez bloka.
+
+kovid     forma  okno     otklik razbienie         D       p  S<H?
+isklyuchyon main   common   Y_GDP  2008Q4      -0.1381  0.0238    DA
+isklyuchyon main   common   Y_GDP  2009Q4      -0.0518  0.1746    DA
+isklyuchyon main   common   Y_GDP  2010Q4      +0.0204  0.6032   net
+isklyuchyon main   common   Y_MFG  2008Q4      -0.2130  0.0476    DA
+isklyuchyon main   common   Y_MFG  2009Q4      -0.3010  0.0873    DA
+isklyuchyon main   common   Y_MFG  2010Q4      -0.1915  0.1111    DA
+isklyuchyon main   own      Y_GDP  2008Q4      -0.0738  0.0635    DA
+isklyuchyon main   own      Y_GDP  2009Q4      -0.0167  0.4206    DA
+isklyuchyon main   own      Y_GDP  2010Q4      +0.0425  0.6825   net
+isklyuchyon main   own      Y_MFG  2008Q4      -0.1984  0.0476    DA
+isklyuchyon main   own      Y_MFG  2009Q4      -0.2763  0.1190    DA
+isklyuchyon main   own      Y_MFG  2010Q4      -0.1893  0.1032    DA
+isklyuchyon alt    common   Y_GDP  2008Q4      -0.0716  0.3036    DA
+isklyuchyon alt    common   Y_GDP  2009Q4      +0.3417  0.9464   net
+isklyuchyon alt    common   Y_GDP  2010Q4      +0.3043  0.9464   net
+isklyuchyon alt    common   Y_MFG  2008Q4      +0.1039  0.7857   net
+isklyuchyon alt    common   Y_MFG  2009Q4      +0.3503  0.8929   net
+isklyuchyon alt    common   Y_MFG  2010Q4      +0.2695  0.8393   net
+isklyuchyon alt    own      Y_GDP  2008Q4      -0.0925  0.1786    DA
+isklyuchyon alt    own      Y_GDP  2009Q4      +0.2653  0.9643   net
+isklyuchyon alt    own      Y_GDP  2010Q4      +0.2503  0.9286   net
+isklyuchyon alt    own      Y_MFG  2008Q4      +0.0383  0.6786   net
+isklyuchyon alt    own      Y_MFG  2009Q4      +0.2905  0.8393   net
+isklyuchyon alt    own      Y_MFG  2010Q4      +0.2330  0.8393   net
+vklyuchyon main   common   Y_GDP  2008Q4      -0.4918  0.0079    DA
+vklyuchyon main   common   Y_GDP  2009Q4      -0.6399  0.0079    DA
+vklyuchyon main   common   Y_GDP  2010Q4      -0.6014  0.0079    DA
+vklyuchyon main   common   Y_MFG  2008Q4      -0.3641  0.0159    DA
+vklyuchyon main   common   Y_MFG  2009Q4      -0.5758  0.0079    DA
+vklyuchyon main   common   Y_MFG  2010Q4      -0.4950  0.0079    DA
+vklyuchyon main   own      Y_GDP  2008Q4      -0.4275  0.0079    DA
+vklyuchyon main   own      Y_GDP  2009Q4      -0.6048  0.0079    DA
+vklyuchyon main   own      Y_GDP  2010Q4      -0.5794  0.0079    DA
+vklyuchyon main   own      Y_MFG  2008Q4      -0.3494  0.0079    DA
+vklyuchyon main   own      Y_MFG  2009Q4      -0.5511  0.0079    DA
+vklyuchyon main   own      Y_MFG  2010Q4      -0.4927  0.0079    DA
+vklyuchyon alt    common   Y_GDP  2008Q4      +0.3514  1.0000   net
+vklyuchyon alt    common   Y_GDP  2009Q4      +0.5164  0.9821   net
+vklyuchyon alt    common   Y_GDP  2010Q4      +0.4806  0.9821   net
+vklyuchyon alt    common   Y_MFG  2008Q4      +0.5700  1.0000   net
+vklyuchyon alt    common   Y_MFG  2009Q4      +0.6943  1.0000   net
+vklyuchyon alt    common   Y_MFG  2010Q4      +0.6579  1.0000   net
+vklyuchyon alt    own      Y_GDP  2008Q4      +0.3304  1.0000   net
+vklyuchyon alt    own      Y_GDP  2009Q4      +0.4400  1.0000   net
+vklyuchyon alt    own      Y_GDP  2010Q4      +0.4266  1.0000   net
+vklyuchyon alt    own      Y_MFG  2008Q4      +0.5044  1.0000   net
+vklyuchyon alt    own      Y_MFG  2009Q4      +0.6345  1.0000   net
+vklyuchyon alt    own      Y_MFG  2010Q4      +0.6214  1.0000   net
+
+Yacheek vsego 48, schitaemyh 48; D < 0 v 24 (50.0%)
+D: mediana +0.0018, [p05 -0.5937 .. p95 +0.6299]
+  kovid      isklyuchyon  mediana D = +0.0018, D<0 v 12/24
+  kovid      vklyuchyon   mediana D = -0.0095, D<0 v 12/24
+  forma      main         mediana D = -0.3252, D<0 v 22/24
+  forma      alt          mediana D = +0.3460, D<0 v 2/24
+  okno       common       mediana D = -0.0157, D<0 v 12/24
+  okno       own          mediana D = +0.0108, D<0 v 12/24
+  otklik     Y_GDP        mediana D = +0.0018, D<0 v 12/24
+  otklik     Y_MFG        mediana D = -0.0755, D<0 v 12/24
+  razbienie  2008Q4       mediana D = -0.0832, D<0 v 10/16
+  razbienie  2009Q4       mediana D = +0.1243, D<0 v 8/16
+  razbienie  2010Q4       mediana D = +0.1377, D<0 v 6/16
+
+Os' 'chastota pribora': mesyachnyy pribor Z06 (otklik IPMAN, okno vperyod
+h=3) na kompozite -- spravochno, v klassovyy test ne vhodit.
+  n=364 [1993-11-01 .. 2026-03-01]; R_pre=+0.5491 R_post=+0.1733 dR=-0.3758
+
+====================================================================================================
+Z25 sec.9-bis -- IZMERENIYA POSLE RASCHYOTA (ne testy)
+====================================================================================================
+A. Rangovaya korrelyaciya (Spirmen) -- neuyazvima k vykidnym 2020 goda.
+  ryad       kl bez kovida: pre    post    dRho  | s kovidom: pre    post    dRho
+  COMP       S           +0.599  +0.026  -0.573            +0.599  +0.238  -0.361
+  COMP_BAL   S           +0.726  +0.026  -0.700            +0.726  +0.238  -0.488
+  PHIL       S           +0.625  +0.087  -0.538            +0.625  +0.279  -0.346
+  RICH       S           +0.537  -0.015  -0.552            +0.537  +0.199  -0.338
+  EMPIRE     S           +0.657  +0.101  -0.556            +0.657  +0.217  -0.439
+  KC         S           +0.651  -0.026  -0.676            +0.651  +0.202  -0.449
+  DALLAS     S           +0.674  +0.005  -0.669            +0.674  +0.232  -0.442
+  NAHB       S           +0.536  +0.012  -0.524            +0.536  +0.162  -0.374
+  UMCSENT    S           +0.560  +0.017  -0.543            +0.560  +0.009  -0.551
+  SLOOS      S           +0.412  -0.181  -0.593            +0.412  -0.117  -0.529
+  NEWORDER   H           +0.504  +0.029  -0.475            +0.504  +0.224  -0.280
+  AMTMNO     H           +0.457  +0.096  -0.361            +0.457  +0.302  -0.155
+  DGORDER    H           +0.544  +0.142  -0.402            +0.544  +0.264  -0.280
+  IPMAN_X    H           +0.630  +0.196  -0.434            +0.630  +0.378  -0.252
+  INDPRO     H           +0.648  +0.146  -0.502            +0.648  +0.326  -0.322
+  PAYEMS     H           +0.604  +0.156  -0.449            +0.604  +0.346  -0.258
+  ICSA       H           +0.503  +0.058  -0.445            +0.503  +0.294  -0.210
+  ADS        H           +0.751  +0.236  -0.515            +0.751  +0.445  -0.306
+  CFNAI      M           +0.671  +0.050  -0.621            +0.670  +0.292  -0.378
+  OECD_CLI   M           +0.275  -0.094  -0.369            +0.275  +0.063  -0.212
+
+  Klassovaya statistika po dRho: bez kovida D = -0.1096 (p=0.0079); s kovidom D = -0.2059 (p=0.0079)
+
+B. Rychag kovidnyh kvartalov: R posle-rezhima s kovidom, no bez dvuh
+   samyh krupnyh po |otkloneniyu otklika| nablyudeniy.
+  ryad       kl  R_post s kovidom  bez 2 vybrosov           vybroshennye
+  COMP       S             +0.424          +0.229         2020Q2, 2020Q3
+  COMP_BAL   S             +0.424          +0.229         2020Q2, 2020Q3
+  PHIL       S             +0.405          +0.211         2020Q2, 2020Q3
+  RICH       S             +0.361          +0.154         2020Q2, 2020Q3
+  EMPIRE     S             +0.411          +0.217         2020Q2, 2020Q3
+  KC         S             +0.351          +0.214         2020Q2, 2020Q3
+  DALLAS     S             +0.394          +0.227         2020Q2, 2020Q3
+  NAHB       S             +0.172          +0.101         2020Q2, 2020Q3
+  UMCSENT    S             +0.011          -0.014         2020Q2, 2020Q3
+  SLOOS      S             -0.103          -0.123         2020Q2, 2020Q3
+  NEWORDER   H             +0.538          +0.222         2020Q2, 2020Q3
+  AMTMNO     H             +0.739          +0.221         2020Q2, 2020Q3
+  DGORDER    H             +0.728          +0.128         2020Q2, 2020Q3
+  IPMAN_X    H             +0.930          +0.373         2020Q2, 2020Q3
+  INDPRO     H             +0.915          +0.347         2020Q2, 2020Q3
+  PAYEMS     H             +0.899          +0.294         2020Q2, 2020Q3
+  ICSA       H             +0.905          +0.602         2020Q2, 2020Q3
+  ADS        H             +0.798          +0.617         2020Q2, 2020Q3
+  CFNAI      M             +0.847          +0.531         2020Q2, 2020Q3
+  OECD_CLI   M             +0.433          +0.172         2020Q2, 2020Q3
+
+C. Otnoshenie sd indikatora mezhdu rezhimami protiv togo zhe u otklika.
+   Esli mir zatih, a shum izmereniya ostalsya prezhnim, to u ryada s
+   bol'shim shumom sd upadyot MEN'SHE, chem u otklika.
+   otnoshenie sd otklika = 0.5503
+  ryad       kl  sdx_post/sdx_pre  / to zhe u otklika
+  COMP       S             0.7670              1.3939
+  COMP_BAL   S             0.6388              1.1609
+  PHIL       S             0.8783              1.5962
+  RICH       S             0.8697              1.5806
+  EMPIRE     S             0.6243              1.1345
+  KC         S             0.8283              1.5054
+  DALLAS     S             0.5402              0.9818
+  NAHB       S             0.9860              1.7920
+  UMCSENT    S             1.1556              2.1001
+  SLOOS      S             0.6361              1.1560
+  NEWORDER   H             0.5713              1.0382
+  AMTMNO     H             0.6747              1.2262
+  DGORDER    H             0.7987              1.4514
+  IPMAN_X    H             0.4201              0.7634
+  INDPRO     H             0.5179              0.9413
+  PAYEMS     H             0.3976              0.7226
+  ICSA       H             0.6992              1.2706
+  ADS        H             0.3189              0.5795
+  CFNAI      M             0.2695              0.4897
+  OECD_CLI   M             0.4327              0.7864
+   Klassovaya statistika po otnosheniyu sd_x: D = +0.3650 (p odnostoronniy 'S men'she H' = 0.9762)
+
+D. Klassovaya statistika po padeniyu naklona ln(beta_post/beta_pre)
+   i po odnim tol'ko ryadam s POLNYM do-rezhimom (n_pre = 63).
+   ln(beta) : D = -0.7448 (p = 0.1587)
+   dR, tol'ko polnyy do-rezhim (16 ryadov): D = -0.0347 (p = 0.3016)
+
+E. Tot zhe vopros na GODOVOM tempe VVP vmesto kvartal'nogo.
+   Esli posle 2009 kvartal'nyy rost VVP stal shumom, kotoryy nichem ne
+   otslezhivaetsya, to na chetyryohkvartal'nom roste svyaz' obyazana
+   sohranit'sya. Esli ne sohranyaetsya -- delo ne v chastote.
+  ryad       kl n_pre n_post    R_pre   R_post       dR   (kvartal'nyy dR dlya sravneniya)
+  COMP       S     63     54   +0.754   +0.037   -0.717     -0.679
+  COMP_BAL   S     21     54   +0.818   +0.037   -0.781     -0.850
+  PHIL       S     63     54   +0.758   +0.184   -0.574     -0.664
+  RICH       S     63     54   +0.720   +0.060   -0.660     -0.653
+  EMPIRE     S     33     54   +0.787   -0.056   -0.843     -0.610
+  KC         S     33     54   +0.776   -0.042   -0.818     -0.854
+  DALLAS     S     21     54   +0.846   +0.011   -0.835     -0.827
+  NAHB       S     63     54   +0.738   +0.319   -0.420     -0.588
+  UMCSENT    S     63     54   +0.820   +0.208   -0.611     -0.601
+  SLOOS      S     63     54   +0.651   -0.111   -0.763     -0.803
+  NEWORDER   H     63     54   +0.557   -0.205   -0.762     -0.653
+  AMTMNO     H     63     54   +0.528   -0.210   -0.737     -0.701
+  DGORDER    H     63     54   +0.531   -0.126   -0.658     -0.622
+  IPMAN_X    H     63     54   +0.715   -0.189   -0.903     -0.603
+  INDPRO     H     63     54   +0.738   -0.204   -0.942     -0.648
+  PAYEMS     H     63     54   +0.923   +0.300   -0.623     -0.651
+  ICSA       H     63     54   +0.426   -0.160   -0.585     -0.641
+  ADS        H     63     54   +0.777   -0.049   -0.826     -0.572
+  CFNAI      M     63     54   +0.785   +0.085   -0.700     -0.726
+  OECD_CLI   M     63     54   +0.738   +0.273   -0.464     -0.599
+   Klassovaya statistika po dR na godovom tempe: D = +0.1002 (p = 0.8254)
+   Median R_post: kvartal'nyy temp +0.041, godovoy temp -0.015
+
+====================================================================================================
+Z25 sec.10 -- VINTAZHI: PERESMATRIVAETSYA TOL'KO OTKLIK
+====================================================================================================
+Arhiv GDPC1: 417 vintazhey, 1991-12-04 .. 2026-07-30
+Pravilo vybora obyavleno v HYPOTHESIS sec.8: pervyy vintazh kazhdogo goda
+s 2016 po 2026 (ranee post-rezhim koroche 24 kvartalov).
+
+  vintazh      n_pre n_post    R_pre   R_post       dR  dR peresm.
+  2016-01-29      63     25  +0.7181  +0.2623  -0.4558     -0.4952
+  2017-01-27      63     29  +0.7181  +0.2603  -0.4578     -0.5056
+  2018-01-26      63     33  +0.7182  +0.2251  -0.4930     -0.4555
+  2019-02-28      63     37  +0.7162  +0.2693  -0.4470     -0.5110
+  2020-01-30      63     41  +0.7162  +0.2734  -0.4429     -0.5475
+  2021-01-28      63     41  +0.7162  +0.2247  -0.4915     -0.5475
+  2022-01-27      63     41  +0.7198  +0.2398  -0.4801     -0.5475
+  2023-01-26      63     44  +0.7198  +0.1851  -0.5347     -0.5752
+  2024-01-25      63     48  +0.7183  +0.0865  -0.6318     -0.6755
+  2025-01-30      63     52  +0.7183  +0.0549  -0.6634     -0.6619
+  2026-01-22      63     55  +0.7183  +0.0314  -0.6869     -0.6869
+
+Razbros dR po vintazham: mediana -0.4915, min -0.6869, max -0.4429; na peresmotrennyh dannyh -0.6794
+
+Chego net i ne budet (Z06 sec.8): u Richmond i Kansas City vintazhey NE
+sushchestvuet, u ostal'nyh tryoh arhiv FRED s 2014-2016. Pyatipanel'nyy
+kompozit v real'nom vremeni nevosproizvodim -- vintazhnaya proverka
+samogo indikatora v etoy zadache nevozmozhna v principe.
+
+====================================================================================================
+Z25 sec.11 -- PROVERKA VNE VYBORKI
+====================================================================================================
+Obuchenie -- pervye 80% nablyudeniy obshchego okna, hvost uderzhan.
+Na obuchenii ocenivayutsya dve modeli: do-rezhimnaya i posle-rezhimnaya.
+
+  ryad       kl  n_tr  n_te  RMSE pre  RMSE post  luchshe
+  COMP       S     96    24    2.5996     1.6119  post
+  COMP_BAL   S     62    16    3.9442     1.5673  post
+  PHIL       S     96    24    2.5411     1.5282  post
+  RICH       S     96    24    2.4640     1.6064  post
+  EMPIRE     S     72    18    3.7609     1.7856  post
+  KC         S     72    18    4.6119     1.4919  post
+  DALLAS     S     62    16    3.1877     1.4689  post
+  NAHB       S     96    24    1.8882     1.3415  post
+  UMCSENT    S     96    24    3.5665     1.3466  post
+  SLOOS      S     96    24    2.0416     1.3191  post
+  NEWORDER   H     96    24    1.7210     1.4002  post
+  AMTMNO     H     96    24    1.6723     1.3572  post
+  DGORDER    H     96    24    1.7293     1.3629  post
+  IPMAN_X    H     96    24    1.6368     1.4763  post
+  INDPRO     H     96    24    1.6801     1.4207  post
+  PAYEMS     H     96    24    1.5836     1.3447  post
+  ICSA       H     96    24    2.0609     1.4047  post
+  ADS        H     96    24    1.2956     1.3542  pre
+  CFNAI      M     96    24    1.4774     1.4173  post
+  OECD_CLI   M     96    24    1.6587     1.4244  post
+
+KRITERIY sec.9: perelom podtverzhdaetsya vne vyborki, esli u COMP posle-rezhimnaya model' daet men'shiy RMSE. Rezul'tat: post  -> PODTVERZHDAETSYA
+
+====================================================================================================
+Z25 sec.12 -- RASSHIRENIE KLASSA: OBZORY EK (F3)
+====================================================================================================
+VVP evrozony (namq_10_gdp, EA20, SCA, CLV10_MEUR, B1GQ): n=126, 1995-01-01 .. 2026-04-01
+
+EC_ICI (BS-ICI-BAL) -> VVP evrozony: n=114 [1995Q2 .. 2025Q4], posledniy mesyats opros. ryada 2025-12-01
+  supF=10.134 krit95=14.097 p=0.1526  razryv supF=2009Q2  BIC m=2 razryvy=2004Q3, 2009Q2
+  fiksirovannoe razbienie 2009Q4: R_pre=+0.6632 R_post=+0.4296 dR=-0.2336
+
+EC_ESI (BS-ESI-I) -> VVP evrozony: n=114 [1995Q2 .. 2025Q4], posledniy mesyats opros. ryada 2025-12-01
+  supF=9.004 krit95=11.337 p=0.1186  razryv supF=2009Q2  BIC m=2 razryvy=2004Q3, 2009Q2
+  fiksirovannoe razbienie 2009Q4: R_pre=+0.7270 R_post=+0.5189 dR=-0.2081
+
+Holm vnutri F3 (obyavleno 2):
+  EC_ICI     p=0.1526 -> Holm 0.2372
+  EC_ESI     p=0.1186 -> Holm 0.2372
+
+====================================================================================================
+Z25 sec.13 -- OBYEDINYONNAYA POPRVKA HOLMA NA 45 GIPOTEZ
+====================================================================================================
+Obyavlennyy razmer obyedineniya: 3 + 40 + 2 = 45; poschitano 44.
+gipoteza                     p syroy Holm v svoyom Holm obyedin.
+F1:P2_rivalB                  0.0964        0.2891        1.0000
+F1:P4_rivalC                     nan           nan           nan
+F2:INDPRO|Y_MFG               0.0002        0.0080        0.0090
+F2:COMP_BAL|Y_GDP             0.0004        0.0156        0.0176
+F2:KC|Y_GDP                   0.0004        0.0156        0.0176
+F2:DALLAS|Y_GDP               0.0006        0.0222        0.0252
+F2:DGORDER|Y_MFG              0.0006        0.0222        0.0252
+F2:COMP_BAL|Y_MFG             0.0008        0.0280        0.0320
+F2:PAYEMS|Y_MFG               0.0008        0.0280        0.0320
+F2:PHIL|Y_GDP                 0.0020        0.0660        0.0760
+F2:KC|Y_MFG                   0.0020        0.0660        0.0760
+F2:ICSA|Y_GDP                 0.0022        0.0682        0.0792
+F2:ADS|Y_MFG                  0.0022        0.0682        0.0792
+F2:PHIL|Y_MFG                 0.0026        0.0754        0.0884
+F2:DGORDER|Y_GDP              0.0026        0.0754        0.0884
+F2:DALLAS|Y_MFG               0.0046        0.1242        0.1472
+F2:UMCSENT|Y_MFG              0.0052        0.1352        0.1612
+F2:EMPIRE|Y_GDP               0.0058        0.1450        0.1740
+...
+Gipotezy F1, u kotoryh obyedinyonnaya poprvka menyaet vyvod: net
+
+====================================================================================================
+Z25 sec.14 -- VETV' 'KOVID VKLYUCHYON': POLNYY SCHYOT
+====================================================================================================
+otklik Y_GDP, forma main, kovid VKLYUCHYON, razbienie 2009Q4
+  ryad       kl n_pre n_post   R_pre  R_post      dR   b_pre  b_post sdx_pre sdx_post sdy_pre sdy_post
+  COMP       S     63     66  +0.718  +0.424  -0.294  +1.861  +2.659   1.048    0.938   2.715    5.878
+  COMP_BAL   S     21     66  +0.889  +0.424  -0.465  +2.362  +2.703   1.238    0.923   3.288    5.878
+  PHIL       S     63     66  +0.720  +0.405  -0.314  +1.940  +2.383   1.007    1.000   2.715    5.878
+  RICH       S     63     66  +0.671  +0.361  -0.310  +1.739  +2.207   1.047    0.961   2.715    5.878
+  EMPIRE     S     33     66  +0.753  +0.411  -0.342  +1.931  +2.815   1.146    0.858   2.939    5.878
+  KC         S     33     66  +0.824  +0.351  -0.472  +2.425  +2.145   0.999    0.963   2.939    5.878
+  DALLAS     S     21     66  +0.826  +0.394  -0.431  +1.980  +2.690   1.372    0.862   3.288    5.878
+  NAHB       S     63     66  +0.631  +0.172  -0.459  +1.804  +0.964   0.950    1.051   2.715    5.878
+  UMCSENT    S     63     66  +0.657  +0.011  -0.646  +2.077  +0.067   0.858    0.950   2.715    5.878
+  SLOOS      S     63     66  +0.590  -0.103  -0.693  +1.428  -0.709   1.123    0.851   2.715    5.878
+  NEWORDER   H     63     66  +0.687  +0.538  -0.149  +1.585  +3.945   1.177    0.802   2.715    5.878
+  AMTMNO     H     63     66  +0.728  +0.739  +0.011  +2.014  +4.247   0.981    1.023   2.715    5.878
+  DGORDER    H     63     66  +0.731  +0.728  -0.003  +2.143  +4.017   0.926    1.066   2.715    5.878
+  IPMAN_X    H     63     66  +0.793  +0.930  +0.137  +2.514  +4.871   0.856    1.122   2.715    5.878
+  INDPRO     H     63     66  +0.777  +0.915  +0.138  +2.644  +4.619   0.798    1.165   2.715    5.878
+  PAYEMS     H     63     66  +0.691  +0.899  +0.209  +4.582  +3.930   0.409    1.345   2.715    5.878
+  ICSA       H     63     66  +0.684  +0.905  +0.221  +6.173  +3.884   0.301    1.370   2.715    5.878
+  ADS        H     63     66  +0.836  +0.798  -0.037  +2.581  +4.228   0.879    1.110   2.715    5.878
+  CFNAI      M     63     66  +0.802  +0.847  +0.045  +1.948  +5.647   1.118    0.882   2.715    5.878
+  OECD_CLI   M     63     66  +0.507  +0.433  -0.074  +1.149  +3.296   1.197    0.772   2.715    5.878
+
+D = -0.6399, odnostoronniy p = 0.0079 (pri isklyuchyonnom kovide: D = -0.0518, p = 0.1746)
+Razlozhenie COMP pri vklyuchyonnom kovide: ln R = -0.5263 = ln beta +0.3567 + ln sd_x -0.1105 - ln sd_y +0.7726; dolya sd_y = +146.8%
+sd_y: pre 2.7148, post 5.8785
+
+====================================================================================================
+Z25 sec.15 -- VERDIKT PO PRAVILU HYPOTHESIS sec.6.5
+====================================================================================================
+1. P1: Holm-p = 0.3492 < 0.05 i D = -0.0518 < 0 -> False
+2. Sopernik A ne obyasnyaet (dolya sd_y = -20.5%) -> True
+3. Sopernik B otvergnut: dR(Y_MFG) = -0.4357 -> True
+4. Sopernik C ne obyasnyaet i P4 otvergaet nol' (Holm-p = nan) -> False   [P4 ne poschitan: bootstrap vyrozhden, sec.7]
+
+Osnovaniya OPROVERZHENIYA:
+  1. perelom i u zhyostkih: D >= 0 (-0.0518) ILI dolya otvergnutyh u H ne men'she, chem u S (0/8 = 0.000 protiv 3/10 = 0.300) -> False
+  2. sopernik A obyasnyaet -> False
+  3. sopernik B podderzhan (svyaz' s Y_MFG derzhitsya, a zhyostkaya obrabotka lomaetsya) -> False
+  4. sopernik C obyasnyaet -> False
+
+Otdel'no -- sushchestvo, ne pravilo: srednee dR po klassam.
+  oprosnye (n=10): srednee -0.7130, razmah [-0.8542 .. -0.5880]
+  zhyostkie (n=8): srednee -0.6364, razmah [-0.7011 .. -0.5719]
+
+VERDIKT: NEOPREDELENO
+
+Gotovo za 38.6 s. result.json zapisan.
