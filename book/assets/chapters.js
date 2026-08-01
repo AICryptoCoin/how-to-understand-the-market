@@ -55,8 +55,8 @@ window.BOOK_CHAPTERS = [
   { id: "cepochki-postavok",    part: "predlozhenie", file: "cepochki-postavok.html",      title: "Цепочки поставок и шоки предложения",                      status: "done" },
 
   /* ── Часть III. Спрос и разрыв ──────────────────────────────────────── */
-  { id: "as-ad",                part: "spros",        file: "as-ad.html",                  title: "Совокупный спрос и совокупное предложение",                status: "todo" },
-  { id: "razryv-vypuska",       part: "spros",        file: "razryv-vypuska.html",         title: "Потенциальный выпуск и разрыв выпуска",                    status: "todo" },
+  { id: "as-ad",                part: "spros",        file: "as-ad.html",                  title: "Совокупный спрос и совокупное предложение",                status: "done" },
+  { id: "razryv-vypuska",       part: "spros",        file: "razryv-vypuska.html",         title: "Потенциальный выпуск и разрыв выпуска",                    status: "done" },
 
   /* ── Часть IV. Двигатель цикла: H-O-P-E ─────────────────────────────── */
   { id: "hope",                 part: "dvigatel",     file: "hope.html",                   title: "H-O-P-E: скелет опережения",                               status: "done" },
