@@ -557,6 +557,89 @@ E. Tot zhe vopros na GODOVOM tempe VVP vmesto kvartal'nogo.
    Median R_post: kvartal'nyy temp +0.042, godovoy temp -0.015
 
 ====================================================================================================
+Z25 sec.9-ter -- DOBOR YARUSA 1: PERMIT i PHILLY NOF (posle raschyota)
+====================================================================================================
+Oba ryada vhodyat v yarus 1 osi MACRO i v pred-registrirovannyy reestr NE
+voshli (REPORT sec.17 p.4). Zdes' oni schitayutsya TEM ZHE priborom, na
+TOM ZHE okne, s TEMI ZHE konvenciyami; rezul'tat stavitsya RYADOM s
+osnovnym, a ne vmesto nego.
+
+klyuch     klass sektor  tip znak klaster             n  pervoe     poslednee 
+PERMIT     H     HOUSE   L     +1 cl_permit         798  1960-01-01 2026-06-01
+PHIL_NOF   S     MFG     D     +1 cl_mfg_survey     699  1968-05-01 2026-07-01
+
+Okno. Trebovanie 'to zhe okno' -- ne dopushchenie: obshchiy konec okna
+schitaetsya po pravilu sec.4.1 kak MINIMUM po reestru, znachit novyy ryad
+mozhet okno tol'ko UKOROTIT'. Proveryaem oba:
+  PERMIT     posledniy kvartal 2026Q2 protiv WIN_END = 2026Q1 -> ne ogranichivaet
+  PHIL_NOF   posledniy kvartal 2026Q2 protiv WIN_END = 2026Q1 -> ne ogranichivaet
+  WIN_END na rasshirennom reestre = 2026Q1; sovpadaet s osnovnym: True
+
+Fiksirovannoe razbienie 2009Q4, otklik Y_GDP, kovid isklyuchyon --
+bukval'no ta zhe funkciya fixed_split, chto v sec.3.
+  ryad       kl n_pre n_post   R_pre  R_post      dR   b_pre  b_post
+  PERMIT     H     63     57  +0.589  +0.045  -0.545  +1.419  +0.083
+  PHIL_NOF   S     63     57  +0.240  +0.060  -0.180  +0.663  +0.090
+  dlya sravneniya: ICSA (edinstvennyy zhyostkiy vhod yarusa 1 v reestre)
+  ICSA       H     63     57  +0.684  +0.043  -0.641  +1.658  +0.082
+
+Svobodnyy poisk razryva tem zhe priborom. Eti dva testa v semeystvo F2 NE
+vhodyat: F2 obyavleno razmerom 40 do raschyota i ne peresmatrivaetsya.
+  ryad       otklik    n     supF   krit95  p syroy  razryv supF m_BIC  razryvy BIC
+  PERMIT     Y_GDP   120   10.794    9.367   0.0246       2009Q2     2  2000Q3, 2009Q2
+  PERMIT     Y_MFG   120   15.883   14.253   0.0338       2008Q2     3  2000Q3, 2008Q3, 2015Q1
+  PHIL_NOF   Y_GDP   120   15.580   13.515   0.0286       2000Q3     3  2000Q3, 2008Q3, 2016Q1
+  PHIL_NOF   Y_MFG   120   21.354   19.629   0.0366       2000Q3     3  2000Q3, 2008Q2, 2012Q4
+
+Doli otvergnutyh supF pri otklike Y_GDP posle Holma:
+  reestr pred-registracii (Holm na 40): oprosnye 3/10, zhyostkie 0/8
+  reestr s doborom  [post-hoc, Holm na 42]: oprosnye 3/11, zhyostkie 0/9
+
+KLASSOVAYA STATISTIKA: DVA REESTRA RYADOM
+klaster          klass   reestr pred-reg    s doborom   chto izmenilos'
+cl_mfg_survey    S               -0.7339      -0.6647   sdvinut vhozhdeniem PHIL_NOF
+cl_nahb          S               -0.5880      -0.5880   bez izmeneniy
+cl_umc           S               -0.6015      -0.6015   bez izmeneniy
+cl_sloos         S               -0.8029      -0.8029   bez izmeneniy
+cl_orders        H               -0.6585      -0.6585   bez izmeneniy
+cl_output        H               -0.6257      -0.6257   bez izmeneniy
+cl_pay           H               -0.6513      -0.6513   bez izmeneniy
+cl_claims        H               -0.6413      -0.6413   bez izmeneniy
+cl_ads           H               -0.5719      -0.5719   bez izmeneniy
+cl_permit        H                    --      -0.5445   NOVYY klaster (PERMIT)
+
+                                      D         p  perestanovok  min dostizhimyy p
+reestr pred-registracii         -0.0518    0.1746           126             0.0079
+reestr s doborom (post-hoc)     -0.0487    0.2000           210             0.0048
+
+Znak D sohranyon: True  (D bylo -0.0518, stalo -0.0487)
+Znachimost' na urovne 0.05 (do poprvki): bylo False, stalo False -> vyvod NE izmenilsya
+Predel razresheniya testa sdvinulsya: zhyostkih klasterov stalo shest'
+vmesto pyati, perestanovok C(10,4) = 210 vmesto C(9,4) = 126, minimal'no dostizhimyy p 0.0048 vmesto 0.0079. Eto delaet test formal'no
+moshchnee -- i imenno poetomu ego nel'zya zadnim chislom nazvat' osnovnym.
+
+To zhe po rangovoy statistike (sec.9-bis A) -- ona na osnovnom reestre
+edinstvennaya dostigala predela razresheniya:
+  kovid isklyuchyon: bylo D = -0.1098 (p = 0.0079), stalo D = -0.1323 (p = 0.0048)
+  kovid vklyuchyon : bylo D = -0.2061 (p = 0.0079), stalo D = -0.2214 (p = 0.0048)
+
+Srednie dR po RYADAM (ne po klasteram -- eto drugaya velichina, chem D):
+  reestr pred-registracii: oprosnye (n=10) -0.7129, zhyostkie (n=8) -0.6364, raznica -0.0765
+  reestr s doborom       : oprosnye (n=11) -0.6645, zhyostkie (n=9) -0.6262, raznica -0.0383
+  Dlya sravneniya: D (po klasteram) = -0.0518 i -0.0487. Raznica srednih po ryadam i D -- eto ne rashozhdenie,
+  a raznye vesa: v D kazhdyy klaster vesit odinakovo, v srednem po ryadam
+  odinakovo vesit kazhdyy ryad, i semipanel'nyy klaster obzorov tyanet.
+
+VOPROS, RADI KOTOROGO DOBOR I SDELAN (REPORT sec.16): vyvod 'yarus 1
+nel'zya pochinit' zamenoy oprosov na zhyostkie dannye' stoyal na ODNOM
+zhyostkom vhode yarusa -- ICSA. PERMIT -- vtoroy.
+  ICSA   (zhyostkiy, ves 0.12): R_pre +0.684 -> R_post +0.043  (dR -0.641)
+  PERMIT (zhyostkiy, polovina pary vesom 0.26): R_pre +0.589 -> R_post +0.045  (dR -0.545)
+  COMP   (opros, zamena ISM):   R_pre +0.719 -> R_post +0.040  (dR -0.679)
+  NAHB   (opros, vtoraya polovina toy zhe pary 0.26): R_pre +0.631 -> R_post +0.043  (dR -0.588)
+  -> vyvod sec.16 dobor UKREPLYAET: zhyostkiy vhod pary 'zhil'yo' posle 2009Q4 daet R_post +0.045.
+
+====================================================================================================
 Z25 sec.10 -- VINTAZHI: PERESMATRIVAETSYA TOL'KO OTKLIK
 ====================================================================================================
 Arhiv GDPC1: 417 vintazhey, 1991-12-04 .. 2026-07-30
@@ -659,6 +742,12 @@ Gipotezy F1, u kotoryh obyedinyonnaya poprvka menyaet vyvod: net
 ====================================================================================================
 Z25 sec.14 -- VETV' 'KOVID VKLYUCHYON': POLNYY SCHYOT
 ====================================================================================================
+HYPOTHESIS sec.4.6: obe vetvi schitayutsya i pechatayutsya POLNOSTYU.
+Do 2026-08-02 zdes' stoyalo tol'ko fiksirovannoe razbienie i P1, a
+svobodnyy poisk razryva (supF/Bai-Perron) na kovid-vklyuchyonnyh dannyh
+ne schitalsya vovse -- to est' obeshchanie sec.4.6 bylo vypolneno
+chastichno, a REPORT sec.9 utverzhdal obratnoe. Nizhe schitaetsya i ono.
+
 otklik Y_GDP, forma main, kovid VKLYUCHYON, razbienie 2009Q4
   ryad       kl n_pre n_post   R_pre  R_post      dR   b_pre  b_post sdx_pre sdx_post sdy_pre sdy_post
   COMP       S     63     66  +0.719  +0.424  -0.295  +1.861  +2.661   1.049    0.937   2.715    5.878
@@ -686,6 +775,79 @@ D = -0.6399, odnostoronniy p = 0.0079 (pri isklyuchyonnom kovide: D = -0.0518, p
 Razlozhenie COMP pri vklyuchyonnom kovide: ln R = -0.5275 = ln beta +0.3575 + ln sd_x -0.1125 - ln sd_y +0.7726; dolya sd_y = +146.5%
 sd_y: pre 2.7148, post 5.8785
 
+Svobodnyy poisk razryva tem zhe priborom pri VKLYUCHYONNOM kovide.
+Kovid -- objavlennaya os' ustoychivosti (sec.7), poetomu razmer semeystva
+ne peresmatrivaetsya: Holm schitaetsya na te zhe 40 gipotez, no
+vnutri etoy vetvi. Verdikt vynositsya na osnovnoy vetvi i ot etih chisel
+ne zavisit.
+
+ryad       kl otklik    n     supF   krit95  p syroy   p Holm  razryv supF m_BIC  razryvy BIC
+COMP       S  Y_GDP   129    7.193    8.994   0.0920   1.0000       2020Q2     2  2016Q2, 2021Q2
+COMP       S  Y_MFG   129    7.080   13.125   0.2252   1.0000       2021Q1     2  2016Q2, 2021Q2
+COMP_BAL   S  Y_GDP    87    6.336   13.098   0.2178   1.0000       2022Q1     2  2019Q1, 2022Q3
+COMP_BAL   S  Y_MFG    87    9.143   15.076   0.1634   1.0000       2021Q1     2  2017Q1, 2020Q3
+PHIL       S  Y_GDP   129    4.207    8.075   0.2454   1.0000       2020Q2     2  2016Q2, 2021Q2
+PHIL       S  Y_MFG   129    5.488   12.087   0.3197   1.0000       2021Q1     2  2016Q2, 2021Q2
+RICH       S  Y_GDP   129    8.997    8.378   0.0412   0.9474       2020Q2     2  2015Q3, 2020Q3
+RICH       S  Y_MFG   129    5.372   11.943   0.3303   1.0000       2021Q1     3  2007Q3, 2015Q3, 2020Q3
+EMPIRE     S  Y_GDP    99    7.942   11.000   0.1134   1.0000       2020Q2     2  2016Q4, 2020Q3
+EMPIRE     S  Y_MFG    99    7.269   12.479   0.1804   1.0000       2020Q3     3  2009Q3, 2016Q4, 2020Q3
+KC         S  Y_GDP    99    5.126   10.442   0.2376   1.0000       2020Q3     0  -
+KC         S  Y_MFG    99    5.214   12.500   0.3181   1.0000       2021Q1     0  -
+DALLAS     S  Y_GDP    87    5.017    9.704   0.2334   1.0000       2019Q2     2  2018Q3, 2022Q1
+DALLAS     S  Y_MFG    87    4.667   12.358   0.3589   1.0000       2021Q1     2  2017Q1, 2020Q3
+NAHB       S  Y_GDP   129    2.078    9.220   0.6859   1.0000       2020Q2     2  2015Q4, 2020Q4
+NAHB       S  Y_MFG   129    5.696   16.644   0.4401   1.0000       2009Q3     3  2009Q3, 2015Q4, 2020Q4
+UMCSENT    S  Y_GDP   129    8.548    9.892   0.0844   1.0000       2020Q3     2  2015Q3, 2020Q3
+UMCSENT    S  Y_MFG   129   10.246   15.600   0.1522   1.0000       2009Q3     3  2009Q3, 2015Q3, 2020Q3
+SLOOS      S  Y_GDP   129   13.318    9.620   0.0234   0.5849       2020Q3     2  2015Q1, 2020Q3
+SLOOS      S  Y_MFG   129   14.836   13.874   0.0416   0.9474       2020Q3     4  2003Q2, 2009Q3, 2015Q1, 2020Q3
+NEWORDER   H  Y_GDP   129   41.442    8.021   0.0014   0.0420       2020Q1     1  2020Q1
+NEWORDER   H  Y_MFG   129   29.421    8.394   0.0006   0.0198       2020Q2     2  2000Q3, 2020Q2
+AMTMNO     H  Y_GDP   129   61.427    8.417   0.0002   0.0080       2020Q1     1  2020Q1
+AMTMNO     H  Y_MFG   129   25.028   10.673   0.0010   0.0320       2020Q1     4  2000Q4, 2010Q1, 2015Q4, 2021Q1
+DGORDER    H  Y_GDP   129   59.560    7.926   0.0002   0.0080       2020Q1     2  2009Q2, 2020Q2
+DGORDER    H  Y_MFG   129   26.708    9.042   0.0002   0.0080       2020Q1     4  2000Q4, 2010Q1, 2015Q1, 2021Q1
+IPMAN_X    H  Y_GDP   129   42.296    7.203   0.0002   0.0080       2020Q1     1  2020Q1
+IPMAN_X    H  Y_MFG   -- SKIP_TAUTOLOGY
+INDPRO     H  Y_GDP   129   35.560    6.900   0.0002   0.0080       2020Q1     1  2020Q1
+INDPRO     H  Y_MFG   129   10.167   10.620   0.0602   1.0000       2010Q3     2  2012Q2, 2019Q1
+PAYEMS     H  Y_GDP   129   13.050    7.213   0.0080   0.2160       2020Q3     1  2020Q3
+PAYEMS     H  Y_MFG   129   27.149   17.373   0.0108   0.2807       2009Q2     3  2009Q3, 2014Q4, 2020Q3
+ICSA       H  Y_GDP   129   10.962    9.914   0.0306   0.7343       2020Q4     1  2020Q4
+ICSA       H  Y_MFG   129   27.930   16.506   0.0036   0.1044       2010Q4     4  1999Q2, 2008Q1, 2013Q1, 2020Q2
+ADS        H  Y_GDP   129  116.727    8.327   0.0002   0.0080       2020Q2     1  2020Q2
+ADS        H  Y_MFG   129   38.884   10.885   0.0048   0.1344       2020Q2     2  2012Q4, 2020Q2
+CFNAI      M  Y_GDP   129   66.629    8.830   0.0002   0.0080       2020Q2     1  2020Q2
+CFNAI      M  Y_MFG   129   34.408   13.126   0.0010   0.0320       2020Q2     2  2013Q2, 2020Q2
+OECD_CLI   M  Y_GDP   129    9.128    9.864   0.0648   1.0000       2020Q1     2  2015Q3, 2020Q3
+OECD_CLI   M  Y_MFG   129    6.254   15.507   0.3157   1.0000       2020Q3     4  2004Q1, 2009Q3, 2015Q3, 2020Q3
+
+Doli otvergnutyh supF pri otklike Y_GDP -- dve vetvi ryadom:
+  kovid isklyuchyon (osnovnaya): syrye oprosnye 10/10, zhyostkie 5/8; posle Holma 3/10 i 0/8
+  kovid vklyuchyon             : syrye oprosnye 2/10, zhyostkie 8/8; posle Holma 0/10 i 6/8
+
+GDE imenno nayden razryv -- vopros ne prazdnyy: pravilo oproverzheniya 1
+(sec.6.5) govorit o pereleme NA RUBEZHE 2009, a ne o lyubom pereleme.
+  ryad       kl   p Holm  razryv supF
+  NEWORDER   H    0.0420  2020Q1    <- kovidnyy kvartal
+  AMTMNO     H    0.0080  2020Q1    <- kovidnyy kvartal
+  DGORDER    H    0.0080  2020Q1    <- kovidnyy kvartal
+  IPMAN_X    H    0.0080  2020Q1    <- kovidnyy kvartal
+  INDPRO     H    0.0080  2020Q1    <- kovidnyy kvartal
+  ADS        H    0.0080  2020Q2    <- kovidnyy kvartal
+  Iz 6 otvergnutyh par na rubezhe 2009 (+-2 kv.) -- 0; v kovidnyh kvartalah -- 6.
+
+Chto dalo by osnovanie oproverzheniya 1 (sec.6.5) v etoy vetvi -- spravochno,
+verdikt na ney NE vynositsya:
+  D = -0.6399 (>= 0? False); dolya H 0.750 protiv doli S 0.000 -> vtoraya polovina pravila True
+  NO: premissa pravila LOZHNA. Vtoraya polovina ('dolya H ne men'she doli S') vypolnena, a pervaya -- 'perelom na rubezhe 2009 nayden i u
+  zhyostkih' -- net: ni odin iz 6 otvergnutyh razryvov ne lezhit na rubezhe 2009, vse 6 lezhat v
+  kovidnyh kvartalah. Pribor v etoy vetvi nahodit KOVID, a ne 2009.
+  Eto tot zhe defekt operacionalizacii, chto nazvan v sec.15: pravilo
+  proveryaet doli, ne proveryaya, o TOM LI pereleme rech'. Verdikt
+  vynositsya na osnovnoy vetvi (sec.4.6), i eti chisla ego ne kasayutsya.
+
 ====================================================================================================
 Z25 sec.15 -- VERDIKT PO PRAVILU HYPOTHESIS sec.6.5
 ====================================================================================================
@@ -706,4 +868,4 @@ Otdel'no -- sushchestvo, ne pravilo: srednee dR po klassam.
 
 VERDIKT: NEOPREDELENO
 
-Gotovo za 40.6 s. result.json zapisan.
+Gotovo za 74.4 s. result.json zapisan.

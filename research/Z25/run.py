@@ -948,9 +948,10 @@ RESULT["fixed_split"] = {"Y_GDP": SPLIT_GDP, "Y_MFG": SPLIT_MFG}
 head("Z25 sec.4 -- P1: KLASSOVOE RAZLICHIE (perestanovka po klasteram)")
 
 
-def cluster_means(rows: dict[str, Any], stat: str = "dR") -> dict[str, float]:
+def cluster_means(rows: dict[str, Any], stat: str = "dR", *,
+                  members: Sequence[Ind] | None = None) -> dict[str, float]:
     acc: dict[str, list[float]] = {}
-    for ind in PRIMARY:
+    for ind in (PRIMARY if members is None else members):
         r = rows.get(ind.key, {})
         if r.get("status") != "ok":
             continue
@@ -961,10 +962,20 @@ def cluster_means(rows: dict[str, Any], stat: str = "dR") -> dict[str, float]:
     return {k: mean(v) for k, v in acc.items()}
 
 
-def class_stat(rows: dict[str, Any], stat: str = "dR") -> dict[str, Any]:
-    cm = cluster_means(rows, stat)
-    sc = [c for c in CLUSTERS_S if c in cm]
-    hc = [c for c in CLUSTERS_H if c in cm]
+def class_stat(rows: dict[str, Any], stat: str = "dR", *,
+               members: Sequence[Ind] | None = None,
+               clusters_s: Sequence[str] = CLUSTERS_S,
+               clusters_h: Sequence[str] = CLUSTERS_H) -> dict[str, Any]:
+    """Klassovaya statistika D i perestanovochnyy p.
+
+    Umolchaniya -- ROVNO pred-registrirovannyy reestr (PRIMARY, 4+5 klasterov).
+    Parametry ``members``/``clusters_*`` sushchestvuyut radi sec.9-ter, gde ta
+    zhe statistika schitaetsya na RASSHIRENNOM reestre; na osnovnoy vyzov oni
+    ne vliyayut nikak -- eto proveryaetsya tam zhe pechat'yu oboih chisel.
+    """
+    cm = cluster_means(rows, stat, members=members)
+    sc = [c for c in clusters_s if c in cm]
+    hc = [c for c in clusters_h if c in cm]
     if not sc or not hc:
         return {"status": "SHORT", "clusters": cm}
     d_obs = mean([cm[c] for c in sc]) - mean([cm[c] for c in hc])
@@ -1563,14 +1574,17 @@ for ind in ROSTER:
     rank_rows[ind.key] = row
 
 
-def class_stat_from(vals: dict[str, float]) -> dict[str, Any]:
+def class_stat_from(vals: dict[str, float], *,
+                    members: Sequence[Ind] | None = None,
+                    clusters_s: Sequence[str] = CLUSTERS_S,
+                    clusters_h: Sequence[str] = CLUSTERS_H) -> dict[str, Any]:
     acc: dict[str, list[float]] = {}
-    for ind in PRIMARY:
+    for ind in (PRIMARY if members is None else members):
         if ind.key in vals and not math.isnan(vals[ind.key]):
             acc.setdefault(ind.cluster, []).append(vals[ind.key])
     cm = {k: mean(v) for k, v in acc.items()}
-    sc = [c for c in CLUSTERS_S if c in cm]
-    hc = [c for c in CLUSTERS_H if c in cm]
+    sc = [c for c in clusters_s if c in cm]
+    hc = [c for c in clusters_h if c in cm]
     if not sc or not hc:
         return {"status": "SHORT"}
     d_obs = mean([cm[c] for c in sc]) - mean([cm[c] for c in hc])
@@ -1581,7 +1595,9 @@ def class_stat_from(vals: dict[str, float]) -> dict[str, Any]:
         ds.append(mean([cm[allc[i]] for i in s_idx])
                   - mean([cm[allc[i]] for i in range(len(allc)) if i not in s_idx]))
     return {"status": "ok", "D": d_obs, "clusters": cm,
-            "p_one_sided": sum(1 for d in ds if d <= d_obs + 1e-12) / len(ds)}
+            "p_one_sided": sum(1 for d in ds if d <= d_obs + 1e-12) / len(ds),
+            "n_perm": len(ds), "min_p": 1.0 / len(ds),
+            "clusters_S": sc, "clusters_H": hc}
 
 
 cs_rank_nc = class_stat_from({k: v["no_covid"]["d"] for k, v in rank_rows.items()
@@ -1704,6 +1720,340 @@ RESULT["post_hoc"] = {"rank": rank_rows, "rank_class_no_covid": cs_rank_nc,
                       "sdx_ratio": sdx_rows, "sd_y_ratio": sdy_ratio,
                       "class_sdx": cs_sdx, "class_lnbeta": cs_lnb,
                       "class_dR_full_pre": cs_full}
+
+
+# ===========================================================================
+# 9-ter. Dobor yarusa 1: PERMIT i Philly Fed NOF
+#        [IZMERENIE POSLE RASCHYOTA -- v pred-registrirovannom reestre ih net]
+# ===========================================================================
+#
+# Pochemu voobshche dobor. REPORT sec.17 p.4 priznal probel: PERMIT i Philly Fed
+# NOF vhodyat v yarus 1 osi MACRO (zhil'yo 0.26, gde PERMIT -- zhyostkaya
+# polovina pary; budushchie zakazy Filadel'fii 0.08), oba dostupny, i ni odin
+# ne izmeren. Eto tret' vesa yarusa, o kotorom zadacha delaet vyvod, i vtoroy
+# zhyostkiy vhod yarusa posle ICSA -- to est' rovno ta tochka, gde vyvod sec.16
+# "yarus 1 nel'zya pochinit' zamenoy oprosov na zhyostkie dannye" libo
+# ukreplyaetsya, libo lomaetsya.
+#
+# Pochemu OTDEL'NOY sekciey, a ne dosypkoy v ROSTER. Ryady dobavleny POSLE
+# togo, kak rezul'tat uviden. Dosypat' ih v pred-registrirovannyy reestr
+# znachilo by zadnim chislom pomenyat' razmer semeystva gipotez i sam
+# osnovnoy test -- rovno ta oshibka, radi kotoroy pred-registraciya i pishetsya.
+# Poetomu zdes' to zhe oformlenie, chto u sopernika D (sec.7-bis): otdel'noe
+# izmerenie s yavnoy pometkoy, oba chisla ryadom, verdikt ne perepisyvaetsya.
+# Semeystva F1/F2/F3 i ih razmery ne menyayutsya, poprvka Holma -- tozhe.
+
+head("Z25 sec.9-ter -- DOBOR YARUSA 1: PERMIT i PHILLY NOF (posle raschyota)")
+say("Oba ryada vhodyat v yarus 1 osi MACRO i v pred-registrirovannyy reestr NE")
+say("voshli (REPORT sec.17 p.4). Zdes' oni schitayutsya TEM ZHE priborom, na")
+say("TOM ZHE okne, s TEMI ZHE konvenciyami; rezul'tat stavitsya RYADOM s")
+say("osnovnym, a ne vmesto nego.")
+say("")
+
+EXTRA_ROSTER: tuple[Ind, ...] = (
+    # PERMIT -- schyot razresheniy, ne opros. Klass H, tip L (kolichestvo ->
+    # tryohmesyachnyy godovoy temp), sektor HOUSE. Sobstvennyy klaster: NAHB --
+    # eto opros zastroyshchikov, drugoy respondent i drugoy klass, a v odnom
+    # klastere ryady raznyh klassov lezhat' ne mogut po postroeniyu testa.
+    Ind("PERMIT", "Razresheniya na stroitel'stvo zhil'ya, tys. ed. SAAR (PERMIT)",
+        "H", "HOUSE", "L", +1, "cl_permit", "M", lambda: S.fred("PERMIT")),
+    # NOF -- tot zhe opros MBOS i te zhe respondenty, chto u PHIL (NOC), no
+    # vopros o sleduyushchih shesti mesyacah. Znachit klaster TOT ZHE
+    # cl_mfg_survey: eto ne novaya respondentskaya gruppa, a vtoroy vopros
+    # toy zhe. Chislo oprosnyh klasterov ot etogo ne rastyot -- i eto vazhno,
+    # potomu chto imenno ono zadayot predel razresheniya testa.
+    Ind("PHIL_NOF", "FRB Philadelphia MBOS: BUDUSHCHIE new orders (NOF, 6 mes.)",
+        "S", "MFG", "D", +1, "cl_mfg_survey", "M",
+        lambda: S.philfed_mbos()["NOF"]),
+)
+
+say(f"{'klyuch':10s} {'klass':5s} {'sektor':7s} {'tip':3s} {'znak':>4s} "
+    f"{'klaster':14s} {'n':>6s}  {'pervoe':10s} {'poslednee':10s}")
+for ind in EXTRA_ROSTER:
+    s_ = ind.load()
+    RAW[ind.key] = to_month_map(s_)
+    FETCHED[ind.key] = getattr(s_, "fetched_at", "")
+    BY_KEY[ind.key] = ind
+    IND_Q["main"][ind.key] = build_ind(ind, "main")
+    IND_Q["alt"][ind.key] = build_ind(ind, "alt")
+    ks_ = sorted(RAW[ind.key])
+    say(f"{ind.key:10s} {ind.cls:5s} {ind.sector:7s} {ind.typ:3s} "
+        f"{ind.sign:+4d} {ind.cluster:14s} {len(RAW[ind.key]):6d}  "
+        f"{ks_[0]:10s} {ks_[-1]:10s}")
+
+# --- okno: proverit', a ne obyavit' ---------------------------------------
+say("")
+say("Okno. Trebovanie 'to zhe okno' -- ne dopushchenie: obshchiy konec okna")
+say("schitaetsya po pravilu sec.4.1 kak MINIMUM po reestru, znachit novyy ryad")
+say("mozhet okno tol'ko UKOROTIT'. Proveryaem oba:")
+ext_last = {}
+for ind in EXTRA_ROSTER:
+    q = IND_Q["main"][ind.key]
+    ext_last[ind.key] = max(q) if q else "0000-00-00"
+    say(f"  {ind.key:10s} posledniy kvartal {q_label(ext_last[ind.key])} "
+        f"protiv WIN_END = {q_label(WIN_END)} -> "
+        f"{'ne ogranichivaet' if ext_last[ind.key] >= WIN_END else 'UKORACHIVAET OKNO'}")
+win_end_ext = min([WIN_END] + list(ext_last.values()))
+say(f"  WIN_END na rasshirennom reestre = {q_label(win_end_ext)}; sovpadaet s "
+    f"osnovnym: {win_end_ext == WIN_END}")
+if win_end_ext != WIN_END:
+    say("  VNIMANIE: okna raznye, sravnenie dvuh reestrov perestayot byt' "
+        "sravneniem na odnoy vyborke.")
+
+# --- ta zhe tablitsa fiksirovannogo razbieniya ----------------------------
+say("")
+say("Fiksirovannoe razbienie 2009Q4, otklik Y_GDP, kovid isklyuchyon --")
+say("bukval'no ta zhe funkciya fixed_split, chto v sec.3.")
+say(f"  {'ryad':10s} {'kl':2s} {'n_pre':>5s} {'n_post':>6s} {'R_pre':>7s} "
+    f"{'R_post':>7s} {'dR':>7s} {'b_pre':>7s} {'b_post':>7s}")
+EXT_ROWS: dict[str, Any] = dict(SPLIT_GDP)
+EXT_MFG_ROWS: dict[str, Any] = dict(SPLIT_MFG)
+extra_split: dict[str, Any] = {}
+for ind in EXTRA_ROSTER:
+    for resp, target in (("Y_GDP", EXT_ROWS), ("Y_MFG", EXT_MFG_ROWS)):
+        p = make_pair(ind.key, resp)
+        if len(p.qs) < MIN_N_REG:
+            target[ind.key] = {"status": "SHORT", "n": len(p.qs)}
+            continue
+        fs = fixed_split(p, SPLIT)
+        target[ind.key] = fs
+        if resp == "Y_GDP":
+            extra_split[ind.key] = fs
+            say(f"  {ind.key:10s} {ind.cls:2s} {fs['pre']['n']:5d} "
+                f"{fs['post']['n']:6d} {fs['pre']['R']:+7.3f} "
+                f"{fs['post']['R']:+7.3f} {fs['dR']:+7.3f} "
+                f"{fs['pre']['beta']:+7.3f} {fs['post']['beta']:+7.3f}")
+say(f"  {'dlya sravneniya: ICSA (edinstvennyy zhyostkiy vhod yarusa 1 v reestre)':70s}")
+say(f"  {'ICSA':10s} {'H':2s} {SPLIT_GDP['ICSA']['pre']['n']:5d} "
+    f"{SPLIT_GDP['ICSA']['post']['n']:6d} {SPLIT_GDP['ICSA']['pre']['R']:+7.3f} "
+    f"{SPLIT_GDP['ICSA']['post']['R']:+7.3f} {SPLIT_GDP['ICSA']['dR']:+7.3f} "
+    f"{SPLIT_GDP['ICSA']['pre']['beta']:+7.3f} "
+    f"{SPLIT_GDP['ICSA']['post']['beta']:+7.3f}")
+
+# --- svobodnyy poisk razryva: spravochno, v F2 NE vhodit -------------------
+say("")
+say("Svobodnyy poisk razryva tem zhe priborom. Eti dva testa v semeystvo F2 NE")
+say(f"vhodyat: F2 obyavleno razmerom {F2_DECLARED} do raschyota i ne peresmatrivaetsya.")
+say(f"  {'ryad':10s} {'otklik':6s} {'n':>4s} {'supF':>8s} {'krit95':>8s} "
+    f"{'p syroy':>8s} {'razryv supF':>12s} {'m_BIC':>5s}  razryvy BIC")
+extra_bp: dict[str, Any] = {}
+seed_ext = 20000
+for ind in EXTRA_ROSTER:
+    for resp in ("Y_GDP", "Y_MFG"):
+        seed_ext += 7
+        p = make_pair(ind.key, resp)
+        if len(p.qs) < MIN_N_REG:
+            extra_bp[f"{ind.key}|{resp}"] = {"status": "SHORT", "n": len(p.qs)}
+            continue
+        bp = bp_analysis(p, BLOCK_MAIN_Q, SEED + seed_ext)
+        extra_bp[f"{ind.key}|{resp}"] = bp
+        brk = q_label(bp["supF_break_start"]) if bp["supF_break_start"] else "-"
+        bics = ", ".join(q_label(b) for b in bp["breaks_start"]) or "-"
+        say(f"  {ind.key:10s} {resp:6s} {bp['n']:4d} {bp['supF']:8.3f} "
+            f"{bp['crit95_boot']:8.3f} {bp['p_boot']:8.4f} {brk:>12s} "
+            f"{bp['m_bic']:5d}  {bics}")
+
+# Chto stalo by s dolyami otvergnutyh, esli by F2 bylo obyavleno na 42.
+# Eto ne pereschyot F2, a otvet na vopros "menyaet li dobor vyvod": pechataem
+# oba chisla i nazyvaem vtoroe post-hoc.
+F2_EXT_P = dict(F2_P)
+for ind in EXTRA_ROSTER:
+    k = f"{ind.key}|Y_GDP"
+    kk = f"{ind.key}|Y_MFG"
+    for key_ in (k, kk):
+        bp = extra_bp.get(key_, {})
+        if bp.get("status") == "ok":
+            F2_EXT_P[key_] = bp["p_boot"]
+F2_EXT_HOLM = holm(F2_EXT_P, m=F2_DECLARED + 2)
+surv_keys_ext = surv_keys + [f"{i.key}|Y_GDP" for i in EXTRA_ROSTER if i.cls == "S"]
+hard_keys_ext = hard_keys + [f"{i.key}|Y_GDP" for i in EXTRA_ROSTER if i.cls == "H"]
+s_rej_ext = sum(1 for k in surv_keys_ext if F2_EXT_HOLM.get(k, 1.0) < 0.05)
+h_rej_ext = sum(1 for k in hard_keys_ext if F2_EXT_HOLM.get(k, 1.0) < 0.05)
+say("")
+say(f"Doli otvergnutyh supF pri otklike Y_GDP posle Holma:")
+say(f"  reestr pred-registracii (Holm na {F2_DECLARED}): oprosnye "
+    f"{s_rej}/{len(surv_keys)}, zhyostkie {h_rej}/{len(hard_keys)}")
+say(f"  reestr s doborom  [post-hoc, Holm na {F2_DECLARED + 2}]: oprosnye "
+    f"{s_rej_ext}/{len(surv_keys_ext)}, zhyostkie {h_rej_ext}/{len(hard_keys_ext)}")
+
+# --- klassovaya statistika: staryy reestr protiv rasshirennogo -------------
+PRIMARY_EXT = list(PRIMARY) + [i for i in EXTRA_ROSTER if i.cls in ("S", "H")]
+CLUSTERS_S_EXT = CLUSTERS_S                      # NOF idyot v sushchestvuyushchiy
+CLUSTERS_H_EXT = CLUSTERS_H + ("cl_permit",)     # PERMIT -- novyy klaster
+
+P1_EXT = class_stat(EXT_ROWS, "dR", members=PRIMARY_EXT,
+                    clusters_s=CLUSTERS_S_EXT, clusters_h=CLUSTERS_H_EXT)
+say("")
+say("KLASSOVAYA STATISTIKA: DVA REESTRA RYADOM")
+say(f"{'klaster':16s} {'klass':6s} {'reestr pred-reg':>16s} {'s doborom':>12s}   "
+    f"chto izmenilos'")
+for cl in tuple(CLUSTERS_S_EXT) + tuple(CLUSTERS_H_EXT):
+    old = P1["clusters"].get(cl)
+    new = P1_EXT["clusters"].get(cl)
+    if old is None and new is None:
+        continue
+    old_s = f"{old:+16.4f}" if old is not None else f"{'--':>16s}"
+    new_s = f"{new:+12.4f}" if new is not None else f"{'--':>12s}"
+    if old is None:
+        note = "NOVYY klaster (PERMIT)"
+    elif new is not None and abs(new - old) > 1e-12:
+        members_new = [i.key for i in EXTRA_ROSTER if i.cluster == cl]
+        note = f"sdvinut vhozhdeniem {', '.join(members_new)}"
+    else:
+        note = "bez izmeneniy"
+    say(f"{cl:16s} {'S' if cl in CLUSTERS_S_EXT else 'H':6s} {old_s} {new_s}   "
+        f"{note}")
+say("")
+say(f"{'':28s} {'D':>10s} {'p':>9s} {'perestanovok':>13s} {'min dostizhimyy p':>18s}")
+say(f"{'reestr pred-registracii':28s} {P1['D']:+10.4f} "
+    f"{P1['p_one_sided']:9.4f} {P1['n_perm']:13d} {P1['min_p']:18.4f}")
+say(f"{'reestr s doborom (post-hoc)':28s} {P1_EXT['D']:+10.4f} "
+    f"{P1_EXT['p_one_sided']:9.4f} {P1_EXT['n_perm']:13d} {P1_EXT['min_p']:18.4f}")
+
+sign_same = (P1_EXT["D"] < 0) == (P1["D"] < 0)
+sig_old = P1["p_one_sided"] < 0.05
+sig_new = P1_EXT["p_one_sided"] < 0.05
+say("")
+say(f"Znak D sohranyon: {sign_same}  (D bylo {P1['D']:+.4f}, stalo "
+    f"{P1_EXT['D']:+.4f})")
+say(f"Znachimost' na urovne 0.05 (do poprvki): bylo {sig_old}, stalo {sig_new} "
+    f"-> vyvod {'NE izmenilsya' if sig_old == sig_new else 'IZMENILSYA'}")
+say("Predel razresheniya testa sdvinulsya: zhyostkih klasterov stalo shest'")
+say(f"vmesto pyati, perestanovok C(10,4) = {P1_EXT['n_perm']} vmesto "
+    f"C(9,4) = {P1['n_perm']}, minimal'no dostizhimyy p "
+    f"{P1_EXT['min_p']:.4f} vmesto {P1['min_p']:.4f}. Eto delaet test formal'no")
+say("moshchnee -- i imenno poetomu ego nel'zya zadnim chislom nazvat' osnovnym.")
+
+# Ta zhe para chisel po rangovoy statistike -- edinstvennoy, kotoraya na
+# osnovnom reestre dostigala predela razresheniya (REPORT sec.8).
+rank_ext = {k: v["no_covid"]["d"] for k, v in rank_rows.items() if "no_covid" in v}
+rank_ext_cv = {k: v["covid"]["d"] for k, v in rank_rows.items() if "covid" in v}
+for ind in EXTRA_ROSTER:
+    for dc, tag, store in ((True, "no_covid", rank_ext),
+                           (False, "covid", rank_ext_cv)):
+        p = make_pair(ind.key, "Y_GDP", drop_covid=dc)
+        pi = [i for i, t in enumerate(p.qs) if t < SPLIT]
+        qi = [i for i, t in enumerate(p.qs) if t >= SPLIT]
+        if len(pi) < MIN_N_REG or len(qi) < MIN_N_REG:
+            continue
+        r1 = spearman([p.x[i] for i in pi], [p.y[i] for i in pi])
+        r2 = spearman([p.x[i] for i in qi], [p.y[i] for i in qi])
+        store[ind.key] = r2 - r1
+cs_rank_ext = class_stat_from(rank_ext, members=PRIMARY_EXT,
+                              clusters_s=CLUSTERS_S_EXT,
+                              clusters_h=CLUSTERS_H_EXT)
+cs_rank_ext_cv = class_stat_from(rank_ext_cv, members=PRIMARY_EXT,
+                                 clusters_s=CLUSTERS_S_EXT,
+                                 clusters_h=CLUSTERS_H_EXT)
+say("")
+say("To zhe po rangovoy statistike (sec.9-bis A) -- ona na osnovnom reestre")
+say("edinstvennaya dostigala predela razresheniya:")
+say(f"  kovid isklyuchyon: bylo D = {cs_rank_nc['D']:+.4f} "
+    f"(p = {cs_rank_nc['p_one_sided']:.4f}), stalo D = {cs_rank_ext['D']:+.4f} "
+    f"(p = {cs_rank_ext['p_one_sided']:.4f})")
+say(f"  kovid vklyuchyon : bylo D = {cs_rank_cv['D']:+.4f} "
+    f"(p = {cs_rank_cv['p_one_sided']:.4f}), stalo D = {cs_rank_ext_cv['D']:+.4f} "
+    f"(p = {cs_rank_ext_cv['p_one_sided']:.4f})")
+
+# --- srednie po klassam ----------------------------------------------------
+# Eto srednie PO RYADAM, i oni ne obyazany sovpadat' s D: D schitaetsya po
+# KLASTERNYM srednim (sec.6.1), to est' s drugimi vesami. Chisla pechatayutsya
+# ryadom imenno chtoby raznicu bylo vidno, a ne chtoby ih vychitali drug iz
+# druga.
+def _class_means(rows: dict[str, Any], members: Sequence[Ind]
+                 ) -> tuple[list[float], list[float]]:
+    s_ = [rows[i.key]["dR"] for i in members if i.cls == "S"
+          and rows.get(i.key, {}).get("status") == "ok"]
+    h_ = [rows[i.key]["dR"] for i in members if i.cls == "H"
+          and rows.get(i.key, {}).get("status") == "ok"]
+    return s_, h_
+
+
+sdr_dec, hdr_dec = _class_means(SPLIT_GDP, PRIMARY)
+sdr_ext, hdr_ext = _class_means(EXT_ROWS, PRIMARY_EXT)
+say("")
+say("Srednie dR po RYADAM (ne po klasteram -- eto drugaya velichina, chem D):")
+say(f"  reestr pred-registracii: oprosnye (n={len(sdr_dec)}) "
+    f"{mean(sdr_dec):+.4f}, zhyostkie (n={len(hdr_dec)}) {mean(hdr_dec):+.4f}, "
+    f"raznica {mean(sdr_dec) - mean(hdr_dec):+.4f}")
+say(f"  reestr s doborom       : oprosnye (n={len(sdr_ext)}) {mean(sdr_ext):+.4f}, "
+    f"zhyostkie (n={len(hdr_ext)}) {mean(hdr_ext):+.4f}, "
+    f"raznica {mean(sdr_ext) - mean(hdr_ext):+.4f}")
+say(f"  Dlya sravneniya: D (po klasteram) = {P1['D']:+.4f} i "
+    f"{P1_EXT['D']:+.4f}. Raznica srednih po ryadam i D -- eto ne rashozhdenie,")
+say("  a raznye vesa: v D kazhdyy klaster vesit odinakovo, v srednem po ryadam")
+say("  odinakovo vesit kazhdyy ryad, i semipanel'nyy klaster obzorov tyanet.")
+
+# --- chto eto znachit dlya vyvoda sec.16 -----------------------------------
+say("")
+say("VOPROS, RADI KOTOROGO DOBOR I SDELAN (REPORT sec.16): vyvod 'yarus 1")
+say("nel'zya pochinit' zamenoy oprosov na zhyostkie dannye' stoyal na ODNOM")
+say("zhyostkom vhode yarusa -- ICSA. PERMIT -- vtoroy.")
+r_icsa = SPLIT_GDP["ICSA"]
+r_perm = extra_split.get("PERMIT", {})
+r_comp = SPLIT_GDP["COMP"]
+if r_perm.get("status") == "ok":
+    say(f"  ICSA   (zhyostkiy, ves 0.12): R_pre {r_icsa['pre']['R']:+.3f} -> "
+        f"R_post {r_icsa['post']['R']:+.3f}  (dR {r_icsa['dR']:+.3f})")
+    say(f"  PERMIT (zhyostkiy, polovina pary vesom 0.26): "
+        f"R_pre {r_perm['pre']['R']:+.3f} -> R_post {r_perm['post']['R']:+.3f}  "
+        f"(dR {r_perm['dR']:+.3f})")
+    say(f"  COMP   (opros, zamena ISM):   R_pre {r_comp['pre']['R']:+.3f} -> "
+        f"R_post {r_comp['post']['R']:+.3f}  (dR {r_comp['dR']:+.3f})")
+    say(f"  NAHB   (opros, vtoraya polovina toy zhe pary 0.26): "
+        f"R_pre {SPLIT_GDP['NAHB']['pre']['R']:+.3f} -> "
+        f"R_post {SPLIT_GDP['NAHB']['post']['R']:+.3f}  "
+        f"(dR {SPLIT_GDP['NAHB']['dR']:+.3f})")
+    verdict16 = ("UKREPLYAET" if r_perm["post"]["R"] < 0.30 else "LOMAET")
+    say(f"  -> vyvod sec.16 dobor {verdict16}: zhyostkiy vhod pary 'zhil'yo' "
+        f"posle 2009Q4 daet R_post {r_perm['post']['R']:+.3f}.")
+else:
+    verdict16 = "NE POSCHITAN"
+    say(f"  PERMIT: {r_perm.get('status')}")
+
+RESULT["tier1_addendum"] = {
+    "declared_post_hoc": True,
+    "why": ("PERMIT i Philly NOF vhodyat v yarus 1, no v pred-registrirovannyy "
+            "reestr ne voshli (REPORT sec.17 p.4); dobavleny POSLE togo, kak "
+            "rezul'tat uviden, poetomu eto izmerenie, a ne test"),
+    "in_families": False,
+    "roster": [{"key": i.key, "cls": i.cls, "sector": i.sector, "typ": i.typ,
+                "cluster": i.cluster, "title": i.title,
+                "n": len(RAW[i.key]), "first": min(RAW[i.key]),
+                "last": max(RAW[i.key]), "fetched_at": FETCHED[i.key]}
+               for i in EXTRA_ROSTER],
+    "window_unchanged": win_end_ext == WIN_END,
+    "win_end_ext": win_end_ext,
+    "split": {k: v for k, v in extra_split.items()},
+    "split_mfg": {i.key: EXT_MFG_ROWS.get(i.key) for i in EXTRA_ROSTER},
+    "bp": extra_bp,
+    "P1_declared": {"D": P1["D"], "p": P1["p_one_sided"],
+                    "n_perm": P1["n_perm"], "min_p": P1["min_p"],
+                    "clusters": P1["clusters"]},
+    "P1_extended": {"D": P1_EXT["D"], "p": P1_EXT["p_one_sided"],
+                    "n_perm": P1_EXT["n_perm"], "min_p": P1_EXT["min_p"],
+                    "clusters": P1_EXT["clusters"]},
+    "sign_preserved": sign_same,
+    "significance_changed": sig_old != sig_new,
+    "rank_declared": {"no_covid": cs_rank_nc["D"], "no_covid_p": cs_rank_nc["p_one_sided"],
+                      "covid": cs_rank_cv["D"], "covid_p": cs_rank_cv["p_one_sided"]},
+    "rank_extended": {"no_covid": cs_rank_ext["D"],
+                      "no_covid_p": cs_rank_ext["p_one_sided"],
+                      "covid": cs_rank_ext_cv["D"],
+                      "covid_p": cs_rank_ext_cv["p_one_sided"],
+                      "min_p": cs_rank_ext["min_p"]},
+    "class_means_dR_extended": {"mean_survey": mean(sdr_ext),
+                                "mean_hard": mean(hdr_ext),
+                                "n_survey": len(sdr_ext), "n_hard": len(hdr_ext)},
+    "F2_extended_post_hoc": {"p_raw": F2_EXT_P, "p_holm": F2_EXT_HOLM,
+                             "declared_size_used": F2_DECLARED + 2,
+                             "survey_rejected": s_rej_ext,
+                             "hard_rejected": h_rej_ext,
+                             "survey_n": len(surv_keys_ext),
+                             "hard_n": len(hard_keys_ext)},
+    "tier1_conclusion": verdict16,
+    "affects_verdict": False,
+}
 
 
 # ===========================================================================
@@ -1970,6 +2320,12 @@ RESULT["union_holm"] = {"p_holm": UNION_HOLM, "changed_F1": changed}
 # ===========================================================================
 
 head("Z25 sec.14 -- VETV' 'KOVID VKLYUCHYON': POLNYY SCHYOT")
+say("HYPOTHESIS sec.4.6: obe vetvi schitayutsya i pechatayutsya POLNOSTYU.")
+say("Do 2026-08-02 zdes' stoyalo tol'ko fiksirovannoe razbienie i P1, a")
+say("svobodnyy poisk razryva (supF/Bai-Perron) na kovid-vklyuchyonnyh dannyh")
+say("ne schitalsya vovse -- to est' obeshchanie sec.4.6 bylo vypolneno")
+say("chastichno, a REPORT sec.9 utverzhdal obratnoe. Nizhe schitaetsya i ono.")
+say("")
 SPLIT_GDP_CV = split_table("Y_GDP", drop_covid=False)
 P1_CV = class_stat(SPLIT_GDP_CV, "dR")
 say("")
@@ -1984,7 +2340,126 @@ if fs_cv.get("decomp"):
         f"- ln sd_y {d['ln_sdy']:+.4f}; dolya sd_y = "
         f"{-d['ln_sdy'] / d['ln_R'] * 100:+.1f}%")
 say(f"sd_y: pre {fs_cv['pre']['sd_y']:.4f}, post {fs_cv['post']['sd_y']:.4f}")
-RESULT["covid_included"] = {"P1": P1_CV, "split": SPLIT_GDP_CV}
+
+# --- svobodnyy poisk razryva na kovid-vklyuchyonnyh dannyh -----------------
+#
+# Chem eto NE yavlyaetsya: novym semeystvom gipotez. Kovid -- objavlennaya
+# os' ustoychivosti (sec.7), a pro os' ustoychivosti tam zhe skazano pryamo:
+# "razmer semeystva (sec.6) na neyo ne pereschityvaetsya, potomu chto verdikt
+# vynositsya na osnovnoy yacheyke, a setka opisyvaet razbros". Poetomu Holm
+# nizhe schitaetsya na te zhe objavlennye 40 -- eto ta zhe poprvka, prilozhennaya
+# k drugoy yacheyke osi, a ne vtoroe F2. Verdikt po-prezhnemu vynositsya na
+# osnovnoy vetvi (sec.15) i etimi chislami ne zatragivaetsya.
+say("")
+say("Svobodnyy poisk razryva tem zhe priborom pri VKLYUCHYONNOM kovide.")
+say(f"Kovid -- objavlennaya os' ustoychivosti (sec.7), poetomu razmer semeystva")
+say(f"ne peresmatrivaetsya: Holm schitaetsya na te zhe {F2_DECLARED} gipotez, no")
+say("vnutri etoy vetvi. Verdikt vynositsya na osnovnoy vetvi i ot etih chisel")
+say("ne zavisit.")
+say("")
+say(f"{'ryad':10s} {'kl':2s} {'otklik':6s} {'n':>4s} {'supF':>8s} {'krit95':>8s} "
+    f"{'p syroy':>8s} {'p Holm':>8s} {'razryv supF':>12s} {'m_BIC':>5s}  razryvy BIC")
+BP_CV: dict[str, Any] = {}
+F2_CV_P: dict[str, float] = {}
+seedcv = 30000
+for ind in ROSTER:
+    for resp in ("Y_GDP", "Y_MFG"):
+        seedcv += 7
+        if (ind.key, resp) in TAUTOLOGICAL:
+            BP_CV[f"{ind.key}|{resp}"] = {"status": "SKIP_TAUTOLOGY"}
+            continue
+        p = make_pair(ind.key, resp, drop_covid=False)
+        if len(p.qs) < MIN_N_REG:
+            BP_CV[f"{ind.key}|{resp}"] = {"status": "SHORT", "n": len(p.qs)}
+            continue
+        bp = bp_analysis(p, BLOCK_MAIN_Q, SEED + seedcv)
+        BP_CV[f"{ind.key}|{resp}"] = bp
+        F2_CV_P[f"{ind.key}|{resp}"] = bp["p_boot"]
+F2_CV_HOLM = holm(F2_CV_P, m=F2_DECLARED)
+for ind in ROSTER:
+    for resp in ("Y_GDP", "Y_MFG"):
+        k = f"{ind.key}|{resp}"
+        bp = BP_CV.get(k, {})
+        if bp.get("status") != "ok":
+            say(f"{ind.key:10s} {ind.cls:2s} {resp:6s}  -- {bp.get('status')}")
+            continue
+        brk = q_label(bp["supF_break_start"]) if bp["supF_break_start"] else "-"
+        bics = ", ".join(q_label(b) for b in bp["breaks_start"]) or "-"
+        say(f"{ind.key:10s} {ind.cls:2s} {resp:6s} {bp['n']:4d} {bp['supF']:8.3f} "
+            f"{bp['crit95_boot']:8.3f} {bp['p_boot']:8.4f} "
+            f"{F2_CV_HOLM[k]:8.4f} {brk:>12s} {bp['m_bic']:5d}  {bics}")
+
+surv_cv = [f"{i.key}|Y_GDP" for i in ROSTER if i.cls == "S"]
+hard_cv = [f"{i.key}|Y_GDP" for i in ROSTER if i.cls == "H"]
+s_rej_cv = sum(1 for k in surv_cv if F2_CV_HOLM.get(k, 1.0) < 0.05)
+h_rej_cv = sum(1 for k in hard_cv if F2_CV_HOLM.get(k, 1.0) < 0.05)
+s_raw_cv = sum(1 for k in surv_cv if F2_CV_P.get(k, 1.0) < 0.05)
+h_raw_cv = sum(1 for k in hard_cv if F2_CV_P.get(k, 1.0) < 0.05)
+say("")
+say("Doli otvergnutyh supF pri otklike Y_GDP -- dve vetvi ryadom:")
+say(f"  kovid isklyuchyon (osnovnaya): syrye oprosnye "
+    f"{sum(1 for k in surv_keys if F2_P.get(k, 1.0) < 0.05)}/{len(surv_keys)}, "
+    f"zhyostkie {sum(1 for k in hard_keys if F2_P.get(k, 1.0) < 0.05)}/{len(hard_keys)}"
+    f"; posle Holma {s_rej}/{len(surv_keys)} i {h_rej}/{len(hard_keys)}")
+say(f"  kovid vklyuchyon             : syrye oprosnye {s_raw_cv}/{len(surv_cv)}, "
+    f"zhyostkie {h_raw_cv}/{len(hard_cv)}; posle Holma "
+    f"{s_rej_cv}/{len(surv_cv)} i {h_rej_cv}/{len(hard_cv)}")
+say("")
+say("GDE imenno nayden razryv -- vopros ne prazdnyy: pravilo oproverzheniya 1")
+say("(sec.6.5) govorit o pereleme NA RUBEZHE 2009, a ne o lyubom pereleme.")
+say(f"  {'ryad':10s} {'kl':2s} {'p Holm':>8s}  razryv supF")
+near_2009_cv = 0
+covid_break_cv = 0
+for k in surv_cv + hard_cv:
+    if F2_CV_HOLM.get(k, 1.0) >= 0.05:
+        continue
+    bp = BP_CV[k]
+    brk = bp["supF_break_start"]
+    ind = BY_KEY[k.split("|")[0]]
+    near = abs(q_diff(brk, SPLIT)) <= COMPOSITION_TOL_Q if brk else False
+    incov = bool(brk and covid_quarter_response(brk))
+    near_2009_cv += int(near)
+    covid_break_cv += int(incov)
+    say(f"  {ind.key:10s} {ind.cls:2s} {F2_CV_HOLM[k]:8.4f}  "
+        f"{q_label(brk) if brk else '-':8s}"
+        f"{'  <- rubezh 2009' if near else ''}"
+        f"{'  <- kovidnyy kvartal' if incov else ''}")
+say(f"  Iz {s_rej_cv + h_rej_cv} otvergnutyh par na rubezhe 2009 "
+    f"(+-{COMPOSITION_TOL_Q} kv.) -- {near_2009_cv}; v kovidnyh kvartalah -- "
+    f"{covid_break_cv}.")
+say("")
+say("Chto dalo by osnovanie oproverzheniya 1 (sec.6.5) v etoy vetvi -- spravochno,")
+say("verdikt na ney NE vynositsya:")
+s_share_cv = s_rej_cv / max(len(surv_cv), 1)
+h_share_cv = h_rej_cv / max(len(hard_cv), 1)
+say(f"  D = {P1_CV['D']:+.4f} (>= 0? {P1_CV['D'] >= 0}); dolya H "
+    f"{h_share_cv:.3f} protiv doli S {s_share_cv:.3f} -> vtoraya polovina "
+    f"pravila {h_share_cv >= s_share_cv}")
+if s_rej_cv == 0 and h_rej_cv == 0:
+    say("  obe doli nulevye -- to zhe vhollostuyu srabatyvayushchee pravilo, chto "
+        "opisano v sec.15 osnovnoy vetvi")
+elif near_2009_cv == 0:
+    say(f"  NO: premissa pravila LOZHNA. Vtoraya polovina ('dolya H ne men'she "
+        f"doli S') vypolnena, a pervaya -- 'perelom na rubezhe 2009 nayden i u")
+    say(f"  zhyostkih' -- net: ni odin iz {s_rej_cv + h_rej_cv} otvergnutyh "
+        f"razryvov ne lezhit na rubezhe 2009, vse {covid_break_cv} lezhat v")
+    say("  kovidnyh kvartalah. Pribor v etoy vetvi nahodit KOVID, a ne 2009.")
+    say("  Eto tot zhe defekt operacionalizacii, chto nazvan v sec.15: pravilo")
+    say("  proveryaet doli, ne proveryaya, o TOM LI pereleme rech'. Verdikt")
+    say("  vynositsya na osnovnoy vetvi (sec.4.6), i eti chisla ego ne kasayutsya.")
+
+RESULT["covid_included"] = {"P1": P1_CV, "split": SPLIT_GDP_CV,
+                            "bp": BP_CV, "p_raw": F2_CV_P,
+                            "p_holm": F2_CV_HOLM,
+                            "holm_family_size_used": F2_DECLARED,
+                            "is_declared_robustness_axis": True,
+                            "survey_rejected": s_rej_cv,
+                            "hard_rejected": h_rej_cv,
+                            "survey_rejected_raw": s_raw_cv,
+                            "hard_rejected_raw": h_raw_cv,
+                            "survey_n": len(surv_cv), "hard_n": len(hard_cv),
+                            "rejected_breaks_near_2009": near_2009_cv,
+                            "rejected_breaks_in_covid": covid_break_cv}
 
 
 # ===========================================================================
