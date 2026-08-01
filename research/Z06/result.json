@@ -361,7 +361,7 @@
     "sigma_c": 0.8576927115012422,
     "C3": false,
     "C4": true,
-    "C5": true,
+    "C5": false,
     "C6": false
   },
   "bai_perron": {
@@ -534,7 +534,7 @@
     "n_inside": 336,
     "frac_usable": 0.7777777777777778,
     "frac_all": 0.691358024691358,
-    "C5": true,
+    "C5": false,
     "tau_median": -2.0756547652136708,
     "tau_p05": -5.25863409894021,
     "tau_p95": -0.695297838972721,
@@ -5885,7 +5885,10 @@
         "tau": -2.095174329182517,
         "short": false
       }
-    ]
+    ],
+    "C5_usable": true,
+    "C5_all": false,
+    "C5_rule": "strogiy schyot (schyoty razoshlis po storonam 70%)"
   },
   "ladder": {
     "version": "Z06-v1",
@@ -6273,5 +6276,38 @@
     }
   },
   "verdict": "OPROVERGNUTO",
-  "elapsed_sec": 80.0
+  "elapsed_sec": 80.0,
+  "criteria_diff_n": {
+    "B": 5000,
+    "H3_sep_IPMAN": 4902,
+    "H4_sep_GDPC1": 3375
+  },
+  "corrections": [
+    {
+      "date": "2026-08-01",
+      "what": "criteria.C5 i grid.C5: true -> false",
+      "why": "HYPOTHESIS.md sec.10 Utochnenie 3, napisannoe DO raschyota: \"esli by oni razoshlis po storonam poroga 70 %, verdikt vynosilsya by po strogomu\". Oni razoshlis imenno tak: frac_usable = 336/432 = 77.78 % >= 70 %, frac_all = 336/486 = 69.14 % < 70 %. V run.py byl zashit tolko myagkiy znamenatel, vetki \"brat strogiy\" ne bylo vovse. Pravilo teper realizovano v kode (run.py, razdel 7), i pereschyot dal by tot zhe otvet.",
+      "was": {
+        "criteria.C5": true,
+        "grid.C5": true
+      },
+      "now": {
+        "criteria.C5": false,
+        "grid.C5": false
+      },
+      "verdict_effect": "net: verdikt OPROVERGNUTO derzhitsya na C1 i C3, provalennyh nezavisimo. Posle popravki provaleny C1, C2, C3, C5, C6."
+    },
+    {
+      "date": "2026-08-01",
+      "what": "dobavlen klyuch criteria_diff_n",
+      "why": "p dlya H3/H4 schitan po USECHYONNOMU chislu povtoreniy: raznica srednih kladyotsya v spisok tolko kogda obe storony poroga nepusty. Chislo effektivnyh povtoreniy teper stoit ryadom s p, chtoby p ne chitalsya kak obychnyy bootstrap-nyy po B = 5000.",
+      "verdict_effect": "net: C2 provalen po H3 (0.0534 > 0.05) v lyubom prochtenii."
+    },
+    {
+      "date": "2026-08-01",
+      "what": "klyuch \"ladder\" ostayotsya ZABRAKOVANNOY lestnicey po tau_GDP",
+      "why": "imena klyuchey ne menyalis, chtoby ne lomat ssylki iz REPORT.md. V POSTAVKU uhodit ladder_practical (dvuhstupenchataya po linii recessii tau_REC = -0.2004). V composite.py ona lezhit v LADDER_V1, v composite-passport.json -- v klyuche \"ladder\"; zabrakovannaya tam zhe pod imenem ladder_prereg_rejected_tau_GDP. Rashozhdenie dvuh lestnic -- 110 mesyacev iz 390 po itogovomu vkladu c.",
+      "verdict_effect": "net: postavka verdikta ne kasaetsya."
+    }
+  ]
 }

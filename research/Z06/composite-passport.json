@@ -2518,8 +2518,91 @@
   "n_months": 393,
   "fetched_at": "2026-07-28T08:50:13+00:00",
   "ladder": {
+    "version": "Z06-v1-practical",
+    "kind": "2-step",
+    "post_hoc": true,
+    "base": "new_orders",
+    "method": "FE",
+    "units": "urovni kompozita (sd paneley); v skobkah -- v sigma_c",
+    "threshold_name": "liniya recessii (tau_REC)",
+    "threshold_origin": "Yuden protiv razmetki NBER (USREC), AUC 0.9155, n=370",
+    "not_a_zero_growth_line": true,
+    "sigma_c": 0.8576927115012422,
+    "steps": [
+      [
+        -0.2004379668757319,
+        null,
+        1.0
+      ],
+      [
+        null,
+        -0.2004379668757319,
+        -1.0
+      ]
+    ],
+    "thresholds": [
+      -0.2004379668757319
+    ],
+    "tau": {
+      "tau_REC": -0.2004379668757319
+    },
+    "tau_sigma": {
+      "tau_REC": -0.23369438050242963
+    },
+    "ci90": {
+      "tau_REC": [
+        -0.5612663139635263,
+        -0.18912377672497938
+      ]
+    },
+    "month_counts": {
+      "1.0": 272,
+      "-1.0": 121
+    }
+  },
+  "built_by": "Z06/composite.py composite(base='new_orders', method='FE')",
+  "responses": {
+    "IPMAN": {
+      "n": 654,
+      "first": "1972-01-01",
+      "last": "2026-06-01",
+      "fetched_at": "2026-07-28T08:50:12+00:00",
+      "source": "FRED"
+    },
+    "INDPRO": {
+      "n": 1290,
+      "first": "1919-01-01",
+      "last": "2026-06-01",
+      "fetched_at": "2026-07-28T08:50:12+00:00",
+      "source": "FRED"
+    },
+    "GDPC1": {
+      "n": 317,
+      "first": "1947-01-01",
+      "last": "2026-01-01",
+      "fetched_at": "2026-07-28T08:50:12+00:00",
+      "source": "FRED"
+    },
+    "USREC": {
+      "n": 2059,
+      "first": "1854-12-01",
+      "last": "2026-06-01",
+      "fetched_at": "2026-07-28T08:50:12+00:00",
+      "source": "FRED"
+    },
+    "CFNAI": {
+      "n": 712,
+      "first": "1967-03-01",
+      "last": "2026-06-01",
+      "fetched_at": "2026-07-28T08:50:12+00:00",
+      "source": "FRED"
+    }
+  },
+  "ladder_prereg_rejected_tau_GDP": {
     "version": "Z06-v1",
     "kind": "two",
+    "rejected": true,
+    "rejected_why": "tau_GDP ne identificiruem: shirina 90% intervala 4.07 sigma_c protiv trebuemyh <1.0; stupen' po nemu delit istoriyu 382 / 11 (97.2% / 2.8%)",
     "base": "new_orders",
     "method": "FE",
     "units": "urovni kompozita (sd paneley); v skobkah -- v sigma_c",
@@ -2565,42 +2648,71 @@
       "-1.0": 11
     }
   },
-  "built_by": "Z06/composite.py composite(base='new_orders', method='FE')",
-  "responses": {
-    "IPMAN": {
-      "n": 654,
-      "first": "1972-01-01",
-      "last": "2026-06-01",
-      "fetched_at": "2026-07-28T08:50:12+00:00",
-      "source": "FRED"
+  "pin": {
+    "version": "Z06-pin-v1",
+    "frozen_at": "2026-07-28",
+    "note": "progon Z06 ot 2026-07-28, zerno 20260728; imenno na etom ryade poschitan REPORT.md",
+    "config": {
+      "base": "new_orders",
+      "method": "FE",
+      "drop_covid": true,
+      "start": null
     },
-    "INDPRO": {
-      "n": 1290,
-      "first": "1919-01-01",
-      "last": "2026-06-01",
-      "fetched_at": "2026-07-28T08:50:12+00:00",
-      "source": "FRED"
+    "w_ref": {
+      "start": "2004-06-01",
+      "end": "2026-06-01"
     },
-    "GDPC1": {
-      "n": 317,
-      "first": "1947-01-01",
-      "last": "2026-01-01",
-      "fetched_at": "2026-07-28T08:50:12+00:00",
-      "source": "FRED"
+    "panels": {
+      "dallas": {
+        "last": "2026-07-01",
+        "n": 266,
+        "n_ref": 243,
+        "mu_ref": -1.7547325102880658,
+        "sd_ref": 13.271812243927766
+      },
+      "empire": {
+        "last": "2026-07-01",
+        "n": 301,
+        "n_ref": 243,
+        "mu_ref": 4.8580246913580245,
+        "sd_ref": 12.849965728457345
+      },
+      "kansas_city": {
+        "last": "2026-07-01",
+        "n": 301,
+        "n_ref": 243,
+        "mu_ref": 3.786008230452675,
+        "sd_ref": 13.027128786235098
+      },
+      "philly": {
+        "last": "2026-07-01",
+        "n": 699,
+        "n_ref": 243,
+        "mu_ref": 6.484362139917696,
+        "sd_ref": 14.3321635307311
+      },
+      "richmond": {
+        "last": "2026-06-01",
+        "n": 392,
+        "n_ref": 243,
+        "mu_ref": -0.654320987654321,
+        "sd_ref": 13.67131323728918
+      }
     },
-    "USREC": {
-      "n": 2059,
-      "first": "1854-12-01",
-      "last": "2026-06-01",
-      "fetched_at": "2026-07-28T08:50:12+00:00",
-      "source": "FRED"
+    "series": {
+      "file": "composite.csv",
+      "first": "1993-11-01",
+      "last": "2026-07-01",
+      "n": 393,
+      "sigma_c": 0.8576927115012422,
+      "fetched_at": "2026-07-28T08:50:13+00:00",
+      "value_format": "%.6f",
+      "sha256": "8c5cc0b14c6d0a283097a2d68b460a9998418ab41be6d9770ec8430cfa937f40"
     },
-    "CFNAI": {
-      "n": 712,
-      "first": "1967-03-01",
-      "last": "2026-06-01",
-      "fetched_at": "2026-07-28T08:50:12+00:00",
-      "source": "FRED"
-    }
+    "ladder_version": "Z06-v1-practical",
+    "ladder_thresholds": [
+      -0.2004379668757319
+    ],
+    "policy": "composite(pin='check') sveryaet zhivuyu sborku s etim blokom i pri rashozhdenii otkazyvaet, nazyvaya izmenivsheesya. Sverka znacheniy idyot v tochnosti value_format: polnoy tochnosti u zafiksirovannogo ryada net -- v fayl on lyog uzhe okruglyonnym. pin='frozen' otdayot ryad iz fayla bez seti, pin='off' -- zhivuyu sborku bez sverki."
   }
 }

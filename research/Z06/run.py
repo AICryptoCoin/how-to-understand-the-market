@@ -449,7 +449,11 @@ PASS: dict[tuple[str, str, bool], C.Passport] = {}
 for base in C.BASES:
     for meth in ("FE", "CHAIN", "BAL"):
         for dc in (True, False):
-            s, pp = C.composite_with_passport(base, method=meth, drop_covid=dc)
+            # pin='off' zdes' ne poblazhka, a rol' etogo fayla: run.py --
+            # PERESCHYOT zadachi, on pin i perezapisyvaet. Sverka s prezhney
+            # versiey dannyh -- zabota potrebitelya ryada (Z05), a ne raschyota.
+            s, pp = C.composite_with_passport(base, method=meth, drop_covid=dc,
+                                              pin="off")
             COMP[(base, meth, dc)] = s
             PASS[(base, meth, dc)] = pp
 
@@ -595,6 +599,13 @@ def boot_reg(xs: list[float], ys: list[float], blk: int, seed: int
         hi = [v for v, c in zip(by, bx) if c > t]
         lo = [v for v, c in zip(by, bx) if c <= t]
         taus.append(t); betas.append(b)
+        # Razyorst' po storonam poroga mozhno tol'ko togda, kogda obe storony
+        # nepusty. Rozygrysh, v kotorom tau ushyol za kray oblaka, storony ne
+        # dayot -- i v spisok raznic ne popadaet. Poetomu diff_p schitaetsya po
+        # USECHYONNOMU chislu povtoreniy, i otbrasyvayutsya sistematicheski
+        # samye kraynie rozygryshi. Chislo ostavshihsya -- diff_n nizhe; ono
+        # PECHATAETSYA ryadom s p, chtoby p ne chitalsya kak obychnyy
+        # bootstrap-nyy po B povtoreniyam.
         if hi and lo:
             diffs.append(mean(hi) - mean(lo))
         return b
@@ -623,7 +634,8 @@ for blk in BLOCKS:
         continue
     say(f"  blok={blk:2d}: tau 90% [{r['tau_lo90']:+.4f} .. {r['tau_hi90']:+.4f}] "
         f"shirina={r['tau_hi90'] - r['tau_lo90']:.4f} ({(r['tau_hi90'] - r['tau_lo90']) / SIGMA_C:.3f} sigma_c)"
-        f"  beta_p={r['beta_p']:.4f}  diff_p={r['diff_p']:.4f}")
+        f"  beta_p={r['beta_p']:.4f}  diff_p={r['diff_p']:.4f}"
+        f" (po {r['diff_n']} rozygryshah iz {B_BOOT})")
 
 say("")
 say("tau_GDP (GDPC1). Dlina bloka pred-registrirovana v MESYACAH, ryad kvartal'nyy,")
@@ -638,7 +650,8 @@ for blk in BLOCKS:
     say(f"  blok={blk:2d} mes. ({blk_q(blk):2d} kv., n/L={r['n'] / r['block']:.1f}): "
         f"tau 90% [{r['tau_lo90']:+.4f} .. {r['tau_hi90']:+.4f}] "
         f"shirina={r['tau_hi90'] - r['tau_lo90']:.4f} ({(r['tau_hi90'] - r['tau_lo90']) / SIGMA_C:.3f} sigma_c)"
-        f"  beta_p={r['beta_p']:.4f}  diff_p={r['diff_p']:.4f}")
+        f"  beta_p={r['beta_p']:.4f}  diff_p={r['diff_p']:.4f}"
+        f" (po {r['diff_n']} rozygryshah iz {B_BOOT})")
 
 # tau_REC bootstrap
 def boot_rec(blk: int, seed: int) -> dict[str, Any]:
@@ -716,6 +729,23 @@ say(f"{'gipoteza':16s} {'p syroy':>10s} {'p Holm':>10s}  vyvod")
 for k in ("H1_beta_IPMAN", "H2_beta_GDPC1", "H3_sep_IPMAN", "H4_sep_GDPC1", "H5_auc_USREC"):
     say(f"{k:16s} {praw[k]:10.4f} {padj[k]:10.4f}  "
         f"{'otvergaet nol' if padj[k] < 0.05 else 'NE otvergaet'}")
+
+# p dlya H3/H4 -- ne obychnyy bootstrap-nyy po B povtoreniyam: rozygrysh, gde
+# porog ushyol za kray oblaka, storon ne dayot i v spisok raznic ne popadaet.
+# Chislo effektivnyh povtoreniy pechataetsya ryadom, chtoby usechenie bylo vidno.
+say("")
+say(f"H3/H4 schitany po USECHYONNOMU chislu povtoreniy (razyorst' po storonam "
+    f"poroga mozhno")
+say(f"tol'ko kogda obe storony nepusty; otbrasyvayutsya samye kraynie rozygryshi):")
+say(f"  H3_sep_IPMAN: {BOOT_M[BLOCK_MAIN]['diff_n']} iz {B_BOOT} "
+    f"({(1 - BOOT_M[BLOCK_MAIN]['diff_n'] / B_BOOT) * 100:.1f}% otbrosheno)")
+say(f"  H4_sep_GDPC1: {BOOT_Q[BLOCK_MAIN]['diff_n']} iz {B_BOOT} "
+    f"({(1 - BOOT_Q[BLOCK_MAIN]['diff_n'] / B_BOOT) * 100:.1f}% otbrosheno)")
+RESULT["criteria_diff_n"] = {
+    "B": B_BOOT,
+    "H3_sep_IPMAN": BOOT_M[BLOCK_MAIN]["diff_n"],
+    "H4_sep_GDPC1": BOOT_Q[BLOCK_MAIN]["diff_n"],
+}
 
 ci_width = CI_HI - CI_LO
 c1 = (padj["H1_beta_IPMAN"] < 0.05 and padj["H2_beta_GDPC1"] < 0.05
@@ -943,12 +973,31 @@ for axis in ("base", "method", "h", "split", "drop_covid"):
         say(f"  {axis:11s}={v:10s} n={len(sub):3d} median tau={pct([g['tau'] for g in sub], 0.5):+.4f} "
             f"vnutri={ins / len(sub) * 100:5.1f}%")
 
-c5 = frac_usable >= 0.70
+# C5 po pred-registrirovannomu pravilu, HYPOTHESIS.md sec.10 Utochnenie 3:
+# "esli by oni razoshlis' po storonam poroga 70 %, verdikt vynosilsya by po
+# strogomu". Do 2026-08-01 v kode stoyal tol'ko myagkiy znamenatel', i vetki
+# "brat' strogiy" ne bylo vovse -- pravilo, napisannoe DO raschyota, ne
+# ispolnyalos'. Progon 2026-07-28 popal rovno v tot sluchay, dlya kotorogo ono
+# i pisalos': 77.78 % >= 70 % protiv 69.14 % < 70 %.
+c5_usable = frac_usable >= 0.70
+c5_all = frac_all >= 0.70
+split_sides = c5_usable != c5_all
+c5 = c5_all if split_sides else c5_usable
 say("")
+say(f"C5 myagkiy schyot  (znamenatel' -- schitaemye): {frac_usable * 100:.2f}% -> "
+    f"{'PROYDEN' if c5_usable else 'PROVALEN'}")
+say(f"C5 strogiy schyot  (znamenatel' -- vse {len(grid)}): {frac_all * 100:.2f}% -> "
+    f"{'PROYDEN' if c5_all else 'PROVALEN'}")
+if split_sides:
+    say("dva schyota razoshlis' po storonam poroga 70% -> po pred-registrirovannomu")
+    say("pravilu (HYPOTHESIS sec.10 Utochnenie 3) verdikt vynositsya PO STROGOMU")
 say(f"C5 = {'PROYDEN' if c5 else 'PROVALEN'} (porog 70%)")
 RESULT["grid"] = {"n_cells": len(grid), "n_short": len(short), "n_usable": len(usable),
                   "n_inside": len(inside), "frac_usable": frac_usable,
                   "frac_all": frac_all, "C5": c5,
+                  "C5_usable": c5_usable, "C5_all": c5_all,
+                  "C5_rule": ("strogiy schyot (schyoty razoshlis' po storonam 70%)"
+                              if split_sides else "myagkiy schyot (schyoty soglasny)"),
                   "tau_median": pct(tvals, 0.5), "tau_p05": pct(tvals, 0.05),
                   "tau_p95": pct(tvals, 0.95), "cells": grid}
 
@@ -1006,8 +1055,13 @@ for lo, hi, L in steps:
 
 RESULT["ladder"] = LADDER
 
-# Raspredelenie mesyacev po stupenyam
-C.LADDER_V1.update(LADDER)
+# Raspredelenie mesyacev po stupenyam.
+#
+# Ranshe zdes' stoyalo C.LADDER_V1.update(LADDER) -- t.e. progon molcha
+# zapisyval v modul'nuyu konstantu PRED-REGISTRIROVANNUYU lestnicu po tau_GDP,
+# tu samuyu, kotoruyu neskol'kimi desyatkami strok nizhe sam zhe i brakuet.
+# Ubrano: lestnicu vezde peredayom yavnym argumentom, a v C.LADDER_V1 lezhit
+# POSTAVLYAEMAYA, i trogat' eyo iz raschyota nel'zya.
 counts: dict[float, int] = {}
 for d in main_s.dates:
     L = C.level_step(CMAIN[d], LADDER)
@@ -1079,6 +1133,30 @@ else:
     say("[RESHENIE POSLE RASCHYOTA] Ni odin porog planku ne proshyol -- "
         "prakticheskoy lestnicy net vovse.")
     RESULT["ladder_practical"] = None
+
+# --- Kakaya lestnica UHODIT V POSTAVKU -------------------------------------
+# Odno mesto, gde eto reshaetsya, i ono zhe idyot v composite.csv i v pasport.
+# Do 2026-08-01 v artefakty popadala LADDER (po tau_GDP) -- ta, kotoruyu progon
+# zabrakoval; rashozhdenie s postavlyaemoy sostavlyalo 110 mesyacev iz 390.
+LADDER_SHIP = RESULT["ladder_practical"] or LADDER
+LADDER_REJECTED = LADDER if RESULT["ladder_practical"] else None
+say("")
+say(f"V POSTAVKU uhodit lestnica {LADDER_SHIP['version']} "
+    f"({LADDER_SHIP['kind']}).")
+if LADDER_REJECTED:
+    say(f"Zabrakovannaya {LADDER_REJECTED['version']} (po tau_GDP) sohranyaetsya "
+        f"otdel'nym klyuchom 'ladder_prereg_rejected_tau_GDP' -- radi "
+        f"vosproizvodimosti, a ne radi primeneniya.")
+
+# Sverka s konstantoy v composite.py: chisla lestnicy zhivut v DVUH mestah
+# (modul' i artefakty), i rashodit'sya im nel'zya molcha.
+if list(LADDER_SHIP.get("thresholds", [])) != list(C.LADDER_V1["thresholds"]):
+    say("")
+    say("!!! VNIMANIE: porogi postavlyaemoy lestnicy razoshlis' s konstantoy")
+    say(f"!!! composite.LADDER_V1: progon {LADDER_SHIP.get('thresholds')} protiv "
+        f"{C.LADDER_V1['thresholds']}.")
+    say("!!! Eto normal'no posle pereschyota na svezhih dannyh, no LADDER_V1 v")
+    say("!!! composite.py nado obnovit' RUKAMI -- inache Z05 voz'myot staryy porog.")
 RESULT["identifiability"] = {k: {"tau": v[0], "identified": v[1], "ci_width": v[2]}
                              for k, v in ident_tbl.items()}
 
@@ -1254,7 +1332,8 @@ RESULT["vintages"] = {"A_response_only": vint_a, "B_realtime_3panel": vint_b,
 head("Z06 sec.10 -- DLINNOE PLECHO 1968 I STROKI VNE SETKI")
 
 long_s, long_pp = C.composite_with_passport(BASE_MAIN, method="FE",
-                                            drop_covid=True, start="1968-05-01")
+                                            drop_covid=True, start="1968-05-01",
+                                            pin="off")
 long_c = to_map(long_s)
 dql, xql, yql = quarterly_pairs(long_c, GDPC1, H_MAIN, drop_covid=True)
 tau_long = tau_of(xql, yql)
@@ -1331,17 +1410,50 @@ with open(csv_path, "w", encoding="utf-8", newline="") as fh:
         v = CMAIN[d]
         mem = main_pp.membership[d]
         fh.write(f"{d},{v:.6f},{v / SIGMA_C:.6f},{len(mem)},"
-                 f"\"{'|'.join(mem)}\",{C.level_step(v, LADDER):+.1f}\n")
-say(f"ryad kompozita: {csv_path} ({len(main_s.dates)} strok)")
+                 f"\"{'|'.join(mem)}\",{C.level_step(v, LADDER_SHIP):+.1f}\n")
+say(f"ryad kompozita: {csv_path} ({len(main_s.dates)} strok, "
+    f"L_step po {LADDER_SHIP['version']})")
 
 pp_path = os.path.join(_HERE, "composite-passport.json")
 passport = main_pp.to_dict()
-passport["ladder"] = LADDER
+passport["ladder"] = LADDER_SHIP
+if LADDER_REJECTED:
+    passport["ladder_prereg_rejected_tau_GDP"] = LADDER_REJECTED
 passport["built_by"] = "Z06/composite.py composite(base='new_orders', method='FE')"
 passport["responses"] = RESULT["data"]
+
+# Pin: privyazka ryada k versii dannyh. Bez nego sleduyushchiy progon cherez
+# mesyac otdal by DRUGOY ryad molcha -- chto i sluchilos' mezhdu 07-28 i 08-01
+# (Richmond peresmotrel istoriyu, W_ref sdvinulos', uehali vse 393 znacheniya).
+_dates = list(main_s.dates)
+_values = [CMAIN[d] for d in _dates]   # digest sam privedyot k VALUE_FORMAT
+passport["pin"] = {
+    "version": "Z06-pin-v1",
+    "frozen_at": time.strftime("%Y-%m-%d"),
+    "note": f"progon run.py, zerno {SEED}",
+    "config": dict(C.PINNED_CONFIG),
+    "w_ref": {"start": main_pp.w_ref[0], "end": main_pp.w_ref[1]},
+    "panels": {k: {"last": v["last"], "n": v["n"], "n_ref": v["n_ref"],
+                   "mu_ref": v["mu_ref"], "sd_ref": v["sd_ref"]}
+               for k, v in sorted(main_pp.panels.items())},
+    "series": {"file": "composite.csv", "first": _dates[0], "last": _dates[-1],
+               "n": len(_dates), "sigma_c": SIGMA_C,
+               "fetched_at": main_pp.fetched_at,
+               "value_format": C.VALUE_FORMAT,
+               "sha256": C.series_digest(_dates, _values)},
+    "ladder_version": LADDER_SHIP["version"],
+    "ladder_thresholds": list(LADDER_SHIP.get("thresholds", [])),
+    "policy": ("composite(pin='check') sveryaet zhivuyu sborku s etim blokom i "
+               "pri rashozhdenii otkazyvaet, nazyvaya izmenivsheesya; "
+               "pin='frozen' otdayot ryad iz fayla bez seti; pin='off' -- "
+               "zhivuyu sborku bez sverki."),
+}
 with open(pp_path, "w", encoding="utf-8") as fh:
     json.dump(passport, fh, ensure_ascii=True, indent=2)
 say(f"pasport: {pp_path}")
+say(f"  pin {passport['pin']['version']} ot {passport['pin']['frozen_at']}: "
+    f"W_ref [{main_pp.w_ref[0]} .. {main_pp.w_ref[1]}], sha256 ryada "
+    f"{passport['pin']['series']['sha256'][:16]}...")
 
 RESULT["elapsed_sec"] = round(time.time() - T0, 1)
 res_path = os.path.join(_HERE, "result.json")
