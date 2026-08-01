@@ -5893,6 +5893,8 @@
   "ladder": {
     "version": "Z06-v1",
     "kind": "two",
+    "rejected": true,
+    "rejected_why": "tau_GDP ne identificiruem: shirina 90% intervala 4.07 sigma_c protiv trebuemyh <1.0; stupen' po nemu delit istoriyu 382 / 11 (97.2% / 2.8%)",
     "base": "new_orders",
     "method": "FE",
     "units": "urovni kompozita (sd paneley); v skobkah -- v sigma_c",

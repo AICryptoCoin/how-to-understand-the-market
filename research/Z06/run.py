@@ -1064,7 +1064,13 @@ RESULT["ladder"] = LADDER
 # POSTAVLYAEMAYA, i trogat' eyo iz raschyota nel'zya.
 counts: dict[float, int] = {}
 for d in main_s.dates:
-    L = C.level_step(CMAIN[d], LADDER)
+    # allow_rejected=True yavno: eto raspredelenie mesyacev po stupenyam
+    # PRED-REGISTRIROVANNOY lestnicy, kotoruyu etot zhe progon neskol'kimi
+    # desyatkami strok nizhe i brakuet. Chislo nuzhno otchyotu (i ono zhe idyot
+    # v rejected_why), no prosit' ego nado gromko. Segodnya pometka rejected
+    # stavitsya POZZHE etoy stroki, tak chto flag -- na sluchay perestanovki
+    # porjadka, a ne dekoraciya.
+    L = C.level_step(CMAIN[d], LADDER, allow_rejected=True)
     counts[L] = counts.get(L, 0) + 1
 say("")
 say(f"Raspredelenie {len(main_s.dates)} mesyacev po stupenyam:")
@@ -1147,6 +1153,47 @@ if LADDER_REJECTED:
     say(f"Zabrakovannaya {LADDER_REJECTED['version']} (po tau_GDP) sohranyaetsya "
         f"otdel'nym klyuchom 'ladder_prereg_rejected_tau_GDP' -- radi "
         f"vosproizvodimosti, a ne radi primeneniya.")
+
+    # Pometka braka -- V SAMIH DANNYH, a ne v dogovoryonnosti.
+    #
+    # Do 2026-08-02 pometka stoyala tol'ko v composite.py (konstanta
+    # LADDER_PREREG_REJECTED_TAU_GDP) i v pasporte, a v result.json -> 'ladder'
+    # eyo ne bylo VOVSE. Klyuch s samym ochevidnym imenem nyos zabrakovannuyu
+    # lestnicu bez edinogo priznaka braka: vyzov
+    # ladder_contribution(s, result['ladder']) otrabatyval molcha i otdaval
+    # vklad po porogu tau_GDP. Sleduyushchaya zadacha (Z05) beryot lestnicu
+    # imenno iz artefaktov Z06 -- znachit pometka obyazana lezhat' v artefakte.
+    #
+    # Prichina sobiraetsya iz chisel ETOGO progona, a ne kopiruetsya tekstom:
+    # inache posle pereschyota na svezhih dannyh v fayle ostalis' by chuzhie
+    # shirina i raspredelenie.
+    _w_gdp = ident_tbl["tau_GDP"][2]
+    _n_all = sum(counts.values())
+    _hi = counts.get(1.0, 0)
+    _lo = counts.get(-1.0, 0)
+    RESULT["ladder"]["rejected"] = True
+    RESULT["ladder"]["rejected_why"] = (
+        f"tau_GDP ne identificiruem: shirina 90% intervala "
+        f"{_w_gdp / SIGMA_C:.2f} sigma_c protiv trebuemyh <1.0; stupen' po "
+        f"nemu delit istoriyu {_hi} / {_lo} "
+        f"({_hi / _n_all * 100:.1f}% / {_lo / _n_all * 100:.1f}%)")
+    # Sverka s konstantoy: pometka obyazana byt' odna i ta zhe v tryoh mestah
+    # (composite.py, composite-passport.json, result.json). Rashozhdenie tut --
+    # eto opyat' dva istochnika pravdy, s kotoryh vsyo i nachalos'.
+    _const_why = C.LADDER_PREREG_REJECTED_TAU_GDP["rejected_why"]
+    if RESULT["ladder"]["rejected_why"] != _const_why:
+        say("")
+        say("!!! VNIMANIE: prichina brakovki, poschitannaya progonom, razoshlas' s")
+        say(f"!!! composite.LADDER_PREREG_REJECTED_TAU_GDP:")
+        say(f"!!!   progon:    {RESULT['ladder']['rejected_why']}")
+        say(f"!!!   konstanta: {_const_why}")
+        say("!!! Normal'no posle pereschyota na svezhih dannyh, no konstantu v")
+        say("!!! composite.py nado obnovit' RUKAMI.")
+    say(f"V result.json klyuch 'ladder' pomechen rejected=true; "
+        f"postavlyaemaya -- klyuch 'ladder_practical'.")
+    say(f"  rejected_why: {RESULT['ladder']['rejected_why']}")
+    say(f"  s etogo momenta level_step / ladder_contribution na ney PADAYUT "
+        f"(composite.RejectedLadder), poka ne poprosit' allow_rejected=True.")
 
 # Sverka s konstantoy v composite.py: chisla lestnicy zhivut v DVUH mestah
 # (modul' i artefakty), i rashodit'sya im nel'zya molcha.

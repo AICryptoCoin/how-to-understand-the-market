@@ -64,7 +64,8 @@ __all__ = [
     "PRIMARY_START", "LADDER_V1", "LADDER_PREREG_REJECTED_TAU_GDP",
     "panel_series", "composite", "composite_with_passport",
     "ladder_contribution", "level_step",
-    "VintageDrift", "pin", "frozen_composite", "series_digest",
+    "VintageDrift", "RejectedLadder", "pin", "frozen_composite",
+    "series_digest",
 ]
 
 
@@ -863,8 +864,51 @@ LADDER_PREREG_REJECTED_TAU_GDP: dict[str, Any] = {
 }
 
 
-def level_step(value: float, ladder: dict[str, Any]) -> float:
+class RejectedLadder(ValueError):
+    """Popytka schitat' vklad po ZABRAKOVANNOY lestnice."""
+
+
+def _refuse_rejected(ladder: dict[str, Any], allow_rejected: bool) -> None:
+    """Zabrakovannaya lestnica obyazana padat', a ne schitat'sya molcha.
+
+    Do 2026-08-02 zashchity ne bylo vovse: pometka ``rejected`` stoyala tol'ko
+    v konstante LADDER_PREREG_REJECTED_TAU_GDP i v pasporte, a v
+    ``result.json -> 'ladder'`` -- ne stoyala. Vyzov
+    ``ladder_contribution(s, result['ladder'])`` otrabatyval bez edinoy oshibki
+    i tiho otdaval vklad po porogu tau_GDP = -1.6806, kotoryy tot zhe progon
+    Z06 i zabrakoval: rashozhdenie s postavlyaemoy -- 110 mesyacev iz 390.
+    Klyuch s samym ochevidnym imenem vyol v brak, i eto ne lovilos' nichem.
+
+    ``allow_rejected=True`` -- edinstvennaya dver', i otkryvat' eyo est'
+    ravno odna prichina: vosproizvesti chislo otchyota po zabrakovannoy
+    lestnice (raspredelenie mesyacev po eyo stupenyam v Z06/run.py sec.8).
+    """
+    if not ladder.get("rejected") or allow_rejected:
+        return
+    why = ladder.get("rejected_why") or "prichina v lestnice ne zapisana"
+    raise RejectedLadder(
+        f"lestnica {ladder.get('version', '?')!r} pomechena rejected -- eto "
+        f"ZABRAKOVANNAYA lestnica po tau_GDP, v postavku ona ne vhodit.\n"
+        f"  pochemu zabrakovana: {why}\n"
+        f"  brat' nado POSTAVLYAEMUYU: result.json -> 'ladder_practical'\n"
+        f"    (ona zhe composite.LADDER_V1, ona zhe "
+        f"composite-passport.json -> 'ladder')\n"
+        f"    -- dvuhstupenchataya po LINII RECESSII tau_REC = -0.2004.\n"
+        f"  Vnimanie na imena: v result.json korotkiy klyuch 'ladder' nesyot "
+        f"imenno ZABRAKOVANNUYU,\n"
+        f"  a postavlyaemaya lezhit v 'ladder_practical'. Imenno poetomu zdes' "
+        f"otkaz, a ne chislo.\n"
+        f"  Esli vklad po zabrakovannoy nuzhen radi vosproizvedeniya otchyota "
+        f"-- prosite yavno:\n"
+        f"    level_step(..., allow_rejected=True) / "
+        f"ladder_contribution(..., allow_rejected=True)"
+    )
+
+
+def level_step(value: float, ladder: dict[str, Any], *,
+               allow_rejected: bool = False) -> float:
     """Uroven' kompozita -> L (analog chetyryoh stupeney sec.1.4.1)."""
+    _refuse_rejected(ladder, allow_rejected)
     if not ladder.get("steps"):
         raise ValueError(
             "lestnica ne zapolnena: postavlyaemaya lezhit v composite.LADDER_V1 "
@@ -879,12 +923,18 @@ def level_step(value: float, ladder: dict[str, Any]) -> float:
 
 
 def ladder_contribution(series: S.Series, ladder: dict[str, Any],
-                        *, delta_months: int = 3) -> S.Series:
+                        *, delta_months: int = 3,
+                        allow_rejected: bool = False) -> S.Series:
     """Vklad vhoda: c = 0.6*sign(Delta_3m) + 0.4*L (cheatsheet-spec sec.1.4.1).
 
     Formula ne menyaetsya -- menyaetsya tol'ko lestnica L, i tol'ko ona
     otkalibrovana v Z06.
+
+    Zabrakovannaya lestnica (pometka ``rejected``) zdes' NE schitaetsya:
+    otkaz vydayotsya do pervogo znacheniya, chtoby ne poluchilos' ryada,
+    kotoryy vyglyadit gotovym. Sm. ``_refuse_rejected``.
     """
+    _refuse_rejected(ladder, allow_rejected)
     vals = {d: v for d, v in zip(series.dates, series.values) if v is not None}
     dates = sorted(vals)
     idx = {d: i for i, d in enumerate(dates)}
@@ -897,7 +947,9 @@ def ladder_contribution(series: S.Series, ladder: dict[str, Any],
         delta = vals[d] - vals[dates[i - delta_months]]
         sign = 0.0 if delta == 0 else (1.0 if delta > 0 else -1.0)
         out_d.append(d)
-        out_v.append(0.6 * sign + 0.4 * level_step(vals[d], ladder))
+        out_v.append(0.6 * sign
+                     + 0.4 * level_step(vals[d], ladder,
+                                        allow_rejected=allow_rejected))
     return S.Series(
         series_id=f"{series.series_id}-CONTRIB",
         source=series.source,
