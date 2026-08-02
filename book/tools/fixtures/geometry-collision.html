@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Эталон прибора геометрии — Как понимать рынок</title>
+<meta name="description" content="Намеренно испорченная страница: две пары подписей пересекаются глифами, одна пара — только рамками.">
+<link rel="stylesheet" href="../../assets/book.css">
+</head>
+<body data-chapter-id="fixture-geometry">
+
+<div class="layout">
+  <main class="content">
+  <article class="prose">
+
+    <h1>Эталон прибора геометрии</h1>
+
+    <p>Страница в книгу не входит: она нужна прибору
+      <code>tools/geometry-check.js</code>, чтобы доказать себя красным
+      и зелёным. Ожидаемые числа записаны в самом приборе
+      (<code>SELFTEST_EXPECT</code>) — правите эталон, правьте и их.</p>
+
+    <figure class="figure" id="fig-fixture-1">
+      <svg viewBox="0 0 720 260" role="img" aria-labelledby="fig-fixture-1-t">
+        <title id="fig-fixture-1-t">Красный контроль: две пары наложенных подписей</title>
+        <rect class="viz-box" x="16" y="16" width="688" height="228"></rect>
+        <text class="viz-title" x="24" y="34">Красный контроль — глифы пересекаются</text>
+
+        <!-- пара 1: общая базовая линия, диапазоны x перекрываются на ~40 единиц -->
+        <text class="viz-label" x="40" y="96">перегрев кредита</text>
+        <text class="viz-label" x="100" y="96">спад инвестиций</text>
+
+        <!-- пара 2: базовые линии разведены на 3 единицы при высоте чернил ~12 -->
+        <text class="viz-label" x="430" y="196">маркер уровня</text>
+        <text class="viz-label" x="452" y="199">перекрытие строк</text>
+      </svg>
+      <figcaption>Рис. Э.1. Две пары, у которых есть общий непрозрачный пиксель.</figcaption>
+    </figure>
+
+    <figure class="figure" id="fig-fixture-2">
+      <svg viewBox="0 0 720 260" role="img" aria-labelledby="fig-fixture-2-t">
+        <title id="fig-fixture-2-t">Зелёный контроль: соседние строки одной подписи</title>
+        <rect class="viz-box" x="16" y="16" width="688" height="228"></rect>
+        <text class="viz-title" x="24" y="34">Зелёный контроль — пересекаются только рамки</text>
+
+        <!-- шаг 13 единиц при кегле 12: рамки перекрываются на любой ширине,
+             чернила расходятся с просветом около единицы. В книге шаг 16–19,
+             то есть эталон строже книги. -->
+        <text class="viz-label" x="48" y="104">Двухстрочная аннотация</text>
+        <text class="viz-label" x="48" y="117">к той же точке ряда</text>
+
+        <!-- контроль контроля: пара, которая даже кандидатом не станет -->
+        <text class="viz-label" x="470" y="104">далеко</text>
+        <text class="viz-label" x="470" y="188">и не рядом</text>
+      </svg>
+      <figcaption>Рис. Э.2. Кандидат по рамкам, который дефектом не является.</figcaption>
+    </figure>
+
+  </article>
+  </main>
+</div>
+
+</body>
+</html>
