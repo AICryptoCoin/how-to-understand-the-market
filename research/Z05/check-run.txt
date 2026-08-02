@@ -1,0 +1,48 @@
+
+==========================================================================
+A. Predposylka Z06: zabrakovannaya lestnica obyazana padat'
+==========================================================================
+  OK      A1 result.json['ladder'] nesyot rejected=true
+  OK      A2 rejected_why zapolnen i nazyvaet tau_GDP
+  OK      A3 vyzov po zabrakovannoy lestnice OTKAZYVAET  -- soobshchenie nazyvaet zamenu
+  OK      A4 bez pometki ta zhe lestnica schitaetsya i dayot DRUGOY vklad  -- rashozhdenie 110 mesyacev iz 390
+
+==========================================================================
+B. Polozhitel'nyy kontrol': sposoben li pribor uvidet' signal
+==========================================================================
+  OK      B1.h1 orakul dayot dolyu 1.000  -- n=268 dolya=1.0000
+  OK      B1.h1 antiorakul dayot dolyu 0.000  -- n=268 dolya=0.0000
+  OK      B1.h3 orakul dayot dolyu 1.000  -- n=266 dolya=1.0000
+  OK      B1.h3 antiorakul dayot dolyu 0.000  -- n=266 dolya=0.0000
+  OK      B2 smes' 60/40 vosstanovlena  -- n=268 dolya=0.6007
+  OK      B2 i otvergaet nulevuyu 0.5 na etom n  -- p=0.0020 pri n_mesyacev=268
+  OK      B3 smes' 50/50 nulevuyu NE otvergaet  -- dolya=0.5373 p=0.1109
+
+==========================================================================
+C. Nezavisimyy pereschyot zayavlennyh chisel
+==========================================================================
+  OK      C.P10 h1 pul sovpal s otchyotom  -- moy 0.4918 protiv 0.4918
+  OK      C.P10 h3 pul sovpal s otchyotom  -- moy 0.4751 protiv 0.4751
+  OK      C.A20NOVAL h1 pul sovpal s otchyotom  -- moy 0.5058 protiv 0.5058
+  OK      C.A20NOVAL h3 pul sovpal s otchyotom  -- moy 0.4838 protiv 0.4838
+  OK      C.razlozhenie 'tol'ko kvadranty' sovpalo  -- moy 0.5086 protiv 0.5086, n=1620
+  OK      C.perevyornutye predpisaniya dayut 1 - dolya  -- 0.4942 protiv 0.4942
+
+==========================================================================
+D. Nesovmestimost' trebovaniy A i B sec.1.4.7
+==========================================================================
+  OK      D1 pri q=0.20 trebovanie B ne vypolneno  -- spell 16.5 dn.
+  OK      D2 pri naimen'shem q, dayushchem B, A narusheno gruboy  -- Centr 94.4%
+  OK      D3 A nedostizhimo ni pri kakom theta (granica pri theta=0)  -- Centr pri theta=0: 83.0%
+
+==========================================================================
+E. Sama proverka C -- gate ili ukrashenie: mutiruem i zhdyom KRASNOGO
+==========================================================================
+  OK      E1 peremeshannye sostoyaniya lomayut sovpadenie  -- peremeshano 0.5205 protiv otchyota 0.5058
+  OK      E2 podmena odnogo znaka v tablice lomaet sovpadenie  -- s podmenoy 0.5042 protiv otchyota 0.5058
+  OK      E3 drugoy gorizont dayot druguyu dolyu  -- h3 0.4838 protiv h1 0.5058
+
+==========================================================================
+ITOG
+==========================================================================
+  proshlo 23, provaleno 0

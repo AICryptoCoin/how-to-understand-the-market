@@ -50,6 +50,7 @@ B_BOOT = 400 if QUICK else 5000
 
 WIN_START = "2004-01-01"        # HYPOTHESIS sec.2.3
 WIN_END = "2026-06-30"
+WARMUP_START = "2001-01-01"     # razgon dlya dvuhletnego MAD, sec.3.3
 CALIB_END = "2014-12-31"        # sec.5: kalibrovka do 2015
 OOS_START = "2015-01-01"
 
@@ -112,7 +113,8 @@ def sub(title: str) -> None:
 # =========================================================================== #
 
 def d2(iso: str) -> date:
-    return date.fromisoformat(iso[:10])
+    """ISO-data; klyuch mesyaca 'GGGG-MM' chitaetsya kak pervoe chislo."""
+    return date.fromisoformat(iso[:10] if len(iso) >= 10 else iso + "-01")
 
 
 def s2(d: date) -> str:
@@ -351,7 +353,14 @@ sub("3.1 Dnevnaya setka")
 
 _spy = Step(observed(RAW["SPY"]))
 GRID = [d for d in _spy.d if WIN_START <= d <= WIN_END]
+# Razgon: MAD schitaetsya na dvuh godah sobstvennoy istorii ryada, i eta
+# istoriya sushchestvuet DO nachala okna sostoyaniy. Esli stroit' prirashcheniya
+# tol'ko na GRID, pervye 250 torgovyh dney okna teryayut vse dnevnye vhody --
+# eto artefakt setki, a ne svoystvo speki.
+GRID_FULL = [d for d in _spy.d if WARMUP_START <= d <= WIN_END]
 say("  torgovyh dney v okne: %d  (%s .. %s)" % (len(GRID), GRID[0], GRID[-1]))
+say("  setka postroeniya vhodov (s razgonom): %d  (%s .. %s)"
+    % (len(GRID_FULL), GRID_FULL[0], GRID_FULL[-1]))
 
 MONTH_END: dict[str, str] = {}
 for d in _spy.d:
@@ -381,8 +390,8 @@ def rolling_scale(grid: Sequence[str], raw: dict[str, float],
     vals = [raw[g] for g in keys]
     lo = 0
     for i, g in enumerate(keys):
-        cut = s2(d2(g) - timedelta(days=365 * years))
-        while keys[lo] < cut:
+        cut = s2(d2(g) - timedelta(days=365 * years))[:len(g)]
+        while lo < i and keys[lo] < cut:
             lo += 1
         win = vals[lo:i + 1]
         if len(win) < min_obs:
@@ -522,8 +531,8 @@ def phase_c(iso: str) -> float | None:
     return 1.0 if r <= quantile(hist, 0.40) else -1.0
 
 
-C_PHASE = {g: c for g in GRID if (c := phase_c(g)) is not None}
-say("  faza opredelena v %d dnyah iz %d" % (len(C_PHASE), len(GRID)))
+C_PHASE = {g: c for g in GRID_FULL if (c := phase_c(g)) is not None}
+say("  faza opredelena v %d dnyah iz %d" % (len(C_PHASE), len(GRID_FULL)))
 _ph = {}
 for g, c in C_PHASE.items():
     _ph[c] = _ph.get(c, 0) + 1
@@ -549,11 +558,11 @@ WINDOWS = (5, 10, 30)
 DAILY_C: dict[int, dict[str, dict[str, float]]] = {}
 for W in WINDOWS:
     DAILY_C[W] = {
-        "us2y": daily_speed(ST_DGS2, GRID, W, flip=True),
-        "real5": daily_speed(ST_REAL5, GRID, W, flip=True),
-        "dxy": daily_speed(ST_DXY, GRID, W, log=True, flip=True),
-        "hggc": daily_speed(ST_HGGC, GRID, W, log=True),
-        "clgc": daily_speed(ST_CLGC, GRID, W, log=True),
+        "us2y": daily_speed(ST_DGS2, GRID_FULL, W, flip=True),
+        "real5": daily_speed(ST_REAL5, GRID_FULL, W, flip=True),
+        "dxy": daily_speed(ST_DXY, GRID_FULL, W, log=True, flip=True),
+        "hggc": daily_speed(ST_HGGC, GRID_FULL, W, log=True),
+        "clgc": daily_speed(ST_CLGC, GRID_FULL, W, log=True),
     }
     say("  okno %2d dn.: " % W + ", ".join(
         "%s=%d" % (k, len(v)) for k, v in DAILY_C[W].items()))
@@ -699,7 +708,8 @@ def spell_days(dates: Sequence[str], states: Sequence[str]) -> float:
     return sum(lens) / len(lens) if lens else 0.0
 
 
-def calibrate(W: int, validator: str) -> dict[str, Any]:
+def calibrate(W: int, validator: str, force_q: float | None = None
+              ) -> dict[str, Any]:
     scores_f, scores_m = [], []
     for g in CALIB:
         fed_p, mac_p = state_parts(g, W)
@@ -718,26 +728,40 @@ def calibrate(W: int, validator: str) -> dict[str, Any]:
         centre = sum(1 for x in st if x == "CENTER") / len(st)
         rows.append({"q": q, "theta_fed": tf, "theta_macro": tm,
                      "mean_spell_days": ms, "center_share": centre})
-        if chosen is None and ms >= MIN_SPELL_DAYS:
+        if force_q is None and chosen is None and ms >= MIN_SPELL_DAYS:
             chosen = rows[-1]
+        if force_q is not None and abs(q - force_q) < 1e-9:
+            chosen = dict(rows[-1], note="q zadan yavno (trebovanie A rovno)")
     if chosen is None:
-        chosen = rows[-1]
-        chosen = dict(chosen, note="ni odin q iz setki ne dal B; vzyat maksimal'nyy")
-    return {"grid": rows, "chosen": chosen,
+        chosen = dict(rows[-1],
+                      note="ni odin q iz setki ne dal B; vzyat maksimal'nyy")
+    # Granica sverhu: skol'ko vremeni instrument sidit v Centre pri theta = 0,
+    # to est' kogda porogi ne gasyat nichego i rabotaet odin predohranitel'.
+    st0 = [classify(g, W, 0.0, 0.0, validator)[0] for g in CALIB]
+    zero = sum(1 for x in st0 if x == "CENTER") / len(st0)
+    return {"grid": rows, "chosen": chosen, "center_share_at_theta0": zero,
             "n_abs_fed": len(scores_f), "n_abs_macro": len(scores_m)}
 
 
-CONFIGS = {"P10": (10, "single"), "P05": (5, "single"), "P30": (30, "single"),
-           "VOTE": (10, "vote"), "NOVAL": (10, "off")}
+CONFIGS: dict[str, tuple[int, str, float | None]] = {
+    "P10": (10, "single", None), "P05": (5, "single", None),
+    "P30": (30, "single", None), "VOTE": (10, "vote", None),
+    "NOVAL": (10, "off", None),
+    # Chteniya POSLE raschyota (sec.11 zapis' 3): trebovanie A rovno.
+    "A20": (10, "single", 0.20), "A20NOVAL": (10, "off", 0.20),
+}
+POSTHOC = ("A20", "A20NOVAL")
 
 THETA: dict[str, dict[str, Any]] = {}
-for name, (W, val) in CONFIGS.items():
-    THETA[name] = calibrate(W, val)
+for name, (W, val, fq) in CONFIGS.items():
+    THETA[name] = calibrate(W, val, fq)
     ch = THETA[name]["chosen"]
-    say("  %-6s okno=%2d valid=%-6s -> q=%.2f  theta_fed=%.4f theta_macro=%.4f"
-        "  spell=%.1f dn.  Centr=%.1f%%"
+    say("  %-8s okno=%2d valid=%-6s -> q=%.2f  th_fed=%.4f th_macro=%.4f"
+        "  spell=%.1f dn.  Centr=%.1f%%  (Centr pri theta=0: %.1f%%)%s"
         % (name, W, val, ch["q"], ch["theta_fed"], ch["theta_macro"],
-           ch["mean_spell_days"], 100 * ch["center_share"]))
+           ch["mean_spell_days"], 100 * ch["center_share"],
+           100 * THETA[name]["center_share_at_theta0"],
+           "  [POSLE RASCHYOTA]" if name in POSTHOC else ""))
 
 sub("6.1 Setka q dlya osnovnoy konfiguracii P10")
 say("  %5s %11s %13s %14s %12s" % ("q", "theta_fed", "theta_macro",
@@ -763,7 +787,7 @@ say("  -> vnutrennee protivorechie sec.1.4.7 speki, HYPOTHESIS sec.5.1")
 head("7. Sostoyaniya po mesyacam")
 
 STATES: dict[str, dict[str, tuple[str, dict[str, Any]]]] = {}
-for name, (W, val) in CONFIGS.items():
+for name, (W, val, _fq) in CONFIGS.items():
     ch = THETA[name]["chosen"]
     STATES[name] = build_states(W, ch["theta_fed"], ch["theta_macro"], val,
                                 [MONTH_END[m] for m in MONTHS])
@@ -788,6 +812,30 @@ for name in CONFIGS:
         "%s=%d(%.1f%%)" % (k, v, 100 * v / tot)
         for k, v in sorted(dist.items()))))
 RESULT["state_distribution"] = {k: distribution(k) for k in CONFIGS}
+
+sub("7.0 Chto imenno gasit sostoyanie: porogi ili predohranitel'")
+_raw_cnt: dict[str, int] = {}
+_killed = 0
+for m in MONTHS:
+    st, info = state_month("P10", m)
+    r = info["raw"] or "ANOMALY"
+    _raw_cnt[r] = _raw_cnt.get(r, 0) + 1
+    if r not in ("CENTER", "ANOMALY") and st == "CENTER":
+        _killed += 1
+_raw_quad = sum(v for k, v in _raw_cnt.items() if k not in ("CENTER", "ANOMALY"))
+say("  do predohranitelya: %s" % dict(sorted(_raw_cnt.items())))
+say("  kvadrant nazvan porogami v %d mesyacah iz %d (%.1f%%)"
+    % (_raw_quad, len(MONTHS), 100 * _raw_quad / len(MONTHS)))
+say("  iz nih predohranitel' formoy krivoy pogasil %d (%.1f%% ot nazvannyh)"
+    % (_killed, 100 * _killed / _raw_quad if _raw_quad else 0.0))
+_par = {W: sum(1 for m in MONTHS if SHAPE[W].get(MONTH_END[m]) == "PARALLEL")
+        for W in WINDOWS}
+say("  mesyacev 'parallel'nyy sdvig' (|d spred| < 5 b.p.): %s iz %d"
+    % (_par, len(MONTHS)))
+RESULT["validator_effect"] = {"raw_state_counts": _raw_cnt,
+                              "quadrant_named_by_thresholds": _raw_quad,
+                              "killed_by_shape": _killed,
+                              "parallel_months": _par}
 
 sub("7.1 Dnevnaya dolya vremeni (osnovnaya konfiguraciya P10)")
 _daily_states = build_states(10, THETA["P10"]["chosen"]["theta_fed"],
@@ -945,10 +993,16 @@ def hits(p: dict[str, Any], cfg: str, h: int, months: Sequence[str],
 
 
 def hits_months(p: dict[str, Any], cfg: str, h: int, months: Sequence[str],
-                state_fn: Callable[[str, str], str]) -> list[tuple[str, float]]:
+                state_fn: Callable[[str, str], str],
+                only: str = "all") -> list[tuple[str, float]]:
     out = []
     for m in months:
-        want = p["signs"].get(state_fn(cfg, m))
+        st = state_fn(cfg, m)
+        if only == "quad" and st in ("CENTER", "ANOMALY"):
+            continue
+        if only == "center" and st != "CENTER":
+            continue
+        want = p["signs"].get(st)
         if want is None:
             continue
         r = fwd(p, m, h)
@@ -973,17 +1027,21 @@ def test_series(vals: Sequence[float], h: int,
     row["p_raw"] = p_above(draws, NULL_RATE)
     row["p_below"] = p_below(draws, NULL_RATE)
     row["ci90"] = [quantile(draws, 0.05), quantile(draws, 0.95)]
-    row["can_fire"] = n >= n_needed(max(rate, 0.5001), Z_HOLM1, h)
+    # kakaya dolya nuzhna byla by pri etom n, chtoby proyti pervyy shag Holma
+    row["rate_needed"] = NULL_RATE + Z_HOLM1 * 0.5 / math.sqrt(
+        n / (3.0 if h == 3 else 1.0))
+    row["can_fire"] = (rate > HIT_THRESHOLD and rate >= row["rate_needed"])
     return row
 
 
 def pooled(cfg: str, h: int, months: Sequence[str],
            state_fn: Callable[[str, str], str], rng: random.Random,
-           pairs: Sequence[dict[str, Any]] = PAIRS) -> dict[str, Any]:
+           pairs: Sequence[dict[str, Any]] = PAIRS,
+           only: str = "all") -> dict[str, Any]:
     """Pul po vsem param, bootstrap klasterami po mesyacam."""
     by_month: dict[str, list[float]] = {}
     for p in pairs:
-        for m, hit in hits_months(p, cfg, h, months, state_fn):
+        for m, hit in hits_months(p, cfg, h, months, state_fn, only):
             by_month.setdefault(m, []).append(hit)
     ms = sorted(by_month)
     if not ms:
@@ -1045,6 +1103,16 @@ def run_branch(cfg: str, months: Sequence[str], state_fn, label: str,
     for h in HORIZONS:
         pool["h%d" % h]["p_holm"] = padj["h%d" % h]
 
+    # Razlozhenie pula: on ne odnoroden. Predpisaniya Centra (SIZE, STYLE,
+    # GEO -- sec.2.3 speki) est' u treh par i deystvuyut v podavlyayushchem
+    # bol'shinstve mesyacev, predpisaniya kvadrantov -- u vseh chetyrnadcati,
+    # no tol'ko v redkih. Bez razlozheniya pul izmeryaet ne to, chto kazhetsya.
+    decomp = {}
+    for grp in ("quad", "center"):
+        for h in HORIZONS:
+            decomp["%s_h%d" % (grp, h)] = pooled(cfg, h, months, state_fn, rng,
+                                                 only=grp)
+
     extra = {}
     for p in PAIR_EXTRA:
         extra[p["key"]] = {}
@@ -1059,7 +1127,7 @@ def run_branch(cfg: str, months: Sequence[str], state_fn, label: str,
                         and per[p["key"]]["h%d" % h]["p_holm"] < 0.05
                         for h in HORIZONS))
     out = {"label": label, "cfg": cfg, "per_pair": per, "pooled": pool,
-           "extra": extra, "pairs_passed": n_pass,
+           "pooled_decomp": decomp, "extra": extra, "pairs_passed": n_pass,
            "n_months": len(months)}
     if verbose:
         print_branch(out)
@@ -1072,17 +1140,17 @@ def print_branch(res: dict[str, Any]) -> None:
         % (res["label"], res["cfg"], res["n_months"]))
     say("  %-9s %26s | %26s | %s"
         % ("para", "gorizont 1 mes.", "gorizont 3 mes.", "peresechenie"))
-    say("  %-9s %5s %6s %8s %5s | %5s %6s %8s %5s |"
-        % ("", "n", "dolya", "p_Holm", "mog?", "n", "dolya", "p_Holm", "mog?"))
+    say("  %-9s %5s %6s %8s %6s | %5s %6s %8s %6s |"
+        % ("", "n", "dolya", "p_Holm", "nado", "n", "dolya", "p_Holm", "nado"))
     for p in PAIRS:
         r1 = res["per_pair"][p["key"]]["h1"]
         r3 = res["per_pair"][p["key"]]["h3"]
-        say("  %-9s %5d %6.3f %8.4f %5s | %5d %6.3f %8.4f %5s | %s"
+        say("  %-9s %5d %6.3f %8.4f %6s | %5d %6.3f %8.4f %6s | %s"
             % (p["key"], r1["n"], r1["rate"], r1["p_holm"],
-               "da" if r1.get("can_fire") else "net",
+               ("%.3f" % r1["rate_needed"]) if "rate_needed" in r1 else "vyrozh",
                r3["n"], r3["rate"], r3["p_holm"],
-               "da" if r3.get("can_fire") else "net",
-               "DA" if p["overlap"] else ""))
+               ("%.3f" % r3["rate_needed"]) if "rate_needed" in r3 else "vyrozh",
+               "peresech." if p["overlap"] else ""))
     for p in PAIR_EXTRA:
         r1 = res["extra"][p["key"]]["h1"]
         r3 = res["extra"][p["key"]]["h3"]
@@ -1095,6 +1163,14 @@ def print_branch(res: dict[str, Any]) -> None:
             "90%% [%.4f .. %.4f], p_syroy %.4f, p_Holm %.4f"
             % (h, pl["n_months"], pl["n_obs"], pl["rate"],
                pl["ci90"][0], pl["ci90"][1], pl["p_raw"], pl["p_holm"]))
+    for grp, nm in (("quad", "tol'ko KVADRANTY"), ("center", "tol'ko CENTR")):
+        for h in HORIZONS:
+            pl = res["pooled_decomp"]["%s_h%d" % (grp, h)]
+            say("    razlozhenie %s h=%d: mesyacev %d, nablyudeniy %d, "
+                "dolya %.4f, 90%% [%.4f .. %.4f], p %.4f, vyrozhden=%s"
+                % (nm, h, pl["n_months"], pl["n_obs"], pl["rate"],
+                   pl["ci90"][0], pl["ci90"][1], pl["p_raw"],
+                   pl.get("degenerate")))
     say("  par proshlo C1: %d iz 14" % res["pairs_passed"])
 
 
@@ -1121,6 +1197,20 @@ ROBUST: dict[str, Any] = {}
 for cfg in ("P05", "P30", "VOTE", "NOVAL"):
     ROBUST[cfg] = run_branch(cfg, MONTHS, st_main, "konfiguraciya " + cfg)
 RESULT["robust_cfg"] = ROBUST
+
+sub("11.1-bis Dva chteniya theta POSLE raschyota (sec.11 zapis' 3)")
+say("  Trebovaniya A i B sec.1.4.7 nesovmestimy (sm. sec.6 i sec.13-bis).")
+say("  Pred-registrirovannyy vybor -- B (konfiguraciya P10, vyshe).")
+say("  Zdes' -- vtoroe chtenie: trebovanie A rovno, q=0.20. Verdikt po nemu")
+say("  NE vynositsya; ono nuzhno, chtoby kvadrantnye predpisaniya voobshche")
+say("  poluchili vyborku, i chtoby vyvod ne opiralsya na odnu tol'ko nehvatku.")
+POSTHOC_RES: dict[str, Any] = {}
+for cfg in POSTHOC:
+    dist = distribution(cfg)
+    say("  %-9s sostoyaniya: %s" % (cfg, dict(sorted(dist.items()))))
+    POSTHOC_RES[cfg] = run_branch(cfg, MONTHS, st_main,
+                                  "POSLE RASCHYOTA " + cfg)
+RESULT["posthoc_cfg"] = POSTHOC_RES
 
 sub("11.2 Dva razbieniya vyborki")
 SPLITS = {
@@ -1195,7 +1285,23 @@ def last_vintage(k: str, iso: str) -> str | None:
 
 VINT_STATE: dict[str, str] = {}
 VINT_DIAG: dict[str, Any] = {"months_with_permit": 0, "months_with_claims": 0,
-                             "months_with_nof": 0, "changed": 0}
+                             "months_with_nof": 0, "changed": 0,
+                             "fetch_failures": []}
+
+
+def vintage_series(sid: str, vd: str, back_days: int) -> Any | None:
+    """Vintazh ili None. Otkaz zapisyvaetsya, a ne gasitsya molcha."""
+    for attempt in range(3):
+        try:
+            return S.alfred(sid, vd,
+                            start=s2(d2(vd) - timedelta(days=back_days)))
+        except Exception as exc:                    # noqa: BLE001
+            if attempt == 2:
+                VINT_DIAG["fetch_failures"].append(
+                    "%s@%s: %s" % (sid, vd, type(exc).__name__))
+                return None
+            time.sleep(1.5)
+    return None
 
 if not NO_VINTAGE:
     th = THETA["P10"]["chosen"]
@@ -1205,23 +1311,21 @@ if not NO_VINTAGE:
         parts_fed, parts_mac = state_parts(g, 10)
         # PERMIT
         vd = last_vintage("PERMIT", g)
-        if vd:
-            s = S.alfred("PERMIT", vd, start=s2(d2(g) - timedelta(days=2200)))
+        s = vintage_series("PERMIT", vd, 2200) if vd else None
+        if s is not None:
             vals = {mkey(d): v for d, v in observed(s)}
             cs = monthly_speed(vals, 3, log=True)
-            st = to_step_monthly(cs, *PUB["PERMIT"])
-            parts_mac["permit"] = st.at(g)
+            parts_mac["permit"] = to_step_monthly(cs, *PUB["PERMIT"]).at(g)
             VINT_DIAG["months_with_permit"] += 1
         vd = last_vintage("IC4WSA", g)
-        if vd:
-            s = S.alfred("IC4WSA", vd, start=s2(d2(g) - timedelta(days=1500)))
+        s = vintage_series("IC4WSA", vd, 1500) if vd else None
+        if s is not None:
             cs = weekly_speed(observed(s), 13, flip=True)
             parts_mac["claims"] = Step(cs.items()).at(g)
             VINT_DIAG["months_with_claims"] += 1
         vd = last_vintage("NOF", g)
-        if vd:
-            s = S.alfred("NOFDFSA066MSFRBPHI", vd,
-                         start=s2(d2(g) - timedelta(days=1500)))
+        s = vintage_series("NOFDFSA066MSFRBPHI", vd, 1500) if vd else None
+        if s is not None:
             vals = {mkey(d): v for d, v in observed(s)}
             cs = monthly_level(vals, 0.0)
             parts_mac["nof"] = to_step_monthly(cs, *PUB["NOF"]).at(g)
@@ -1337,6 +1441,30 @@ RESULT["criteria"] = {"C1": C1, "C2": C2, "C3": C3, "C4": C4, "C5": C5,
                       "inverted": inverted}
 RESULT["verdict"] = VERDICT
 
+head("13-bis. Sovmestimy li trebovaniya A i B sec.1.4.7")
+_g = THETA["P10"]["grid"]
+_a20 = _g[0]
+_chosen = THETA["P10"]["chosen"]
+say("  A rovno (q=0.20):  Centr %.1f%% pri obeshchannyh 20%%; spell %.1f dn. "
+    "pri trebuemyh %d" % (100 * _a20["center_share"],
+                          _a20["mean_spell_days"], MIN_SPELL_DAYS))
+say("  naimen'shiy q, udovletvoryayushchiy B: %.2f -> Centr %.1f%%"
+    % (_chosen["q"], 100 * _chosen["center_share"]))
+say("  Centr pri theta = 0 (porogi ne gasyat nichego, rabotaet odin")
+say("  predohranitel' formoy krivoy): %.1f%%"
+    % (100 * THETA["P10"]["center_share_at_theta0"]))
+_A_reachable = THETA["P10"]["center_share_at_theta0"] <= 0.35
+say("  -> dolya vremeni v Centre poryadka pyatoy chasti dostizhima pri kakom-")
+say("     libo theta: %s" % ("DA" if _A_reachable else "NET"))
+RESULT["A_vs_B"] = {
+    "center_share_at_q020": _a20["center_share"],
+    "spell_at_q020": _a20["mean_spell_days"],
+    "q_satisfying_B": _chosen["q"],
+    "center_share_at_chosen": _chosen["center_share"],
+    "center_share_at_theta0": THETA["P10"]["center_share_at_theta0"],
+    "A_reachable_at_any_theta": _A_reachable,
+}
+
 RESULT["feasibility"] = {
     "z_holm1": Z_HOLM1,
     "min_boot_p": 1.0 / (B_BOOT + 1),
@@ -1347,6 +1475,23 @@ RESULT["feasibility"] = {
     "degenerate_floor": {"h1": BLOCK[1] * DEGEN_RATIO,
                          "h3": BLOCK[3] * DEGEN_RATIO},
 }
+
+# Pomesyachnye sostoyaniya -- chtoby proverku mozhno bylo napisat' zanovo,
+# ne perepisyvaya postroenie osey: nezavisimyy kod beryot otsyuda sostoyanie
+# i sam schitaet popadaniya (check-z05.py).
+RESULT["monthly_states"] = {
+    cfg: {m: state_month(cfg, m)[0] for m in MONTHS} for cfg in CONFIGS}
+RESULT["monthly_states"]["RAW_P10"] = {
+    m: (state_month("P10", m)[1]["raw"] or "ANOMALY") for m in MONTHS}
+if VINT_STATE:
+    RESULT["monthly_states"]["VINTAGE"] = dict(VINT_STATE)
+RESULT["monthly_scores_P10"] = {
+    m: {"fed": state_month("P10", m)[1]["score_fed"],
+        "macro": state_month("P10", m)[1]["score_macro"],
+        "shape": state_month("P10", m)[1]["shape"]} for m in MONTHS}
+RESULT["month_end_dates"] = {m: MONTH_END[m] for m in MONTHS}
+RESULT["pairs"] = [{k: p[k] for k in ("key", "long", "short", "signs",
+                                      "overlap")} for p in PAIRS + PAIR_EXTRA]
 
 RESULT["elapsed_sec"] = round(time.time() - _T0, 1)
 RESULT["data_passport"] = {

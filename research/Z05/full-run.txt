@@ -1,0 +1,494 @@
+
+==============================================================================
+Z05 -- klassifikator: predskazyvaet li sostoyanie znak predpisannyh par
+==============================================================================
+Zerno 20260802; bootstrap B=5000; quick=False; vintazhi=True
+Okno sostoyaniy 2004-01-01 .. 2026-06-30; kalibrovka do 2014-12-31; uderzhannyy hvost s 2015-01-01
+
+-- 2.1 Ryady -----------------------------------------------------------------
+  DGS2           n=12537  1976-06-01 .. 2026-07-30  last=4.2300       (0.0s)
+  DGS5           n=16129  1962-01-02 .. 2026-07-30  last=4.3800       (0.0s)
+  DGS10          n=16129  1962-01-02 .. 2026-07-30  last=4.6800       (0.0s)
+  T5YIE          n=5899   2003-01-02 .. 2026-07-31  last=2.2600       (0.0s)
+  PERMIT         n=798    1960-01-01 .. 2026-06-01  last=1374.0000    (0.0s)
+  IC4WSA         n=3105   1967-01-28 .. 2026-07-25  last=202750.0000  (0.0s)
+  NOF            n=699    1968-05-01 .. 2026-07-01  last=35.1000      (0.0s)
+  USREC          n=2059   1854-12-01 .. 2026-06-01  last=0.0000       (0.0s)
+  FEDFUNDS       n=864    1954-07-01 .. 2026-06-01  last=3.6300       (0.0s)
+  DFEDTAR        n=9577   1982-09-27 .. 2008-12-15  last=1.0000       (0.0s)
+  DFEDTARU       n=6439   2008-12-16 .. 2026-08-02  last=3.7500       (0.0s)
+  DFEDTARL       n=6439   2008-12-16 .. 2026-08-02  last=3.5000       (0.0s)
+  DX-Y.NYB       n=14112  1971-01-04 .. 2026-07-31  last=99.8000      (0.6s)
+  GC=F           n=6503   2000-08-30 .. 2026-07-31  last=4107.0000    (0.4s)
+  HG=F           n=6508   2000-08-30 .. 2026-07-31  last=6.4655       (0.6s)
+  CL=F           n=6512   2000-08-23 .. 2026-07-31  last=84.6700      (0.6s)
+  SPY            n=8433   1993-01-29 .. 2026-07-31  last=747.0300     (0.7s)
+  IWM            n=6583   2000-05-26 .. 2026-07-31  last=291.2000     (0.6s)
+  QQQ            n=6891   1999-03-10 .. 2026-07-31  last=687.9900     (0.6s)
+  EFA            n=6268   2001-08-27 .. 2026-07-31  last=105.5800     (0.6s)
+  EEM            n=5862   2003-04-14 .. 2026-07-31  last=64.0900      (0.5s)
+  XLK            n=6943   1998-12-22 .. 2026-07-31  last=175.3500     (0.7s)
+  XLB            n=6943   1998-12-22 .. 2026-07-31  last=50.4300      (0.6s)
+  XLY            n=6943   1998-12-22 .. 2026-07-31  last=116.0900     (0.6s)
+  XLP            n=6943   1998-12-22 .. 2026-07-31  last=85.0500      (0.5s)
+  XLE            n=6943   1998-12-22 .. 2026-07-31  last=59.5500      (0.6s)
+  XLF            n=6943   1998-12-22 .. 2026-07-31  last=56.9400      (0.7s)
+  XLI            n=6943   1998-12-22 .. 2026-07-31  last=179.8400     (0.6s)
+  XLV            n=6943   1998-12-22 .. 2026-07-31  last=162.5500     (0.6s)
+  XLU            n=6943   1998-12-22 .. 2026-07-31  last=44.3500      (0.6s)
+  TLT            n=6040   2002-07-30 .. 2026-07-31  last=82.2500      (0.6s)
+  SHY            n=6040   2002-07-30 .. 2026-07-31  last=82.0000      (0.6s)
+  LQD            n=6040   2002-07-30 .. 2026-07-31  last=106.2500     (0.7s)
+  IEF            n=6040   2002-07-30 .. 2026-07-31  last=92.9500      (0.5s)
+  SPHB           n=3832   2011-05-05 .. 2026-07-31  last=139.8500     (0.5s)
+  SPLV           n=3832   2011-05-05 .. 2026-07-31  last=76.2300      (0.6s)
+  ^VIX           n=9213   1990-01-02 .. 2026-07-31  last=15.9900      (0.6s)
+  ^SPGSCI        n=10727  1984-01-03 .. 2026-07-31  last=686.1500     (0.7s)
+[sources] NAHB t2: https://www.nahb.org/-/media/NAHB/news-and-economics/docs/housing-economics/hmi/2026-07/t2-national-hmi-history-202607.xls?rev=0c35c16921ef46749068833427ed31fe&hash=75803D357537EC6B359EF20AA39410D1
+  NAHB           n=499    1985-01-01 .. 2026-07-01  last=34.0000      (0.0s)
+  COMPOSITE      n=393    1993-11-01 .. 2026-07-01  last=1.0127       (0.0s)
+
+-- 2.2 Predposylka: lestnica Z06 ---------------------------------------------
+  result.json['ladder'].rejected      = True
+  result.json['ladder'].rejected_why  = tau_GDP ne identificiruem: shirina 90% intervala 4.07 sigma_c protiv trebuemyh <1.0; stupen' po 
+  result.json['ladder_practical'] month_counts = {'1.0': 272, '-1.0': 121}
+  vyzov po zabrakovannoy lestnice otkazyvaet: True
+
+-- 3.1 Dnevnaya setka --------------------------------------------------------
+  torgovyh dney v okne: 5658  (2004-01-02 .. 2026-06-30)
+  setka postroeniya vhodov (s razgonom): 6410  (2001-01-02 .. 2026-06-30)
+  mesyacev sostoyaniy: 270  (2004-01 .. 2026-06)
+  recessionnyh mesyacev (USREC): 20
+  kovidnyh mesyacev (2020-03 .. 2021-12): 22
+
+-- 4.1 Mesyachnye i nedel'nye vhody ------------------------------------------
+  NAHB (uroven' protiv 50):     mesyacev vklada 496
+  PERMIT (skorost', ln, 3 mes): mesyacev vklada 772
+  kompozit Z06 (lestnica):      mesyacev vklada 390
+  Philly NOF (uroven' vs 0):    mesyacev vklada 696
+  IC4WSA (skorost', 13 nedel'): nedel' vklada 2989
+
+-- 4.2 Faza rezhima DKP ------------------------------------------------------
+  celevaya stavka: 16016 dney, 1982-09-27 .. 2026-08-02
+  faza opredelena v 6410 dnyah iz 6410
+  raspredelenie fazy: {'+1': 3984, '-1': 2426}
+
+-- 4.3 Dnevnye vhody po tryom oknam ------------------------------------------
+  real5Y: 5898 dney 2003-01-02 .. 2026-07-30
+  okno  5 dn.: us2y=6161, real5=5658, dxy=6161, hggc=6161, clgc=6160
+  okno 10 dn.: us2y=6161, real5=5654, dxy=6161, hggc=6161, clgc=6159
+  okno 30 dn.: us2y=6161, real5=5640, dxy=6161, hggc=6161, clgc=6159
+
+-- 4.4 Forma krivoy ----------------------------------------------------------
+  okno  5 dn.: {'I': 783, 'II': 295, 'III': 350, 'IV': 750, 'PARALLEL': 3480}
+  okno 10 dn.: {'I': 1053, 'II': 370, 'III': 525, 'IV': 993, 'PARALLEL': 2717}
+  okno 30 dn.: {'I': 1367, 'II': 556, 'III': 861, 'IV': 1185, 'PARALLEL': 1689}
+
+==============================================================================
+6. Kalibrovka porogov theta (HYPOTHESIS sec.5)
+==============================================================================
+Kalibrovochnyy otrezok: 2004-01-02 .. 2014-12-31, 2769 torgovyh dney
+  P10      okno=10 valid=single -> q=0.42  th_fed=0.2199 th_macro=0.2084  spell=30.7 dn.  Centr=94.4%  (Centr pri theta=0: 83.0%)
+  P05      okno= 5 valid=single -> q=0.42  th_fed=0.2217 th_macro=0.2131  spell=30.9 dn.  Centr=95.7%  (Centr pri theta=0: 86.8%)
+  P30      okno=30 valid=single -> q=0.36  th_fed=0.1937 th_macro=0.1695  spell=30.9 dn.  Centr=91.7%  (Centr pri theta=0: 77.6%)
+  VOTE     okno=10 valid=vote   -> q=0.32  th_fed=0.1773 th_macro=0.1382  spell=30.7 dn.  Centr=94.2%  (Centr pri theta=0: 85.7%)
+  NOVAL    okno=10 valid=off    -> q=0.60  th_fed=0.3004 th_macro=0.3139  spell=17.4 dn.  Centr=85.0%  (Centr pri theta=0: 0.0%)
+  A20      okno=10 valid=single -> q=0.20  th_fed=0.1168 th_macro=0.0796  spell=16.5 dn.  Centr=88.9%  (Centr pri theta=0: 83.0%)  [POSLE RASCHYOTA]
+  A20NOVAL okno=10 valid=off    -> q=0.20  th_fed=0.1168 th_macro=0.0796  spell=7.9 dn.  Centr=36.1%  (Centr pri theta=0: 0.0%)  [POSLE RASCHYOTA]
+
+-- 6.1 Setka q dlya osnovnoy konfiguracii P10 --------------------------------
+      q   theta_fed   theta_macro    spell, dney     Centr, %
+   0.20      0.1168        0.0796           16.5        88.9
+   0.22      0.1267        0.0910           17.1        89.7
+   0.24      0.1363        0.1004           18.5        90.6
+   0.26      0.1449        0.1103           18.3        91.2
+   0.28      0.1580        0.1181           20.0        92.0
+   0.30      0.1674        0.1265           20.6        92.3
+   0.32      0.1773        0.1382           22.4        92.6
+   0.34      0.1889        0.1505           23.2        92.8
+   0.36      0.1970        0.1621           24.6        93.1
+   0.38      0.2051        0.1816           27.0        93.6
+   0.40      0.2127        0.1950           27.7        94.0
+
+  Trebovanie A (q=0.20 rovno): Centr = 88.9% vremeni pri obeshchannyh 20%
+  -> vnutrennee protivorechie sec.1.4.7 speki, HYPOTHESIS sec.5.1
+
+==============================================================================
+7. Sostoyaniya po mesyacam
+==============================================================================
+  P10    CENTER=263(97.4%)  I=3(1.1%)  II=2(0.7%)  IV=2(0.7%)
+  P05    CENTER=261(96.7%)  I=4(1.5%)  II=2(0.7%)  III=1(0.4%)  IV=2(0.7%)
+  P30    CENTER=247(91.5%)  I=7(2.6%)  II=4(1.5%)  III=6(2.2%)  IV=6(2.2%)
+  VOTE   CENTER=257(95.2%)  I=5(1.9%)  II=2(0.7%)  III=1(0.4%)  IV=5(1.9%)
+  NOVAL  CENTER=233(86.3%)  I=9(3.3%)  II=17(6.3%)  III=5(1.9%)  IV=6(2.2%)
+  A20    CENTER=248(91.9%)  I=6(2.2%)  II=3(1.1%)  III=5(1.9%)  IV=8(3.0%)
+  A20NOVAL CENTER=94(34.8%)  I=37(13.7%)  II=69(25.6%)  III=26(9.6%)  IV=44(16.3%)
+
+-- 7.0 Chto imenno gasit sostoyanie: porogi ili predohranitel' ---------------
+  do predohranitelya: {'CENTER': 179, 'I': 19, 'II': 42, 'III': 9, 'IV': 21}
+  kvadrant nazvan porogami v 91 mesyacah iz 270 (33.7%)
+  iz nih predohranitel' formoy krivoy pogasil 84 (92.3% ot nazvannyh)
+  mesyacev 'parallel'nyy sdvig' (|d spred| < 5 b.p.): {5: 169, 10: 140, 30: 78} iz 270
+
+-- 7.1 Dnevnaya dolya vremeni (osnovnaya konfiguraciya P10) ------------------
+  ANOMALY=0.1%  CENTER=94.0%  I=1.7%  II=1.0%  III=1.4%  IV=1.8%
+  srednyaya dlitel'nost' sostoyaniya na vsyom okne: 28.0 kalendarnyh dney
+
+-- 7.2 Dolya dostupnogo vesa po kazhdomu otchyotnomu mesyacu -----------------
+  razlichnyh znacheniy doli FED:   [0.65]
+  razlichnyh znacheniy doli MACRO: [0.6, 0.64]
+  mesyacev nizhe otsechki 0.60: 0
+  pervye i poslednie tri mesyaca:
+    2004-01 fed=0.6500 macro=0.6400
+    2004-02 fed=0.6500 macro=0.6400
+    2004-03 fed=0.6500 macro=0.6400
+    2026-04 fed=0.6500 macro=0.6400
+    2026-05 fed=0.6500 macro=0.6400
+    2026-06 fed=0.6500 macro=0.6400
+
+==============================================================================
+8. Pary (HYPOTHESIS sec.6)
+==============================================================================
+  SIZE      SPY/IWM                      mesyacev s cenoy 270, s 2004-01
+  STYLE     QQQ/IWM                      mesyacev s cenoy 270, s 2004-01
+  GEO       EFA/EEM                      mesyacev s cenoy 270, s 2004-01
+  TECHMAT   XLK/XLB                      mesyacev s cenoy 270, s 2004-01
+  DISCSTAP  XLY/XLP                      mesyacev s cenoy 270, s 2004-01
+  CYCNON    XLY+XLI+XLB+XLE/XLP+XLV+XLU  mesyacev s cenoy 270, s 2004-01
+  MATFIN    XLB+XLF/SPY                  mesyacev s cenoy 270, s 2004-01
+  DUR       TLT/SHY                      mesyacev s cenoy 270, s 2004-01
+  CRED      LQD/IEF                      mesyacev s cenoy 270, s 2004-01
+  GOLD      GC=F/cash                    mesyacev s cenoy 269, s 2004-01
+  COMM      ^SPGSCI/cash                 mesyacev s cenoy 270, s 2004-01
+  OIL       CL=F/cash                    mesyacev s cenoy 269, s 2004-01
+  USD       DX-Y.NYB/cash                mesyacev s cenoy 270, s 2004-01
+  VIX       ^VIX/cash                    mesyacev s cenoy 270, s 2004-01
+  BETA      SPHB/SPLV                    mesyacev s cenoy 182, s 2011-05
+
+==============================================================================
+9. Osnovnaya vetv': P10, peresmotrennye dannye, kovid VKLYUCHEN
+==============================================================================
+
+  vetv': OSNOVNAYA (kovid vklyuchyon)  (konfiguraciya P10, mesyacev 270)
+  para                 gorizont 1 mes. |            gorizont 3 mes. | peresechenie
+                n  dolya   p_Holm   nado |     n  dolya   p_Holm   nado |
+  SIZE        270  0.548   1.0000  0.589 |   268  0.537   1.0000  0.654 | 
+  STYLE       268  0.444   1.0000  0.589 |   266  0.395   1.0000  0.655 | 
+  GEO         270  0.481   1.0000  0.589 |   268  0.481   1.0000  0.654 | 
+  TECHMAT       5  0.600   1.0000 vyrozh |     5  0.800   1.0000 vyrozh | 
+  DISCSTAP      2  0.000   1.0000 vyrozh |     2  0.500   1.0000 vyrozh | 
+  CYCNON        4  0.500   1.0000 vyrozh |     4  0.500   1.0000 vyrozh | 
+  MATFIN        2  1.000   1.0000 vyrozh |     2  1.000   1.0000 vyrozh | 
+  DUR           5  0.600   1.0000 vyrozh |     5  0.400   1.0000 vyrozh | 
+  CRED          4  0.000   1.0000 vyrozh |     4  0.000   1.0000 vyrozh | 
+  GOLD          7  0.857   1.0000 vyrozh |     7  0.857   1.0000 vyrozh | peresech.
+  COMM          7  0.286   1.0000 vyrozh |     7  0.286   1.0000 vyrozh | peresech.
+  OIL           2  1.000   1.0000 vyrozh |     2  1.000   1.0000 vyrozh | peresech.
+  USD           2  0.500   1.0000 vyrozh |     2  0.500   1.0000 vyrozh | peresech.
+  VIX           2  0.000   1.0000 vyrozh |     2  0.500   1.0000 vyrozh | peresech.
+  BETA          5  0.200        -     - |     5  0.400        -     - | vne semeystva
+  PUL h=1: mesyacev 270, nablyudeniy 850, dolya 0.4918, 90% [0.4667 .. 0.5184], p_syroy 0.7069, p_Holm 1.0000
+  PUL h=3: mesyacev 268, nablyudeniy 844, dolya 0.4751, 90% [0.4420 .. 0.5096], p_syroy 0.8830, p_Holm 1.0000
+    razlozhenie tol'ko KVADRANTY h=1: mesyacev 7, nablyudeniy 61, dolya 0.4754, 90% [nan .. nan], p 1.0000, vyrozhden=True
+    razlozhenie tol'ko KVADRANTY h=3: mesyacev 7, nablyudeniy 61, dolya 0.4426, 90% [nan .. nan], p 1.0000, vyrozhden=True
+    razlozhenie tol'ko CENTR h=1: mesyacev 263, nablyudeniy 789, dolya 0.4930, 90% [0.4689 .. 0.5184], p 0.6769, vyrozhden=False
+    razlozhenie tol'ko CENTR h=3: mesyacev 261, nablyudeniy 783, dolya 0.4777, 90% [0.4432 .. 0.5109], p 0.8646, vyrozhden=False
+  par proshlo C1: 0 iz 14
+
+==============================================================================
+10. Vtoraya vetv' kovida: kovid ISKLYUCHYON -- schitaetsya POLNOST'YU
+==============================================================================
+mesyacev bez kovida: 248 (ubrano 22)
+
+  vetv': KOVID ISKLYUCHYON  (konfiguraciya P10, mesyacev 248)
+  para                 gorizont 1 mes. |            gorizont 3 mes. | peresechenie
+                n  dolya   p_Holm   nado |     n  dolya   p_Holm   nado |
+  SIZE        248  0.548   1.0000  0.592 |   246  0.528   1.0000  0.661 | 
+  STYLE       246  0.443   1.0000  0.593 |   244  0.389   1.0000  0.662 | 
+  GEO         248  0.480   1.0000  0.592 |   246  0.476   1.0000  0.661 | 
+  TECHMAT       4  0.750   1.0000 vyrozh |     4  0.750   1.0000 vyrozh | 
+  DISCSTAP      2  0.000   1.0000 vyrozh |     2  0.500   1.0000 vyrozh | 
+  CYCNON        4  0.500   1.0000 vyrozh |     4  0.500   1.0000 vyrozh | 
+  MATFIN        2  1.000   1.0000 vyrozh |     2  1.000   1.0000 vyrozh | 
+  DUR           4  0.500   1.0000 vyrozh |     4  0.500   1.0000 vyrozh | 
+  CRED          4  0.000   1.0000 vyrozh |     4  0.000   1.0000 vyrozh | 
+  GOLD          6  0.833   1.0000 vyrozh |     6  0.833   1.0000 vyrozh | peresech.
+  COMM          6  0.333   1.0000 vyrozh |     6  0.333   1.0000 vyrozh | peresech.
+  OIL           2  1.000   1.0000 vyrozh |     2  1.000   1.0000 vyrozh | peresech.
+  USD           2  0.500   1.0000 vyrozh |     2  0.500   1.0000 vyrozh | peresech.
+  VIX           2  0.000   1.0000 vyrozh |     2  0.500   1.0000 vyrozh | peresech.
+  BETA          4  0.000        -     - |     4  0.250        -     - | vne semeystva
+  PUL h=1: mesyacev 248, nablyudeniy 780, dolya 0.4910, 90% [0.4642 .. 0.5177], p_syroy 0.7223, p_Holm 1.0000
+  PUL h=3: mesyacev 246, nablyudeniy 774, dolya 0.4690, 90% [0.4362 .. 0.5013], p_syroy 0.9444, p_Holm 1.0000
+    razlozhenie tol'ko KVADRANTY h=1: mesyacev 6, nablyudeniy 54, dolya 0.4815, 90% [nan .. nan], p 1.0000, vyrozhden=True
+    razlozhenie tol'ko KVADRANTY h=3: mesyacev 6, nablyudeniy 54, dolya 0.4444, 90% [nan .. nan], p 1.0000, vyrozhden=True
+    razlozhenie tol'ko CENTR h=1: mesyacev 242, nablyudeniy 726, dolya 0.4917, 90% [0.4656 .. 0.5165], p 0.7145, vyrozhden=False
+    razlozhenie tol'ko CENTR h=3: mesyacev 240, nablyudeniy 720, dolya 0.4708, 90% [0.4375 .. 0.5042], p 0.9312, vyrozhden=False
+  par proshlo C1: 0 iz 14
+
+==============================================================================
+11. Ustoychivost' (HYPOTHESIS sec.9)
+==============================================================================
+
+-- 11.1 Konfiguracii: tri okna, golosovanie, bez validatora ------------------
+
+  vetv': konfiguraciya P05  (konfiguraciya P05, mesyacev 270)
+  para                 gorizont 1 mes. |            gorizont 3 mes. | peresechenie
+                n  dolya   p_Holm   nado |     n  dolya   p_Holm   nado |
+  SIZE        270  0.541   1.0000  0.589 |   268  0.522   1.0000  0.654 | 
+  STYLE       267  0.434   1.0000  0.589 |   265  0.408   1.0000  0.655 | 
+  GEO         270  0.504   1.0000  0.589 |   268  0.504   1.0000  0.654 | 
+  TECHMAT       6  0.333   1.0000 vyrozh |     6  0.333   1.0000 vyrozh | 
+  DISCSTAP      3  0.667   1.0000 vyrozh |     3  0.667   1.0000 vyrozh | 
+  CYCNON        5  0.800   1.0000 vyrozh |     5  0.600   1.0000 vyrozh | 
+  MATFIN        2  1.000   1.0000 vyrozh |     2  0.500   1.0000 vyrozh | 
+  DUR           7  0.429   1.0000 vyrozh |     7  0.286   1.0000 vyrozh | 
+  CRED          5  0.200   1.0000 vyrozh |     5  0.200   1.0000 vyrozh | 
+  GOLD          9  0.667   1.0000 vyrozh |     9  0.556   1.0000 vyrozh | peresech.
+  COMM          9  0.667   1.0000 vyrozh |     9  0.667   1.0000 vyrozh | peresech.
+  OIL           2  1.000   1.0000 vyrozh |     2  1.000   1.0000 vyrozh | peresech.
+  USD           3  0.333   1.0000 vyrozh |     3  0.333   1.0000 vyrozh | peresech.
+  VIX           3  0.333   1.0000 vyrozh |     3  0.667   1.0000 vyrozh | peresech.
+  BETA          6  0.333        -     - |     6  0.333        -     - | vne semeystva
+  PUL h=1: mesyacev 270, nablyudeniy 861, dolya 0.4971, 90% [0.4707 .. 0.5242], p_syroy 0.5777, p_Holm 1.0000
+  PUL h=3: mesyacev 268, nablyudeniy 855, dolya 0.4795, 90% [0.4480 .. 0.5127], p_syroy 0.8528, p_Holm 1.0000
+    razlozhenie tol'ko KVADRANTY h=1: mesyacev 9, nablyudeniy 78, dolya 0.5000, 90% [nan .. nan], p 1.0000, vyrozhden=True
+    razlozhenie tol'ko KVADRANTY h=3: mesyacev 9, nablyudeniy 78, dolya 0.4487, 90% [nan .. nan], p 1.0000, vyrozhden=True
+    razlozhenie tol'ko CENTR h=1: mesyacev 261, nablyudeniy 783, dolya 0.4968, 90% [0.4713 .. 0.5223], p 0.5691, vyrozhden=False
+    razlozhenie tol'ko CENTR h=3: mesyacev 259, nablyudeniy 777, dolya 0.4826, 90% [0.4479 .. 0.5174], p 0.8024, vyrozhden=False
+  par proshlo C1: 0 iz 14
+
+  vetv': konfiguraciya P30  (konfiguraciya P30, mesyacev 270)
+  para                 gorizont 1 mes. |            gorizont 3 mes. | peresechenie
+                n  dolya   p_Holm   nado |     n  dolya   p_Holm   nado |
+  SIZE        270  0.556   1.0000  0.589 |   268  0.537   1.0000  0.654 | 
+  STYLE       260  0.431   1.0000  0.590 |   258  0.395   1.0000  0.657 | 
+  GEO         270  0.474   1.0000  0.589 |   268  0.474   1.0000  0.654 | 
+  TECHMAT      13  0.462   1.0000 vyrozh |    13  0.615   1.0000 vyrozh | 
+  DISCSTAP     10  0.500   1.0000 vyrozh |    10  0.600   1.0000 vyrozh | 
+  CYCNON       16  0.312   1.0000 vyrozh |    16  0.500   1.0000 vyrozh | 
+  MATFIN        6  0.167   1.0000 vyrozh |     6  0.333   1.0000 vyrozh | 
+  DUR          19  0.474   1.0000 vyrozh |    19  0.526   1.0000 vyrozh | 
+  CRED         16  0.562   1.0000 vyrozh |    16  0.562   1.0000 vyrozh | 
+  GOLD         23  0.652   1.0000 vyrozh |    23  0.696   1.0000 vyrozh | peresech.
+  COMM         23  0.391   1.0000 vyrozh |    23  0.478   1.0000 vyrozh | peresech.
+  OIL           6  0.500   1.0000 vyrozh |     6  0.667   1.0000 vyrozh | peresech.
+  USD          10  0.400   1.0000 vyrozh |    10  0.400   1.0000 vyrozh | peresech.
+  VIX          10  0.200   1.0000 vyrozh |    10  0.400   1.0000 vyrozh | peresech.
+  BETA         16  0.375        -     - |    16  0.562        -     - | vne semeystva
+  PUL h=1: mesyacev 270, nablyudeniy 952, dolya 0.4811, 90% [0.4547 .. 0.5078], p_syroy 0.8842, p_Holm 1.0000
+  PUL h=3: mesyacev 268, nablyudeniy 946, dolya 0.4810, 90% [0.4461 .. 0.5159], p_syroy 0.8144, p_Holm 1.0000
+    razlozhenie tol'ko KVADRANTY h=1: mesyacev 23, nablyudeniy 211, dolya 0.4502, 90% [nan .. nan], p 1.0000, vyrozhden=True
+    razlozhenie tol'ko KVADRANTY h=3: mesyacev 23, nablyudeniy 211, dolya 0.5071, 90% [nan .. nan], p 1.0000, vyrozhden=True
+    razlozhenie tol'ko CENTR h=1: mesyacev 247, nablyudeniy 741, dolya 0.4899, 90% [0.4642 .. 0.5155], p 0.7377, vyrozhden=False
+    razlozhenie tol'ko CENTR h=3: mesyacev 245, nablyudeniy 735, dolya 0.4735, 90% [0.4395 .. 0.5061], p 0.8980, vyrozhden=False
+  par proshlo C1: 0 iz 14
+
+  vetv': konfiguraciya VOTE  (konfiguraciya VOTE, mesyacev 270)
+  para                 gorizont 1 mes. |            gorizont 3 mes. | peresechenie
+                n  dolya   p_Holm   nado |     n  dolya   p_Holm   nado |
+  SIZE        270  0.537   1.0000  0.589 |   268  0.526   1.0000  0.654 | 
+  STYLE       267  0.434   1.0000  0.589 |   265  0.400   1.0000  0.655 | 
+  GEO         270  0.470   1.0000  0.589 |   268  0.485   1.0000  0.654 | 
+  TECHMAT      10  0.500   1.0000 vyrozh |    10  0.700   1.0000 vyrozh | 
+  DISCSTAP      3  0.000   1.0000 vyrozh |     3  0.333   1.0000 vyrozh | 
+  CYCNON        8  0.375   1.0000 vyrozh |     8  0.500   1.0000 vyrozh | 
+  MATFIN        5  0.400   1.0000 vyrozh |     5  0.600   1.0000 vyrozh | 
+  DUR          11  0.545   1.0000 vyrozh |    11  0.545   1.0000 vyrozh | 
+  CRED          8  0.250   1.0000 vyrozh |     8  0.250   1.0000 vyrozh | 
+  GOLD         12  0.667   1.0000 vyrozh |    13  0.692   1.0000 vyrozh | peresech.
+  COMM         13  0.385   1.0000 vyrozh |    13  0.385   1.0000 vyrozh | peresech.
+  OIL           4  0.750   1.0000 vyrozh |     5  0.800   1.0000 vyrozh | peresech.
+  USD           3  0.000   1.0000 vyrozh |     3  0.000   1.0000 vyrozh | peresech.
+  VIX           3  0.000   1.0000 vyrozh |     3  0.333   1.0000 vyrozh | peresech.
+  BETA          9  0.222        -     - |     9  0.444        -     - | vne semeystva
+  PUL h=1: mesyacev 270, nablyudeniy 887, dolya 0.4758, 90% [0.4480 .. 0.5035], p_syroy 0.9228, p_Holm 1.0000
+  PUL h=3: mesyacev 268, nablyudeniy 883, dolya 0.4745, 90% [0.4401 .. 0.5105], p_syroy 0.8802, p_Holm 1.0000
+    razlozhenie tol'ko KVADRANTY h=1: mesyacev 13, nablyudeniy 116, dolya 0.3879, 90% [nan .. nan], p 1.0000, vyrozhden=True
+    razlozhenie tol'ko KVADRANTY h=3: mesyacev 13, nablyudeniy 118, dolya 0.4576, 90% [nan .. nan], p 1.0000, vyrozhden=True
+    razlozhenie tol'ko CENTR h=1: mesyacev 257, nablyudeniy 771, dolya 0.4890, 90% [0.4643 .. 0.5149], p 0.7612, vyrozhden=False
+    razlozhenie tol'ko CENTR h=3: mesyacev 255, nablyudeniy 765, dolya 0.4771, 90% [0.4418 .. 0.5124], p 0.8592, vyrozhden=False
+  par proshlo C1: 0 iz 14
+
+  vetv': konfiguraciya NOVAL  (konfiguraciya NOVAL, mesyacev 270)
+  para                 gorizont 1 mes. |            gorizont 3 mes. | peresechenie
+                n  dolya   p_Holm   nado |     n  dolya   p_Holm   nado |
+  SIZE        270  0.537   1.0000  0.589 |   268  0.526   1.0000  0.654 | 
+  STYLE       248  0.435   1.0000  0.592 |   246  0.407   1.0000  0.661 | 
+  GEO         270  0.478   1.0000  0.589 |   268  0.500   1.0000  0.654 | 
+  TECHMAT      15  0.400   1.0000 vyrozh |    15  0.533   1.0000 vyrozh | 
+  DISCSTAP     22  0.591   1.0000 vyrozh |    22  0.773   1.0000 vyrozh | 
+  CYCNON       28  0.536   1.0000  0.775 |    28  0.536   1.0000 vyrozh | 
+  MATFIN        6  0.167   1.0000 vyrozh |     6  0.500   1.0000 vyrozh | 
+  DUR          20  0.550   1.0000 vyrozh |    20  0.450   1.0000 vyrozh | 
+  CRED         28  0.500   1.0000  0.775 |    28  0.500   1.0000 vyrozh | 
+  GOLD         37  0.568   1.0000  0.739 |    37  0.459   1.0000 vyrozh | peresech.
+  COMM         37  0.514   1.0000  0.739 |    37  0.568   1.0000 vyrozh | peresech.
+  OIL           6  0.500   1.0000 vyrozh |     6  0.833   1.0000 vyrozh | peresech.
+  USD          22  0.727   1.0000 vyrozh |    22  0.500   1.0000 vyrozh | peresech.
+  VIX          22  0.455   1.0000 vyrozh |    22  0.455   1.0000 vyrozh | peresech.
+  BETA         28  0.536        -     - |    28  0.607        -     - | vne semeystva
+  PUL h=1: mesyacev 270, nablyudeniy 1031, dolya 0.4956, 90% [0.4625 .. 0.5289], p_syroy 0.5913, p_Holm 1.0000
+  PUL h=3: mesyacev 268, nablyudeniy 1025, dolya 0.4927, 90% [0.4611 .. 0.5239], p_syroy 0.6589, p_Holm 1.0000
+    razlozhenie tol'ko KVADRANTY h=1: mesyacev 37, nablyudeniy 332, dolya 0.5090, 90% [0.4363 .. 0.5854], p 0.4257, vyrozhden=False
+    razlozhenie tol'ko KVADRANTY h=3: mesyacev 37, nablyudeniy 332, dolya 0.5271, 90% [nan .. nan], p 1.0000, vyrozhden=True
+    razlozhenie tol'ko CENTR h=1: mesyacev 233, nablyudeniy 699, dolya 0.4893, 90% [0.4635 .. 0.5165], p 0.7423, vyrozhden=False
+    razlozhenie tol'ko CENTR h=3: mesyacev 231, nablyudeniy 693, dolya 0.4762, 90% [0.4416 .. 0.5123], p 0.8638, vyrozhden=False
+  par proshlo C1: 0 iz 14
+
+-- 11.1-bis Dva chteniya theta POSLE raschyota (sec.11 zapis' 3) -------------
+  Trebovaniya A i B sec.1.4.7 nesovmestimy (sm. sec.6 i sec.13-bis).
+  Pred-registrirovannyy vybor -- B (konfiguraciya P10, vyshe).
+  Zdes' -- vtoroe chtenie: trebovanie A rovno, q=0.20. Verdikt po nemu
+  NE vynositsya; ono nuzhno, chtoby kvadrantnye predpisaniya voobshche
+  poluchili vyborku, i chtoby vyvod ne opiralsya na odnu tol'ko nehvatku.
+  A20       sostoyaniya: {'CENTER': 248, 'I': 6, 'II': 3, 'III': 5, 'IV': 8}
+
+  vetv': POSLE RASCHYOTA A20  (konfiguraciya A20, mesyacev 270)
+  para                 gorizont 1 mes. |            gorizont 3 mes. | peresechenie
+                n  dolya   p_Holm   nado |     n  dolya   p_Holm   nado |
+  SIZE        270  0.530   1.0000  0.589 |   268  0.526   1.0000  0.654 | 
+  STYLE       262  0.431   1.0000  0.590 |   260  0.400   1.0000  0.656 | 
+  GEO         270  0.463   1.0000  0.589 |   268  0.470   1.0000  0.654 | 
+  TECHMAT      14  0.357   1.0000 vyrozh |    14  0.571   1.0000 vyrozh | 
+  DISCSTAP      8  0.375   1.0000 vyrozh |     8  0.250   1.0000 vyrozh | 
+  CYCNON       16  0.312   1.0000 vyrozh |    16  0.562   1.0000 vyrozh | 
+  MATFIN        8  0.250   1.0000 vyrozh |     8  0.500   1.0000 vyrozh | 
+  DUR          19  0.579   1.0000 vyrozh |    19  0.421   1.0000 vyrozh | 
+  CRED         16  0.375   1.0000 vyrozh |    16  0.375   1.0000 vyrozh | 
+  GOLD         21  0.619   1.0000 vyrozh |    22  0.591   1.0000 vyrozh | peresech.
+  COMM         22  0.455   1.0000 vyrozh |    22  0.455   1.0000 vyrozh | peresech.
+  OIL           7  0.714   1.0000 vyrozh |     8  0.625   1.0000 vyrozh | peresech.
+  USD           8  0.250   1.0000 vyrozh |     8  0.375   1.0000 vyrozh | peresech.
+  VIX           8  0.125   1.0000 vyrozh |     8  0.250   1.0000 vyrozh | peresech.
+  BETA         16  0.375        -     - |    16  0.375        -     - | vne semeystva
+  PUL h=1: mesyacev 270, nablyudeniy 949, dolya 0.4679, 90% [0.4414 .. 0.4958], p_syroy 0.9748, p_Holm 1.0000
+  PUL h=3: mesyacev 268, nablyudeniy 945, dolya 0.4667, 90% [0.4334 .. 0.5011], p_syroy 0.9442, p_Holm 1.0000
+    razlozhenie tol'ko KVADRANTY h=1: mesyacev 22, nablyudeniy 205, dolya 0.4000, 90% [nan .. nan], p 1.0000, vyrozhden=True
+    razlozhenie tol'ko KVADRANTY h=3: mesyacev 22, nablyudeniy 207, dolya 0.4203, 90% [nan .. nan], p 1.0000, vyrozhden=True
+    razlozhenie tol'ko CENTR h=1: mesyacev 248, nablyudeniy 744, dolya 0.4866, 90% [0.4610 .. 0.5121], p 0.8088, vyrozhden=False
+    razlozhenie tol'ko CENTR h=3: mesyacev 246, nablyudeniy 738, dolya 0.4797, 90% [0.4444 .. 0.5149], p 0.8396, vyrozhden=False
+  par proshlo C1: 0 iz 14
+  A20NOVAL  sostoyaniya: {'CENTER': 94, 'I': 37, 'II': 69, 'III': 26, 'IV': 44}
+
+  vetv': POSLE RASCHYOTA A20NOVAL  (konfiguraciya A20NOVAL, mesyacev 270)
+  para                 gorizont 1 mes. |            gorizont 3 mes. | peresechenie
+                n  dolya   p_Holm   nado |     n  dolya   p_Holm   nado |
+  SIZE        270  0.537   1.0000  0.589 |   268  0.493   1.0000  0.654 | 
+  STYLE       175  0.451   1.0000  0.610 |   175  0.411   1.0000  0.691 | 
+  GEO         270  0.485   1.0000  0.589 |   268  0.474   1.0000  0.654 | 
+  TECHMAT      81  0.543   1.0000  0.662 |    81  0.593   1.0000  0.780 | 
+  DISCSTAP     95  0.537   1.0000  0.649 |    93  0.570   1.0000  0.762 | 
+  CYCNON      139  0.496   1.0000  0.624 |   137  0.474   1.0000  0.716 | 
+  MATFIN       44  0.432   1.0000  0.720 |    44  0.500   1.0000 vyrozh | 
+  DUR         107  0.402   1.0000  0.641 |   106  0.387   1.0000  0.745 | 
+  CRED        139  0.504   1.0000  0.624 |   137  0.489   1.0000  0.716 | 
+  GOLD        174  0.454   1.0000  0.610 |   173  0.462   1.0000  0.692 | peresech.
+  COMM        176  0.631   0.0224  0.610 |   174  0.557   1.0000  0.691 | peresech.
+  OIL          42  0.643   0.9178  0.725 |    43  0.628   1.0000 vyrozh | peresech.
+  USD          95  0.474   1.0000  0.649 |    93  0.398   1.0000  0.762 | peresech.
+  VIX          95  0.516   1.0000  0.649 |    93  0.473   1.0000  0.762 | peresech.
+  BETA        121  0.529        -     - |   119  0.529        -     - | vne semeystva
+  PUL h=1: mesyacev 270, nablyudeniy 1902, dolya 0.5058, 90% [0.4785 .. 0.5326], p_syroy 0.3763, p_Holm 0.7526
+  PUL h=3: mesyacev 268, nablyudeniy 1885, dolya 0.4838, 90% [0.4478 .. 0.5187], p_syroy 0.7736, p_Holm 0.7736
+    razlozhenie tol'ko KVADRANTY h=1: mesyacev 176, nablyudeniy 1620, dolya 0.5086, 90% [0.4788 .. 0.5397], p 0.3267, vyrozhden=False
+    razlozhenie tol'ko KVADRANTY h=3: mesyacev 174, nablyudeniy 1603, dolya 0.4847, 90% [0.4412 .. 0.5277], p 0.7249, vyrozhden=False
+    razlozhenie tol'ko CENTR h=1: mesyacev 94, nablyudeniy 282, dolya 0.4894, 90% [0.4468 .. 0.5319], p 0.6653, vyrozhden=False
+    razlozhenie tol'ko CENTR h=3: mesyacev 94, nablyudeniy 282, dolya 0.4787, 90% [0.4291 .. 0.5284], p 0.7668, vyrozhden=False
+  par proshlo C1: 1 iz 14
+
+-- 11.2 Dva razbieniya vyborki -----------------------------------------------
+  half_early    mesyacev 135 | h1 dolya 0.4893 (n_m 135, p 0.6779) | h3 dolya 0.4608 (n_m 135, p 0.9058)
+  half_late     mesyacev 135 | h1 dolya 0.4942 (n_m 135, p 0.6165) | h3 dolya 0.4894 (n_m 133, p 0.6295)
+  pre_2009_12   mesyacev  72 | h1 dolya 0.4722 (n_m  72, p 0.8144) | h3 dolya 0.4583 (n_m  72, p 0.8506)
+  post_2009_12  mesyacev 198 | h1 dolya 0.4984 (n_m 198, p 0.5659) | h3 dolya 0.4809 (n_m 196, p 0.7842)
+  oos_2015      mesyacev 138 | h1 dolya 0.4932 (n_m 138, p 0.6629) | h3 dolya 0.4838 (n_m 136, p 0.7245)
+  calib_only    mesyacev 132 | h1 dolya 0.4903 (n_m 132, p 0.6797) | h3 dolya 0.4660 (n_m 132, p 0.8772)
+
+-- 11.3 Razrez: recessii protiv rasshireniy (HYPOTHESIS sec.7.4) -------------
+  recession  mesyacev  20 | h1 dolya 0.4531 n_m= 20 90% [nan .. nan] vyrozhden=True | h3 dolya 0.3750 n_m= 20
+  expansion  mesyacev 250 | h1 dolya 0.4949 n_m=250 90% [0.467 .. 0.522] vyrozhden=False | h3 dolya 0.4833 n_m=248
+  Recessionnaya polovina ob'yavlena OPISATEL'NOY do raschyota:
+  20 recessionnyh mesyacev < 24 (predohranitel' n/L>=8 pri L=3),
+  znachimost' po ney nedostizhima ni pri kakom ishode.
+
+==============================================================================
+12. Vetv' VINTAGE-PARTIAL (HYPOTHESIS sec.2.5)
+==============================================================================
+  PERMIT   vintazhey  619, 1999-08-17 .. 2026-07-24
+  IC4WSA   vintazhey  891, 2009-05-28 .. 2026-07-30
+  NOF      vintazhey  144, 2015-04-16 .. 2026-07-16
+  BEZ vintazhey voobshche: NAHB (0.13), Richmond i Kansas-City (paneli kompozita) --
+  os' MACRO nevosproizvodima v real'nom vremeni ni v odin mesyac okna.
+    ... 2004-01 (1/270, 0s)
+    ... 2007-05 (41/270, 0s)
+    ... 2010-09 (81/270, 0s)
+    ... 2014-01 (121/270, 0s)
+    ... 2017-05 (161/270, 1s)
+    ... 2020-09 (201/270, 1s)
+    ... 2024-01 (241/270, 1s)
+  mesyacev s vintazhem PERMIT 270, IC4WSA 206, NOF 135
+  sostoyanie izmenilos' v 1 mesyacah iz 270
+
+  vetv': VINTAGE-PARTIAL  (konfiguraciya P10, mesyacev 270)
+  para                 gorizont 1 mes. |            gorizont 3 mes. | peresechenie
+                n  dolya   p_Holm   nado |     n  dolya   p_Holm   nado |
+  SIZE        270  0.544   1.0000  0.589 |   268  0.534   1.0000  0.654 | 
+  STYLE       268  0.444   1.0000  0.589 |   266  0.395   1.0000  0.655 | 
+  GEO         270  0.478   1.0000  0.589 |   268  0.478   1.0000  0.654 | 
+  TECHMAT       6  0.500   1.0000 vyrozh |     6  0.667   1.0000 vyrozh | 
+  DISCSTAP      2  0.000   1.0000 vyrozh |     2  0.500   1.0000 vyrozh | 
+  CYCNON        5  0.600   1.0000 vyrozh |     5  0.400   1.0000 vyrozh | 
+  MATFIN        3  0.667   1.0000 vyrozh |     3  0.667   1.0000 vyrozh | 
+  DUR           6  0.667   1.0000 vyrozh |     6  0.500   1.0000 vyrozh | 
+  CRED          5  0.200   1.0000 vyrozh |     5  0.200   1.0000 vyrozh | 
+  GOLD          8  0.875   1.0000 vyrozh |     8  0.750   1.0000 vyrozh | peresech.
+  COMM          8  0.250   1.0000 vyrozh |     8  0.250   1.0000 vyrozh | peresech.
+  OIL           3  1.000   1.0000 vyrozh |     3  0.667   1.0000 vyrozh | peresech.
+  USD           2  0.500   1.0000 vyrozh |     2  0.500   1.0000 vyrozh | peresech.
+  VIX           2  0.000   1.0000 vyrozh |     2  0.500   1.0000 vyrozh | peresech.
+  BETA          6  0.333        -     - |     6  0.500        -     - | vne semeystva
+  PUL h=1: mesyacev 270, nablyudeniy 858, dolya 0.4907, 90% [0.4657 .. 0.5173], p_syroy 0.7339, p_Holm 1.0000
+  PUL h=3: mesyacev 268, nablyudeniy 852, dolya 0.4707, 90% [0.4371 .. 0.5059], p_syroy 0.9198, p_Holm 1.0000
+    razlozhenie tol'ko KVADRANTY h=1: mesyacev 8, nablyudeniy 72, dolya 0.4722, 90% [nan .. nan], p 1.0000, vyrozhden=True
+    razlozhenie tol'ko KVADRANTY h=3: mesyacev 8, nablyudeniy 72, dolya 0.4028, 90% [nan .. nan], p 1.0000, vyrozhden=True
+    razlozhenie tol'ko CENTR h=1: mesyacev 262, nablyudeniy 786, dolya 0.4924, 90% [0.4669 .. 0.5178], p 0.7081, vyrozhden=False
+    razlozhenie tol'ko CENTR h=3: mesyacev 260, nablyudeniy 780, dolya 0.4769, 90% [0.4435 .. 0.5115], p 0.8768, vyrozhden=False
+  par proshlo C1: 0 iz 14
+
+==============================================================================
+13. Kriterii (HYPOTHESIS sec.7.5)
+==============================================================================
+  C1 (>=8 par iz 14)                         NE VYPOLNEN   (proshlo 0)
+  C2 (pul >0.55, Holm<0.05, oba gorizonta)   NE VYPOLNEN   (h1 0.4918 p=1.0000; h3 0.4751 p=1.0000)
+  C3 (vne vyborki 2015+)                     NE VYPOLNEN   (h1 0.4932; h3 0.4838)
+  C4 (ustoychivost')                         NE VYPOLNEN   (narusheno yacheek 8 iz 8)
+  C5 (vne recessiy)                          NE VYPOLNEN   (dolya 0.4949, p 0.6373, n_m 250)
+
+  yacheyki C4:
+    cfg P05 h1             NET
+    cfg P05 h3             NET
+    cfg P30 h1             NET
+    cfg P30 h3             NET
+    split half_early h1    NET
+    split half_late h1     NET
+    split pre_2009_12 h1   NET
+    split post_2009_12 h1  NET
+
+==============================================================================
+VERDIKT: OPROVERGNUTO
+==============================================================================
+  C1=False C2=False C3=False C4=False C5=False
+  dolya ni na odnom gorizonte ne nizhe 0.5 znachimo
+
+==============================================================================
+13-bis. Sovmestimy li trebovaniya A i B sec.1.4.7
+==============================================================================
+  A rovno (q=0.20):  Centr 88.9% pri obeshchannyh 20%; spell 16.5 dn. pri trebuemyh 30
+  naimen'shiy q, udovletvoryayushchiy B: 0.42 -> Centr 94.4%
+  Centr pri theta = 0 (porogi ne gasyat nichego, rabotaet odin
+  predohranitel' formoy krivoy): 83.0%
+  -> dolya vremeni v Centre poryadka pyatoy chasti dostizhima pri kakom-
+     libo theta: NET
+
+result.json zapisan; vsego 80.2 s
