@@ -1047,44 +1047,18 @@ LADDER = {
              "tau_REC": [ci_rec.get("tau_lo90"), ci_rec.get("tau_hi90")]},
 }
 say("")
-say("Lestnica, kotoraya uhodit v Z05:")
+say("Pred-registrirovannaya lestnica (sec.4.3):")
 for lo, hi, L in steps:
     lo_s = f"{lo:+.4f}" if lo is not None else "  -inf"
     hi_s = f"{hi:+.4f}" if hi is not None else "  +inf"
     say(f"  {lo_s} < c <= {hi_s}   L = {L:+.1f}")
 
-RESULT["ladder"] = LADDER
+# --- Planka identificiruemosti -- schitaetsya DO pometki braka --------------
+# Ran'she eta tablica stoyala nizhe, ryadom s postroeniem prakticheskoy
+# lestnicy, i pometka braka poluchalas' POBOChNYM EFFEKTOM togo, chto zamena
+# nashlas'. Vopros "goden li porog" ot voprosa "est' li chem ego zamenit'"
+# ne zavisit, poetomu tablica pereehala syuda.
 
-# Raspredelenie mesyacev po stupenyam.
-#
-# Ranshe zdes' stoyalo C.LADDER_V1.update(LADDER) -- t.e. progon molcha
-# zapisyval v modul'nuyu konstantu PRED-REGISTRIROVANNUYU lestnicu po tau_GDP,
-# tu samuyu, kotoruyu neskol'kimi desyatkami strok nizhe sam zhe i brakuet.
-# Ubrano: lestnicu vezde peredayom yavnym argumentom, a v C.LADDER_V1 lezhit
-# POSTAVLYAEMAYA, i trogat' eyo iz raschyota nel'zya.
-counts: dict[float, int] = {}
-for d in main_s.dates:
-    # allow_rejected=True yavno: eto raspredelenie mesyacev po stupenyam
-    # PRED-REGISTRIROVANNOY lestnicy, kotoruyu etot zhe progon neskol'kimi
-    # desyatkami strok nizhe i brakuet. Chislo nuzhno otchyotu (i ono zhe idyot
-    # v rejected_why), no prosit' ego nado gromko. Segodnya pometka rejected
-    # stavitsya POZZHE etoy stroki, tak chto flag -- na sluchay perestanovki
-    # porjadka, a ne dekoraciya.
-    L = C.level_step(CMAIN[d], LADDER, allow_rejected=True)
-    counts[L] = counts.get(L, 0) + 1
-say("")
-say(f"Raspredelenie {len(main_s.dates)} mesyacev po stupenyam:")
-for L in sorted(counts, reverse=True):
-    say(f"  L={L:+.1f}: {counts[L]:3d} mes. ({counts[L] / len(main_s.dates) * 100:.1f}%)")
-RESULT["ladder"]["month_counts"] = {str(k): v for k, v in counts.items()}
-
-# --- Prakticheskaya lestnica: [RESHENIE POSLE RASCHYOTA] --------------------
-# Pred-registrirovannyy zapasnoy variant rezhet po tau_GDP. Esli imenno tau_GDP
-# okazalsya neidentificiruem (shirina intervala bol'she 1.0 sigma_c), stavit'
-# stupen' po nemu znachit postavit' v Z05 to, chto sam zhe progon i zabrakoval.
-# Poetomu ryadom stroitsya lestnica TOL'KO na teh porogah, kotorye planku
-# identificiruemosti proshli. Eto reshenie prinyato POSLE raschyota, verdikta
-# ono ne kasaetsya i pomecheno kak takovoe.
 
 def ident(name: str, ci: dict[str, Any]) -> tuple[bool, float]:
     if ci.get("status") != "ok":
@@ -1104,6 +1078,107 @@ say("Planka identificiruemosti (shirina 90% intervala < 1.0 sigma_c = "
 for k, (val, ok, w) in ident_tbl.items():
     say(f"  {k}: tau={val:+.4f} shirina={w:.4f} ({w / SIGMA_C:.2f} sigma_c) -> "
         f"{'identificiruem' if ok else 'NE identificiruem'}")
+
+# --- Zabrakovana li pred-registrirovannaya lestnica SAMA PO SEBE ------------
+# Predikat -- identificiruemost' teh porogov, po kotorym ona rezhet, i tol'ko
+# ona.
+#
+# Do 2026-08-02 pometka stoyala pod `if RESULT["ladder_practical"]`, to est'
+# zavisela ot togo, NASHLAS' LI ZAMENA. V mire, gde planku ne prohodit ni odin
+# porog, prakticheskoy lestnicy net vovse -- i zabrakovannaya popadala v
+# result.json BEZ pometki, level_step na ney schital molcha, i ona zhe uhodila
+# v postavku. Segodnyashnee sostoyanie (identificiruem tol'ko tau_REC) spasalo
+# ot etogo sluchayno, a ne po postroeniyu. Otsutstvie godnoy zameny -- dovod za
+# bolee GROMKIY otkaz, a ne za bolee tihiy.
+#
+# Porogi beryom iz samih stupeney, a ne iz ladder_kind: tak predikat ostayotsya
+# vernym i dlya chetyryohstupenchatoy vetki (C6 PROYDEN), gde rezhut vse tri.
+_tau_by_name = {"tau_MFG": tau_MFG, "tau_GDP": tau_GDP, "tau_REC": tau_REC}
+_step_bounds = {b for lo, hi, _ in steps for b in (lo, hi) if b is not None}
+LADDER_TAU_USED = [n for n, v in _tau_by_name.items() if v in _step_bounds]
+LADDER_BAD_TAU = [n for n in LADDER_TAU_USED if not ident_tbl[n][1]]
+LADDER_IS_REJECTED = bool(LADDER_BAD_TAU)
+
+RESULT["ladder"] = LADDER
+if LADDER_IS_REJECTED:
+    # Pometka stavitsya DO pervogo chisla, poschitannogo po etoy lestnice.
+    say("")
+    say(f"Pred-registrirovannaya lestnica ZABRAKOVANA: iz porogov, po kotorym "
+        f"ona rezhet ({', '.join(LADDER_TAU_USED)}), planku ne proshli "
+        f"{', '.join(LADDER_BAD_TAU)}.")
+    RESULT["ladder"]["rejected"] = True
+
+# Raspredelenie mesyacev po stupenyam.
+#
+# Ranshe zdes' stoyalo C.LADDER_V1.update(LADDER) -- t.e. progon molcha
+# zapisyval v modul'nuyu konstantu PRED-REGISTRIROVANNUYU lestnicu po tau_GDP,
+# tu samuyu, kotoruyu neskol'kimi desyatkami strok nizhe sam zhe i brakuet.
+# Ubrano: lestnicu vezde peredayom yavnym argumentom, a v C.LADDER_V1 lezhit
+# POSTAVLYAEMAYA, i trogat' eyo iz raschyota nel'zya.
+counts: dict[float, int] = {}
+for d in main_s.dates:
+    # allow_rejected=True yavno: eto raspredelenie mesyacev po stupenyam
+    # PRED-REGISTRIROVANNOY lestnicy, kotoruyu etot zhe progon uzhe zabrakoval
+    # neskol'kimi strokami vyshe. Chislo nuzhno otchyotu (i ono zhe idyot v
+    # rejected_why), no prosit' ego nado gromko: bez etogo flaga progon upal by
+    # zdes' na sobstvennoy zashchite -- i eto pravil'no.
+    L = C.level_step(CMAIN[d], LADDER, allow_rejected=True)
+    counts[L] = counts.get(L, 0) + 1
+say("")
+say(f"Raspredelenie {len(main_s.dates)} mesyacev po stupenyam:")
+for L in sorted(counts, reverse=True):
+    say(f"  L={L:+.1f}: {counts[L]:3d} mes. ({counts[L] / len(main_s.dates) * 100:.1f}%)")
+RESULT["ladder"]["month_counts"] = {str(k): v for k, v in counts.items()}
+
+if LADDER_IS_REJECTED:
+    # Prichina brakovki -- ryadom s pometkoy, a ne cherez sotnyu strok, i tozhe
+    # bez oglyadki na to, nashlas' li zamena.
+    #
+    # Sobiraetsya iz chisel ETOGO progona, a ne kopiruetsya tekstom: inache
+    # posle pereschyota na svezhih dannyh v fayle ostalis' by chuzhie shirina i
+    # raspredelenie.
+    _n_all = sum(counts.values())
+    _ord = sorted(counts, reverse=True)
+    _split = " / ".join(str(counts[L]) for L in _ord)
+    _split_pct = " / ".join(f"{counts[L] / _n_all * 100:.1f}%" for L in _ord)
+    if len(LADDER_BAD_TAU) == 1:
+        _bad = LADDER_BAD_TAU[0]
+        _why_head = (f"{_bad} ne identificiruem: shirina 90% intervala "
+                     f"{ident_tbl[_bad][2] / SIGMA_C:.2f} sigma_c protiv "
+                     f"trebuemyh <1.0; stupen' po nemu delit istoriyu ")
+    else:
+        _why_head = (", ".join(f"{n} ({ident_tbl[n][2] / SIGMA_C:.2f} sigma_c)"
+                               for n in LADDER_BAD_TAU)
+                     + " ne identificiruemy pri trebuemoy shirine <1.0 sigma_c;"
+                       " stupeni po nim delyat istoriyu ")
+    RESULT["ladder"]["rejected_why"] = f"{_why_head}{_split} ({_split_pct})"
+
+    # Sverka s konstantoy: pometka obyazana byt' odna i ta zhe v tryoh mestah
+    # (composite.py, composite-passport.json, result.json). Rashozhdenie tut --
+    # eto opyat' dva istochnika pravdy, s kotoryh vsyo i nachalos'.
+    _const_why = C.LADDER_PREREG_REJECTED_TAU_GDP["rejected_why"]
+    if RESULT["ladder"]["rejected_why"] != _const_why:
+        say("")
+        say("!!! VNIMANIE: prichina brakovki, poschitannaya progonom, razoshlas' s")
+        say("!!! composite.LADDER_PREREG_REJECTED_TAU_GDP:")
+        say(f"!!!   progon:    {RESULT['ladder']['rejected_why']}")
+        say(f"!!!   konstanta: {_const_why}")
+        say("!!! Normal'no posle pereschyota na svezhih dannyh, no konstantu v")
+        say("!!! composite.py nado obnovit' RUKAMI.")
+    say("")
+    say("V result.json klyuch 'ladder' pomechen rejected=true; postavlyaemaya --"
+        " klyuch 'ladder_practical'.")
+    say(f"  rejected_why: {RESULT['ladder']['rejected_why']}")
+    say("  s etogo momenta level_step / ladder_contribution na ney PADAYUT "
+        "(composite.RejectedLadder), poka ne poprosit' allow_rejected=True.")
+
+# --- Prakticheskaya lestnica: [RESHENIE POSLE RASCHYOTA] --------------------
+# Pred-registrirovannyy zapasnoy variant rezhet po tau_GDP. Esli imenno tau_GDP
+# okazalsya neidentificiruem (shirina intervala bol'she 1.0 sigma_c), stavit'
+# stupen' po nemu znachit postavit' v Z05 to, chto sam zhe progon i zabrakoval.
+# Poetomu ryadom stroitsya lestnica TOL'KO na teh porogah, kotorye planku
+# identificiruemosti proshli. Eto reshenie prinyato POSLE raschyota, verdikta
+# ono ne kasaetsya i pomecheno kak takovoe.
 
 keep = sorted((v for v, ok, _ in ident_tbl.values() if ok))
 if keep:
@@ -1144,60 +1219,38 @@ else:
 # Odno mesto, gde eto reshaetsya, i ono zhe idyot v composite.csv i v pasport.
 # Do 2026-08-01 v artefakty popadala LADDER (po tau_GDP) -- ta, kotoruyu progon
 # zabrakoval; rashozhdenie s postavlyaemoy sostavlyalo 110 mesyacev iz 390.
-LADDER_SHIP = RESULT["ladder_practical"] or LADDER
-LADDER_REJECTED = LADDER if RESULT["ladder_practical"] else None
+#
+# Tri ishoda, a ne dva. Zabrakovannaya ne uhodit v postavku DAZHE za neimeniem
+# luchshego: `RESULT["ladder_practical"] or LADDER` postavil by imenno eyo
+# ("zameny net -- voz'myom brak"), i eto tot zhe tihiy otkaz, ot kotorogo zdes'
+# zashchita. Net godnoy lestnicy -- znachit net lestnicy, i skazano ob etom
+# gromko.
+LADDER_REJECTED = LADDER if LADDER_IS_REJECTED else None
+if RESULT["ladder_practical"]:
+    LADDER_SHIP = RESULT["ladder_practical"]
+elif LADDER_IS_REJECTED:
+    LADDER_SHIP = None
+else:
+    LADDER_SHIP = LADDER
 say("")
-say(f"V POSTAVKU uhodit lestnica {LADDER_SHIP['version']} "
-    f"({LADDER_SHIP['kind']}).")
+if LADDER_SHIP is None:
+    say("V POSTAVKU NE UHODIT NICHEGO: planku identificiruemosti ne proshyol ni")
+    say("odin porog, a pred-registrirovannaya lestnica zabrakovana. Z05 ostayotsya")
+    say("bez lestnicy L -- eto chestnyy otkaz, a ne lestnica po zabrakovannomu")
+    say("porogu. composite.csv i pasport etot progon NE perepisyvaet.")
+else:
+    say(f"V POSTAVKU uhodit lestnica {LADDER_SHIP['version']} "
+        f"({LADDER_SHIP['kind']}).")
 if LADDER_REJECTED:
-    say(f"Zabrakovannaya {LADDER_REJECTED['version']} (po tau_GDP) sohranyaetsya "
-        f"otdel'nym klyuchom 'ladder_prereg_rejected_tau_GDP' -- radi "
-        f"vosproizvodimosti, a ne radi primeneniya.")
-
-    # Pometka braka -- V SAMIH DANNYH, a ne v dogovoryonnosti.
-    #
-    # Do 2026-08-02 pometka stoyala tol'ko v composite.py (konstanta
-    # LADDER_PREREG_REJECTED_TAU_GDP) i v pasporte, a v result.json -> 'ladder'
-    # eyo ne bylo VOVSE. Klyuch s samym ochevidnym imenem nyos zabrakovannuyu
-    # lestnicu bez edinogo priznaka braka: vyzov
-    # ladder_contribution(s, result['ladder']) otrabatyval molcha i otdaval
-    # vklad po porogu tau_GDP. Sleduyushchaya zadacha (Z05) beryot lestnicu
-    # imenno iz artefaktov Z06 -- znachit pometka obyazana lezhat' v artefakte.
-    #
-    # Prichina sobiraetsya iz chisel ETOGO progona, a ne kopiruetsya tekstom:
-    # inache posle pereschyota na svezhih dannyh v fayle ostalis' by chuzhie
-    # shirina i raspredelenie.
-    _w_gdp = ident_tbl["tau_GDP"][2]
-    _n_all = sum(counts.values())
-    _hi = counts.get(1.0, 0)
-    _lo = counts.get(-1.0, 0)
-    RESULT["ladder"]["rejected"] = True
-    RESULT["ladder"]["rejected_why"] = (
-        f"tau_GDP ne identificiruem: shirina 90% intervala "
-        f"{_w_gdp / SIGMA_C:.2f} sigma_c protiv trebuemyh <1.0; stupen' po "
-        f"nemu delit istoriyu {_hi} / {_lo} "
-        f"({_hi / _n_all * 100:.1f}% / {_lo / _n_all * 100:.1f}%)")
-    # Sverka s konstantoy: pometka obyazana byt' odna i ta zhe v tryoh mestah
-    # (composite.py, composite-passport.json, result.json). Rashozhdenie tut --
-    # eto opyat' dva istochnika pravdy, s kotoryh vsyo i nachalos'.
-    _const_why = C.LADDER_PREREG_REJECTED_TAU_GDP["rejected_why"]
-    if RESULT["ladder"]["rejected_why"] != _const_why:
-        say("")
-        say("!!! VNIMANIE: prichina brakovki, poschitannaya progonom, razoshlas' s")
-        say(f"!!! composite.LADDER_PREREG_REJECTED_TAU_GDP:")
-        say(f"!!!   progon:    {RESULT['ladder']['rejected_why']}")
-        say(f"!!!   konstanta: {_const_why}")
-        say("!!! Normal'no posle pereschyota na svezhih dannyh, no konstantu v")
-        say("!!! composite.py nado obnovit' RUKAMI.")
-    say(f"V result.json klyuch 'ladder' pomechen rejected=true; "
-        f"postavlyaemaya -- klyuch 'ladder_practical'.")
-    say(f"  rejected_why: {RESULT['ladder']['rejected_why']}")
-    say(f"  s etogo momenta level_step / ladder_contribution na ney PADAYUT "
-        f"(composite.RejectedLadder), poka ne poprosit' allow_rejected=True.")
+    say(f"Zabrakovannaya {LADDER_REJECTED['version']} (po "
+        f"{', '.join(LADDER_BAD_TAU)}) sohranyaetsya otdel'nym klyuchom "
+        f"'ladder_prereg_rejected_tau_GDP' -- radi vosproizvodimosti, a ne "
+        f"radi primeneniya.")
 
 # Sverka s konstantoy v composite.py: chisla lestnicy zhivut v DVUH mestah
 # (modul' i artefakty), i rashodit'sya im nel'zya molcha.
-if list(LADDER_SHIP.get("thresholds", [])) != list(C.LADDER_V1["thresholds"]):
+if LADDER_SHIP is not None and \
+        list(LADDER_SHIP.get("thresholds", [])) != list(C.LADDER_V1["thresholds"]):
     say("")
     say("!!! VNIMANIE: porogi postavlyaemoy lestnicy razoshlis' s konstantoy")
     say(f"!!! composite.LADDER_V1: progon {LADDER_SHIP.get('thresholds')} protiv "
@@ -1450,57 +1503,70 @@ RESULT["criteria"]["C6"] = c6
 
 head("Z06 sec.12 -- VYGRUZKA")
 
-csv_path = os.path.join(_HERE, "composite.csv")
-with open(csv_path, "w", encoding="utf-8", newline="") as fh:
-    fh.write("date,composite,sigma_units,n_panels,panels,L_step\n")
-    for d in main_s.dates:
-        v = CMAIN[d]
-        mem = main_pp.membership[d]
-        fh.write(f"{d},{v:.6f},{v / SIGMA_C:.6f},{len(mem)},"
-                 f"\"{'|'.join(mem)}\",{C.level_step(v, LADDER_SHIP):+.1f}\n")
-say(f"ryad kompozita: {csv_path} ({len(main_s.dates)} strok, "
-    f"L_step po {LADDER_SHIP['version']})")
+if LADDER_SHIP is None:
+    # Postavlyaemoy lestnicy net (sec.8). Perepisyvat' composite.csv i pasport
+    # nechem: kolonka L_step i klyuch "ladder" beryotsya imenno iz neyo. Pisat'
+    # tuda zabrakovannuyu -- rovno ta podmena, kotoruyu lovit
+    # composite._check_csv_ladder. Progon ostanavlivaet vygruzku ryada i
+    # pasporta, no result.json (s pometkoy rejected) vsyo ravno pishet.
+    say("!!! VYGRUZKA RYADA I PASPORTA PROPUSHCHENA: postavlyaemoy lestnicy net.")
+    say("!!! composite.csv i composite-passport.json ostayutsya ot proshlogo")
+    say("!!! progona -- oni soglasovany mezhdu soboy i s composite.LADDER_V1,")
+    say("!!! a etot progon dat' soglasovannuyu paru ne mozhet.")
+    say("!!! result.json pishetsya: v nyom 'ladder' pomechen rejected=true, a")
+    say("!!! 'ladder_practical' = null.")
+else:
+    csv_path = os.path.join(_HERE, "composite.csv")
+    with open(csv_path, "w", encoding="utf-8", newline="") as fh:
+        fh.write("date,composite,sigma_units,n_panels,panels,L_step\n")
+        for d in main_s.dates:
+            v = CMAIN[d]
+            mem = main_pp.membership[d]
+            fh.write(f"{d},{v:.6f},{v / SIGMA_C:.6f},{len(mem)},"
+                     f"\"{'|'.join(mem)}\",{C.level_step(v, LADDER_SHIP):+.1f}\n")
+    say(f"ryad kompozita: {csv_path} ({len(main_s.dates)} strok, "
+        f"L_step po {LADDER_SHIP['version']})")
 
-pp_path = os.path.join(_HERE, "composite-passport.json")
-passport = main_pp.to_dict()
-passport["ladder"] = LADDER_SHIP
-if LADDER_REJECTED:
-    passport["ladder_prereg_rejected_tau_GDP"] = LADDER_REJECTED
-passport["built_by"] = "Z06/composite.py composite(base='new_orders', method='FE')"
-passport["responses"] = RESULT["data"]
+    pp_path = os.path.join(_HERE, "composite-passport.json")
+    passport = main_pp.to_dict()
+    passport["ladder"] = LADDER_SHIP
+    if LADDER_REJECTED:
+        passport["ladder_prereg_rejected_tau_GDP"] = LADDER_REJECTED
+    passport["built_by"] = "Z06/composite.py composite(base='new_orders', method='FE')"
+    passport["responses"] = RESULT["data"]
 
-# Pin: privyazka ryada k versii dannyh. Bez nego sleduyushchiy progon cherez
-# mesyac otdal by DRUGOY ryad molcha -- chto i sluchilos' mezhdu 07-28 i 08-01
-# (Richmond peresmotrel istoriyu, W_ref sdvinulos', uehali vse 393 znacheniya).
-_dates = list(main_s.dates)
-_values = [CMAIN[d] for d in _dates]   # digest sam privedyot k VALUE_FORMAT
-passport["pin"] = {
-    "version": "Z06-pin-v1",
-    "frozen_at": time.strftime("%Y-%m-%d"),
-    "note": f"progon run.py, zerno {SEED}",
-    "config": dict(C.PINNED_CONFIG),
-    "w_ref": {"start": main_pp.w_ref[0], "end": main_pp.w_ref[1]},
-    "panels": {k: {"last": v["last"], "n": v["n"], "n_ref": v["n_ref"],
-                   "mu_ref": v["mu_ref"], "sd_ref": v["sd_ref"]}
-               for k, v in sorted(main_pp.panels.items())},
-    "series": {"file": "composite.csv", "first": _dates[0], "last": _dates[-1],
-               "n": len(_dates), "sigma_c": SIGMA_C,
-               "fetched_at": main_pp.fetched_at,
-               "value_format": C.VALUE_FORMAT,
-               "sha256": C.series_digest(_dates, _values)},
-    "ladder_version": LADDER_SHIP["version"],
-    "ladder_thresholds": list(LADDER_SHIP.get("thresholds", [])),
-    "policy": ("composite(pin='check') sveryaet zhivuyu sborku s etim blokom i "
-               "pri rashozhdenii otkazyvaet, nazyvaya izmenivsheesya; "
-               "pin='frozen' otdayot ryad iz fayla bez seti; pin='off' -- "
-               "zhivuyu sborku bez sverki."),
-}
-with open(pp_path, "w", encoding="utf-8") as fh:
-    json.dump(passport, fh, ensure_ascii=True, indent=2)
-say(f"pasport: {pp_path}")
-say(f"  pin {passport['pin']['version']} ot {passport['pin']['frozen_at']}: "
-    f"W_ref [{main_pp.w_ref[0]} .. {main_pp.w_ref[1]}], sha256 ryada "
-    f"{passport['pin']['series']['sha256'][:16]}...")
+    # Pin: privyazka ryada k versii dannyh. Bez nego sleduyushchiy progon cherez
+    # mesyac otdal by DRUGOY ryad molcha -- chto i sluchilos' mezhdu 07-28 i
+    # 08-01 (Richmond peresmotrel istoriyu, W_ref sdvinulos', uehali vse 393).
+    _dates = list(main_s.dates)
+    _values = [CMAIN[d] for d in _dates]   # digest sam privedyot k VALUE_FORMAT
+    passport["pin"] = {
+        "version": "Z06-pin-v1",
+        "frozen_at": time.strftime("%Y-%m-%d"),
+        "note": f"progon run.py, zerno {SEED}",
+        "config": dict(C.PINNED_CONFIG),
+        "w_ref": {"start": main_pp.w_ref[0], "end": main_pp.w_ref[1]},
+        "panels": {k: {"last": v["last"], "n": v["n"], "n_ref": v["n_ref"],
+                       "mu_ref": v["mu_ref"], "sd_ref": v["sd_ref"]}
+                   for k, v in sorted(main_pp.panels.items())},
+        "series": {"file": "composite.csv", "first": _dates[0],
+                   "last": _dates[-1], "n": len(_dates), "sigma_c": SIGMA_C,
+                   "fetched_at": main_pp.fetched_at,
+                   "value_format": C.VALUE_FORMAT,
+                   "sha256": C.series_digest(_dates, _values)},
+        "ladder_version": LADDER_SHIP["version"],
+        "ladder_thresholds": list(LADDER_SHIP.get("thresholds", [])),
+        "policy": ("composite(pin='check') sveryaet zhivuyu sborku s etim "
+                   "blokom i pri rashozhdenii otkazyvaet, nazyvaya "
+                   "izmenivsheesya; pin='frozen' otdayot ryad iz fayla bez "
+                   "seti; pin='off' -- zhivuyu sborku bez sverki."),
+    }
+    with open(pp_path, "w", encoding="utf-8") as fh:
+        json.dump(passport, fh, ensure_ascii=True, indent=2)
+    say(f"pasport: {pp_path}")
+    say(f"  pin {passport['pin']['version']} ot {passport['pin']['frozen_at']}: "
+        f"W_ref [{main_pp.w_ref[0]} .. {main_pp.w_ref[1]}], sha256 ryada "
+        f"{passport['pin']['series']['sha256'][:16]}...")
 
 RESULT["elapsed_sec"] = round(time.time() - T0, 1)
 res_path = os.path.join(_HERE, "result.json")
