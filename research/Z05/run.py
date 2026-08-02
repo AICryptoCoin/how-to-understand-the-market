@@ -58,6 +58,8 @@ MIN_OBS_DAILY = 250             # sec.3.1
 MIN_OBS_MONTHLY = 24            # sec.11 zapis' 1 (dva goda v chastote ryada)
 MIN_OBS_WEEKLY = 104
 
+CLAIMS_PUB_LAG_DAYS = 5         # sec.3.5: subbota (konec nedeli) -> chetverg
+
 MAD_C = 1.4826
 CLIP = 3.0
 
@@ -493,12 +495,31 @@ say("  Philly NOF (uroven' vs 0):    mesyacev vklada %d" % len(C_NOF))
 C_CLAIMS = weekly_speed(observed(RAW["IC4WSA"]), 13, flip=True)
 say("  IC4WSA (skorost', 13 nedel'): nedel' vklada %d" % len(C_CLAIMS))
 
+# sec.3.5 ob'yavlyaet dlya IC4WSA "poslednyaya OPUBLIKOVANNAYA na datu
+# sostoyaniya", a nablyudenie datirovano koncom nedeli (subbotoy) i vyhodit
+# v chetverg sleduyushchey nedeli -- rovno cherez pyat' dney. Znachit vhod
+# vesom 0.12 viden zdes' na pyat' dney ran'she, chem sushchestvuet.
+#
+# Pravilo NE ispolneno, i eto zapisano v REPORT sec.11 p.11 vmeste s
+# izmerennym posledstviem: primenenie laga ne menyaet NI ODNOGO iz 270
+# pomesyachnyh sostoyaniy P10, to est' ni odnogo otchyotnogo chisla vetvi
+# verdikta. Prichina, po kotoroy ono ostavleno kak est': na eti zhe chisla
+# (91 / 84 / 176 / q=0.42) pripayana zadacha Z27 -- ee progon sveryaetsya
+# s Z05/result.json assert-ami. Ispravlenie dvigaet obe zadachi srazu i
+# poetomu ne moyo delo v odinochku.
+#
+# Sledstvie proveryaetsya progonom, a ne obeshchaniem: check-z05.py, C6.
+_claims_wd = {d2(d).weekday() for d in C_CLAIMS}
+assert _claims_wd == {5}, "IC4WSA datirovan ne subbotoy: %s" % sorted(_claims_wd)
+
 PUB = {"NAHB": (0, 16), "PERMIT": (1, 20), "COMP": (0, 28), "NOF": (0, 21)}
 ST_NAHB = to_step_monthly(C_NAHB, *PUB["NAHB"])
 ST_PERMIT = to_step_monthly(C_PERMIT, *PUB["PERMIT"])
 ST_COMP = to_step_monthly(C_COMP, *PUB["COMP"])
 ST_NOF = to_step_monthly(C_NOF, *PUB["NOF"])
 ST_CLAIMS = Step(C_CLAIMS.items())
+say("  lag publikacii IC4WSA: NE PRIMENYON (ob'yavlen v sec.3.5, +%d dney)"
+    % CLAIMS_PUB_LAG_DAYS)
 
 sub("4.2 Faza rezhima DKP")
 
@@ -693,18 +714,38 @@ say("Kalibrovochnyy otrezok: %s .. %s, %d torgovyh dney"
     % (CALIB[0], CALIB[-1], len(CALIB)))
 
 
-def spell_days(dates: Sequence[str], states: Sequence[str]) -> float:
-    starts: list[str] = []
+def spells(dates: Sequence[str], states: Sequence[str]
+           ) -> list[tuple[str, int]]:
+    """Nepreryvnye otrezki odnogo sostoyaniya: (sostoyanie, dlina v dnyah)."""
+    starts: list[tuple[str, str]] = []
     prev = None
     for d, st in zip(dates, states):
         if st != prev:
-            starts.append(d)
+            starts.append((d, st))
             prev = st
-    lens = []
-    for i, st in enumerate(starts):
-        end = starts[i + 1] if i + 1 < len(starts) else s2(d2(dates[-1])
-                                                           + timedelta(days=1))
-        lens.append((d2(end) - d2(st)).days)
+    tail = s2(d2(dates[-1]) + timedelta(days=1))
+    out = []
+    for i, (d, st) in enumerate(starts):
+        end = starts[i + 1][0] if i + 1 < len(starts) else tail
+        out.append((st, (d2(end) - d2(d)).days))
+    return out
+
+
+def spell_days(dates: Sequence[str], states: Sequence[str]) -> float:
+    """Srednyaya dlitel'nost' po VSEM sostoyaniyam, vklyuchaya Centr.
+
+    Eto ISPOLNENNOE prochtenie trebovaniya B (HYPOTHESIS sec.5: "v odnom
+    SOSTOYANII"). Bukva speki sec.1.4.7 govorit "v odnom KVADRANTE" --
+    ona schitaetsya otdel'no, spell_days_quad, i ne vypolnima ni pri kakom q.
+    """
+    lens = [n for _, n in spells(dates, states)]
+    return sum(lens) / len(lens) if lens else 0.0
+
+
+def spell_days_quad(dates: Sequence[str], states: Sequence[str]) -> float:
+    """Srednyaya dlitel'nost' prebyvaniya v odnom KVADRANTE (bukva sec.1.4.7)."""
+    lens = [n for st, n in spells(dates, states)
+            if st not in ("CENTER", "ANOMALY")]
     return sum(lens) / len(lens) if lens else 0.0
 
 
@@ -727,7 +768,9 @@ def calibrate(W: int, validator: str, force_q: float | None = None
         ms = spell_days(CALIB, st)
         centre = sum(1 for x in st if x == "CENTER") / len(st)
         rows.append({"q": q, "theta_fed": tf, "theta_macro": tm,
-                     "mean_spell_days": ms, "center_share": centre})
+                     "mean_spell_days": ms,
+                     "mean_spell_days_quad": spell_days_quad(CALIB, st),
+                     "center_share": centre})
         if force_q is None and chosen is None and ms >= MIN_SPELL_DAYS:
             chosen = rows[-1]
         if force_q is not None and abs(q - force_q) < 1e-9:
@@ -778,6 +821,61 @@ say("")
 say("  Trebovanie A (q=0.20 rovno): Centr = %.1f%% vremeni pri obeshchannyh 20%%"
     % (100 * _a["center_share"]))
 say("  -> vnutrennee protivorechie sec.1.4.7 speki, HYPOTHESIS sec.5.1")
+
+sub("6.2 Trebovanie B PO BUKVE speki: 'v odnom KVADRANTE ne men'she mesyaca'")
+say("  Ispolneno bylo pereopredelenie (HYPOTHESIS sec.5: 'v odnom SOSTOYANII',")
+say("  to est' s Centrom). Nizhe -- bukva sec.1.4.7 na RASSHIRENNOY setke q,")
+say("  vplot' do 0.98: est' li u B hot' odin dopustimyy vyhod.")
+WIDE_Q = [round(0.20 + 0.02 * i, 2) for i in range(40)]      # 0.20 .. 0.98
+_sf_calib = [abs(v) for v in
+             (axis(state_parts(g, 10)[0], W_FED, W_FED_FULL)[0] for g in CALIB)
+             if v is not None]
+_sm_calib = [abs(v) for v in
+             (axis(state_parts(g, 10)[1], W_MACRO, W_MACRO_FULL)[0]
+              for g in CALIB) if v is not None]
+B_LETTER: list[dict[str, Any]] = []
+for _q in WIDE_Q:
+    _tf, _tm = quantile(_sf_calib, _q), quantile(_sm_calib, _q)
+    for _val in ("single", "off"):
+        _st = [classify(g, 10, _tf, _tm, _val)[0] for g in CALIB]
+        B_LETTER.append({"q": _q, "validator": _val,
+                         "spell_quad": spell_days_quad(CALIB, _st),
+                         "spell_all": spell_days(CALIB, _st),
+                         "n_quad_spells": sum(
+                             1 for st, _ in spells(CALIB, _st)
+                             if st not in ("CENTER", "ANOMALY"))})
+_best_on = max((r for r in B_LETTER if r["validator"] == "single"),
+               key=lambda r: r["spell_quad"])
+_best_off = max((r for r in B_LETTER if r["validator"] == "off"),
+                key=lambda r: r["spell_quad"])
+_q020 = [r for r in B_LETTER if r["q"] == 0.20 and r["validator"] == "single"][0]
+_qch = [r for r in B_LETTER
+        if abs(r["q"] - THETA["P10"]["chosen"]["q"]) < 1e-9
+        and r["validator"] == "single"]
+say("  q=0.20:            kvadrantnyy spell %.3f dn. (vsyo sostoyaniya %.1f)"
+    % (_q020["spell_quad"], _q020["spell_all"]))
+if _qch:
+    say("  q=%.2f (vybrannyy): kvadrantnyy spell %.3f dn. (vsyo sostoyaniya %.1f)"
+        % (_qch[0]["q"], _qch[0]["spell_quad"], _qch[0]["spell_all"]))
+say("  MAKSIMUM po setke 0.20..0.98 s predohranitelem:  %.3f dn. pri q=%.2f"
+    % (_best_on["spell_quad"], _best_on["q"]))
+say("  MAKSIMUM po setke 0.20..0.98 BEZ predohranitelya: %.3f dn. pri q=%.2f"
+    % (_best_off["spell_quad"], _best_off["q"]))
+say("  trebuetsya %d dn. -> trebovanie B po bukve speki dostizhimo: %s"
+    % (MIN_SPELL_DAYS,
+       "DA" if max(_best_on["spell_quad"], _best_off["spell_quad"])
+       >= MIN_SPELL_DAYS else "NET"))
+RESULT["B_letter"] = {
+    "grid": B_LETTER,
+    "spell_quad_at_q020": _q020["spell_quad"],
+    "spell_quad_at_chosen": _qch[0]["spell_quad"] if _qch else None,
+    "best_with_validator": {"q": _best_on["q"], "spell": _best_on["spell_quad"]},
+    "best_without_validator": {"q": _best_off["q"],
+                               "spell": _best_off["spell_quad"]},
+    "required": MIN_SPELL_DAYS,
+    "B_reachable_at_any_q": max(_best_on["spell_quad"],
+                                _best_off["spell_quad"]) >= MIN_SPELL_DAYS,
+}
 
 
 # =========================================================================== #
@@ -1012,6 +1110,39 @@ def hits_months(p: dict[str, Any], cfg: str, h: int, months: Sequence[str],
     return out
 
 
+def pool_accounting(cfg: str, h: int, months: Sequence[str],
+                    state_fn: Callable[[str, str], str],
+                    only: str = "all") -> dict[str, Any]:
+    """Skol'ko par-mesyacev PREDPISANO i skol'ko doshlo do schyota.
+
+    Bez etoy razbivki pul pechataet 'n nablyudeniy' i molchit o tom, chto
+    chast' predpisannyh par-mesyacev vypala: u fyuchersa net kotirovki rovno
+    v etot den', ili gorizont vyhodit za pravyy kray cen. Raznica malen'kaya
+    i imenno poetomu nezametnaya.
+    """
+    prescribed = counted = 0
+    dropped: list[tuple[str, str, str, str]] = []
+    for p in PAIRS:
+        for m in months:
+            st = state_fn(cfg, m)
+            if only == "quad" and st in ("CENTER", "ANOMALY"):
+                continue
+            if only == "center" and st != "CENTER":
+                continue
+            if p["signs"].get(st) is None:
+                continue
+            prescribed += 1
+            r = fwd(p, m, h)
+            if r is None:
+                dropped.append((p["key"], m, st, "net ceny"))
+            elif r == 0.0:
+                dropped.append((p["key"], m, st, "tochnyy nul'"))
+            else:
+                counted += 1
+    return {"prescribed": prescribed, "counted": counted,
+            "dropped": len(dropped), "rows": dropped}
+
+
 def test_series(vals: Sequence[float], h: int,
                 rng: random.Random) -> dict[str, Any]:
     n = len(vals)
@@ -1126,8 +1257,21 @@ def run_branch(cfg: str, months: Sequence[str], state_fn, label: str,
                  if any(per[p["key"]]["h%d" % h]["rate"] > HIT_THRESHOLD
                         and per[p["key"]]["h%d" % h]["p_holm"] < 0.05
                         for h in HORIZONS))
+    # Potolok C1 pri fakticheski poluchennyh vyborkah: para, u kotoroy
+    # vyrozhdeny OBA gorizonta, poluchaet p = 1.0 po pravilu sec.7.2 pri
+    # lyubom ishode dannyh i proyti C1 ne mozhet. Skol'ko par voobshche
+    # sposobny -- eto potolok kriteriya "ne men'she 8 par iz 14".
+    n_can = sum(1 for p in PAIRS
+                if any(not per[p["key"]]["h%d" % h]["degenerate"]
+                       for h in HORIZONS))
+    acc = {}
+    for grp in ("all", "quad", "center"):
+        for h in HORIZONS:
+            acc["%s_h%d" % (grp, h)] = pool_accounting(cfg, h, months,
+                                                       state_fn, grp)
     out = {"label": label, "cfg": cfg, "per_pair": per, "pooled": pool,
            "pooled_decomp": decomp, "extra": extra, "pairs_passed": n_pass,
+           "pairs_can_pass": n_can, "accounting": acc,
            "n_months": len(months)}
     if verbose:
         print_branch(out)
@@ -1171,7 +1315,19 @@ def print_branch(res: dict[str, Any]) -> None:
                 % (nm, h, pl["n_months"], pl["n_obs"], pl["rate"],
                    pl["ci90"][0], pl["ci90"][1], pl["p_raw"],
                    pl.get("degenerate")))
+    for grp in ("all", "quad", "center"):
+        for h in HORIZONS:
+            ac = res["accounting"]["%s_h%d" % (grp, h)]
+            say("    uchyot %-6s h=%d: predpisano %4d, poschitano %4d, "
+                "vypalo %d%s"
+                % (grp, h, ac["prescribed"], ac["counted"], ac["dropped"],
+                   ("  [" + "; ".join("%s %s %s" % (k, m, why)
+                                      for k, m, _s, why in ac["rows"][:6])
+                    + ("; ..." if len(ac["rows"]) > 6 else "") + "]")
+                   if ac["rows"] else ""))
     say("  par proshlo C1: %d iz 14" % res["pairs_passed"])
+    say("  par, sposobnyh proyti C1 (vyborka ne vyrozhdena hotya by na odnom "
+        "gorizonte): %d iz 14 pri trebuemyh 8" % res["pairs_can_pass"])
 
 
 head("9. Osnovnaya vetv': P10, peresmotrennye dannye, kovid VKLYUCHEN")
@@ -1321,7 +1477,7 @@ if not NO_VINTAGE:
         s = vintage_series("IC4WSA", vd, 1500) if vd else None
         if s is not None:
             cs = weekly_speed(observed(s), 13, flip=True)
-            parts_mac["claims"] = Step(cs.items()).at(g)
+            parts_mac["claims"] = Step(cs.items()).at(g)   # lag: sm. sec.4.1
             VINT_DIAG["months_with_claims"] += 1
         vd = last_vintage("NOF", g)
         s = vintage_series("NOFDFSA066MSFRBPHI", vd, 1500) if vd else None
@@ -1391,7 +1547,9 @@ _exp = CUT_RES["expansion"]["h1"]
 C5 = _exp["rate"] > HIT_THRESHOLD and _exp["p_raw"] < 0.05
 
 for nm, val, note in (
-        ("C1 (>=8 par iz 14)", C1, "proshlo %d" % MAIN["pairs_passed"]),
+        ("C1 (>=8 par iz 14)", C1,
+         "proshlo %d; potolok pri fakticheskih vyborkah %d"
+         % (MAIN["pairs_passed"], MAIN["pairs_can_pass"])),
         ("C2 (pul >0.55, Holm<0.05, oba gorizonta)", C2,
          "h1 %.4f p=%.4f; h3 %.4f p=%.4f"
          % (MAIN["pooled"]["h1"]["rate"], MAIN["pooled"]["h1"]["p_holm"],
@@ -1435,9 +1593,22 @@ if inverted:
 else:
     say("  dolya ni na odnom gorizonte ne nizhe 0.5 znachimo")
 
+say("")
+say("  Potolok C1 na fakticheskoy konfiguracii: predohranitel' vyrozhdeniya")
+say("  (n/L>=8) prohodyat %d pary iz 14 hotya by na odnom gorizonte, a C1"
+    % MAIN["pairs_can_pass"])
+say("  trebuet vosem'. Znachit C1 ne mog srabotat' ni pri kakom ishode dannyh")
+say("  -- ne potomu, chto pary ploho ugadyvayut, a potomu, chto instrument")
+say("  nazval kvadrant v %d mesyacah iz %d." % (
+    len(MONTHS) - RESULT["state_distribution"]["P10"].get("CENTER", 0)
+    - RESULT["state_distribution"]["P10"].get("ANOMALY", 0), len(MONTHS)))
+
 RESULT["criteria"] = {"C1": C1, "C2": C2, "C3": C3, "C4": C4, "C5": C5,
                       "C4_cells": _c4_cells, "C4_failed": C4_fail,
                       "pairs_passed": MAIN["pairs_passed"],
+                      "pairs_can_pass": MAIN["pairs_can_pass"],
+                      "C1_required": 8,
+                      "C1_reachable": MAIN["pairs_can_pass"] >= 8,
                       "inverted": inverted}
 RESULT["verdict"] = VERDICT
 
@@ -1456,6 +1627,23 @@ say("  predohranitel' formoy krivoy): %.1f%%"
 _A_reachable = THETA["P10"]["center_share_at_theta0"] <= 0.35
 say("  -> dolya vremeni v Centre poryadka pyatoy chasti dostizhima pri kakom-")
 say("     libo theta: %s" % ("DA" if _A_reachable else "NET"))
+
+# Vtoraya prichina, vnutri odnogo abzaca sec.1.4.7 i BEZ vsyakih dannyh:
+# "poryadka pyatoy chasti vremeni v Centre" i "theta = 20-y percentil' |score|
+# po kazhdoy osi" nesovmestimy arifmeticheski. Osi kalibruyutsya nezavisimo,
+# Centr -- eto ILI, znachit 1 - 0.8*0.8 = 0.36, a ne 0.20.
+_PRED_INDEP = 1.0 - (1.0 - CENTER_TARGET) ** 2
+_a20_noval = THETA["A20NOVAL"]["chosen"]["center_share"]
+say("")
+say("  Vtoraya prichina, bez dannyh: osi kalibruyutsya nezavisimo, Centr -- ILI,")
+say("  znachit pri 20-m percentile na kazhduyu os' Centr = 1 - 0.8*0.8 = %.2f,"
+    % _PRED_INDEP)
+say("  a ne %.2f. Dva predlozheniya odnogo abzaca sec.1.4.7 protivorechat"
+    % CENTER_TARGET)
+say("  drug drugu do vsyakogo izmereniya.")
+say("  Izmereno (porogi bez predohranitelya, q=0.20): Centr = %.4f protiv "
+    "predskazannyh %.2f" % (_a20_noval, _PRED_INDEP))
+
 RESULT["A_vs_B"] = {
     "center_share_at_q020": _a20["center_share"],
     "spell_at_q020": _a20["mean_spell_days"],
@@ -1463,6 +1651,15 @@ RESULT["A_vs_B"] = {
     "center_share_at_chosen": _chosen["center_share"],
     "center_share_at_theta0": THETA["P10"]["center_share_at_theta0"],
     "A_reachable_at_any_theta": _A_reachable,
+    "center_target": CENTER_TARGET,
+    "predicted_center_independent_axes": _PRED_INDEP,
+    "center_share_thresholds_only_q020": _a20_noval,
+    "B_letter_reachable_at_any_q": RESULT["B_letter"]["B_reachable_at_any_q"],
+    "B_letter_best_spell": max(
+        RESULT["B_letter"]["best_with_validator"]["spell"],
+        RESULT["B_letter"]["best_without_validator"]["spell"]),
+    "B_letter_spell_at_q020": RESULT["B_letter"]["spell_quad_at_q020"],
+    "B_letter_spell_at_chosen": RESULT["B_letter"]["spell_quad_at_chosen"],
 }
 
 RESULT["feasibility"] = {

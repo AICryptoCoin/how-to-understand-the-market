@@ -1,3 +1,5 @@
+sborka osey zanovo (sec.3 pred-registracii) ...
+[sources] NAHB t2: https://www.nahb.org/-/media/NAHB/news-and-economics/docs/housing-economics/hmi/2026-07/t2-national-hmi-history-202607.xls?rev=0c35c16921ef46749068833427ed31fe&hash=75803D357537EC6B359EF20AA39410D1
 
 ==========================================================================
 A. Predposylka Z06: zabrakovannaya lestnica obyazana padat'
@@ -10,39 +12,76 @@ A. Predposylka Z06: zabrakovannaya lestnica obyazana padat'
 ==========================================================================
 B. Polozhitel'nyy kontrol': sposoben li pribor uvidet' signal
 ==========================================================================
+  OK      B0 nezavisimyy cenovoy marshrut sovpal s ret() vo vseh par-mesyacah  -- sovpalo 7522 iz 7522
   OK      B1.h1 orakul dayot dolyu 1.000  -- n=268 dolya=1.0000
   OK      B1.h1 antiorakul dayot dolyu 0.000  -- n=268 dolya=0.0000
   OK      B1.h3 orakul dayot dolyu 1.000  -- n=266 dolya=1.0000
   OK      B1.h3 antiorakul dayot dolyu 0.000  -- n=266 dolya=0.0000
-  OK      B2 smes' 60/40 vosstanovlena  -- n=268 dolya=0.6007
-  OK      B2 i otvergaet nulevuyu 0.5 na etom n  -- p=0.0020 pri n_mesyacev=268
-  OK      B3 smes' 50/50 nulevuyu NE otvergaet  -- dolya=0.5373 p=0.1109
+  OK      B2 orakul na vetvi Centr x SIZE/STYLE/GEO dayot dolyu 1.000  -- n=810 dolya=1.0000, iz nih v Centre 398 (49%)
+  OK      B2 kontrol' idyot po TOY zhe masse, chto i zashchishchaemoe chislo  -- nablyudeniy 810 protiv 850 v pule P10; dolya Centra 0.49
+  OK      B3 smes' 60/40 na etoy vetvi vosstanovlena  -- n=810 dolya=0.5988 (v Centre 393)
+  OK      B3 i otvergaet nulevuyu 0.5 na etom n  -- p=0.0005 pri n_mesyacev=270
+  OK      B4 smes' 50/50 na etoy vetvi nulevuyu NE otvergaet  -- dolya=0.5222 p=0.1114 n=810
 
 ==========================================================================
-C. Nezavisimyy pereschyot zayavlennyh chisel
+C. Klassifikator pereschitan iz syryh vhodov i sveren s otchyotom
 ==========================================================================
-  OK      C.P10 h1 pul sovpal s otchyotom  -- moy 0.4918 protiv 0.4918
-  OK      C.P10 h3 pul sovpal s otchyotom  -- moy 0.4751 protiv 0.4751
-  OK      C.A20NOVAL h1 pul sovpal s otchyotom  -- moy 0.5058 protiv 0.5058
-  OK      C.A20NOVAL h3 pul sovpal s otchyotom  -- moy 0.4838 protiv 0.4838
-  OK      C.razlozhenie 'tol'ko kvadranty' sovpalo  -- moy 0.5086 protiv 0.5086, n=1620
-  OK      C.perevyornutye predpisaniya dayut 1 - dolya  -- 0.4942 protiv 0.4942
+  OK      C1.P10      theta sovpal (q, th_fed, th_macro)  -- moi q=0.42 th=0.2199/0.2084 protiv 0.42 0.2199/0.2084
+  OK      C1.P05      theta sovpal (q, th_fed, th_macro)  -- moi q=0.42 th=0.2217/0.2131 protiv 0.42 0.2217/0.2131
+  OK      C1.P30      theta sovpal (q, th_fed, th_macro)  -- moi q=0.36 th=0.1937/0.1695 protiv 0.36 0.1937/0.1695
+  OK      C1.VOTE     theta sovpal (q, th_fed, th_macro)  -- moi q=0.32 th=0.1773/0.1382 protiv 0.32 0.1773/0.1382
+  OK      C1.NOVAL    theta sovpal (q, th_fed, th_macro)  -- moi q=0.60 th=0.3004/0.3139 protiv 0.60 0.3004/0.3139
+  OK      C1.A20      theta sovpal (q, th_fed, th_macro)  -- moi q=0.20 th=0.1168/0.0796 protiv 0.20 0.1168/0.0796
+  OK      C1.A20NOVAL theta sovpal (q, th_fed, th_macro)  -- moi q=0.20 th=0.1168/0.0796 protiv 0.20 0.1168/0.0796
+  OK      C2.P10      pomesyachnye sostoyaniya sovpali vo vseh 270 mesyacah  -- raspredelenie {'CENTER': 263, 'I': 3, 'II': 2, 'IV': 2}
+  OK      C2.P05      pomesyachnye sostoyaniya sovpali vo vseh 270 mesyacah  -- raspredelenie {'CENTER': 261, 'I': 4, 'II': 2, 'III': 1, 'IV': 2}
+  OK      C2.P30      pomesyachnye sostoyaniya sovpali vo vseh 270 mesyacah  -- raspredelenie {'CENTER': 247, 'I': 7, 'II': 4, 'III': 6, 'IV': 6}
+  OK      C2.VOTE     pomesyachnye sostoyaniya sovpali vo vseh 270 mesyacah  -- raspredelenie {'CENTER': 257, 'I': 5, 'II': 2, 'III': 1, 'IV': 5}
+  OK      C2.NOVAL    pomesyachnye sostoyaniya sovpali vo vseh 270 mesyacah  -- raspredelenie {'CENTER': 233, 'I': 9, 'II': 17, 'III': 5, 'IV': 6}
+  OK      C2.A20      pomesyachnye sostoyaniya sovpali vo vseh 270 mesyacah  -- raspredelenie {'CENTER': 248, 'I': 6, 'II': 3, 'III': 5, 'IV': 8}
+  OK      C2.A20NOVAL pomesyachnye sostoyaniya sovpali vo vseh 270 mesyacah  -- raspredelenie {'CENTER': 94, 'I': 37, 'II': 69, 'III': 26, 'IV': 44}
+  OK      C3 syroe sostoyanie DO predohranitelya sovpalo (RAW_P10)  -- kvadrant nazvan porogami v 91 mesyacah iz 270
+  OK      C4 vklad predohranitelya formoy krivoy pereschitan  -- nazvano 91 (otchyot 91), pogasheno 84 (otchyot 84), ostalos' 7
+  OK      C5 dolya Centra pri theta=0 pereschitana  -- moya 0.8295 protiv 0.8295 -- odin predohranitel' derzhit 83.0% vremeni
+  OK      C6 primenenie ob'yavlennogo laga IC4WSA ne dvigaet ni odnogo sostoyaniya P10  -- theta pri lage q=0.44 (0.2277/0.2227) protiv q=0.42 (0.2199/0.2084); rashozhdeniy sostoyaniy 0 iz 270
+  OK      C6-bis pri lage sdvigaetsya tol'ko posthoc-konfiguraciya A20NOVAL  -- kvadrantnyh mesyacev pri lage 177 protiv 176 bez nego
 
 ==========================================================================
-D. Nesovmestimost' trebovaniy A i B sec.1.4.7
+D. Nezavisimyy pereschyot zayavlennyh doley
 ==========================================================================
-  OK      D1 pri q=0.20 trebovanie B ne vypolneno  -- spell 16.5 dn.
-  OK      D2 pri naimen'shem q, dayushchem B, A narusheno gruboy  -- Centr 94.4%
-  OK      D3 A nedostizhimo ni pri kakom theta (granica pri theta=0)  -- Centr pri theta=0: 83.0%
+  OK      D.P10 h1 pul sovpal s otchyotom  -- moy 0.4918 protiv 0.4918 (n=850)
+  OK      D.P10 h3 pul sovpal s otchyotom  -- moy 0.4751 protiv 0.4751 (n=844)
+  OK      D.A20NOVAL h1 pul sovpal s otchyotom  -- moy 0.5058 protiv 0.5058 (n=1902)
+  OK      D.A20NOVAL h3 pul sovpal s otchyotom  -- moy 0.4838 protiv 0.4838 (n=1885)
+  OK      D.razlozhenie A20NOVAL/quad sovpalo  -- moy 0.5086 na n=1620 protiv 0.5086 na n=1620
+  OK      D.razlozhenie P10/center sovpalo  -- moy 0.4930 na n=789 protiv 0.4930 na n=789
+  OK      D.perevyornutye predpisaniya dayut 1 - dolya  -- 0.4942 protiv 0.4942
+  OK      D5 uchyot 'predpisano protiv poschitano' sovpal s otchyotom  -- predpisano 1624, poschitano 1620, vypalo 4 [GOLD 2004-11 net ceny; GOLD 2004-12 net ceny; OIL 2004-11 net ceny; OIL 2004-12 net ceny]
 
 ==========================================================================
-E. Sama proverka C -- gate ili ukrashenie: mutiruem i zhdyom KRASNOGO
+E. Trebovaniya A i B sec.1.4.7: oba bez dopustimogo vyhoda
 ==========================================================================
-  OK      E1 peremeshannye sostoyaniya lomayut sovpadenie  -- peremeshano 0.5205 protiv otchyota 0.5058
-  OK      E2 podmena odnogo znaka v tablice lomaet sovpadenie  -- s podmenoy 0.5042 protiv otchyota 0.5058
-  OK      E3 drugoy gorizont dayot druguyu dolyu  -- h3 0.4838 protiv h1 0.5058
+  OK      E1 pri q=0.20 trebovanie B (ispolnennoe chtenie) ne vypolneno  -- spell 16.5 dn. pri trebuemyh 30
+  OK      E2 pri naimen'shem q, dayushchem B, A narusheno grubo  -- Centr 94.4% pri obeshchannyh 20%
+  OK      E3 A nedostizhimo ni pri kakom theta (granica pri theta=0)  -- Centr pri theta=0: 83.0%
+  OK      E4 trebovanie B PO BUKVE speki nedostizhimo ni pri kakom q  -- maksimum 9.468 dn. (q=0.20, validator=off) pri trebuemyh 30 na setke 0.20..0.98
+  OK      E5 pri nezavisimyh osyah 20-y percentil' dayot Centr 0.36, a ne 0.20  -- predskazano 0.36, izmereno (porogi bez predohranitelya) 0.3608
+
+==========================================================================
+F. Mutacii: kazhdaya proverka obyazana KRASNET'
+==========================================================================
+  OK      F1 peremeshannye sostoyaniya lomayut sovpadenie  -- peremeshano 0.5205 protiv otchyota 0.5058
+  OK      F2 podmena odnogo znaka v tablice lomaet sovpadenie  -- s podmenoy 0.5042 protiv otchyota 0.5058
+  OK      F3 drugoy gorizont dayot druguyu dolyu  -- h3 0.4838 protiv h1 0.5058
+  OK      F4 perevorot znaka dohodnosti delaet blok B krasnym  -- orakul dal by 0.0000 vmesto 1.0000
+  OK      F5 sdvig ceny na odin torgovyy den' delaet blok B krasnym  -- orakul dal by 0.8977 vmesto 1.0000
+  OK      F6 podmena vesa vhoda dxy (0.10 -> 0.20) lomaet sverku sostoyaniy  -- rashozhdeniy 1 mesyacev iz 270
+  OK      F7 neperevyornutyy znak vhoda IC4WSA lomaet sverku sostoyaniy  -- rashozhdeniy 4 mesyacev iz 270
+  OK      F8 vyklyuchennyy predohranitel' formoy krivoy lomaet sverku  -- rashozhdeniy 36 mesyacev iz 270
+  OK      F9 sdvig theta na +0.02 lomaet sverku sostoyaniy  -- rashozhdeniy 1 mesyacev iz 270
+  OK      F10 otsechka 0.60 -> 0.70 delaet obe osi neschitaemymi  -- rashozhdeniy 270 mesyacev iz 270 (dostupnyy ves 0.65/0.64)
 
 ==========================================================================
 ITOG
 ==========================================================================
-  proshlo 23, provaleno 0
+  proshlo 56, provaleno 0

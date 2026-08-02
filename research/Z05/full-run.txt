@@ -19,31 +19,31 @@ Okno sostoyaniy 2004-01-01 .. 2026-06-30; kalibrovka do 2014-12-31; uderzhannyy 
   DFEDTARU       n=6439   2008-12-16 .. 2026-08-02  last=3.7500       (0.0s)
   DFEDTARL       n=6439   2008-12-16 .. 2026-08-02  last=3.5000       (0.0s)
   DX-Y.NYB       n=14112  1971-01-04 .. 2026-07-31  last=99.8000      (0.6s)
-  GC=F           n=6503   2000-08-30 .. 2026-07-31  last=4107.0000    (0.4s)
-  HG=F           n=6508   2000-08-30 .. 2026-07-31  last=6.4655       (0.6s)
-  CL=F           n=6512   2000-08-23 .. 2026-07-31  last=84.6700      (0.6s)
-  SPY            n=8433   1993-01-29 .. 2026-07-31  last=747.0300     (0.7s)
+  GC=F           n=6503   2000-08-30 .. 2026-07-31  last=4107.0000    (0.5s)
+  HG=F           n=6508   2000-08-30 .. 2026-07-31  last=6.4655       (0.5s)
+  CL=F           n=6512   2000-08-23 .. 2026-07-31  last=84.6700      (0.7s)
+  SPY            n=8433   1993-01-29 .. 2026-07-31  last=747.0300     (0.6s)
   IWM            n=6583   2000-05-26 .. 2026-07-31  last=291.2000     (0.6s)
-  QQQ            n=6891   1999-03-10 .. 2026-07-31  last=687.9900     (0.6s)
-  EFA            n=6268   2001-08-27 .. 2026-07-31  last=105.5800     (0.6s)
+  QQQ            n=6891   1999-03-10 .. 2026-07-31  last=687.9900     (0.5s)
+  EFA            n=6268   2001-08-27 .. 2026-07-31  last=105.5800     (0.7s)
   EEM            n=5862   2003-04-14 .. 2026-07-31  last=64.0900      (0.5s)
   XLK            n=6943   1998-12-22 .. 2026-07-31  last=175.3500     (0.7s)
   XLB            n=6943   1998-12-22 .. 2026-07-31  last=50.4300      (0.6s)
   XLY            n=6943   1998-12-22 .. 2026-07-31  last=116.0900     (0.6s)
-  XLP            n=6943   1998-12-22 .. 2026-07-31  last=85.0500      (0.5s)
-  XLE            n=6943   1998-12-22 .. 2026-07-31  last=59.5500      (0.6s)
+  XLP            n=6943   1998-12-22 .. 2026-07-31  last=85.0500      (0.7s)
+  XLE            n=6943   1998-12-22 .. 2026-07-31  last=59.5500      (0.4s)
   XLF            n=6943   1998-12-22 .. 2026-07-31  last=56.9400      (0.7s)
   XLI            n=6943   1998-12-22 .. 2026-07-31  last=179.8400     (0.6s)
-  XLV            n=6943   1998-12-22 .. 2026-07-31  last=162.5500     (0.6s)
-  XLU            n=6943   1998-12-22 .. 2026-07-31  last=44.3500      (0.6s)
+  XLV            n=6943   1998-12-22 .. 2026-07-31  last=162.5500     (0.5s)
+  XLU            n=6943   1998-12-22 .. 2026-07-31  last=44.3500      (0.7s)
   TLT            n=6040   2002-07-30 .. 2026-07-31  last=82.2500      (0.6s)
   SHY            n=6040   2002-07-30 .. 2026-07-31  last=82.0000      (0.6s)
   LQD            n=6040   2002-07-30 .. 2026-07-31  last=106.2500     (0.7s)
   IEF            n=6040   2002-07-30 .. 2026-07-31  last=92.9500      (0.5s)
-  SPHB           n=3832   2011-05-05 .. 2026-07-31  last=139.8500     (0.5s)
+  SPHB           n=3832   2011-05-05 .. 2026-07-31  last=139.8500     (0.6s)
   SPLV           n=3832   2011-05-05 .. 2026-07-31  last=76.2300      (0.6s)
-  ^VIX           n=9213   1990-01-02 .. 2026-07-31  last=15.9900      (0.6s)
-  ^SPGSCI        n=10727  1984-01-03 .. 2026-07-31  last=686.1500     (0.7s)
+  ^VIX           n=9213   1990-01-02 .. 2026-07-31  last=15.9900      (0.7s)
+  ^SPGSCI        n=10727  1984-01-03 .. 2026-07-31  last=686.1500     (0.6s)
 [sources] NAHB t2: https://www.nahb.org/-/media/NAHB/news-and-economics/docs/housing-economics/hmi/2026-07/t2-national-hmi-history-202607.xls?rev=0c35c16921ef46749068833427ed31fe&hash=75803D357537EC6B359EF20AA39410D1
   NAHB           n=499    1985-01-01 .. 2026-07-01  last=34.0000      (0.0s)
   COMPOSITE      n=393    1993-11-01 .. 2026-07-01  last=1.0127       (0.0s)
@@ -67,6 +67,7 @@ Okno sostoyaniy 2004-01-01 .. 2026-06-30; kalibrovka do 2014-12-31; uderzhannyy 
   kompozit Z06 (lestnica):      mesyacev vklada 390
   Philly NOF (uroven' vs 0):    mesyacev vklada 696
   IC4WSA (skorost', 13 nedel'): nedel' vklada 2989
+  lag publikacii IC4WSA: NE PRIMENYON (ob'yavlen v sec.3.5, +5 dney)
 
 -- 4.2 Faza rezhima DKP ------------------------------------------------------
   celevaya stavka: 16016 dney, 1982-09-27 .. 2026-08-02
@@ -112,6 +113,16 @@ Kalibrovochnyy otrezok: 2004-01-02 .. 2014-12-31, 2769 torgovyh dney
 
   Trebovanie A (q=0.20 rovno): Centr = 88.9% vremeni pri obeshchannyh 20%
   -> vnutrennee protivorechie sec.1.4.7 speki, HYPOTHESIS sec.5.1
+
+-- 6.2 Trebovanie B PO BUKVE speki: 'v odnom KVADRANTE ne men'she mesyaca' ---
+  Ispolneno bylo pereopredelenie (HYPOTHESIS sec.5: 'v odnom SOSTOYANII',
+  to est' s Centrom). Nizhe -- bukva sec.1.4.7 na RASSHIRENNOY setke q,
+  vplot' do 0.98: est' li u B hot' odin dopustimyy vyhod.
+  q=0.20:            kvadrantnyy spell 3.562 dn. (vsyo sostoyaniya 16.5)
+  q=0.42 (vybrannyy): kvadrantnyy spell 3.200 dn. (vsyo sostoyaniya 30.7)
+  MAKSIMUM po setke 0.20..0.98 s predohranitelem:  5.500 dn. pri q=0.88
+  MAKSIMUM po setke 0.20..0.98 BEZ predohranitelya: 9.468 dn. pri q=0.20
+  trebuetsya 30 dn. -> trebovanie B po bukve speki dostizhimo: NET
 
 ==============================================================================
 7. Sostoyaniya po mesyacam
@@ -193,7 +204,14 @@ Kalibrovochnyy otrezok: 2004-01-02 .. 2014-12-31, 2769 torgovyh dney
     razlozhenie tol'ko KVADRANTY h=3: mesyacev 7, nablyudeniy 61, dolya 0.4426, 90% [nan .. nan], p 1.0000, vyrozhden=True
     razlozhenie tol'ko CENTR h=1: mesyacev 263, nablyudeniy 789, dolya 0.4930, 90% [0.4689 .. 0.5184], p 0.6769, vyrozhden=False
     razlozhenie tol'ko CENTR h=3: mesyacev 261, nablyudeniy 783, dolya 0.4777, 90% [0.4432 .. 0.5109], p 0.8646, vyrozhden=False
+    uchyot all    h=1: predpisano  850, poschitano  850, vypalo 0
+    uchyot all    h=3: predpisano  850, poschitano  844, vypalo 6  [SIZE 2026-05 net ceny; SIZE 2026-06 net ceny; STYLE 2026-05 net ceny; STYLE 2026-06 net ceny; GEO 2026-05 net ceny; GEO 2026-06 net ceny]
+    uchyot quad   h=1: predpisano   61, poschitano   61, vypalo 0
+    uchyot quad   h=3: predpisano   61, poschitano   61, vypalo 0
+    uchyot center h=1: predpisano  789, poschitano  789, vypalo 0
+    uchyot center h=3: predpisano  789, poschitano  783, vypalo 6  [SIZE 2026-05 net ceny; SIZE 2026-06 net ceny; STYLE 2026-05 net ceny; STYLE 2026-06 net ceny; GEO 2026-05 net ceny; GEO 2026-06 net ceny]
   par proshlo C1: 0 iz 14
+  par, sposobnyh proyti C1 (vyborka ne vyrozhdena hotya by na odnom gorizonte): 3 iz 14 pri trebuemyh 8
 
 ==============================================================================
 10. Vtoraya vetv' kovida: kovid ISKLYUCHYON -- schitaetsya POLNOST'YU
@@ -224,7 +242,14 @@ mesyacev bez kovida: 248 (ubrano 22)
     razlozhenie tol'ko KVADRANTY h=3: mesyacev 6, nablyudeniy 54, dolya 0.4444, 90% [nan .. nan], p 1.0000, vyrozhden=True
     razlozhenie tol'ko CENTR h=1: mesyacev 242, nablyudeniy 726, dolya 0.4917, 90% [0.4656 .. 0.5165], p 0.7145, vyrozhden=False
     razlozhenie tol'ko CENTR h=3: mesyacev 240, nablyudeniy 720, dolya 0.4708, 90% [0.4375 .. 0.5042], p 0.9312, vyrozhden=False
+    uchyot all    h=1: predpisano  780, poschitano  780, vypalo 0
+    uchyot all    h=3: predpisano  780, poschitano  774, vypalo 6  [SIZE 2026-05 net ceny; SIZE 2026-06 net ceny; STYLE 2026-05 net ceny; STYLE 2026-06 net ceny; GEO 2026-05 net ceny; GEO 2026-06 net ceny]
+    uchyot quad   h=1: predpisano   54, poschitano   54, vypalo 0
+    uchyot quad   h=3: predpisano   54, poschitano   54, vypalo 0
+    uchyot center h=1: predpisano  726, poschitano  726, vypalo 0
+    uchyot center h=3: predpisano  726, poschitano  720, vypalo 6  [SIZE 2026-05 net ceny; SIZE 2026-06 net ceny; STYLE 2026-05 net ceny; STYLE 2026-06 net ceny; GEO 2026-05 net ceny; GEO 2026-06 net ceny]
   par proshlo C1: 0 iz 14
+  par, sposobnyh proyti C1 (vyborka ne vyrozhdena hotya by na odnom gorizonte): 3 iz 14 pri trebuemyh 8
 
 ==============================================================================
 11. Ustoychivost' (HYPOTHESIS sec.9)
@@ -256,7 +281,14 @@ mesyacev bez kovida: 248 (ubrano 22)
     razlozhenie tol'ko KVADRANTY h=3: mesyacev 9, nablyudeniy 78, dolya 0.4487, 90% [nan .. nan], p 1.0000, vyrozhden=True
     razlozhenie tol'ko CENTR h=1: mesyacev 261, nablyudeniy 783, dolya 0.4968, 90% [0.4713 .. 0.5223], p 0.5691, vyrozhden=False
     razlozhenie tol'ko CENTR h=3: mesyacev 259, nablyudeniy 777, dolya 0.4826, 90% [0.4479 .. 0.5174], p 0.8024, vyrozhden=False
+    uchyot all    h=1: predpisano  861, poschitano  861, vypalo 0
+    uchyot all    h=3: predpisano  861, poschitano  855, vypalo 6  [SIZE 2026-05 net ceny; SIZE 2026-06 net ceny; STYLE 2026-05 net ceny; STYLE 2026-06 net ceny; GEO 2026-05 net ceny; GEO 2026-06 net ceny]
+    uchyot quad   h=1: predpisano   78, poschitano   78, vypalo 0
+    uchyot quad   h=3: predpisano   78, poschitano   78, vypalo 0
+    uchyot center h=1: predpisano  783, poschitano  783, vypalo 0
+    uchyot center h=3: predpisano  783, poschitano  777, vypalo 6  [SIZE 2026-05 net ceny; SIZE 2026-06 net ceny; STYLE 2026-05 net ceny; STYLE 2026-06 net ceny; GEO 2026-05 net ceny; GEO 2026-06 net ceny]
   par proshlo C1: 0 iz 14
+  par, sposobnyh proyti C1 (vyborka ne vyrozhdena hotya by na odnom gorizonte): 3 iz 14 pri trebuemyh 8
 
   vetv': konfiguraciya P30  (konfiguraciya P30, mesyacev 270)
   para                 gorizont 1 mes. |            gorizont 3 mes. | peresechenie
@@ -282,7 +314,14 @@ mesyacev bez kovida: 248 (ubrano 22)
     razlozhenie tol'ko KVADRANTY h=3: mesyacev 23, nablyudeniy 211, dolya 0.5071, 90% [nan .. nan], p 1.0000, vyrozhden=True
     razlozhenie tol'ko CENTR h=1: mesyacev 247, nablyudeniy 741, dolya 0.4899, 90% [0.4642 .. 0.5155], p 0.7377, vyrozhden=False
     razlozhenie tol'ko CENTR h=3: mesyacev 245, nablyudeniy 735, dolya 0.4735, 90% [0.4395 .. 0.5061], p 0.8980, vyrozhden=False
+    uchyot all    h=1: predpisano  952, poschitano  952, vypalo 0
+    uchyot all    h=3: predpisano  952, poschitano  946, vypalo 6  [SIZE 2026-05 net ceny; SIZE 2026-06 net ceny; STYLE 2026-05 net ceny; STYLE 2026-06 net ceny; GEO 2026-05 net ceny; GEO 2026-06 net ceny]
+    uchyot quad   h=1: predpisano  211, poschitano  211, vypalo 0
+    uchyot quad   h=3: predpisano  211, poschitano  211, vypalo 0
+    uchyot center h=1: predpisano  741, poschitano  741, vypalo 0
+    uchyot center h=3: predpisano  741, poschitano  735, vypalo 6  [SIZE 2026-05 net ceny; SIZE 2026-06 net ceny; STYLE 2026-05 net ceny; STYLE 2026-06 net ceny; GEO 2026-05 net ceny; GEO 2026-06 net ceny]
   par proshlo C1: 0 iz 14
+  par, sposobnyh proyti C1 (vyborka ne vyrozhdena hotya by na odnom gorizonte): 3 iz 14 pri trebuemyh 8
 
   vetv': konfiguraciya VOTE  (konfiguraciya VOTE, mesyacev 270)
   para                 gorizont 1 mes. |            gorizont 3 mes. | peresechenie
@@ -308,7 +347,14 @@ mesyacev bez kovida: 248 (ubrano 22)
     razlozhenie tol'ko KVADRANTY h=3: mesyacev 13, nablyudeniy 118, dolya 0.4576, 90% [nan .. nan], p 1.0000, vyrozhden=True
     razlozhenie tol'ko CENTR h=1: mesyacev 257, nablyudeniy 771, dolya 0.4890, 90% [0.4643 .. 0.5149], p 0.7612, vyrozhden=False
     razlozhenie tol'ko CENTR h=3: mesyacev 255, nablyudeniy 765, dolya 0.4771, 90% [0.4418 .. 0.5124], p 0.8592, vyrozhden=False
+    uchyot all    h=1: predpisano  889, poschitano  887, vypalo 2  [GOLD 2004-11 net ceny; OIL 2004-11 net ceny]
+    uchyot all    h=3: predpisano  889, poschitano  883, vypalo 6  [SIZE 2026-05 net ceny; SIZE 2026-06 net ceny; STYLE 2026-05 net ceny; STYLE 2026-06 net ceny; GEO 2026-05 net ceny; GEO 2026-06 net ceny]
+    uchyot quad   h=1: predpisano  118, poschitano  116, vypalo 2  [GOLD 2004-11 net ceny; OIL 2004-11 net ceny]
+    uchyot quad   h=3: predpisano  118, poschitano  118, vypalo 0
+    uchyot center h=1: predpisano  771, poschitano  771, vypalo 0
+    uchyot center h=3: predpisano  771, poschitano  765, vypalo 6  [SIZE 2026-05 net ceny; SIZE 2026-06 net ceny; STYLE 2026-05 net ceny; STYLE 2026-06 net ceny; GEO 2026-05 net ceny; GEO 2026-06 net ceny]
   par proshlo C1: 0 iz 14
+  par, sposobnyh proyti C1 (vyborka ne vyrozhdena hotya by na odnom gorizonte): 3 iz 14 pri trebuemyh 8
 
   vetv': konfiguraciya NOVAL  (konfiguraciya NOVAL, mesyacev 270)
   para                 gorizont 1 mes. |            gorizont 3 mes. | peresechenie
@@ -334,7 +380,14 @@ mesyacev bez kovida: 248 (ubrano 22)
     razlozhenie tol'ko KVADRANTY h=3: mesyacev 37, nablyudeniy 332, dolya 0.5271, 90% [nan .. nan], p 1.0000, vyrozhden=True
     razlozhenie tol'ko CENTR h=1: mesyacev 233, nablyudeniy 699, dolya 0.4893, 90% [0.4635 .. 0.5165], p 0.7423, vyrozhden=False
     razlozhenie tol'ko CENTR h=3: mesyacev 231, nablyudeniy 693, dolya 0.4762, 90% [0.4416 .. 0.5123], p 0.8638, vyrozhden=False
+    uchyot all    h=1: predpisano 1031, poschitano 1031, vypalo 0
+    uchyot all    h=3: predpisano 1031, poschitano 1025, vypalo 6  [SIZE 2026-05 net ceny; SIZE 2026-06 net ceny; STYLE 2026-05 net ceny; STYLE 2026-06 net ceny; GEO 2026-05 net ceny; GEO 2026-06 net ceny]
+    uchyot quad   h=1: predpisano  332, poschitano  332, vypalo 0
+    uchyot quad   h=3: predpisano  332, poschitano  332, vypalo 0
+    uchyot center h=1: predpisano  699, poschitano  699, vypalo 0
+    uchyot center h=3: predpisano  699, poschitano  693, vypalo 6  [SIZE 2026-05 net ceny; SIZE 2026-06 net ceny; STYLE 2026-05 net ceny; STYLE 2026-06 net ceny; GEO 2026-05 net ceny; GEO 2026-06 net ceny]
   par proshlo C1: 0 iz 14
+  par, sposobnyh proyti C1 (vyborka ne vyrozhdena hotya by na odnom gorizonte): 7 iz 14 pri trebuemyh 8
 
 -- 11.1-bis Dva chteniya theta POSLE raschyota (sec.11 zapis' 3) -------------
   Trebovaniya A i B sec.1.4.7 nesovmestimy (sm. sec.6 i sec.13-bis).
@@ -368,7 +421,14 @@ mesyacev bez kovida: 248 (ubrano 22)
     razlozhenie tol'ko KVADRANTY h=3: mesyacev 22, nablyudeniy 207, dolya 0.4203, 90% [nan .. nan], p 1.0000, vyrozhden=True
     razlozhenie tol'ko CENTR h=1: mesyacev 248, nablyudeniy 744, dolya 0.4866, 90% [0.4610 .. 0.5121], p 0.8088, vyrozhden=False
     razlozhenie tol'ko CENTR h=3: mesyacev 246, nablyudeniy 738, dolya 0.4797, 90% [0.4444 .. 0.5149], p 0.8396, vyrozhden=False
+    uchyot all    h=1: predpisano  951, poschitano  949, vypalo 2  [GOLD 2004-11 net ceny; OIL 2004-11 net ceny]
+    uchyot all    h=3: predpisano  951, poschitano  945, vypalo 6  [SIZE 2026-05 net ceny; SIZE 2026-06 net ceny; STYLE 2026-05 net ceny; STYLE 2026-06 net ceny; GEO 2026-05 net ceny; GEO 2026-06 net ceny]
+    uchyot quad   h=1: predpisano  207, poschitano  205, vypalo 2  [GOLD 2004-11 net ceny; OIL 2004-11 net ceny]
+    uchyot quad   h=3: predpisano  207, poschitano  207, vypalo 0
+    uchyot center h=1: predpisano  744, poschitano  744, vypalo 0
+    uchyot center h=3: predpisano  744, poschitano  738, vypalo 6  [SIZE 2026-05 net ceny; SIZE 2026-06 net ceny; STYLE 2026-05 net ceny; STYLE 2026-06 net ceny; GEO 2026-05 net ceny; GEO 2026-06 net ceny]
   par proshlo C1: 0 iz 14
+  par, sposobnyh proyti C1 (vyborka ne vyrozhdena hotya by na odnom gorizonte): 3 iz 14 pri trebuemyh 8
   A20NOVAL  sostoyaniya: {'CENTER': 94, 'I': 37, 'II': 69, 'III': 26, 'IV': 44}
 
   vetv': POSLE RASCHYOTA A20NOVAL  (konfiguraciya A20NOVAL, mesyacev 270)
@@ -395,7 +455,14 @@ mesyacev bez kovida: 248 (ubrano 22)
     razlozhenie tol'ko KVADRANTY h=3: mesyacev 174, nablyudeniy 1603, dolya 0.4847, 90% [0.4412 .. 0.5277], p 0.7249, vyrozhden=False
     razlozhenie tol'ko CENTR h=1: mesyacev 94, nablyudeniy 282, dolya 0.4894, 90% [0.4468 .. 0.5319], p 0.6653, vyrozhden=False
     razlozhenie tol'ko CENTR h=3: mesyacev 94, nablyudeniy 282, dolya 0.4787, 90% [0.4291 .. 0.5284], p 0.7668, vyrozhden=False
+    uchyot all    h=1: predpisano 1906, poschitano 1902, vypalo 4  [GOLD 2004-11 net ceny; GOLD 2004-12 net ceny; OIL 2004-11 net ceny; OIL 2004-12 net ceny]
+    uchyot all    h=3: predpisano 1906, poschitano 1885, vypalo 21  [SIZE 2026-05 net ceny; SIZE 2026-06 net ceny; GEO 2026-05 net ceny; GEO 2026-06 net ceny; DISCSTAP 2026-05 net ceny; DISCSTAP 2026-06 net ceny; ...]
+    uchyot quad   h=1: predpisano 1624, poschitano 1620, vypalo 4  [GOLD 2004-11 net ceny; GOLD 2004-12 net ceny; OIL 2004-11 net ceny; OIL 2004-12 net ceny]
+    uchyot quad   h=3: predpisano 1624, poschitano 1603, vypalo 21  [SIZE 2026-05 net ceny; SIZE 2026-06 net ceny; GEO 2026-05 net ceny; GEO 2026-06 net ceny; DISCSTAP 2026-05 net ceny; DISCSTAP 2026-06 net ceny; ...]
+    uchyot center h=1: predpisano  282, poschitano  282, vypalo 0
+    uchyot center h=3: predpisano  282, poschitano  282, vypalo 0
   par proshlo C1: 1 iz 14
+  par, sposobnyh proyti C1 (vyborka ne vyrozhdena hotya by na odnom gorizonte): 14 iz 14 pri trebuemyh 8
 
 -- 11.2 Dva razbieniya vyborki -----------------------------------------------
   half_early    mesyacev 135 | h1 dolya 0.4893 (n_m 135, p 0.6779) | h3 dolya 0.4608 (n_m 135, p 0.9058)
@@ -454,12 +521,19 @@ mesyacev bez kovida: 248 (ubrano 22)
     razlozhenie tol'ko KVADRANTY h=3: mesyacev 8, nablyudeniy 72, dolya 0.4028, 90% [nan .. nan], p 1.0000, vyrozhden=True
     razlozhenie tol'ko CENTR h=1: mesyacev 262, nablyudeniy 786, dolya 0.4924, 90% [0.4669 .. 0.5178], p 0.7081, vyrozhden=False
     razlozhenie tol'ko CENTR h=3: mesyacev 260, nablyudeniy 780, dolya 0.4769, 90% [0.4435 .. 0.5115], p 0.8768, vyrozhden=False
+    uchyot all    h=1: predpisano  858, poschitano  858, vypalo 0
+    uchyot all    h=3: predpisano  858, poschitano  852, vypalo 6  [SIZE 2026-05 net ceny; SIZE 2026-06 net ceny; STYLE 2026-05 net ceny; STYLE 2026-06 net ceny; GEO 2026-05 net ceny; GEO 2026-06 net ceny]
+    uchyot quad   h=1: predpisano   72, poschitano   72, vypalo 0
+    uchyot quad   h=3: predpisano   72, poschitano   72, vypalo 0
+    uchyot center h=1: predpisano  786, poschitano  786, vypalo 0
+    uchyot center h=3: predpisano  786, poschitano  780, vypalo 6  [SIZE 2026-05 net ceny; SIZE 2026-06 net ceny; STYLE 2026-05 net ceny; STYLE 2026-06 net ceny; GEO 2026-05 net ceny; GEO 2026-06 net ceny]
   par proshlo C1: 0 iz 14
+  par, sposobnyh proyti C1 (vyborka ne vyrozhdena hotya by na odnom gorizonte): 3 iz 14 pri trebuemyh 8
 
 ==============================================================================
 13. Kriterii (HYPOTHESIS sec.7.5)
 ==============================================================================
-  C1 (>=8 par iz 14)                         NE VYPOLNEN   (proshlo 0)
+  C1 (>=8 par iz 14)                         NE VYPOLNEN   (proshlo 0; potolok pri fakticheskih vyborkah 3)
   C2 (pul >0.55, Holm<0.05, oba gorizonta)   NE VYPOLNEN   (h1 0.4918 p=1.0000; h3 0.4751 p=1.0000)
   C3 (vne vyborki 2015+)                     NE VYPOLNEN   (h1 0.4932; h3 0.4838)
   C4 (ustoychivost')                         NE VYPOLNEN   (narusheno yacheek 8 iz 8)
@@ -481,6 +555,12 @@ VERDIKT: OPROVERGNUTO
   C1=False C2=False C3=False C4=False C5=False
   dolya ni na odnom gorizonte ne nizhe 0.5 znachimo
 
+  Potolok C1 na fakticheskoy konfiguracii: predohranitel' vyrozhdeniya
+  (n/L>=8) prohodyat 3 pary iz 14 hotya by na odnom gorizonte, a C1
+  trebuet vosem'. Znachit C1 ne mog srabotat' ni pri kakom ishode dannyh
+  -- ne potomu, chto pary ploho ugadyvayut, a potomu, chto instrument
+  nazval kvadrant v 7 mesyacah iz 270.
+
 ==============================================================================
 13-bis. Sovmestimy li trebovaniya A i B sec.1.4.7
 ==============================================================================
@@ -491,4 +571,10 @@ VERDIKT: OPROVERGNUTO
   -> dolya vremeni v Centre poryadka pyatoy chasti dostizhima pri kakom-
      libo theta: NET
 
-result.json zapisan; vsego 80.2 s
+  Vtoraya prichina, bez dannyh: osi kalibruyutsya nezavisimo, Centr -- ILI,
+  znachit pri 20-m percentile na kazhduyu os' Centr = 1 - 0.8*0.8 = 0.36,
+  a ne 0.20. Dva predlozheniya odnogo abzaca sec.1.4.7 protivorechat
+  drug drugu do vsyakogo izmereniya.
+  Izmereno (porogi bez predohranitelya, q=0.20): Centr = 0.3608 protiv predskazannyh 0.36
+
+result.json zapisan; vsego 71.5 s
