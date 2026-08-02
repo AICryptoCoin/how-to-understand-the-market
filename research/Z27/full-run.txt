@@ -1,0 +1,1321 @@
+
+==============================================================================
+Z27 -- razbor konstrukcii klassifikatora po ogranichitelyam
+==============================================================================
+Dohodnosti ne otkryvayutsya. Storozha: _yahoo (belyy spisok simvolov),
+_z05 (belyy spisok klyuchey), otsutstvie funkciy s gorizontom.
+Setka q: 31 uzlov, 0.00 .. 0.60 (shag 0.02)
+
+-- 3.1 Ryady -----------------------------------------------------------------
+  DGS2         n=12537  1976-06-01 .. 2026-07-30  (0.0s)
+  DGS5         n=16129  1962-01-02 .. 2026-07-30  (0.0s)
+  DGS10        n=16129  1962-01-02 .. 2026-07-30  (0.0s)
+  T5YIE        n=5899   2003-01-02 .. 2026-07-31  (0.0s)
+  PERMIT       n=798    1960-01-01 .. 2026-06-01  (0.0s)
+  IC4WSA       n=3105   1967-01-28 .. 2026-07-25  (0.0s)
+  NOF          n=699    1968-05-01 .. 2026-07-01  (0.0s)
+  FEDFUNDS     n=864    1954-07-01 .. 2026-06-01  (0.0s)
+  DFEDTAR      n=9577   1982-09-27 .. 2008-12-15  (0.0s)
+  DFEDTARU     n=6439   2008-12-16 .. 2026-08-02  (0.0s)
+  DFEDTARL     n=6439   2008-12-16 .. 2026-08-02  (0.0s)
+  UMCSENT      n=674    1952-11-01 .. 2026-06-01  (0.0s)
+  DX-Y.NYB     n=14112  1971-01-04 .. 2026-08-02  (0.5s)
+  GC=F         n=6503   2000-08-30 .. 2026-07-31  (0.5s)
+  HG=F         n=6508   2000-08-30 .. 2026-07-31  (0.6s)
+  CL=F         n=6512   2000-08-23 .. 2026-07-31  (0.6s)
+  ZQ=F         n=6489   2000-09-01 .. 2026-07-31  (0.5s)
+[sources] NAHB t2: https://www.nahb.org/-/media/NAHB/news-and-economics/docs/housing-economics/hmi/2026-07/t2-national-hmi-history-202607.xls?rev=0c35c16921ef46749068833427ed31fe&hash=75803D357537EC6B359EF20AA39410D1
+  NAHB         n=499    1985-01-01 .. 2026-07-01  (0.0s)
+  COMPOSITE    n=393    1993-11-01 .. 2026-07-01  (0.0s)
+
+-- 3.2 Predposylka: lestnica Z06 (ta zhe proverka, chto v Z05) ---------------
+  ladder.rejected = True
+  ladder_practical month_counts = {'1.0': 272, '-1.0': 121}
+  vyzov po zabrakovannoy lestnice otkazyvaet: True
+
+-- 4.1 Setki (HYPOTHESIS sec.4) ----------------------------------------------
+  mesyacev iz Z05/result.json['month_end_dates']: 270  (2004-01 .. 2026-06)
+  dnevnaya setka (DGS10 + koncy mesyacev): razgon 6375 dney, okno 5627 dney
+  koncov mesyacev Z05 vne setki: 0
+  kalibrovochnyy otrezok: 2004-01-02 .. 2014-12-31, 2753 dney
+  nedel'naya setka: 1175 nedel'
+  dney v mesyace: min 18, max 23; nedel' v mesyace: min 4, max 5
+
+-- 5.1 Mesyachnye i nedel'nye vhody ------------------------------------------
+  NAHB 496 | PERMIT 772 | kompozit 390 | NOF 696 | IC4WSA 2989 nedel'
+  UMCSENT: porog urovnya = mediana kalibrovochnogo otrezka = 78.35, mesyacev vklada 662
+  kontrol' Z06: vklad kompozita po znacheniyam = {1.0: 149, 0.2: 38, -0.2: 120, -1.0: 83}
+
+-- 5.2 Faza rezhima DKP ------------------------------------------------------
+  faza opredelena v 6375 dnyah iz 6375
+
+-- 5.3 Dnevnye vhody ---------------------------------------------------------
+  okno 10 dn.: us2y=6126, real5=5621, dxy=6126, zq=6126, hggc=6126, clgc=6124
+
+-- 5.4 Forma krivoy ----------------------------------------------------------
+  okno  5 dn.: {'I': 783, 'II': 293, 'III': 351, 'IV': 740, 'PARALLEL': 3460}
+  okno 10 dn.: {'I': 1050, 'II': 369, 'III': 523, 'IV': 981, 'PARALLEL': 2704}
+  okno 30 dn.: {'I': 1362, 'II': 553, 'III': 854, 'IV': 1177, 'PARALLEL': 1681}
+
+==============================================================================
+6. Sostavy osey (variant D) i predschyot ochkov
+==============================================================================
+  D0  fed=0.65 (dxy+phase+real5+us2y)  macro=0.64 (claims+clgc+comp+hggc+nahb+nof+permit)  -- kak est'
+  D1  fed=0.65 (dxy+phase+real5+us2y)  macro=0.56 (claims+comp+nahb+nof+permit)  -- bez rynochnyh proksi v MACRO
+  D2  fed=0.55 (phase+real5+us2y)  macro=0.64 (claims+clgc+comp+hggc+nahb+nof+permit)  -- bez DXY v FED
+  D3  fed=0.55 (phase+real5+us2y)  macro=0.56 (claims+comp+nahb+nof+permit)  -- bez proksi i bez DXY (zadanie D-b)
+  D4  fed=0.65 (phase+real5+us2y+zq)  macro=0.62 (claims+comp+nahb+nof+permit+umcsent)  -- zamena: ZQ=F 0.10 + UMCSENT 0.06
+  D5  fed=0.85 (phase+real5+us2y+zq)  macro=0.62 (claims+comp+nahb+nof+permit+umcsent)  -- zamena: ZQ=F 0.30 (shchedryy) + UMCSENT 0.06
+  D0  dney bez osi FED    6, bez osi MACRO    0 (iz 5627)
+  D1  dney bez osi FED    6, bez osi MACRO 5627 (iz 5627)
+  D2  dney bez osi FED 5627, bez osi MACRO    0 (iz 5627)
+  D3  dney bez osi FED 5627, bez osi MACRO 5627 (iz 5627)
+  D4  dney bez osi FED    6, bez osi MACRO    0 (iz 5627)
+  D5  dney bez osi FED    0, bez osi MACRO    0 (iz 5627)
+
+==============================================================================
+9. Kontrol': vosproizvoditsya li Z05 na etom konveyere
+==============================================================================
+  Z05 P10: q=0.42 theta_fed=0.2199 theta_macro=0.2084
+  pri theta Z05: rashozhdeniy pomesyachnyh sostoyaniy s Z05 P10: 0 iz 270
+  raspredelenie: {'CENTER': 263, 'I': 3, 'II': 2, 'IV': 2}
+  kvadrant nazvan porogami: 91 mesyacev (Z05: 91)
+  pogasheno predohranitelem: 84 mesyacev (Z05: 84)
+  'parallel'nyy sdvig' po oknam: {5: 169, 10: 140, 30: 78} (Z05: {5: 169, 10: 140, 30: 78})
+  A20NOVAL: kvadrantnyh mesyacev 176 (Z05: 176)
+  VOTE (= A1): kvadrantnyh mesyacev 13 (Z05: 13)
+  VSE KONTROLI PROYDENY: konveyer -- tot zhe, chto v Z05.
+
+==============================================================================
+10. Pary: vyrozhdennost' vyborki schitaetsya po tablice predpisaniy
+==============================================================================
+  par v semeystve: 14; BETA vne semeystva (Z05 sec.6.3)
+  kontrol' na bazovoy yacheyke (Z05 P10, tablica sec.4 otchyota Z05):
+    n po param: {'SIZE': 270, 'STYLE': 268, 'GEO': 270, 'TECHMAT': 5, 'DISCSTAP': 2, 'CYCNON': 4, 'MATFIN': 2, 'DUR': 5, 'CRED': 4, 'GOLD': 7, 'COMM': 7, 'OIL': 2, 'USD': 2, 'VIX': 2}
+    rashozhdeniy s tablicey Z05: 0 
+  -> n schitaetsya bez edinoy ceny i sovpadaet s Z05 vo vseh 14 strokah.
+
+  HYPOTHESIS sec.7.4 utverzhdal TOZHDESTVO: S4>=8 <=> Q-II + Q-III >= 24.
+  Perebor iskusstvennyh raspredeleniy (arifmetika, ne dannye) proveryaet
+  obe storony po otdel'nosti:
+    DOSTATOCHNOST' (II+III>=24 => S4>=8): True
+    NEOBHODIMOST' (S4>=8 => II+III>=24): False  kontrprimer {'CENTER': 246, 'I': 0, 'II': 0, 'III': 0, 'IV': 24} -> 11 par
+    minimal'noe chislo kvadrantnyh mesyacev, pri kotorom S4>=8: 24 {'CENTER': 246, 'I': 0, 'II': 0, 'III': 0, 'IV': 24}
+  -> Pred-registraciya oshiblas' v STORONE 'tol'ko togda': dostatochnost'
+     derzhitsya, neobhodimost' net. Vyvod o VYPOLNIMOSTI S4 ot etogo ne
+     menyaetsya -- on opiralsya imenno na dostatochnost'. Zapis' v sec.11.
+
+==============================================================================
+11. Polnaya setka variantov
+==============================================================================
+  A(6) x Bq(4) x Bc(2) x C(3) x D(6) = 864 yacheek; kalibrovok 288
+  yacheek poscheno: 864 za 10.5 s
+  nich'ih pri modal'noy agregacii: C_D 527, C_W 3753 (iz 77760 mesyaco-yacheek)
+
+-- 11.0 Bazovaya yacheyka i yacheyka zadaniya --------------------------------
+  BAZA  A0|Bq_B|OR|C_M|D0
+    q=0.42 th=(0.2197, 0.2082)
+    Centr 0.974 | kvadranty 0.026 | Q-III 0 | ANOMALY 0
+    spellov v kvadrante 148, srednyaya 3.3 dn., mediana 2.0 dn.
+    par ne vyrozhdeno 3/14 | S1=False S2=False S3=False S4=False
+  ZADANIE A3|Bq_JOINT|OR|C_D|D3
+    q=nan th=(nan, nan)  [dopustimogo q net]
+    Centr 0.000 | kvadranty 0.000 | Q-III 0 | ANOMALY 270
+    spellov v kvadrante 0, srednyaya 0.0 dn., mediana 0.0 dn.
+    par ne vyrozhdeno 0/14 | S1=False S2=False S3=False S4=False
+
+  Kontrol' pred-registracii: Bq_B na rasshirennoy setke q dal q=0.42;
+  Z05 (setka s 0.20) dal q=0.42. Sovpadenie: True
+
+-- 11.1 Tozhdestvo A3 == A4 (ob'yavleno do raschyota) ------------------------
+  yacheek s rashozhdeniem A3 protiv A4: 0
+  -> flag vmesto veto ne menyaet sostoyanie NI V ODNOY yacheyke.
+
+==============================================================================
+12. Kazhdyy ogranichitel' po otdel'nosti
+==============================================================================
+
+-- 12.0 Byudzhet molchaniya: kto skol'ko gasit (theta Z05, sostav D0) --------
+  Vsego otchyotnyh mesyacev:                       270  (100.0%)
+  Porogi vernuli Centr (kvadrant ne nazvan):       179  (66.3%)
+  Porogi nazvali kvadrant:                          91  (33.7%)
+    iz nih pogashen predohranitelem:                84  (92.3% ot nazvannyh)
+    dozhilo do otchyota:                             7  (2.6%)
+
+  Chto dayot snyatie ogranichitelya PO OTDEL'NOSTI (ostal'nye na meste):
+    nichego ne snyato (baza Z05 P10)     kvadrantov   7 (2.6%) | Q-III  0 | spell   3.3 dn.
+    snyat tol'ko validator               kvadrantov  91 (33.7%) | Q-III  9 | spell   7.1 dn.
+    snyato tol'ko pravilo 5 b.p.         kvadrantov  27 (10.0%) | Q-III  4 | spell   3.5 dn.
+    snyaty tol'ko porogi (theta -> 0)    kvadrantov  35 (13.0%) | Q-III  7 | spell   4.0 dn.
+    snyaty i porogi, i validator         kvadrantov 270 (100.0%) | Q-III 42 | spell  13.0 dn.
+
+-- 12.1 Variant A -- validator, theta perekalibruyutsya (Bq_B, OR, C_M, D0) --
+  variant                     Centr  kvadr   ANOM    Q3  spel   sred  median   par   Q3d  S1S2S3S4
+  A0 kak est': forma na o     0.974  0.026      0     0   148    3.3     2.0     3    23  0000
+  A1 golosovanie 2 iz 3 (     0.952  0.048      0     1   150    3.2     3.0     3    25  0010
+  A2 lyuboe iz tryoh okon     0.948  0.052      0     3   153    3.8     3.0     3    22  0010
+  A3 flag, a ne veto (kva     0.863  0.137      0     5   243    5.4     3.0     7    24  0010
+  A4 snyat vovse              0.863  0.137      0     5   243    5.4     3.0     7    24  0010
+  A5 veto bez pravila par     0.952  0.048      0     3   165    3.3     3.0     3    19  0010
+
+-- 12.1-bis Variant A pri FIKSIROVANNOM theta Z05 -- validator izolirovan ----
+  variant                     Centr  kvadr    Q3  spel   sred  median   par  S1S2S3S4
+  A0 kak est': forma na okn   0.974  0.026     0   147    3.3     2.0     3  0000
+  A1 golosovanie 2 iz 3 (ok   0.978  0.022     0   107    3.4     3.0     3  0000
+  A2 lyuboe iz tryoh okon p   0.926  0.074     3   217    3.8     3.0     3  0010
+  A3 flag, a ne veto (kvadr   0.663  0.337     9   386    7.1     4.0    12  1011
+  A4 snyat vovse              0.663  0.337     9   386    7.1     4.0    12  1011
+  A5 veto bez pravila paral   0.900  0.100     4   283    3.5     2.0     5  0010
+
+-- 12.2 Variant B -- porogi (A0, C_M, D0) ------------------------------------
+  variant                     Centr  kvadr   ANOM    Q3  spel   sred  median   par   Q3d  S1S2S3S4
+  Bq_B / OR                   0.974  0.026      0     0   148    3.3     2.0     3    23  0000
+  Bq_B / AND                  0.915  0.085      0     6   271    3.7     3.0     3    46  0010
+  Bq_A20 / OR                 0.919  0.081      0     5   251    3.6     3.0     3    37  0010
+  Bq_A20 / AND                0.874  0.126      0     7   327    4.0     3.0     6    53  0010
+  Bq_JOINT / OR               0.870  0.130      0     7   332    4.0     3.0     7    54  0010
+  Bq_JOINT / AND              0.870  0.130      0     7   332    4.0     3.0     7    54  0010
+  Bq_BQUAD / OR               0.985  0.015      0     0    90    3.2     3.0     3    13  0000
+  Bq_BQUAD / AND              0.915  0.085      0     6   271    3.7     3.0     3    46  0010
+
+-- 12.3 Variant C -- setka (A0, Bq_B, OR, D0) --------------------------------
+  variant                     Centr  kvadr   ANOM    Q3  spel   sred  median   par   Q3d  S1S2S3S4
+  C_M sostoyanie posledneg    0.974  0.026      0     0   148    3.3     2.0     3    23  0000
+  C_D modal'noe sostoyanie    0.993  0.007      0     1   148    3.3     2.0     3    23  0000
+  C_W modal'noe sostoyanie    0.996  0.004      0     0   148    3.3     2.0     3    23  0000
+
+-- 12.4 Variant D -- sostav vhodov (A0, Bq_B, OR, C_M) -----------------------
+  variant                     Centr  kvadr   ANOM    Q3  spel   sred  median   par   Q3d  S1S2S3S4
+  D0 kak est'                 0.974  0.026      0     0   148    3.3     2.0     3    23  0000
+  D1 bez rynochnyh proksi     0.000  0.000    270     0     0    0.0     0.0     0     0  0000
+  D2 bez DXY v FED            0.000  0.000    270     0     0    0.0     0.0     0     0  0000
+  D3 bez proksi i bez DXY     0.000  0.000    270     0     0    0.0     0.0     0     0  0000
+  D4 zamena: ZQ=F 0.10 +      0.970  0.030      0     1   129    3.6     3.0     3    20  0010
+  D5 zamena: ZQ=F 0.30 (s     0.967  0.033      0     3   131    3.6     3.0     3    22  0010
+
+-- 12.4-bis Variant D pri snyatom veto i q=0.20 (A4, Bq_A20, OR, C_M) --------
+  variant                     Centr  kvadr   ANOM    Q3  spel   sred  median   par   Q3d  S1S2S3S4
+  D0 kak est'                 0.348  0.652      0    26   578    9.2     5.0    14    74  1011
+  D1 bez rynochnyh proksi     0.000  0.000    270     0     0    0.0     0.0     0     0  0000
+  D2 bez DXY v FED            0.000  0.000    270     0     0    0.0     0.0     0     0  0000
+  D3 bez proksi i bez DXY     0.000  0.000    270     0     0    0.0     0.0     0     0  0000
+  D4 zamena: ZQ=F 0.10 +      0.356  0.644      0    24   458   11.7     7.0    14    70  1011
+  D5 zamena: ZQ=F 0.30 (s     0.344  0.656      0    26   485   11.2     7.0    14    78  1011
+
+-- 12.5 Chto vozvrashchaetsya iz 84 pogashennyh mesyacev (theta Z05 fiksirovan) 
+  Izolyaciya validatora: theta vzyaty iz bazovoy yacheyki i NE
+  perekalibruyutsya, poetomu mnozhestvo 'nazvano porogami' odno i to zhe.
+  A    vernulos    iz 84   razbivka po kvadrantam
+  A0          0       84   -
+  A1          0       84   -
+  A2         13       84   {'I': 3, 'II': 3, 'III': 3, 'IV': 4}
+  A3         84       84   {'I': 16, 'II': 40, 'III': 9, 'IV': 19}
+  A4         84       84   {'I': 16, 'II': 40, 'III': 9, 'IV': 19}
+  A5         20       84   {'I': 3, 'II': 5, 'III': 4, 'IV': 8}
+
+  Iz kakih kvadrantov sostoyalo mnozhestvo 84 (do predohranitelya):
+    {'I': 16, 'II': 40, 'III': 9, 'IV': 19}
+  Pochemu pogasheny (forma na okne 10 v etih mesyacah):
+    {'PARALLEL': 55, 'forma=I': 15, 'forma=II': 3, 'forma=III': 3, 'forma=IV': 8}
+
+-- 12.6 Razvyortka po otsechke: ogranichitel' -- otsechka ili sostav? --------
+  D        vesFED   vesMACRO   otsechka mesyacev vychislimo
+  D0         0.65       0.64       0.60        270
+  D0         0.65       0.64       0.55        270
+  D0         0.65       0.64       0.50        270
+  D1         0.65       0.56       0.60          0
+  D1         0.65       0.56       0.55        270
+  D1         0.65       0.56       0.50        270
+  D2         0.55       0.64       0.60          0
+  D2         0.55       0.64       0.55        270
+  D2         0.55       0.64       0.50        270
+  D3         0.55       0.56       0.60          0
+  D3         0.55       0.56       0.55        270
+  D3         0.55       0.56       0.50        270
+  D4         0.65       0.62       0.60        270
+  D4         0.65       0.62       0.55        270
+  D4         0.65       0.62       0.50        270
+  D5         0.85       0.62       0.60        270
+  D5         0.85       0.62       0.55        270
+  D5         0.85       0.62       0.50        270
+
+-- 12.7 Diagnostika vozvrata Q-III -------------------------------------------
+  V skol'kih mesyacah Q-III vypadaet hotya by na odin den' setki --
+  eto verhnyaya granica dlya lyuboy agregacii po dnyam.
+  yacheyka (bez C)            dney Q3 mes. any mes. C_M
+  A0|Bq_B|OR|D0                    82       23        0  (C_D: 1)
+  A0|Bq_A20|OR|D0                 141       37        5  (C_D: 1)
+  A1|Bq_B|OR|D0                    81       25        1  (C_D: 0)
+  A1|Bq_A20|OR|D0                 110       31        3  (C_D: 2)
+  A2|Bq_B|OR|D0                    97       22        3  (C_D: 5)
+  A2|Bq_A20|OR|D0                 245       47       10  (C_D: 7)
+  A3|Bq_B|OR|D0                   130       24        5  (C_D: 5)
+  A3|Bq_A20|OR|D0                 619       74       26  (C_D: 28)
+  A4|Bq_B|OR|D0                   130       24        5  (C_D: 5)
+  A4|Bq_A20|OR|D0                 619       74       26  (C_D: 28)
+  A5|Bq_B|OR|D0                    83       19        3  (C_D: 2)
+  A5|Bq_A20|OR|D0                 246       55       10  (C_D: 3)
+
+==============================================================================
+13. Polnaya tablica 864 yacheek (poryadok -- HYPOTHESIS sec.7.3)
+==============================================================================
+  #    yacheyka A|Bq|Bc|C|D        Centr  kvadr    Q3  spel   sred  median   par lift10 lift30 S1S2S3S4
+  1    A3|Bq_A20|AND|C_D|D0        0.015  0.985    48   623   12.7     5.0    14  0.965  0.888  1011
+  2    A3|Bq_A20|AND|C_D|D4        0.015  0.985    47   503   15.6     7.0    14  1.085  0.893  1011
+  3    A3|Bq_A20|AND|C_D|D5        0.015  0.985    50   578   13.7     7.0    14  1.103  0.889  1011
+  4    A4|Bq_A20|AND|C_D|D0        0.015  0.985    48   623   12.7     5.0    14  0.965  0.888  1011
+  5    A4|Bq_A20|AND|C_D|D4        0.015  0.985    47   503   15.6     7.0    14  1.085  0.893  1011
+  6    A4|Bq_A20|AND|C_D|D5        0.015  0.985    50   578   13.7     7.0    14  1.103  0.889  1011
+  7    A3|Bq_A20|AND|C_M|D0        0.026  0.974    40   623   12.7     5.0    14  1.109  1.083  1011
+  8    A4|Bq_A20|AND|C_M|D0        0.026  0.974    40   623   12.7     5.0    14  1.109  1.083  1011
+  9    A3|Bq_A20|AND|C_W|D0        0.033  0.967    43   623   12.7     5.0    14  1.081  1.012  1011
+  10   A4|Bq_A20|AND|C_W|D0        0.033  0.967    43   623   12.7     5.0    14  1.081  1.012  1011
+  11   A3|Bq_A20|AND|C_M|D4        0.037  0.963    44   503   15.6     7.0    14  1.193  1.071  1011
+  12   A3|Bq_A20|AND|C_M|D5        0.037  0.963    48   578   13.7     7.0    14  1.185  0.998  1011
+  13   A4|Bq_A20|AND|C_M|D4        0.037  0.963    44   503   15.6     7.0    14  1.193  1.071  1011
+  14   A4|Bq_A20|AND|C_M|D5        0.037  0.963    48   578   13.7     7.0    14  1.185  0.998  1011
+  15   A3|Bq_A20|AND|C_W|D5        0.041  0.959    48   578   13.7     7.0    14  1.086  0.960  1011
+  16   A4|Bq_A20|AND|C_W|D5        0.041  0.959    48   578   13.7     7.0    14  1.086  0.960  1011
+  17   A3|Bq_A20|AND|C_W|D4        0.059  0.941    44   503   15.6     7.0    14  1.031  0.939  1011
+  18   A4|Bq_A20|AND|C_W|D4        0.059  0.941    44   503   15.6     7.0    14  1.031  0.939  1011
+  19   A3|Bq_JOINT|OR|C_D|D0       0.100  0.900    45   609   11.1     6.0    14  1.086  0.888  1011
+  20   A4|Bq_JOINT|OR|C_D|D0       0.100  0.900    45   609   11.1     6.0    14  1.086  0.888  1011
+  21   A3|Bq_JOINT|OR|C_D|D4       0.141  0.859    41   475   13.9     7.0    14  1.099  0.880  1011
+  22   A4|Bq_JOINT|OR|C_D|D4       0.141  0.859    41   475   13.9     7.0    14  1.099  0.880  1011
+  23   A3|Bq_JOINT|OR|C_D|D5       0.144  0.856    42   497   13.5     7.0    14  1.070  0.842  1011
+  24   A4|Bq_JOINT|OR|C_D|D5       0.144  0.856    42   497   13.5     7.0    14  1.070  0.842  1011
+  25   A3|Bq_JOINT|OR|C_M|D0       0.170  0.830    35   609   11.1     6.0    14  1.212  1.140  1011
+  26   A4|Bq_JOINT|OR|C_M|D0       0.170  0.830    35   609   11.1     6.0    14  1.212  1.140  1011
+  27   A3|Bq_JOINT|AND|C_D|D4      0.174  0.826    35   541   12.2     6.0    14  1.081  0.886  1011
+  28   A3|Bq_JOINT|OR|C_W|D0       0.174  0.826    36   609   11.1     6.0    14  1.153  1.021  1011
+  29   A4|Bq_JOINT|AND|C_D|D4      0.174  0.826    35   541   12.2     6.0    14  1.081  0.886  1011
+  30   A4|Bq_JOINT|OR|C_W|D0       0.174  0.826    36   609   11.1     6.0    14  1.153  1.021  1011
+  31   A3|Bq_JOINT|AND|C_D|D5      0.185  0.815    38   599   11.1     5.0    14  1.155  0.891  1011
+  32   A4|Bq_JOINT|AND|C_D|D5      0.185  0.815    38   599   11.1     5.0    14  1.155  0.891  1011
+  33   A3|Bq_JOINT|OR|C_M|D5       0.193  0.807    36   497   13.5     7.0    14  1.180  1.003  1011
+  34   A4|Bq_JOINT|OR|C_M|D5       0.193  0.807    36   497   13.5     7.0    14  1.180  1.003  1011
+  35   A3|Bq_JOINT|OR|C_M|D4       0.196  0.804    34   475   13.9     7.0    14  1.178  1.032  1011
+  36   A4|Bq_JOINT|OR|C_M|D4       0.196  0.804    34   475   13.9     7.0    14  1.178  1.032  1011
+  37   A3|Bq_JOINT|OR|C_W|D4       0.200  0.800    37   475   13.9     7.0    14  0.981  0.899  1011
+  38   A3|Bq_JOINT|OR|C_W|D5       0.200  0.800    41   497   13.5     7.0    14  1.004  0.883  1011
+  39   A4|Bq_JOINT|OR|C_W|D4       0.200  0.800    37   475   13.9     7.0    14  0.981  0.899  1011
+  40   A4|Bq_JOINT|OR|C_W|D5       0.200  0.800    41   497   13.5     7.0    14  1.004  0.883  1011
+  41   A3|Bq_JOINT|AND|C_M|D5      0.207  0.793    38   599   11.1     5.0    14  1.284  1.079  1011
+  42   A4|Bq_JOINT|AND|C_M|D5      0.207  0.793    38   599   11.1     5.0    14  1.284  1.079  1011
+  43   A3|Bq_JOINT|AND|C_D|D0      0.211  0.789    35   630   10.3     4.0    14  0.965  0.888  1011
+  44   A3|Bq_JOINT|AND|C_M|D4      0.211  0.789    37   541   12.2     6.0    14  1.318  1.149  1011
+  45   A4|Bq_JOINT|AND|C_D|D0      0.211  0.789    35   630   10.3     4.0    14  0.965  0.888  1011
+  46   A4|Bq_JOINT|AND|C_M|D4      0.211  0.789    37   541   12.2     6.0    14  1.318  1.149  1011
+  47   A3|Bq_JOINT|AND|C_W|D4      0.226  0.774    32   541   12.2     6.0    14  1.076  1.035  1011
+  48   A3|Bq_JOINT|AND|C_W|D5      0.226  0.774    32   599   11.1     5.0    14  1.069  1.010  1011
+  49   A4|Bq_JOINT|AND|C_W|D4      0.226  0.774    32   541   12.2     6.0    14  1.076  1.035  1011
+  50   A4|Bq_JOINT|AND|C_W|D5      0.226  0.774    32   599   11.1     5.0    14  1.069  1.010  1011
+  51   A3|Bq_JOINT|AND|C_M|D0      0.230  0.770    31   630   10.3     4.0    14  1.127  1.074  1011
+  52   A4|Bq_JOINT|AND|C_M|D0      0.230  0.770    31   630   10.3     4.0    14  1.127  1.074  1011
+  53   A3|Bq_JOINT|AND|C_W|D0      0.233  0.767    30   630   10.3     4.0    14  1.186  1.037  1011
+  54   A4|Bq_JOINT|AND|C_W|D0      0.233  0.767    30   630   10.3     4.0    14  1.186  1.037  1011
+  55   A3|Bq_A20|OR|C_D|D0         0.330  0.670    28   578    9.2     5.0    14  1.245  0.918  1011
+  56   A3|Bq_BQUAD|AND|C_M|D0      0.330  0.670    26   630    8.6     4.0    14  1.104  1.110  1011
+  57   A3|Bq_B|AND|C_M|D0          0.330  0.670    26   630    8.6     4.0    14  1.104  1.110  1011
+  58   A4|Bq_A20|OR|C_D|D0         0.330  0.670    28   578    9.2     5.0    14  1.245  0.918  1011
+  59   A4|Bq_BQUAD|AND|C_M|D0      0.330  0.670    26   630    8.6     4.0    14  1.104  1.110  1011
+  60   A4|Bq_B|AND|C_M|D0          0.330  0.670    26   630    8.6     4.0    14  1.104  1.110  1011
+  61   A3|Bq_A20|OR|C_M|D5         0.344  0.656    26   485   11.2     7.0    14  1.114  1.081  1011
+  62   A4|Bq_A20|OR|C_M|D5         0.344  0.656    26   485   11.2     7.0    14  1.114  1.081  1011
+  63   A3|Bq_A20|OR|C_D|D5         0.348  0.652    28   485   11.2     7.0    14  1.077  0.734  1011
+  64   A3|Bq_A20|OR|C_M|D0         0.348  0.652    26   578    9.2     5.0    14  1.323  1.134  1011
+  65   A4|Bq_A20|OR|C_D|D5         0.348  0.652    28   485   11.2     7.0    14  1.077  0.734  1011
+  66   A4|Bq_A20|OR|C_M|D0         0.348  0.652    26   578    9.2     5.0    14  1.323  1.134  1011
+  67   A3|Bq_A20|OR|C_D|D4         0.352  0.648    25   458   11.7     7.0    14  1.062  0.719  1011
+  68   A4|Bq_A20|OR|C_D|D4         0.352  0.648    25   458   11.7     7.0    14  1.062  0.719  1011
+  69   A3|Bq_A20|OR|C_M|D4         0.356  0.644    24   458   11.7     7.0    14  1.074  1.057  1011
+  70   A4|Bq_A20|OR|C_M|D4         0.356  0.644    24   458   11.7     7.0    14  1.074  1.057  1011
+  71   A3|Bq_BQUAD|AND|C_D|D0      0.359  0.641    27   630    8.6     4.0    14  1.090  0.849  1011
+  72   A3|Bq_B|AND|C_D|D0          0.359  0.641    27   630    8.6     4.0    14  1.090  0.849  1011
+  73   A4|Bq_BQUAD|AND|C_D|D0      0.359  0.641    27   630    8.6     4.0    14  1.090  0.849  1011
+  74   A4|Bq_B|AND|C_D|D0          0.359  0.641    27   630    8.6     4.0    14  1.090  0.849  1011
+  75   A3|Bq_BQUAD|AND|C_D|D5      0.374  0.626    28   566    9.3     4.0    14  1.236  0.824  1011
+  76   A3|Bq_B|AND|C_D|D5          0.374  0.626    28   566    9.3     4.0    14  1.236  0.824  1011
+  77   A4|Bq_BQUAD|AND|C_D|D5      0.374  0.626    28   566    9.3     4.0    14  1.236  0.824  1011
+  78   A4|Bq_B|AND|C_D|D5          0.374  0.626    28   566    9.3     4.0    14  1.236  0.824  1011
+  79   A3|Bq_A20|OR|C_W|D5         0.378  0.622    27   485   11.2     7.0    14  0.969  0.814  1011
+  80   A4|Bq_A20|OR|C_W|D5         0.378  0.622    27   485   11.2     7.0    14  0.969  0.814  1011
+  81   A3|Bq_BQUAD|AND|C_M|D4      0.381  0.619    30   543    9.7     5.0    14  1.408  1.227  1011
+  82   A3|Bq_B|AND|C_M|D4          0.381  0.619    30   543    9.7     5.0    14  1.408  1.227  1011
+  83   A4|Bq_BQUAD|AND|C_M|D4      0.381  0.619    30   543    9.7     5.0    14  1.408  1.227  1011
+  84   A4|Bq_B|AND|C_M|D4          0.381  0.619    30   543    9.7     5.0    14  1.408  1.227  1011
+  85   A3|Bq_A20|OR|C_W|D4         0.389  0.611    25   458   11.7     7.0    14  1.069  0.926  1011
+  86   A4|Bq_A20|OR|C_W|D4         0.389  0.611    25   458   11.7     7.0    14  1.069  0.926  1011
+  87   A3|Bq_BQUAD|AND|C_W|D0      0.400  0.600    24   630    8.6     4.0    14  1.358  1.017  1011
+  88   A3|Bq_B|AND|C_W|D0          0.400  0.600    24   630    8.6     4.0    14  1.358  1.017  1011
+  89   A4|Bq_BQUAD|AND|C_W|D0      0.400  0.600    24   630    8.6     4.0    14  1.358  1.017  1011
+  90   A4|Bq_B|AND|C_W|D0          0.400  0.600    24   630    8.6     4.0    14  1.358  1.017  1011
+  91   A3|Bq_A20|OR|C_W|D0         0.407  0.593    25   578    9.2     5.0    14  1.313  1.095  1011
+  92   A4|Bq_A20|OR|C_W|D0         0.407  0.593    25   578    9.2     5.0    14  1.313  1.095  1011
+  93   A3|Bq_BQUAD|AND|C_D|D4      0.419  0.581    26   543    9.7     5.0    14  1.135  0.819  1011
+  94   A3|Bq_BQUAD|AND|C_W|D5      0.419  0.581    22   566    9.3     4.0    14  1.205  0.971  1011
+  95   A3|Bq_B|AND|C_D|D4          0.419  0.581    26   543    9.7     5.0    14  1.135  0.819  1011
+  96   A3|Bq_B|AND|C_W|D5          0.419  0.581    22   566    9.3     4.0    14  1.205  0.971  1011
+  97   A4|Bq_BQUAD|AND|C_D|D4      0.419  0.581    26   543    9.7     5.0    14  1.135  0.819  1011
+  98   A4|Bq_BQUAD|AND|C_W|D5      0.419  0.581    22   566    9.3     4.0    14  1.205  0.971  1011
+  99   A4|Bq_B|AND|C_D|D4          0.419  0.581    26   543    9.7     5.0    14  1.135  0.819  1011
+  100  A4|Bq_B|AND|C_W|D5          0.419  0.581    22   566    9.3     4.0    14  1.205  0.971  1011
+  101  A3|Bq_BQUAD|AND|C_M|D5      0.426  0.574    28   566    9.3     4.0    14  1.343  1.131  1011
+  102  A3|Bq_B|AND|C_M|D5          0.426  0.574    28   566    9.3     4.0    14  1.343  1.131  1011
+  103  A4|Bq_BQUAD|AND|C_M|D5      0.426  0.574    28   566    9.3     4.0    14  1.343  1.131  1011
+  104  A4|Bq_B|AND|C_M|D5          0.426  0.574    28   566    9.3     4.0    14  1.343  1.131  1011
+  105  A3|Bq_BQUAD|AND|C_W|D4      0.433  0.567    23   543    9.7     5.0    14  1.292  1.046  1011
+  106  A3|Bq_B|AND|C_W|D4          0.433  0.567    23   543    9.7     5.0    14  1.292  1.046  1011
+  107  A4|Bq_BQUAD|AND|C_W|D4      0.433  0.567    23   543    9.7     5.0    14  1.292  1.046  1011
+  108  A4|Bq_B|AND|C_W|D4          0.433  0.567    23   543    9.7     5.0    14  1.292  1.046  1011
+  109  A5|Bq_JOINT|AND|C_M|D0      0.689  0.311    14   621    4.2     3.0    12  3.302  2.325  1011  (S5 ne inf.)
+  110  A5|Bq_JOINT|OR|C_M|D0       0.689  0.311    14   621    4.2     3.0    12  3.302  2.325  1011  (S5 ne inf.)
+  111  A5|Bq_A20|AND|C_M|D0        0.696  0.304    13   610    4.2     3.0    12  3.380  2.364  1011  (S5 ne inf.)
+  112  A5|Bq_JOINT|AND|C_M|D4      0.704  0.296    19   587    4.2     3.0    12  3.358  2.181  1011  (S5 ne inf.)
+  113  A5|Bq_JOINT|OR|C_M|D4       0.704  0.296    19   587    4.2     3.0    12  3.358  2.181  1011  (S5 ne inf.)
+  114  A5|Bq_JOINT|AND|C_M|D5      0.711  0.289    19   603    4.1     3.0    12  3.380  2.149  1011  (S5 ne inf.)
+  115  A5|Bq_JOINT|OR|C_M|D5       0.711  0.289    19   603    4.1     3.0    12  3.380  2.149  1011  (S5 ne inf.)
+  116  A5|Bq_A20|AND|C_M|D4        0.715  0.285    18   575    4.2     3.0    12  3.420  2.277  1011  (S5 ne inf.)
+  117  A2|Bq_JOINT|AND|C_M|D0      0.719  0.281    13   522    4.6     3.0    12  2.782  2.830  1011  (S5 ne inf.)
+  118  A2|Bq_JOINT|OR|C_M|D0       0.719  0.281    13   522    4.6     3.0    12  2.782  2.830  1011  (S5 ne inf.)
+  119  A5|Bq_A20|AND|C_M|D5        0.719  0.281    18   587    4.1     3.0    12  3.435  2.191  1011  (S5 ne inf.)
+  120  A2|Bq_A20|AND|C_M|D0        0.730  0.270    13   513    4.5     3.0    12  2.931  2.967  1011  (S5 ne inf.)
+  121  A2|Bq_JOINT|AND|C_M|D4      0.730  0.270    19   464    5.0     3.0    12  3.024  2.876  1011  (S5 ne inf.)
+  122  A2|Bq_JOINT|OR|C_M|D4       0.730  0.270    19   464    5.0     3.0    12  3.024  2.876  1011  (S5 ne inf.)
+  123  A2|Bq_A20|AND|C_M|D4        0.741  0.259    18   456    4.8     3.0    12  3.049  3.019  1011  (S5 ne inf.)
+  124  A2|Bq_JOINT|AND|C_M|D5      0.741  0.259    19   488    4.7     3.0    12  2.953  2.971  1011  (S5 ne inf.)
+  125  A2|Bq_JOINT|OR|C_M|D5       0.741  0.259    19   488    4.7     3.0    12  2.953  2.971  1011  (S5 ne inf.)
+  126  A2|Bq_A20|AND|C_M|D5        0.752  0.248    17   477    4.6     3.0    12  3.064  3.033  1011  (S5 ne inf.)
+  127  A5|Bq_BQUAD|AND|C_M|D4      0.789  0.211    16   466    3.9     3.0    12  3.025  2.052  1011  (S5 ne inf.)
+  128  A5|Bq_B|AND|C_M|D4          0.789  0.211    16   466    3.9     3.0    12  3.025  2.052  1011  (S5 ne inf.)
+  129  A2|Bq_BQUAD|AND|C_M|D4      0.796  0.204    16   362    4.5     3.0    12  2.818  2.710  1011  (S5 ne inf.)
+  130  A2|Bq_B|AND|C_M|D4          0.796  0.204    16   362    4.5     3.0    12  2.818  2.710  1011  (S5 ne inf.)
+  131  A5|Bq_BQUAD|AND|C_M|D0      0.785  0.215    11   495    3.9     3.0     9  2.989  2.105  1011  (S5 ne inf.)
+  132  A5|Bq_B|AND|C_M|D0          0.785  0.215    11   495    3.9     3.0     9  2.989  2.105  1011  (S5 ne inf.)
+  133  A5|Bq_A20|OR|C_M|D0         0.807  0.193    10   467    3.8     3.0     9  3.612  2.289  0011  (S5 ne inf.)
+  134  A2|Bq_BQUAD|AND|C_M|D0      0.815  0.185    11   401    4.2     3.0     9  2.688  2.870  0011  (S5 ne inf.)
+  135  A2|Bq_B|AND|C_M|D0          0.815  0.185    11   401    4.2     3.0     9  2.688  2.870  0011  (S5 ne inf.)
+  136  A2|Bq_JOINT|AND|C_W|D0      0.815  0.185    12   522    4.6     3.0     9  2.595  3.061  0011  (S5 ne inf.)
+  137  A2|Bq_JOINT|OR|C_W|D0       0.815  0.185    12   522    4.6     3.0     9  2.595  3.061  0011  (S5 ne inf.)
+  138  A5|Bq_A20|OR|C_M|D5         0.815  0.185    11   424    3.9     3.0     9  3.574  2.045  0011  (S5 ne inf.)
+  139  A2|Bq_A20|OR|C_M|D0         0.822  0.178    10   374    4.2     3.0     9  3.143  3.147  0011  (S5 ne inf.)
+  140  A5|Bq_A20|OR|C_M|D4         0.822  0.178     9   426    4.0     3.0     9  3.522  2.051  0011  (S5 ne inf.)
+  141  A5|Bq_BQUAD|AND|C_M|D5      0.822  0.178    12   438    3.8     3.0     9  3.327  1.953  0011  (S5 ne inf.)
+  142  A5|Bq_B|AND|C_M|D5          0.822  0.178    12   438    3.8     3.0     9  3.327  1.953  0011  (S5 ne inf.)
+  143  A2|Bq_A20|AND|C_W|D0        0.826  0.174    11   513    4.5     3.0     9  2.605  3.154  0011  (S5 ne inf.)
+  144  A2|Bq_BQUAD|AND|C_M|D5      0.826  0.174    13   364    4.3     3.0     9  2.954  2.824  0011  (S5 ne inf.)
+  145  A2|Bq_B|AND|C_M|D5          0.826  0.174    13   364    4.3     3.0     9  2.954  2.824  0011  (S5 ne inf.)
+  146  A2|Bq_JOINT|AND|C_W|D5      0.826  0.174    15   488    4.7     3.0     9  2.764  3.083  0011  (S5 ne inf.)
+  147  A2|Bq_JOINT|OR|C_W|D5       0.826  0.174    15   488    4.7     3.0     9  2.764  3.083  0011  (S5 ne inf.)
+  148  A2|Bq_A20|OR|C_M|D5         0.830  0.170    10   345    4.4     3.0     9  3.040  3.116  0011  (S5 ne inf.)
+  149  A2|Bq_A20|OR|C_M|D4         0.833  0.167     9   337    4.5     3.0     9  2.836  2.904  0011  (S5 ne inf.)
+  150  A2|Bq_JOINT|AND|C_W|D4      0.833  0.167    13   464    5.0     3.0     9  2.753  3.241  0011  (S5 ne inf.)
+  151  A2|Bq_JOINT|OR|C_W|D4       0.833  0.167    13   464    5.0     3.0     9  2.753  3.241  0011  (S5 ne inf.)
+  152  A2|Bq_A20|AND|C_W|D5        0.837  0.163    14   477    4.6     3.0     9  2.731  3.140  0011  (S5 ne inf.)
+  153  A2|Bq_A20|AND|C_D|D0        0.841  0.159    10   513    4.5     3.0     9  2.823  2.988  0011  (S5 ne inf.)
+  154  A2|Bq_JOINT|AND|C_D|D0      0.841  0.159    10   522    4.6     3.0     9  2.823  2.988  0011  (S5 ne inf.)
+  155  A2|Bq_JOINT|OR|C_D|D0       0.841  0.159    10   522    4.6     3.0     9  2.823  2.988  0011  (S5 ne inf.)
+  156  A2|Bq_A20|AND|C_W|D4        0.844  0.156    13   456    4.8     3.0     9  2.580  3.128  0011  (S5 ne inf.)
+  157  A2|Bq_JOINT|AND|C_D|D4      0.844  0.156    13   464    5.0     3.0     9  3.271  3.287  0011  (S5 ne inf.)
+  158  A2|Bq_JOINT|OR|C_D|D4       0.848  0.152    12   464    5.0     3.0     9  3.271  3.279  0011  (S5 ne inf.)
+  159  A5|Bq_JOINT|AND|C_W|D0      0.856  0.144     6   621    4.2     3.0     9  3.028  2.914  0011  (S5 ne inf.)
+  160  A5|Bq_JOINT|OR|C_W|D0       0.856  0.144     6   621    4.2     3.0     9  3.028  2.914  0011  (S5 ne inf.)
+  161  A2|Bq_A20|AND|C_D|D4        0.852  0.148    13   456    4.8     3.0     8  3.164  3.203  0011  (S5 ne inf.)
+  162  A2|Bq_A20|AND|C_D|D5        0.859  0.141    12   477    4.6     3.0     8  3.321  3.191  0011  (S5 ne inf.)
+  163  A2|Bq_JOINT|AND|C_D|D5      0.859  0.141    12   488    4.7     3.0     8  3.321  3.191  0011  (S5 ne inf.)
+  164  A2|Bq_JOINT|OR|C_D|D5       0.859  0.141    12   488    4.7     3.0     8  3.321  3.191  0011  (S5 ne inf.)
+  165  A0|Bq_JOINT|AND|C_M|D4      0.867  0.133    13   312    4.0     3.0     8  3.358  2.344  0011  (S5 ne inf.)
+  166  A0|Bq_JOINT|OR|C_M|D4       0.867  0.133    13   312    4.0     3.0     8  3.358  2.344  0011  (S5 ne inf.)
+  167  A0|Bq_JOINT|AND|C_M|D5      0.874  0.126    13   323    3.8     3.0     8  3.380  2.376  0011  (S5 ne inf.)
+  168  A0|Bq_JOINT|OR|C_M|D5       0.874  0.126    13   323    3.8     3.0     8  3.380  2.376  0011  (S5 ne inf.)
+  169  A3|Bq_BQUAD|OR|C_M|D0       0.863  0.137     5   243    5.4     3.0     7  0.875  1.000  0010
+  170  A3|Bq_B|OR|C_M|D0           0.863  0.137     5   243    5.4     3.0     7  0.875  1.000  0010
+  171  A4|Bq_BQUAD|OR|C_M|D0       0.863  0.137     5   243    5.4     3.0     7  0.875  1.000  0010
+  172  A4|Bq_B|OR|C_M|D0           0.863  0.137     5   243    5.4     3.0     7  0.875  1.000  0010
+  173  A5|Bq_A20|AND|C_W|D0        0.863  0.137     6   610    4.2     3.0     7  3.088  2.956  0010  (S5 ne inf.)
+  174  A3|Bq_BQUAD|OR|C_M|D4       0.867  0.133     2   209    6.0     4.0     7  0.533  1.059  0010
+  175  A3|Bq_B|OR|C_M|D4           0.867  0.133     2   209    6.0     4.0     7  0.533  1.059  0010
+  176  A4|Bq_BQUAD|OR|C_M|D4       0.867  0.133     2   209    6.0     4.0     7  0.533  1.059  0010
+  177  A4|Bq_B|OR|C_M|D4           0.867  0.133     2   209    6.0     4.0     7  0.533  1.059  0010
+  178  A0|Bq_JOINT|AND|C_M|D0      0.870  0.130     7   332    4.0     3.0     7  3.302  2.429  0010  (S5 ne inf.)
+  179  A0|Bq_JOINT|OR|C_M|D0       0.870  0.130     7   332    4.0     3.0     7  3.302  2.429  0010  (S5 ne inf.)
+  180  A5|Bq_JOINT|AND|C_D|D0      0.870  0.130     5   621    4.2     3.0     7  3.051  3.046  0010  (S5 ne inf.)
+  181  A5|Bq_JOINT|OR|C_D|D0       0.870  0.130     5   621    4.2     3.0     7  3.051  3.046  0010  (S5 ne inf.)
+  182  A5|Bq_A20|AND|C_D|D0        0.874  0.126     6   610    4.2     3.0     7  3.200  2.981  0010  (S5 ne inf.)
+  183  A0|Bq_A20|AND|C_M|D0        0.874  0.126     7   327    4.0     3.0     6  3.380  2.500  0010  (S5 ne inf.)
+  184  A0|Bq_A20|AND|C_M|D4        0.874  0.126    12   303    4.0     3.0     6  3.420  2.557  0010  (S5 ne inf.)
+  185  A0|Bq_A20|AND|C_M|D5        0.878  0.122    12   313    3.8     3.0     6  3.435  2.485  0010  (S5 ne inf.)
+  186  A5|Bq_JOINT|AND|C_D|D4      0.881  0.119     7   587    4.2     3.0     6  3.636  3.193  0010  (S5 ne inf.)
+  187  A5|Bq_JOINT|OR|C_D|D4       0.881  0.119     7   587    4.2     3.0     6  3.636  3.193  0010  (S5 ne inf.)
+  188  A2|Bq_BQUAD|AND|C_W|D0      0.889  0.111     7   401    4.2     3.0     6  2.736  3.443  0010  (S5 ne inf.)
+  189  A2|Bq_B|AND|C_W|D0          0.889  0.111     7   401    4.2     3.0     6  2.736  3.443  0010  (S5 ne inf.)
+  190  A3|Bq_BQUAD|OR|C_D|D5       0.889  0.111     6   204    6.5     4.0     6  1.778  1.185  0010
+  191  A3|Bq_B|OR|C_D|D5           0.889  0.111     6   204    6.5     4.0     6  1.778  1.185  0010
+  192  A4|Bq_BQUAD|OR|C_D|D5       0.889  0.111     6   204    6.5     4.0     6  1.778  1.185  0010
+  193  A4|Bq_B|OR|C_D|D5           0.889  0.111     6   204    6.5     4.0     6  1.778  1.185  0010
+  194  A5|Bq_JOINT|AND|C_D|D5      0.889  0.111     6   603    4.1     3.0     6  3.569  3.040  0010  (S5 ne inf.)
+  195  A5|Bq_JOINT|OR|C_D|D5       0.889  0.111     6   603    4.1     3.0     6  3.569  3.040  0010  (S5 ne inf.)
+  196  A5|Bq_A20|AND|C_D|D4        0.893  0.107     7   575    4.2     3.0     6  3.500  3.160  0010  (S5 ne inf.)
+  197  A1|Bq_JOINT|AND|C_M|D4      0.896  0.104     8   255    3.9     3.0     6  3.414  2.924  0010  (S5 ne inf.)
+  198  A1|Bq_JOINT|OR|C_M|D4       0.896  0.104     8   255    3.9     3.0     6  3.414  2.924  0010  (S5 ne inf.)
+  199  A5|Bq_A20|AND|C_D|D5        0.896  0.104     6   587    4.1     3.0     6  3.628  3.117  0010  (S5 ne inf.)
+  200  A0|Bq_BQUAD|AND|C_M|D4      0.900  0.100    11   241    3.9     3.0     6  3.025  2.216  0010  (S5 ne inf.)
+  201  A0|Bq_B|AND|C_M|D4          0.900  0.100    11   241    3.9     3.0     6  3.025  2.216  0010  (S5 ne inf.)
+  202  A1|Bq_A20|AND|C_M|D4        0.900  0.100     8   247    3.9     3.0     6  3.453  3.000  0010  (S5 ne inf.)
+  203  A1|Bq_JOINT|AND|C_M|D0      0.900  0.100     4   279    3.9     3.0     6  3.205  2.762  0010  (S5 ne inf.)
+  204  A1|Bq_JOINT|OR|C_M|D0       0.900  0.100     4   279    3.9     3.0     6  3.205  2.762  0010  (S5 ne inf.)
+  205  A1|Bq_A20|AND|C_M|D5        0.904  0.096     8   252    3.8     3.0     6  3.470  2.953  0010  (S5 ne inf.)
+  206  A1|Bq_JOINT|AND|C_M|D5      0.904  0.096     8   261    3.8     3.0     6  3.470  2.953  0010  (S5 ne inf.)
+  207  A1|Bq_JOINT|OR|C_M|D5       0.904  0.096     8   261    3.8     3.0     6  3.470  2.953  0010  (S5 ne inf.)
+  208  A3|Bq_BQUAD|OR|C_M|D5       0.881  0.119     2   204    6.5     4.0     5  0.533  1.064  0010
+  209  A3|Bq_B|OR|C_M|D5           0.881  0.119     2   204    6.5     4.0     5  0.533  1.064  0010
+  210  A4|Bq_BQUAD|OR|C_M|D5       0.881  0.119     2   204    6.5     4.0     5  0.533  1.064  0010
+  211  A4|Bq_B|OR|C_M|D5           0.881  0.119     2   204    6.5     4.0     5  0.533  1.064  0010
+  212  A1|Bq_A20|AND|C_M|D0        0.904  0.096     4   276    3.8     3.0     5  3.310  2.815  0010  (S5 ne inf.)
+  213  A2|Bq_BQUAD|AND|C_W|D4      0.904  0.096     7   362    4.5     3.0     5  2.943  3.514  0010  (S5 ne inf.)
+  214  A2|Bq_B|AND|C_W|D4          0.904  0.096     7   362    4.5     3.0     5  2.943  3.514  0010  (S5 ne inf.)
+  215  A2|Bq_BQUAD|AND|C_D|D0      0.907  0.093     8   401    4.2     3.0     5  3.081  3.065  0010  (S5 ne inf.)
+  216  A2|Bq_BQUAD|AND|C_D|D4      0.907  0.093    10   362    4.5     3.0     5  3.056  3.106  0010  (S5 ne inf.)
+  217  A2|Bq_B|AND|C_D|D0          0.907  0.093     8   401    4.2     3.0     5  3.081  3.065  0010  (S5 ne inf.)
+  218  A2|Bq_B|AND|C_D|D4          0.907  0.093    10   362    4.5     3.0     5  3.056  3.106  0010  (S5 ne inf.)
+  219  A2|Bq_A20|OR|C_W|D0         0.911  0.089     6   374    4.2     3.0     5  3.259  3.119  0010  (S5 ne inf.)
+  220  A2|Bq_BQUAD|AND|C_W|D5      0.911  0.089     9   364    4.3     3.0     5  2.835  2.856  0010  (S5 ne inf.)
+  221  A2|Bq_B|AND|C_W|D5          0.911  0.089     9   364    4.3     3.0     5  2.835  2.856  0010  (S5 ne inf.)
+  222  A3|Bq_BQUAD|OR|C_D|D0       0.911  0.089     5   243    5.4     3.0     5  2.063  1.462  0010
+  223  A3|Bq_BQUAD|OR|C_W|D5       0.911  0.089     4   204    6.5     4.0     5  2.013  1.615  0010
+  224  A3|Bq_B|OR|C_D|D0           0.911  0.089     5   243    5.4     3.0     5  2.063  1.462  0010
+  225  A3|Bq_B|OR|C_W|D5           0.911  0.089     4   204    6.5     4.0     5  2.013  1.615  0010
+  226  A4|Bq_BQUAD|OR|C_D|D0       0.911  0.089     5   243    5.4     3.0     5  2.063  1.462  0010
+  227  A4|Bq_BQUAD|OR|C_W|D5       0.911  0.089     4   204    6.5     4.0     5  2.013  1.615  0010
+  228  A4|Bq_B|OR|C_D|D0           0.911  0.089     5   243    5.4     3.0     5  2.063  1.462  0010
+  229  A4|Bq_B|OR|C_W|D5           0.911  0.089     4   204    6.5     4.0     5  2.013  1.615  0010
+  230  A0|Bq_BQUAD|AND|C_M|D0      0.915  0.085     6   271    3.7     3.0     3  2.989  2.550  0010  (S5 ne inf.)
+  231  A0|Bq_BQUAD|AND|C_M|D5      0.915  0.085     9   227    3.7     3.0     3  3.327  2.069  0010  (S5 ne inf.)
+  232  A0|Bq_B|AND|C_M|D0          0.915  0.085     6   271    3.7     3.0     3  2.989  2.550  0010  (S5 ne inf.)
+  233  A0|Bq_B|AND|C_M|D5          0.915  0.085     9   227    3.7     3.0     3  3.327  2.069  0010  (S5 ne inf.)
+  234  A2|Bq_A20|OR|C_W|D4         0.915  0.085     5   337    4.5     3.0     3  2.790  2.975  0010  (S5 ne inf.)
+  235  A2|Bq_BQUAD|AND|C_D|D5      0.915  0.085    11   364    4.3     3.0     3  2.593  2.688  0010  (S5 ne inf.)
+  236  A2|Bq_B|AND|C_D|D5          0.915  0.085    11   364    4.3     3.0     3  2.593  2.688  0010  (S5 ne inf.)
+  237  A0|Bq_A20|OR|C_M|D0         0.919  0.081     5   251    3.6     3.0     3  3.612  2.463  0010  (S5 ne inf.)
+  238  A2|Bq_A20|OR|C_D|D0         0.919  0.081     7   374    4.2     3.0     3  3.333  3.259  0010  (S5 ne inf.)
+  239  A2|Bq_A20|OR|C_D|D4         0.919  0.081     7   337    4.5     3.0     3  2.897  3.051  0010  (S5 ne inf.)
+  240  A3|Bq_BQUAD|OR|C_D|D4       0.919  0.081     4   209    6.0     4.0     3  1.383  1.224  0010
+  241  A3|Bq_B|OR|C_D|D4           0.919  0.081     4   209    6.0     4.0     3  1.383  1.224  0010
+  242  A4|Bq_BQUAD|OR|C_D|D4       0.919  0.081     4   209    6.0     4.0     3  1.383  1.224  0010
+  243  A4|Bq_B|OR|C_D|D4           0.919  0.081     4   209    6.0     4.0     3  1.383  1.224  0010
+  244  A5|Bq_BQUAD|AND|C_D|D4      0.922  0.078     5   466    3.9     3.0     3  3.568  3.157  0010  (S5 ne inf.)
+  245  A5|Bq_B|AND|C_D|D4          0.922  0.078     5   466    3.9     3.0     3  3.568  3.157  0010  (S5 ne inf.)
+  246  A1|Bq_A20|OR|C_M|D0         0.926  0.074     3   196    3.7     3.0     3  3.306  2.639  0010  (S5 ne inf.)
+  247  A2|Bq_A20|OR|C_W|D5         0.926  0.074     5   345    4.4     3.0     3  2.755  2.872  0010  (S5 ne inf.)
+  248  A3|Bq_BQUAD|OR|C_W|D4       0.926  0.074     4   209    6.0     4.0     3  2.000  1.653  0010
+  249  A3|Bq_B|OR|C_W|D4           0.926  0.074     4   209    6.0     4.0     3  2.000  1.653  0010
+  250  A4|Bq_BQUAD|OR|C_W|D4       0.926  0.074     4   209    6.0     4.0     3  2.000  1.653  0010
+  251  A4|Bq_B|OR|C_W|D4           0.926  0.074     4   209    6.0     4.0     3  2.000  1.653  0010
+  252  A5|Bq_BQUAD|AND|C_D|D0      0.926  0.074     3   495    3.9     3.0     3  2.424  2.938  0010  (S5 ne inf.)
+  253  A5|Bq_BQUAD|AND|C_W|D0      0.926  0.074     4   495    3.9     3.0     3  3.117  3.165  0010  (S5 ne inf.)
+  254  A5|Bq_B|AND|C_D|D0          0.926  0.074     3   495    3.9     3.0     3  2.424  2.938  0010  (S5 ne inf.)
+  255  A5|Bq_B|AND|C_W|D0          0.926  0.074     4   495    3.9     3.0     3  3.117  3.165  0010  (S5 ne inf.)
+  256  A0|Bq_A20|OR|C_M|D5         0.930  0.070     6   217    3.8     3.0     3  3.574  2.500  0010  (S5 ne inf.)
+  257  A5|Bq_A20|OR|C_D|D0         0.930  0.070     3   467    3.8     3.0     3  3.522  3.391  0010  (S5 ne inf.)
+  258  A0|Bq_A20|OR|C_M|D4         0.933  0.067     4   222    3.8     3.0     3  3.522  2.388  0010  (S5 ne inf.)
+  259  A1|Bq_BQUAD|AND|C_M|D0      0.933  0.067     3   213    3.8     3.0     3  2.844  2.767  0010  (S5 ne inf.)
+  260  A1|Bq_B|AND|C_M|D0          0.933  0.067     3   213    3.8     3.0     3  2.844  2.767  0010  (S5 ne inf.)
+  261  A1|Bq_BQUAD|AND|C_M|D5      0.937  0.063     6   179    3.7     3.0     3  3.282  2.667  0010  (S5 ne inf.)
+  262  A1|Bq_B|AND|C_M|D5          0.937  0.063     6   179    3.7     3.0     3  3.282  2.667  0010  (S5 ne inf.)
+  263  A3|Bq_BQUAD|OR|C_W|D0       0.937  0.063     4   243    5.4     3.0     3  2.824  2.118  0010
+  264  A3|Bq_B|OR|C_W|D0           0.937  0.063     4   243    5.4     3.0     3  2.824  2.118  0010
+  265  A4|Bq_BQUAD|OR|C_W|D0       0.937  0.063     4   243    5.4     3.0     3  2.824  2.118  0010
+  266  A4|Bq_B|OR|C_W|D0           0.937  0.063     4   243    5.4     3.0     3  2.824  2.118  0010
+  267  A5|Bq_A20|OR|C_W|D0         0.937  0.063     3   467    3.8     3.0     3  3.379  3.027  0010  (S5 ne inf.)
+  268  A5|Bq_A20|OR|C_D|D4         0.941  0.059     2   426    4.0     3.0     3  3.600  3.143  0010  (S5 ne inf.)
+  269  A5|Bq_A20|OR|C_D|D5         0.941  0.059     2   424    3.9     3.0     3  3.600  2.605  0010  (S5 ne inf.)
+  270  A1|Bq_A20|OR|C_M|D5         0.944  0.056     4   163    3.7     3.0     3  3.379  2.852  0010  (S5 ne inf.)
+  271  A2|Bq_B|OR|C_M|D4           0.944  0.056     2   138    4.2     3.0     3  2.308  3.023  0010  (S5 ne inf.)
+  272  A5|Bq_BQUAD|AND|C_D|D5      0.944  0.056     3   438    3.8     3.0     3  3.429  3.086  0010  (S5 ne inf.)
+  273  A5|Bq_B|AND|C_D|D5          0.944  0.056     3   438    3.8     3.0     3  3.429  3.086  0010  (S5 ne inf.)
+  274  A1|Bq_A20|OR|C_M|D4         0.948  0.052     2   170    3.7     3.0     3  3.073  2.708  0010  (S5 ne inf.)
+  275  A2|Bq_B|OR|C_M|D0           0.948  0.052     3   153    3.8     3.0     3  3.000  3.385  0010  (S5 ne inf.)
+  276  A0|Bq_JOINT|AND|C_W|D0      0.952  0.048     2   332    4.0     3.0     3  3.449  3.449  0010  (S5 ne inf.)
+  277  A0|Bq_JOINT|OR|C_W|D0       0.952  0.048     2   332    4.0     3.0     3  3.449  3.449  0010  (S5 ne inf.)
+  278  A1|Bq_B|OR|C_M|D0           0.952  0.048     1   150    3.2     3.0     3  3.130  2.438  0010  (S5 ne inf.)
+  279  A1|Bq_JOINT|AND|C_W|D0      0.952  0.048     3   279    3.9     3.0     3  3.429  3.314  0010  (S5 ne inf.)
+  280  A1|Bq_JOINT|OR|C_W|D0       0.952  0.048     3   279    3.9     3.0     3  3.429  3.314  0010  (S5 ne inf.)
+  281  A2|Bq_B|OR|C_M|D5           0.952  0.048     2   132    4.1     3.0     3  3.000  3.194  0010  (S5 ne inf.)
+  282  A5|Bq_BQUAD|OR|C_M|D0       0.952  0.048     3   165    3.3     3.0     3  2.667  1.800  0010  (S5 ne inf.)
+  283  A5|Bq_B|OR|C_M|D0           0.952  0.048     3   165    3.3     3.0     3  2.667  1.800  0010  (S5 ne inf.)
+  284  A0|Bq_A20|AND|C_W|D0        0.956  0.044     2   327    4.0     3.0     3  3.429  3.429  0010  (S5 ne inf.)
+  285  A1|Bq_A20|AND|C_W|D0        0.956  0.044     3   276    3.8     3.0     3  3.457  3.273  0010  (S5 ne inf.)
+  286  A1|Bq_B|OR|C_M|D5           0.956  0.044     3   130    3.7     3.0     3  3.457  2.750  0010  (S5 ne inf.)
+  287  A5|Bq_BQUAD|OR|C_M|D4       0.956  0.044     2   145    3.7     3.0     3  1.800  2.250  0010  (S5 ne inf.)
+  288  A5|Bq_B|OR|C_M|D4           0.956  0.044     2   145    3.7     3.0     3  1.800  2.250  0010  (S5 ne inf.)
+  289  A5|Bq_BQUAD|OR|C_M|D5       0.959  0.041     2   129    4.1     3.0     3  1.800  2.667  0010  (S5 ne inf.)
+  290  A5|Bq_B|OR|C_M|D5           0.959  0.041     2   129    4.1     3.0     3  1.800  2.667  0010  (S5 ne inf.)
+  291  A1|Bq_B|OR|C_M|D4           0.963  0.037     1   132    3.6     3.0     3  3.000  2.500  0010  (S5 ne inf.)
+  292  A2|Bq_BQUAD|OR|C_M|D0       0.963  0.037     2   125    3.7     3.0     3  2.667  3.294  0010  (S5 ne inf.)
+  293  A2|Bq_BQUAD|OR|C_M|D4       0.963  0.037     1   116    3.9     3.0     3  1.714  3.556  0010  (S5 ne inf.)
+  294  A0|Bq_B|OR|C_M|D5           0.967  0.033     3   131    3.6     3.0     3  3.857  2.917  0010  (S5 ne inf.)
+  295  A0|Bq_JOINT|AND|C_D|D0      0.967  0.033     1   332    4.0     3.0     3  2.400  2.057  0010  (S5 ne inf.)
+  296  A0|Bq_JOINT|AND|C_W|D5      0.967  0.033     2   323    3.8     3.0     3  3.240  3.240  0010  (S5 ne inf.)
+  297  A0|Bq_JOINT|OR|C_D|D0       0.967  0.033     1   332    4.0     3.0     3  2.400  2.057  0010  (S5 ne inf.)
+  298  A0|Bq_JOINT|OR|C_W|D5       0.967  0.033     2   323    3.8     3.0     3  3.240  3.240  0010  (S5 ne inf.)
+  299  A2|Bq_BQUAD|OR|C_M|D5       0.967  0.033     1   116    4.2     3.0     3  1.714  3.556  0010  (S5 ne inf.)
+  300  A2|Bq_B|OR|C_D|D5           0.967  0.033     4   132    4.1     3.0     3  3.231  3.000  0010  (S5 ne inf.)
+  301  A0|Bq_A20|AND|C_D|D0        0.970  0.030     2   327    4.0     3.0     3  2.909  2.087  0010  (S5 ne inf.)
+  302  A0|Bq_A20|AND|C_W|D5        0.970  0.030     2   313    3.8     3.0     3  2.909  2.909  0010  (S5 ne inf.)
+  303  A0|Bq_B|OR|C_M|D4           0.970  0.030     1   129    3.6     3.0     3  3.556  2.917  0010  (S5 ne inf.)
+  304  A1|Bq_JOINT|AND|C_W|D5      0.970  0.030     3   261    3.8     3.0     3  3.200  3.200  0010  (S5 ne inf.)
+  305  A1|Bq_JOINT|OR|C_W|D5       0.970  0.030     3   261    3.8     3.0     3  3.200  3.200  0010  (S5 ne inf.)
+  306  A0|Bq_BQUAD|AND|C_W|D0      0.974  0.026     2   271    3.7     3.0     3  3.267  3.267  0010  (S5 ne inf.)
+  307  A0|Bq_B|AND|C_W|D0          0.974  0.026     2   271    3.7     3.0     3  3.267  3.267  0010  (S5 ne inf.)
+  308  A5|Bq_JOINT|AND|C_W|D5      0.874  0.126     5   603    4.1     3.0     7  2.775  2.783  0000  (S5 ne inf.)
+  309  A5|Bq_JOINT|OR|C_W|D5       0.874  0.126     5   603    4.1     3.0     7  2.775  2.783  0000  (S5 ne inf.)
+  310  A5|Bq_JOINT|AND|C_W|D4      0.881  0.119     6   587    4.2     3.0     7  2.706  2.709  0000  (S5 ne inf.)
+  311  A5|Bq_JOINT|OR|C_W|D4       0.881  0.119     6   587    4.2     3.0     7  2.706  2.709  0000  (S5 ne inf.)
+  312  A5|Bq_A20|AND|C_W|D4        0.885  0.115     6   575    4.2     3.0     7  2.706  2.746  0000  (S5 ne inf.)
+  313  A5|Bq_A20|AND|C_W|D5        0.889  0.111     4   587    4.1     3.0     7  2.750  2.751  0000  (S5 ne inf.)
+  314  A2|Bq_A20|OR|C_D|D5         0.915  0.085     8   345    4.4     3.0     3  2.897  2.801  0000  (S5 ne inf.)
+  315  A1|Bq_BQUAD|AND|C_M|D4      0.922  0.078     7   189    3.9     3.0     3  3.139  2.807  0000  (S5 ne inf.)
+  316  A1|Bq_B|AND|C_M|D4          0.922  0.078     7   189    3.9     3.0     3  3.139  2.807  0000  (S5 ne inf.)
+  317  A5|Bq_BQUAD|AND|C_W|D4      0.941  0.059     4   466    3.9     3.0     3  2.880  2.951  0000  (S5 ne inf.)
+  318  A5|Bq_B|AND|C_W|D4          0.941  0.059     4   466    3.9     3.0     3  2.880  2.951  0000  (S5 ne inf.)
+  319  A5|Bq_BQUAD|AND|C_W|D5      0.948  0.052     2   438    3.8     3.0     3  2.689  2.653  0000  (S5 ne inf.)
+  320  A5|Bq_B|AND|C_W|D5          0.948  0.052     2   438    3.8     3.0     3  2.689  2.653  0000  (S5 ne inf.)
+  321  A5|Bq_A20|OR|C_W|D4         0.952  0.048     2   426    4.0     3.0     3  2.793  2.571  0000  (S5 ne inf.)
+  322  A5|Bq_A20|OR|C_W|D5         0.959  0.041     0   424    3.9     3.0     3  1.960  1.944  0000  (S5 ne inf.)
+  323  A0|Bq_JOINT|AND|C_W|D4      0.967  0.033     3   312    4.0     3.0     3  3.000  3.000  0000  (S5 ne inf.)
+  324  A0|Bq_JOINT|OR|C_W|D4       0.967  0.033     3   312    4.0     3.0     3  3.000  3.000  0000  (S5 ne inf.)
+  325  A1|Bq_JOINT|AND|C_D|D0      0.967  0.033     3   279    3.9     3.0     3  2.314  1.946  0000  (S5 ne inf.)
+  326  A1|Bq_JOINT|AND|C_W|D4      0.967  0.033     4   255    3.9     3.0     3  2.793  2.793  0000  (S5 ne inf.)
+  327  A1|Bq_JOINT|OR|C_D|D0       0.967  0.033     3   279    3.9     3.0     3  2.314  1.946  0000  (S5 ne inf.)
+  328  A1|Bq_JOINT|OR|C_W|D4       0.967  0.033     4   255    3.9     3.0     3  2.793  2.793  0000  (S5 ne inf.)
+  329  A2|Bq_B|OR|C_D|D0           0.967  0.033     5   153    3.8     3.0     3  2.000  2.333  0000  (S5 ne inf.)
+  330  A2|Bq_B|OR|C_W|D0           0.967  0.033     3   153    3.8     3.0     3  2.909  2.909  0000  (S5 ne inf.)
+  331  A0|Bq_A20|AND|C_W|D4        0.970  0.030     3   303    4.0     3.0     3  2.909  2.909  0000  (S5 ne inf.)
+  332  A1|Bq_A20|AND|C_D|D0        0.970  0.030     3   276    3.8     3.0     3  2.462  2.074  0000  (S5 ne inf.)
+  333  A1|Bq_A20|AND|C_W|D4        0.970  0.030     4   247    3.9     3.0     3  2.462  2.462  0000  (S5 ne inf.)
+  334  A1|Bq_BQUAD|AND|C_W|D0      0.970  0.030     3   213    3.8     3.0     3  2.909  2.909  0000  (S5 ne inf.)
+  335  A1|Bq_B|AND|C_W|D0          0.970  0.030     3   213    3.8     3.0     3  2.909  2.909  0000  (S5 ne inf.)
+  336  A0|Bq_A20|AND|C_D|D4        0.974  0.026     3   303    4.0     3.0     3  2.579  2.059  0000  (S5 ne inf.)
+  337  A0|Bq_B|OR|C_M|D0           0.974  0.026     0   148    3.3     2.0     3  2.882  2.182  0000  (S5 ne inf.)
+  338  A0|Bq_JOINT|AND|C_D|D4      0.974  0.026     3   312    4.0     3.0     3  2.579  2.059  0000  (S5 ne inf.)
+  339  A0|Bq_JOINT|AND|C_D|D5      0.974  0.026     3   323    3.8     3.0     3  2.579  2.059  0000  (S5 ne inf.)
+  340  A0|Bq_JOINT|OR|C_D|D4       0.974  0.026     3   312    4.0     3.0     3  2.579  2.059  0000  (S5 ne inf.)
+  341  A0|Bq_JOINT|OR|C_D|D5       0.974  0.026     3   323    3.8     3.0     3  2.579  2.059  0000  (S5 ne inf.)
+  342  A1|Bq_A20|AND|C_W|D5        0.974  0.026     3   252    3.8     3.0     3  2.579  2.579  0000  (S5 ne inf.)
+  343  A1|Bq_JOINT|AND|C_D|D5      0.974  0.026     3   261    3.8     3.0     3  2.579  2.211  0000  (S5 ne inf.)
+  344  A1|Bq_JOINT|OR|C_D|D5       0.974  0.026     3   261    3.8     3.0     3  2.579  2.211  0000  (S5 ne inf.)
+  345  A2|Bq_BQUAD|OR|C_D|D5       0.974  0.026     4   116    4.2     3.0     3  2.222  2.333  0000  (S5 ne inf.)
+  346  A2|Bq_BQUAD|OR|C_W|D5       0.974  0.026     3   116    4.2     3.0     3  2.571  2.579  0000  (S5 ne inf.)
+  347  A2|Bq_B|OR|C_W|D5           0.974  0.026     3   132    4.1     3.0     3  2.571  2.579  0000  (S5 ne inf.)
+  348  A0|Bq_A20|AND|C_D|D5        0.978  0.022     3   313    3.8     3.0     3  2.571  2.182  0000  (S5 ne inf.)
+  349  A1|Bq_A20|AND|C_D|D4        0.978  0.022     3   247    3.9     3.0     3  2.000  2.000  0000  (S5 ne inf.)
+  350  A1|Bq_A20|AND|C_D|D5        0.978  0.022     3   252    3.8     3.0     3  2.571  2.308  0000  (S5 ne inf.)
+  351  A1|Bq_A20|OR|C_W|D0         0.978  0.022     2   196    3.7     3.0     3  2.571  2.571  0000  (S5 ne inf.)
+  352  A1|Bq_BQUAD|AND|C_D|D0      0.978  0.022     2   213    3.8     3.0     3  1.800  1.364  0000  (S5 ne inf.)
+  353  A1|Bq_BQUAD|AND|C_W|D4      0.978  0.022     3   189    3.9     3.0     3  2.000  2.000  0000  (S5 ne inf.)
+  354  A1|Bq_B|AND|C_D|D0          0.978  0.022     2   213    3.8     3.0     3  1.800  1.364  0000  (S5 ne inf.)
+  355  A1|Bq_B|AND|C_W|D4          0.978  0.022     3   189    3.9     3.0     3  2.000  2.000  0000  (S5 ne inf.)
+  356  A1|Bq_JOINT|AND|C_D|D4      0.978  0.022     3   255    3.9     3.0     3  2.000  2.000  0000  (S5 ne inf.)
+  357  A1|Bq_JOINT|OR|C_D|D4       0.978  0.022     3   255    3.9     3.0     3  2.000  2.000  0000  (S5 ne inf.)
+  358  A2|Bq_BQUAD|OR|C_D|D0       0.978  0.022     4   125    3.7     3.0     3  2.273  2.000  0000  (S5 ne inf.)
+  359  A2|Bq_BQUAD|OR|C_W|D0       0.978  0.022     3   125    3.7     3.0     3  2.778  2.571  0000  (S5 ne inf.)
+  360  A2|Bq_BQUAD|OR|C_W|D4       0.978  0.022     3   116    3.9     3.0     3  2.778  2.571  0000  (S5 ne inf.)
+  361  A2|Bq_B|OR|C_D|D4           0.978  0.022     3   138    4.2     3.0     3  2.667  2.500  0000  (S5 ne inf.)
+  362  A2|Bq_B|OR|C_W|D4           0.978  0.022     3   138    4.2     3.0     3  2.778  2.571  0000  (S5 ne inf.)
+  363  A5|Bq_BQUAD|OR|C_D|D4       0.978  0.022     1   145    3.7     3.0     3  2.000  2.667  0000  (S5 ne inf.)
+  364  A5|Bq_B|OR|C_D|D4           0.978  0.022     1   145    3.7     3.0     3  2.000  2.667  0000  (S5 ne inf.)
+  365  A0|Bq_A20|OR|C_W|D0         0.981  0.019     0   251    3.6     3.0     3  2.778  2.778  0000  (S5 ne inf.)
+  366  A2|Bq_BQUAD|OR|C_D|D4       0.981  0.019     2   116    3.9     3.0     3  3.000  2.778  0000  (S5 ne inf.)
+  367  A5|Bq_BQUAD|OR|C_D|D0       0.981  0.019     2   165    3.3     3.0     3  3.000  2.400  0000  (S5 ne inf.)
+  368  A5|Bq_B|OR|C_D|D0           0.981  0.019     2   165    3.3     3.0     3  3.000  2.400  0000  (S5 ne inf.)
+  369  A0|Bq_BQUAD|AND|C_D|D0      0.985  0.015     1   271    3.7     3.0     3  1.600  1.000  0000  (S5 ne inf.)
+  370  A0|Bq_BQUAD|AND|C_D|D4      0.985  0.015     2   241    3.9     3.0     3  2.000  1.333  0000  (S5 ne inf.)
+  371  A0|Bq_BQUAD|AND|C_W|D4      0.985  0.015     2   241    3.9     3.0     3  2.667  2.667  0000  (S5 ne inf.)
+  372  A0|Bq_BQUAD|OR|C_M|D0       0.985  0.015     0    90    3.2     3.0     3  2.667  2.000  0000  (S5 ne inf.)
+  373  A0|Bq_B|AND|C_D|D0          0.985  0.015     1   271    3.7     3.0     3  1.600  1.000  0000  (S5 ne inf.)
+  374  A0|Bq_B|AND|C_D|D4          0.985  0.015     2   241    3.9     3.0     3  2.000  1.333  0000  (S5 ne inf.)
+  375  A0|Bq_B|AND|C_W|D4          0.985  0.015     2   241    3.9     3.0     3  2.667  2.667  0000  (S5 ne inf.)
+  376  A1|Bq_A20|OR|C_W|D4         0.985  0.015     2   170    3.7     3.0     3  2.000  2.000  0000  (S5 ne inf.)
+  377  A1|Bq_BQUAD|AND|C_D|D4      0.985  0.015     2   189    3.9     3.0     3  2.000  2.000  0000  (S5 ne inf.)
+  378  A1|Bq_BQUAD|AND|C_D|D5      0.985  0.015     2   179    3.7     3.0     3  2.000  1.500  0000  (S5 ne inf.)
+  379  A1|Bq_BQUAD|AND|C_W|D5      0.985  0.015     2   179    3.7     3.0     3  2.000  2.000  0000  (S5 ne inf.)
+  380  A1|Bq_B|AND|C_D|D4          0.985  0.015     2   189    3.9     3.0     3  2.000  2.000  0000  (S5 ne inf.)
+  381  A1|Bq_B|AND|C_D|D5          0.985  0.015     2   179    3.7     3.0     3  2.000  1.500  0000  (S5 ne inf.)
+  382  A1|Bq_B|AND|C_W|D5          0.985  0.015     2   179    3.7     3.0     3  2.000  2.000  0000  (S5 ne inf.)
+  383  A1|Bq_B|OR|C_W|D4           0.985  0.015     2   132    3.6     3.0     3  2.000  2.000  0000  (S5 ne inf.)
+  384  A5|Bq_BQUAD|OR|C_D|D5       0.985  0.015     0   129    4.1     3.0     3  2.000  1.800  0000  (S5 ne inf.)
+  385  A5|Bq_B|OR|C_D|D5           0.985  0.015     0   129    4.1     3.0     3  2.000  1.800  0000  (S5 ne inf.)
+  386  A0|Bq_A20|OR|C_D|D4         0.989  0.011     1   222    3.8     3.0     3  1.800  1.000  0000  (S5 ne inf.)
+  387  A0|Bq_A20|OR|C_D|D5         0.989  0.011     1   217    3.8     3.0     3  1.800  1.000  0000  (S5 ne inf.)
+  388  A0|Bq_A20|OR|C_W|D4         0.989  0.011     1   222    3.8     3.0     3  3.000  3.000  0000  (S5 ne inf.)
+  389  A0|Bq_BQUAD|AND|C_D|D5      0.989  0.011     1   227    3.7     3.0     3  1.800  1.000  0000  (S5 ne inf.)
+  390  A0|Bq_BQUAD|OR|C_M|D4       0.989  0.011     0    82    3.5     3.0     3  1.800  2.000  0000  (S5 ne inf.)
+  391  A0|Bq_BQUAD|OR|C_M|D5       0.989  0.011     0    75    4.0     3.0     3  1.800  2.000  0000  (S5 ne inf.)
+  392  A0|Bq_B|AND|C_D|D5          0.989  0.011     1   227    3.7     3.0     3  1.800  1.000  0000  (S5 ne inf.)
+  393  A1|Bq_A20|OR|C_D|D0         0.989  0.011     2   196    3.7     3.0     3  1.800  1.500  0000  (S5 ne inf.)
+  394  A1|Bq_A20|OR|C_W|D5         0.989  0.011     1   163    3.7     3.0     3  1.800  1.800  0000  (S5 ne inf.)
+  395  A1|Bq_BQUAD|OR|C_M|D0       0.989  0.011     0    74    3.1     3.0     3  3.000  2.000  0000  (S5 ne inf.)
+  396  A1|Bq_B|OR|C_W|D0           0.989  0.011     1   150    3.2     3.0     3  1.800  1.800  0000  (S5 ne inf.)
+  397  A1|Bq_B|OR|C_W|D5           0.989  0.011     1   130    3.7     3.0     3  1.800  1.800  0000  (S5 ne inf.)
+  398  A5|Bq_BQUAD|OR|C_W|D0       0.989  0.011     0   165    3.3     3.0     3  1.000  1.000  0000  (S5 ne inf.)
+  399  A5|Bq_BQUAD|OR|C_W|D4       0.989  0.011     0   145    3.7     3.0     3  1.000  1.000  0000  (S5 ne inf.)
+  400  A5|Bq_BQUAD|OR|C_W|D5       0.989  0.011     0   129    4.1     3.0     3  1.000  1.000  0000  (S5 ne inf.)
+  401  A5|Bq_B|OR|C_W|D0           0.989  0.011     0   165    3.3     3.0     3  1.000  1.000  0000  (S5 ne inf.)
+  402  A5|Bq_B|OR|C_W|D4           0.989  0.011     0   145    3.7     3.0     3  1.000  1.000  0000  (S5 ne inf.)
+  403  A5|Bq_B|OR|C_W|D5           0.989  0.011     0   129    4.1     3.0     3  1.000  1.000  0000  (S5 ne inf.)
+  404  A0|Bq_A20|OR|C_D|D0         0.993  0.007     1   251    3.6     3.0     3  2.000  1.000  0000  (S5 ne inf.)
+  405  A0|Bq_BQUAD|AND|C_W|D5      0.993  0.007     1   227    3.7     3.0     3  2.000  2.000  0000  (S5 ne inf.)
+  406  A0|Bq_BQUAD|OR|C_D|D0       0.993  0.007     1    90    3.2     3.0     3  2.000  1.000  0000  (S5 ne inf.)
+  407  A0|Bq_B|AND|C_W|D5          0.993  0.007     1   227    3.7     3.0     3  2.000  2.000  0000  (S5 ne inf.)
+  408  A0|Bq_B|OR|C_D|D0           0.993  0.007     1   148    3.3     2.0     3  2.000  1.000  0000  (S5 ne inf.)
+  409  A0|Bq_B|OR|C_D|D4           0.993  0.007     1   129    3.6     3.0     3  2.000  1.000  0000  (S5 ne inf.)
+  410  A0|Bq_B|OR|C_D|D5           0.993  0.007     1   131    3.6     3.0     3  2.000  1.000  0000  (S5 ne inf.)
+  411  A1|Bq_A20|OR|C_D|D4         0.993  0.007     0   170    3.7     3.0     3  1.000  1.000  0000  (S5 ne inf.)
+  412  A1|Bq_BQUAD|OR|C_M|D4       0.993  0.007     0    62    3.6     3.0     3  2.000  2.000  0000  (S5 ne inf.)
+  413  A1|Bq_BQUAD|OR|C_M|D5       0.993  0.007     0    57    4.1     3.0     3  2.000  2.000  0000  (S5 ne inf.)
+  414  A1|Bq_BQUAD|OR|C_W|D0       0.993  0.007     1    74    3.1     3.0     3  2.000  2.000  0000  (S5 ne inf.)
+  415  A1|Bq_BQUAD|OR|C_W|D4       0.993  0.007     1    62    3.6     3.0     3  2.000  2.000  0000  (S5 ne inf.)
+  416  A1|Bq_BQUAD|OR|C_W|D5       0.993  0.007     1    57    4.1     3.0     3  2.000  2.000  0000  (S5 ne inf.)
+  417  A1|Bq_B|OR|C_D|D4           0.993  0.007     0   132    3.6     3.0     3  1.000  1.000  0000  (S5 ne inf.)
+  418  A0|Bq_A20|OR|C_W|D5         0.996  0.004     0   217    3.8     3.0     3  1.000  1.000  0000  (S5 ne inf.)
+  419  A0|Bq_BQUAD|OR|C_D|D4       0.996  0.004     0    82    3.5     3.0     3  1.000  1.000  0000  (S5 ne inf.)
+  420  A0|Bq_BQUAD|OR|C_D|D5       0.996  0.004     0    75    4.0     3.0     3  1.000  1.000  0000  (S5 ne inf.)
+  421  A0|Bq_B|OR|C_W|D0           0.996  0.004     0   148    3.3     2.0     3  1.000  1.000  0000  (S5 ne inf.)
+  422  A0|Bq_B|OR|C_W|D4           0.996  0.004     0   129    3.6     3.0     3  1.000  1.000  0000  (S5 ne inf.)
+  423  A0|Bq_B|OR|C_W|D5           0.996  0.004     0   131    3.6     3.0     3  1.000  1.000  0000  (S5 ne inf.)
+  424  A1|Bq_A20|OR|C_D|D5         0.996  0.004     0   163    3.7     3.0     3  1.000  1.000  0000  (S5 ne inf.)
+  425  A1|Bq_BQUAD|OR|C_D|D0       0.996  0.004     0    74    3.1     3.0     3  1.000  1.000  0000  (S5 ne inf.)
+  426  A1|Bq_BQUAD|OR|C_D|D4       0.996  0.004     0    62    3.6     3.0     3  1.000  1.000  0000  (S5 ne inf.)
+  427  A1|Bq_BQUAD|OR|C_D|D5       0.996  0.004     0    57    4.1     3.0     3  1.000  1.000  0000  (S5 ne inf.)
+  428  A1|Bq_B|OR|C_D|D0           0.996  0.004     0   150    3.2     3.0     3  1.000  1.000  0000  (S5 ne inf.)
+  429  A1|Bq_B|OR|C_D|D5           0.996  0.004     0   130    3.7     3.0     3  1.000  1.000  0000  (S5 ne inf.)
+  430  A0|Bq_BQUAD|OR|C_W|D0       1.000  0.000     0    90    3.2     3.0     3      -      -  0000  (S5 ne inf.)
+  431  A0|Bq_BQUAD|OR|C_W|D4       1.000  0.000     0    82    3.5     3.0     3      -      -  0000  (S5 ne inf.)
+  432  A0|Bq_BQUAD|OR|C_W|D5       1.000  0.000     0    75    4.0     3.0     3      -      -  0000  (S5 ne inf.)
+  433  A0|Bq_A20|AND|C_D|D1        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  434  A0|Bq_A20|AND|C_D|D2        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  435  A0|Bq_A20|AND|C_D|D3        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  436  A0|Bq_A20|AND|C_M|D1        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  437  A0|Bq_A20|AND|C_M|D2        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  438  A0|Bq_A20|AND|C_M|D3        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  439  A0|Bq_A20|AND|C_W|D1        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  440  A0|Bq_A20|AND|C_W|D2        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  441  A0|Bq_A20|AND|C_W|D3        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  442  A0|Bq_A20|OR|C_D|D1         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  443  A0|Bq_A20|OR|C_D|D2         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  444  A0|Bq_A20|OR|C_D|D3         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  445  A0|Bq_A20|OR|C_M|D1         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  446  A0|Bq_A20|OR|C_M|D2         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  447  A0|Bq_A20|OR|C_M|D3         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  448  A0|Bq_A20|OR|C_W|D1         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  449  A0|Bq_A20|OR|C_W|D2         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  450  A0|Bq_A20|OR|C_W|D3         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  451  A0|Bq_BQUAD|AND|C_D|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  452  A0|Bq_BQUAD|AND|C_D|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  453  A0|Bq_BQUAD|AND|C_D|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  454  A0|Bq_BQUAD|AND|C_M|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  455  A0|Bq_BQUAD|AND|C_M|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  456  A0|Bq_BQUAD|AND|C_M|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  457  A0|Bq_BQUAD|AND|C_W|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  458  A0|Bq_BQUAD|AND|C_W|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  459  A0|Bq_BQUAD|AND|C_W|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  460  A0|Bq_BQUAD|OR|C_D|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  461  A0|Bq_BQUAD|OR|C_D|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  462  A0|Bq_BQUAD|OR|C_D|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  463  A0|Bq_BQUAD|OR|C_M|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  464  A0|Bq_BQUAD|OR|C_M|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  465  A0|Bq_BQUAD|OR|C_M|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  466  A0|Bq_BQUAD|OR|C_W|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  467  A0|Bq_BQUAD|OR|C_W|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  468  A0|Bq_BQUAD|OR|C_W|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  469  A0|Bq_B|AND|C_D|D1          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  470  A0|Bq_B|AND|C_D|D2          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  471  A0|Bq_B|AND|C_D|D3          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  472  A0|Bq_B|AND|C_M|D1          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  473  A0|Bq_B|AND|C_M|D2          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  474  A0|Bq_B|AND|C_M|D3          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  475  A0|Bq_B|AND|C_W|D1          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  476  A0|Bq_B|AND|C_W|D2          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  477  A0|Bq_B|AND|C_W|D3          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  478  A0|Bq_B|OR|C_D|D1           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  479  A0|Bq_B|OR|C_D|D2           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  480  A0|Bq_B|OR|C_D|D3           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  481  A0|Bq_B|OR|C_M|D1           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  482  A0|Bq_B|OR|C_M|D2           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  483  A0|Bq_B|OR|C_M|D3           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  484  A0|Bq_B|OR|C_W|D1           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  485  A0|Bq_B|OR|C_W|D2           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  486  A0|Bq_B|OR|C_W|D3           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  487  A0|Bq_JOINT|AND|C_D|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  488  A0|Bq_JOINT|AND|C_D|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  489  A0|Bq_JOINT|AND|C_D|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  490  A0|Bq_JOINT|AND|C_M|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  491  A0|Bq_JOINT|AND|C_M|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  492  A0|Bq_JOINT|AND|C_M|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  493  A0|Bq_JOINT|AND|C_W|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  494  A0|Bq_JOINT|AND|C_W|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  495  A0|Bq_JOINT|AND|C_W|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  496  A0|Bq_JOINT|OR|C_D|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  497  A0|Bq_JOINT|OR|C_D|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  498  A0|Bq_JOINT|OR|C_D|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  499  A0|Bq_JOINT|OR|C_M|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  500  A0|Bq_JOINT|OR|C_M|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  501  A0|Bq_JOINT|OR|C_M|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  502  A0|Bq_JOINT|OR|C_W|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  503  A0|Bq_JOINT|OR|C_W|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  504  A0|Bq_JOINT|OR|C_W|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  505  A1|Bq_A20|AND|C_D|D1        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  506  A1|Bq_A20|AND|C_D|D2        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  507  A1|Bq_A20|AND|C_D|D3        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  508  A1|Bq_A20|AND|C_M|D1        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  509  A1|Bq_A20|AND|C_M|D2        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  510  A1|Bq_A20|AND|C_M|D3        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  511  A1|Bq_A20|AND|C_W|D1        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  512  A1|Bq_A20|AND|C_W|D2        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  513  A1|Bq_A20|AND|C_W|D3        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  514  A1|Bq_A20|OR|C_D|D1         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  515  A1|Bq_A20|OR|C_D|D2         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  516  A1|Bq_A20|OR|C_D|D3         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  517  A1|Bq_A20|OR|C_M|D1         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  518  A1|Bq_A20|OR|C_M|D2         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  519  A1|Bq_A20|OR|C_M|D3         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  520  A1|Bq_A20|OR|C_W|D1         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  521  A1|Bq_A20|OR|C_W|D2         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  522  A1|Bq_A20|OR|C_W|D3         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  523  A1|Bq_BQUAD|AND|C_D|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  524  A1|Bq_BQUAD|AND|C_D|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  525  A1|Bq_BQUAD|AND|C_D|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  526  A1|Bq_BQUAD|AND|C_M|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  527  A1|Bq_BQUAD|AND|C_M|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  528  A1|Bq_BQUAD|AND|C_M|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  529  A1|Bq_BQUAD|AND|C_W|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  530  A1|Bq_BQUAD|AND|C_W|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  531  A1|Bq_BQUAD|AND|C_W|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  532  A1|Bq_BQUAD|OR|C_D|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  533  A1|Bq_BQUAD|OR|C_D|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  534  A1|Bq_BQUAD|OR|C_D|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  535  A1|Bq_BQUAD|OR|C_M|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  536  A1|Bq_BQUAD|OR|C_M|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  537  A1|Bq_BQUAD|OR|C_M|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  538  A1|Bq_BQUAD|OR|C_W|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  539  A1|Bq_BQUAD|OR|C_W|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  540  A1|Bq_BQUAD|OR|C_W|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  541  A1|Bq_B|AND|C_D|D1          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  542  A1|Bq_B|AND|C_D|D2          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  543  A1|Bq_B|AND|C_D|D3          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  544  A1|Bq_B|AND|C_M|D1          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  545  A1|Bq_B|AND|C_M|D2          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  546  A1|Bq_B|AND|C_M|D3          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  547  A1|Bq_B|AND|C_W|D1          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  548  A1|Bq_B|AND|C_W|D2          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  549  A1|Bq_B|AND|C_W|D3          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  550  A1|Bq_B|OR|C_D|D1           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  551  A1|Bq_B|OR|C_D|D2           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  552  A1|Bq_B|OR|C_D|D3           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  553  A1|Bq_B|OR|C_M|D1           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  554  A1|Bq_B|OR|C_M|D2           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  555  A1|Bq_B|OR|C_M|D3           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  556  A1|Bq_B|OR|C_W|D1           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  557  A1|Bq_B|OR|C_W|D2           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  558  A1|Bq_B|OR|C_W|D3           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  559  A1|Bq_JOINT|AND|C_D|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  560  A1|Bq_JOINT|AND|C_D|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  561  A1|Bq_JOINT|AND|C_D|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  562  A1|Bq_JOINT|AND|C_M|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  563  A1|Bq_JOINT|AND|C_M|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  564  A1|Bq_JOINT|AND|C_M|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  565  A1|Bq_JOINT|AND|C_W|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  566  A1|Bq_JOINT|AND|C_W|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  567  A1|Bq_JOINT|AND|C_W|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  568  A1|Bq_JOINT|OR|C_D|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  569  A1|Bq_JOINT|OR|C_D|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  570  A1|Bq_JOINT|OR|C_D|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  571  A1|Bq_JOINT|OR|C_M|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  572  A1|Bq_JOINT|OR|C_M|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  573  A1|Bq_JOINT|OR|C_M|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  574  A1|Bq_JOINT|OR|C_W|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  575  A1|Bq_JOINT|OR|C_W|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  576  A1|Bq_JOINT|OR|C_W|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  577  A2|Bq_A20|AND|C_D|D1        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  578  A2|Bq_A20|AND|C_D|D2        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  579  A2|Bq_A20|AND|C_D|D3        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  580  A2|Bq_A20|AND|C_M|D1        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  581  A2|Bq_A20|AND|C_M|D2        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  582  A2|Bq_A20|AND|C_M|D3        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  583  A2|Bq_A20|AND|C_W|D1        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  584  A2|Bq_A20|AND|C_W|D2        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  585  A2|Bq_A20|AND|C_W|D3        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  586  A2|Bq_A20|OR|C_D|D1         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  587  A2|Bq_A20|OR|C_D|D2         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  588  A2|Bq_A20|OR|C_D|D3         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  589  A2|Bq_A20|OR|C_M|D1         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  590  A2|Bq_A20|OR|C_M|D2         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  591  A2|Bq_A20|OR|C_M|D3         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  592  A2|Bq_A20|OR|C_W|D1         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  593  A2|Bq_A20|OR|C_W|D2         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  594  A2|Bq_A20|OR|C_W|D3         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  595  A2|Bq_BQUAD|AND|C_D|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  596  A2|Bq_BQUAD|AND|C_D|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  597  A2|Bq_BQUAD|AND|C_D|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  598  A2|Bq_BQUAD|AND|C_M|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  599  A2|Bq_BQUAD|AND|C_M|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  600  A2|Bq_BQUAD|AND|C_M|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  601  A2|Bq_BQUAD|AND|C_W|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  602  A2|Bq_BQUAD|AND|C_W|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  603  A2|Bq_BQUAD|AND|C_W|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  604  A2|Bq_BQUAD|OR|C_D|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  605  A2|Bq_BQUAD|OR|C_D|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  606  A2|Bq_BQUAD|OR|C_D|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  607  A2|Bq_BQUAD|OR|C_M|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  608  A2|Bq_BQUAD|OR|C_M|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  609  A2|Bq_BQUAD|OR|C_M|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  610  A2|Bq_BQUAD|OR|C_W|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  611  A2|Bq_BQUAD|OR|C_W|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  612  A2|Bq_BQUAD|OR|C_W|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  613  A2|Bq_B|AND|C_D|D1          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  614  A2|Bq_B|AND|C_D|D2          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  615  A2|Bq_B|AND|C_D|D3          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  616  A2|Bq_B|AND|C_M|D1          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  617  A2|Bq_B|AND|C_M|D2          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  618  A2|Bq_B|AND|C_M|D3          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  619  A2|Bq_B|AND|C_W|D1          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  620  A2|Bq_B|AND|C_W|D2          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  621  A2|Bq_B|AND|C_W|D3          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  622  A2|Bq_B|OR|C_D|D1           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  623  A2|Bq_B|OR|C_D|D2           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  624  A2|Bq_B|OR|C_D|D3           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  625  A2|Bq_B|OR|C_M|D1           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  626  A2|Bq_B|OR|C_M|D2           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  627  A2|Bq_B|OR|C_M|D3           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  628  A2|Bq_B|OR|C_W|D1           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  629  A2|Bq_B|OR|C_W|D2           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  630  A2|Bq_B|OR|C_W|D3           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  631  A2|Bq_JOINT|AND|C_D|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  632  A2|Bq_JOINT|AND|C_D|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  633  A2|Bq_JOINT|AND|C_D|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  634  A2|Bq_JOINT|AND|C_M|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  635  A2|Bq_JOINT|AND|C_M|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  636  A2|Bq_JOINT|AND|C_M|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  637  A2|Bq_JOINT|AND|C_W|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  638  A2|Bq_JOINT|AND|C_W|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  639  A2|Bq_JOINT|AND|C_W|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  640  A2|Bq_JOINT|OR|C_D|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  641  A2|Bq_JOINT|OR|C_D|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  642  A2|Bq_JOINT|OR|C_D|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  643  A2|Bq_JOINT|OR|C_M|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  644  A2|Bq_JOINT|OR|C_M|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  645  A2|Bq_JOINT|OR|C_M|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  646  A2|Bq_JOINT|OR|C_W|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  647  A2|Bq_JOINT|OR|C_W|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  648  A2|Bq_JOINT|OR|C_W|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  649  A3|Bq_A20|AND|C_D|D1        0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  650  A3|Bq_A20|AND|C_D|D2        0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  651  A3|Bq_A20|AND|C_D|D3        0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  652  A3|Bq_A20|AND|C_M|D1        0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  653  A3|Bq_A20|AND|C_M|D2        0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  654  A3|Bq_A20|AND|C_M|D3        0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  655  A3|Bq_A20|AND|C_W|D1        0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  656  A3|Bq_A20|AND|C_W|D2        0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  657  A3|Bq_A20|AND|C_W|D3        0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  658  A3|Bq_A20|OR|C_D|D1         0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  659  A3|Bq_A20|OR|C_D|D2         0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  660  A3|Bq_A20|OR|C_D|D3         0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  661  A3|Bq_A20|OR|C_M|D1         0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  662  A3|Bq_A20|OR|C_M|D2         0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  663  A3|Bq_A20|OR|C_M|D3         0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  664  A3|Bq_A20|OR|C_W|D1         0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  665  A3|Bq_A20|OR|C_W|D2         0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  666  A3|Bq_A20|OR|C_W|D3         0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  667  A3|Bq_BQUAD|AND|C_D|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  668  A3|Bq_BQUAD|AND|C_D|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  669  A3|Bq_BQUAD|AND|C_D|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  670  A3|Bq_BQUAD|AND|C_M|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  671  A3|Bq_BQUAD|AND|C_M|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  672  A3|Bq_BQUAD|AND|C_M|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  673  A3|Bq_BQUAD|AND|C_W|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  674  A3|Bq_BQUAD|AND|C_W|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  675  A3|Bq_BQUAD|AND|C_W|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  676  A3|Bq_BQUAD|OR|C_D|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  677  A3|Bq_BQUAD|OR|C_D|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  678  A3|Bq_BQUAD|OR|C_D|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  679  A3|Bq_BQUAD|OR|C_M|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  680  A3|Bq_BQUAD|OR|C_M|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  681  A3|Bq_BQUAD|OR|C_M|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  682  A3|Bq_BQUAD|OR|C_W|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  683  A3|Bq_BQUAD|OR|C_W|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  684  A3|Bq_BQUAD|OR|C_W|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  685  A3|Bq_B|AND|C_D|D1          0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  686  A3|Bq_B|AND|C_D|D2          0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  687  A3|Bq_B|AND|C_D|D3          0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  688  A3|Bq_B|AND|C_M|D1          0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  689  A3|Bq_B|AND|C_M|D2          0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  690  A3|Bq_B|AND|C_M|D3          0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  691  A3|Bq_B|AND|C_W|D1          0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  692  A3|Bq_B|AND|C_W|D2          0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  693  A3|Bq_B|AND|C_W|D3          0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  694  A3|Bq_B|OR|C_D|D1           0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  695  A3|Bq_B|OR|C_D|D2           0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  696  A3|Bq_B|OR|C_D|D3           0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  697  A3|Bq_B|OR|C_M|D1           0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  698  A3|Bq_B|OR|C_M|D2           0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  699  A3|Bq_B|OR|C_M|D3           0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  700  A3|Bq_B|OR|C_W|D1           0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  701  A3|Bq_B|OR|C_W|D2           0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  702  A3|Bq_B|OR|C_W|D3           0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  703  A3|Bq_JOINT|AND|C_D|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  704  A3|Bq_JOINT|AND|C_D|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  705  A3|Bq_JOINT|AND|C_D|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  706  A3|Bq_JOINT|AND|C_M|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  707  A3|Bq_JOINT|AND|C_M|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  708  A3|Bq_JOINT|AND|C_M|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  709  A3|Bq_JOINT|AND|C_W|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  710  A3|Bq_JOINT|AND|C_W|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  711  A3|Bq_JOINT|AND|C_W|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  712  A3|Bq_JOINT|OR|C_D|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  713  A3|Bq_JOINT|OR|C_D|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  714  A3|Bq_JOINT|OR|C_D|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  715  A3|Bq_JOINT|OR|C_M|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  716  A3|Bq_JOINT|OR|C_M|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  717  A3|Bq_JOINT|OR|C_M|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  718  A3|Bq_JOINT|OR|C_W|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  719  A3|Bq_JOINT|OR|C_W|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  720  A3|Bq_JOINT|OR|C_W|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  721  A4|Bq_A20|AND|C_D|D1        0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  722  A4|Bq_A20|AND|C_D|D2        0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  723  A4|Bq_A20|AND|C_D|D3        0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  724  A4|Bq_A20|AND|C_M|D1        0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  725  A4|Bq_A20|AND|C_M|D2        0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  726  A4|Bq_A20|AND|C_M|D3        0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  727  A4|Bq_A20|AND|C_W|D1        0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  728  A4|Bq_A20|AND|C_W|D2        0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  729  A4|Bq_A20|AND|C_W|D3        0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  730  A4|Bq_A20|OR|C_D|D1         0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  731  A4|Bq_A20|OR|C_D|D2         0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  732  A4|Bq_A20|OR|C_D|D3         0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  733  A4|Bq_A20|OR|C_M|D1         0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  734  A4|Bq_A20|OR|C_M|D2         0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  735  A4|Bq_A20|OR|C_M|D3         0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  736  A4|Bq_A20|OR|C_W|D1         0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  737  A4|Bq_A20|OR|C_W|D2         0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  738  A4|Bq_A20|OR|C_W|D3         0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  739  A4|Bq_BQUAD|AND|C_D|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  740  A4|Bq_BQUAD|AND|C_D|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  741  A4|Bq_BQUAD|AND|C_D|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  742  A4|Bq_BQUAD|AND|C_M|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  743  A4|Bq_BQUAD|AND|C_M|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  744  A4|Bq_BQUAD|AND|C_M|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  745  A4|Bq_BQUAD|AND|C_W|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  746  A4|Bq_BQUAD|AND|C_W|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  747  A4|Bq_BQUAD|AND|C_W|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  748  A4|Bq_BQUAD|OR|C_D|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  749  A4|Bq_BQUAD|OR|C_D|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  750  A4|Bq_BQUAD|OR|C_D|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  751  A4|Bq_BQUAD|OR|C_M|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  752  A4|Bq_BQUAD|OR|C_M|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  753  A4|Bq_BQUAD|OR|C_M|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  754  A4|Bq_BQUAD|OR|C_W|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  755  A4|Bq_BQUAD|OR|C_W|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  756  A4|Bq_BQUAD|OR|C_W|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  757  A4|Bq_B|AND|C_D|D1          0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  758  A4|Bq_B|AND|C_D|D2          0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  759  A4|Bq_B|AND|C_D|D3          0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  760  A4|Bq_B|AND|C_M|D1          0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  761  A4|Bq_B|AND|C_M|D2          0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  762  A4|Bq_B|AND|C_M|D3          0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  763  A4|Bq_B|AND|C_W|D1          0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  764  A4|Bq_B|AND|C_W|D2          0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  765  A4|Bq_B|AND|C_W|D3          0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  766  A4|Bq_B|OR|C_D|D1           0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  767  A4|Bq_B|OR|C_D|D2           0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  768  A4|Bq_B|OR|C_D|D3           0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  769  A4|Bq_B|OR|C_M|D1           0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  770  A4|Bq_B|OR|C_M|D2           0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  771  A4|Bq_B|OR|C_M|D3           0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  772  A4|Bq_B|OR|C_W|D1           0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  773  A4|Bq_B|OR|C_W|D2           0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  774  A4|Bq_B|OR|C_W|D3           0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  775  A4|Bq_JOINT|AND|C_D|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  776  A4|Bq_JOINT|AND|C_D|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  777  A4|Bq_JOINT|AND|C_D|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  778  A4|Bq_JOINT|AND|C_M|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  779  A4|Bq_JOINT|AND|C_M|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  780  A4|Bq_JOINT|AND|C_M|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  781  A4|Bq_JOINT|AND|C_W|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  782  A4|Bq_JOINT|AND|C_W|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  783  A4|Bq_JOINT|AND|C_W|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  784  A4|Bq_JOINT|OR|C_D|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  785  A4|Bq_JOINT|OR|C_D|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  786  A4|Bq_JOINT|OR|C_D|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  787  A4|Bq_JOINT|OR|C_M|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  788  A4|Bq_JOINT|OR|C_M|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  789  A4|Bq_JOINT|OR|C_M|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  790  A4|Bq_JOINT|OR|C_W|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  791  A4|Bq_JOINT|OR|C_W|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  792  A4|Bq_JOINT|OR|C_W|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000
+  793  A5|Bq_A20|AND|C_D|D1        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  794  A5|Bq_A20|AND|C_D|D2        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  795  A5|Bq_A20|AND|C_D|D3        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  796  A5|Bq_A20|AND|C_M|D1        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  797  A5|Bq_A20|AND|C_M|D2        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  798  A5|Bq_A20|AND|C_M|D3        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  799  A5|Bq_A20|AND|C_W|D1        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  800  A5|Bq_A20|AND|C_W|D2        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  801  A5|Bq_A20|AND|C_W|D3        0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  802  A5|Bq_A20|OR|C_D|D1         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  803  A5|Bq_A20|OR|C_D|D2         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  804  A5|Bq_A20|OR|C_D|D3         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  805  A5|Bq_A20|OR|C_M|D1         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  806  A5|Bq_A20|OR|C_M|D2         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  807  A5|Bq_A20|OR|C_M|D3         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  808  A5|Bq_A20|OR|C_W|D1         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  809  A5|Bq_A20|OR|C_W|D2         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  810  A5|Bq_A20|OR|C_W|D3         0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  811  A5|Bq_BQUAD|AND|C_D|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  812  A5|Bq_BQUAD|AND|C_D|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  813  A5|Bq_BQUAD|AND|C_D|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  814  A5|Bq_BQUAD|AND|C_M|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  815  A5|Bq_BQUAD|AND|C_M|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  816  A5|Bq_BQUAD|AND|C_M|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  817  A5|Bq_BQUAD|AND|C_W|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  818  A5|Bq_BQUAD|AND|C_W|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  819  A5|Bq_BQUAD|AND|C_W|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  820  A5|Bq_BQUAD|OR|C_D|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  821  A5|Bq_BQUAD|OR|C_D|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  822  A5|Bq_BQUAD|OR|C_D|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  823  A5|Bq_BQUAD|OR|C_M|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  824  A5|Bq_BQUAD|OR|C_M|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  825  A5|Bq_BQUAD|OR|C_M|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  826  A5|Bq_BQUAD|OR|C_W|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  827  A5|Bq_BQUAD|OR|C_W|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  828  A5|Bq_BQUAD|OR|C_W|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  829  A5|Bq_B|AND|C_D|D1          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  830  A5|Bq_B|AND|C_D|D2          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  831  A5|Bq_B|AND|C_D|D3          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  832  A5|Bq_B|AND|C_M|D1          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  833  A5|Bq_B|AND|C_M|D2          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  834  A5|Bq_B|AND|C_M|D3          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  835  A5|Bq_B|AND|C_W|D1          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  836  A5|Bq_B|AND|C_W|D2          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  837  A5|Bq_B|AND|C_W|D3          0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  838  A5|Bq_B|OR|C_D|D1           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  839  A5|Bq_B|OR|C_D|D2           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  840  A5|Bq_B|OR|C_D|D3           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  841  A5|Bq_B|OR|C_M|D1           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  842  A5|Bq_B|OR|C_M|D2           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  843  A5|Bq_B|OR|C_M|D3           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  844  A5|Bq_B|OR|C_W|D1           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  845  A5|Bq_B|OR|C_W|D2           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  846  A5|Bq_B|OR|C_W|D3           0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  847  A5|Bq_JOINT|AND|C_D|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  848  A5|Bq_JOINT|AND|C_D|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  849  A5|Bq_JOINT|AND|C_D|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  850  A5|Bq_JOINT|AND|C_M|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  851  A5|Bq_JOINT|AND|C_M|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  852  A5|Bq_JOINT|AND|C_M|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  853  A5|Bq_JOINT|AND|C_W|D1      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  854  A5|Bq_JOINT|AND|C_W|D2      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  855  A5|Bq_JOINT|AND|C_W|D3      0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  856  A5|Bq_JOINT|OR|C_D|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  857  A5|Bq_JOINT|OR|C_D|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  858  A5|Bq_JOINT|OR|C_D|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  859  A5|Bq_JOINT|OR|C_M|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  860  A5|Bq_JOINT|OR|C_M|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  861  A5|Bq_JOINT|OR|C_M|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  862  A5|Bq_JOINT|OR|C_W|D1       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  863  A5|Bq_JOINT|OR|C_W|D2       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+  864  A5|Bq_JOINT|OR|C_W|D3       0.000  0.000     0     0    0.0     0.0     0      -      -  0000  (S5 ne inf.)
+
+-- 13.1 Skol'ko yacheek berut kazhdyy priznak --------------------------------
+  S1: 132 iz 864
+  S2: 0 iz 864
+  S3: 307 iz 864
+  S4: 168 iz 864
+  vseh chetyryoh: 0
+  tryoh:          132
+  dvuh:           36
+  odnogo:         139
+  ni odnogo:      557
+
+  Maksimal'naya srednyaya dlitel'nost' spella v kvadrante po VSEY setke:
+    15.6 kalendarnyh dney, yacheyka A3|Bq_A20|AND|C_M|D4 (trebuetsya 30)
+  Maksimal'naya dolya kvadrantnyh mesyacev: 0.985, yacheyka A3|Bq_A20|AND|C_D|D0
+  Maksimal'noe chislo mesyacev Q-III: 50, yacheyka A3|Bq_A20|AND|C_D|D5
+  Maksimal'noe chislo nevyrozhdennyh par: 14, yacheyka A3|Bq_A20|OR|C_M|D0
+
+-- 13.2 Vklad kazhdogo ogranichitelya: srednyaya dolya kvadrantov po urovnyu -
+  A:
+    A0        kvadrantov 0.0202 | Q-III mes.   1.6 | spell   1.9 dn. | par  1.8 | S1   0/144
+    A1        kvadrantov 0.0180 | Q-III mes.   1.4 | spell   1.9 dn. | par  1.7 | S1   0/144
+    A2        kvadrantov 0.0635 | Q-III mes.   4.7 | spell   2.2 dn. | par  3.4 | S1  11/144
+    A3        kvadrantov 0.2900 | Q-III mes.  12.8 | spell   4.9 dn. | par  5.9 | S1  54/144
+    A4        kvadrantov 0.2900 | Q-III mes.  12.8 | spell   4.9 dn. | par  5.9 | S1  54/144
+    A5        kvadrantov 0.0569 | Q-III mes.   3.1 | spell   2.0 dn. | par  3.0 | S1  13/144
+  Bq:
+    Bq_B      kvadrantov 0.0758 | Q-III mes.   3.8 | spell   2.5 dn. | par  2.8 | S1  21/216
+    Bq_A20    kvadrantov 0.1652 | Q-III mes.   8.0 | spell   3.4 dn. | par  4.1 | S1  42/216
+    Bq_JOINT  kvadrantov 0.1768 | Q-III mes.   8.8 | spell   3.4 dn. | par  4.6 | S1  48/216
+    Bq_BQUAD  kvadrantov 0.0745 | Q-III mes.   3.7 | spell   2.5 dn. | par  2.8 | S1  21/216
+  Bc:
+    OR        kvadrantov 0.0890 | Q-III mes.   4.3 | spell   2.8 dn. | par  3.0 | S1  42/432
+    AND       kvadrantov 0.1572 | Q-III mes.   7.9 | spell   3.2 dn. | par  4.2 | S1  90/432
+  C:
+    C_M       kvadrantov 0.1423 | Q-III mes.   7.0 | spell   3.0 dn. | par  4.2 | S1  60/288
+    C_D       kvadrantov 0.1157 | Q-III mes.   5.8 | spell   3.0 dn. | par  3.2 | S1  36/288
+    C_W       kvadrantov 0.1113 | Q-III mes.   5.3 | spell   3.0 dn. | par  3.3 | S1  36/288
+  D:
+    D0        kvadrantov 0.2526 | Q-III mes.  11.5 | spell   5.5 dn. | par  7.2 | S1  44/144
+    D1        kvadrantov 0.0000 | Q-III mes.   0.0 | spell   0.0 dn. | par  0.0 | S1   0/144
+    D2        kvadrantov 0.0000 | Q-III mes.   0.0 | spell   0.0 dn. | par  0.0 | S1   0/144
+    D3        kvadrantov 0.0000 | Q-III mes.   0.0 | spell   0.0 dn. | par  0.0 | S1   0/144
+    D4        kvadrantov 0.2436 | Q-III mes.  12.3 | spell   6.2 dn. | par  7.2 | S1  46/144
+    D5        kvadrantov 0.2423 | Q-III mes.  12.5 | spell   6.1 dn. | par  7.1 | S1  42/144
+
+-- 13.3 Ustoychivost' S6: kvadranty na kalibrovke protiv hvosta --------------
+  yacheyka                    kalibr.    hvost otnoshenie
+  A3|Bq_A20|AND|C_D|D0            130      136     1.00
+  A3|Bq_A20|AND|C_D|D4            130      136     1.00
+  A3|Bq_A20|AND|C_D|D5            129      137     1.02
+  A4|Bq_A20|AND|C_D|D0            130      136     1.00
+  A4|Bq_A20|AND|C_D|D4            130      136     1.00
+  A4|Bq_A20|AND|C_D|D5            129      137     1.02
+  A3|Bq_A20|AND|C_M|D0            130      133     0.98
+  A4|Bq_A20|AND|C_M|D0            130      133     0.98
+  A3|Bq_A20|AND|C_W|D0            126      135     1.02
+  A4|Bq_A20|AND|C_W|D0            126      135     1.02
+  A3|Bq_A20|AND|C_M|D4            127      133     1.00
+  A3|Bq_A20|AND|C_M|D5            126      134     1.02
+  A4|Bq_A20|AND|C_M|D4            127      133     1.00
+  A4|Bq_A20|AND|C_M|D5            126      134     1.02
+  A3|Bq_A20|AND|C_W|D5            127      132     0.99
+  A4|Bq_A20|AND|C_W|D5            127      132     0.99
+  A3|Bq_A20|AND|C_W|D4            124      130     1.00
+  A4|Bq_A20|AND|C_W|D4            124      130     1.00
+  A3|Bq_JOINT|OR|C_D|D0           114      129     1.08
+  A4|Bq_JOINT|OR|C_D|D0           114      129     1.08
+
+-- 13.4 Setka q dlya bazovogo sostava: chto pokazyvayut porogi ---------------
+  A0 (veto vklyucheno), D0, OR:
+       q  theta_fed  theta_macro  spell vsego  spell kvadr      Centr
+    0.00     0.0001       0.0001         12.3          4.2     0.8282
+    0.04     0.0284       0.0140         13.0          4.1     0.8405
+    0.08     0.0523       0.0260         14.0          4.1     0.8507
+    0.12     0.0757       0.0417         15.0          4.1     0.8620
+    0.16     0.0981       0.0603         15.6          3.8     0.8743
+    0.20     0.1168       0.0795         16.5          3.5     0.8881
+    0.24     0.1363       0.1005         18.5          3.4     0.9056
+    0.28     0.1576       0.1183         20.0          3.1     0.9190
+    0.32     0.1767       0.1382         22.4          3.2     0.9252
+    0.36     0.1972       0.1619         24.3          3.2     0.9299
+    0.40     0.2123       0.1945         27.7          3.0     0.9397
+    0.44     0.2270       0.2208         31.6          3.1     0.9455
+    0.48     0.2453       0.2527         35.5          3.1     0.9513
+    0.52     0.2630       0.2751         39.8          3.0     0.9571
+    0.56     0.2828       0.2941         47.3          3.1     0.9644
+    0.60     0.3005       0.3135         55.0          3.2     0.9688
+  A4 (veto snyato), D0, OR:
+       q  theta_fed  theta_macro  spell vsego  spell kvadr      Centr
+    0.00     0.0001       0.0001         13.2         13.2     0.0000
+    0.04     0.0284       0.0140          9.3         12.4     0.0785
+    0.08     0.0523       0.0260          8.4         12.0     0.1555
+    0.12     0.0757       0.0417          7.8         10.7     0.2245
+    0.16     0.0981       0.0603          7.6         10.0     0.2942
+    0.20     0.1168       0.0795          7.9          9.5     0.3614
+    0.24     0.1363       0.1005          8.3          9.1     0.4268
+    0.28     0.1576       0.1183          8.2          8.1     0.4889
+    0.32     0.1767       0.1382          8.8          7.8     0.5409
+    0.36     0.1972       0.1619          9.5          7.5     0.5921
+    0.40     0.2123       0.1945         10.1          7.1     0.6400
+    0.44     0.2270       0.2208         10.9          6.7     0.6880
+    0.48     0.2453       0.2527         12.1          6.2     0.7410
+    0.52     0.2630       0.2751         13.3          5.8     0.7788
+    0.56     0.2828       0.2941         14.9          5.3     0.8169
+    0.60     0.3005       0.3135         17.4          5.1     0.8503
+
+  Zamok Z05 vosproizvedyon: Centr pri q=0 s veto = 0.8282, bez veto = 0.0000
+
+-- 13.5 Dostizhima li dolya Centra 0.20 hot' gde-nibud' ----------------------
+  Blizhayshaya k 0.20 dolya Centra po VSEM kalibrovkam i vsem q:
+    0.2009 pri q=0.46, yacheyka D=D0 A=A3 Bc=AND
+
+-- 13.5-bis Trebovanie A: gde dolya Centra dejstvitel'no okolo pyatoy chasti -
+  Yacheyki s dolyey Centra v [0.15 .. 0.25] -- to est' te, gde trebovanie A
+  sec.1.4.7 vypolneno po SMYSLU, a ne tol'ko po perceptilyu.
+  takih yacheek: 30 iz 864
+  yacheyka                    Centr  kvadr    Q3   sred  median   par lift10  S1S2S3S4
+  A3|Bq_JOINT|OR|C_M|D0       0.170  0.830    35   11.1     6.0    14  1.212  1011
+  A3|Bq_JOINT|OR|C_W|D0       0.174  0.826    36   11.1     6.0    14  1.153  1011
+  A3|Bq_JOINT|AND|C_M|D0      0.230  0.770    31   10.3     4.0    14  1.127  1011
+  A3|Bq_JOINT|AND|C_D|D0      0.211  0.789    35   10.3     4.0    14  0.965  1011
+  A3|Bq_JOINT|AND|C_W|D0      0.233  0.767    30   10.3     4.0    14  1.186  1011
+  A4|Bq_JOINT|OR|C_M|D0       0.170  0.830    35   11.1     6.0    14  1.212  1011
+  A4|Bq_JOINT|OR|C_W|D0       0.174  0.826    36   11.1     6.0    14  1.153  1011
+  A4|Bq_JOINT|AND|C_M|D0      0.230  0.770    31   10.3     4.0    14  1.127  1011
+  A4|Bq_JOINT|AND|C_D|D0      0.211  0.789    35   10.3     4.0    14  0.965  1011
+  A4|Bq_JOINT|AND|C_W|D0      0.233  0.767    30   10.3     4.0    14  1.186  1011
+  A3|Bq_JOINT|OR|C_M|D4       0.196  0.804    34   13.9     7.0    14  1.178  1011
+  A3|Bq_JOINT|OR|C_W|D4       0.200  0.800    37   13.9     7.0    14  0.981  1011
+  A3|Bq_JOINT|AND|C_M|D4      0.211  0.789    37   12.2     6.0    14  1.318  1011
+  A3|Bq_JOINT|AND|C_D|D4      0.174  0.826    35   12.2     6.0    14  1.081  1011
+  A3|Bq_JOINT|AND|C_W|D4      0.226  0.774    32   12.2     6.0    14  1.076  1011
+  A4|Bq_JOINT|OR|C_M|D4       0.196  0.804    34   13.9     7.0    14  1.178  1011
+  A4|Bq_JOINT|OR|C_W|D4       0.200  0.800    37   13.9     7.0    14  0.981  1011
+  A4|Bq_JOINT|AND|C_M|D4      0.211  0.789    37   12.2     6.0    14  1.318  1011
+  A4|Bq_JOINT|AND|C_D|D4      0.174  0.826    35   12.2     6.0    14  1.081  1011
+  A4|Bq_JOINT|AND|C_W|D4      0.226  0.774    32   12.2     6.0    14  1.076  1011
+  A3|Bq_JOINT|OR|C_M|D5       0.193  0.807    36   13.5     7.0    14  1.180  1011
+  A3|Bq_JOINT|OR|C_W|D5       0.200  0.800    41   13.5     7.0    14  1.004  1011
+  A3|Bq_JOINT|AND|C_M|D5      0.207  0.793    38   11.1     5.0    14  1.284  1011
+  A3|Bq_JOINT|AND|C_D|D5      0.185  0.815    38   11.1     5.0    14  1.155  1011
+  raspredelenie etih yacheek po variantu A: {'A3': 15, 'A4': 15}
+
+-- 13.5-ter Kogerentnost' S5 tam, gde ona ne trivial'na (A3 / A4) ------------
+  Gde veto vklyucheno, soglasie s formoy ravno edinice PO POSTROENIYU.
+  Nizhe -- tol'ko yacheyki bez veto, gde velichina chto-to znachit.
+  informativnyh yacheek: 144
+  lift na SVOYOM okne (10):  min 0.533 | 25% 1.077 | mediana 1.154 | 75% 1.328 | max 2.824
+  dolya yacheek s liftom > 1: 124 iz 144 (86.1%)
+  lift na CHUZHOM okne (30): min 0.719 | 25% 0.892 | mediana 1.033 | 75% 1.131 | max 2.118
+  dolya yacheek s liftom > 1: 86 iz 144 (59.7%)
+  -> Na SVOYOM okne soglasie vyshe sluchaynogo (mediana lifta vyshe 1),
+     no pri smene okna ono pochti ischezaet. To est' forma krivoy nesyot
+     ne nol' informacii o kvadrante, no eyo signal slab i priviazan k
+     oknu; vetom takoy signal ne obosnovyvaetsya.
+
+-- 13.5-quater Yacheyki bez dopustimogo q ------------------------------------
+  yacheek, gde pravilo vybora q ne imeet dopustimogo vyhoda: 690 iz 864
+     432  os' ne schitaetsya ni v odin den' (otsechka)
+     108  ni odin q iz setki ne dayot quad_spell_mean >= 30; vzyat mak
+      78  ni odin q iz setki ne dayot mean_spell_all >= 30; vzyat maks
+       6  dolya Centra 0.20 nedostizhima: blizhayshee 0.8282
+       6  dolya Centra 0.20 nedostizhima: blizhayshee 0.8562
+       6  dolya Centra 0.20 nedostizhima: blizhayshee 0.6963
+       6  dolya Centra 0.20 nedostizhima: blizhayshee 0.6847
+       6  dolya Centra 0.20 nedostizhima: blizhayshee 0.8380
+       6  dolya Centra 0.20 nedostizhima: blizhayshee 0.8671
+       6  dolya Centra 0.20 nedostizhima: blizhayshee 0.7141
+       6  dolya Centra 0.20 nedostizhima: blizhayshee 0.7011
+       6  dolya Centra 0.20 nedostizhima: blizhayshee 0.8394
+       6  dolya Centra 0.20 nedostizhima: blizhayshee 0.8707
+       6  dolya Centra 0.20 nedostizhima: blizhayshee 0.7112
+       6  dolya Centra 0.20 nedostizhima: blizhayshee 0.6967
+
+-- 13.6 Doli dostupnogo vesa po sostavam (velichina V5) ----------------------
+  D0  FED {0.65: 270} | MACRO {0.6: 1, 0.64: 269}
+  D1  FED {0.65: 270} | MACRO {0.56: 270}
+  D2  FED {0.55: 270} | MACRO {0.6: 1, 0.64: 269}
+  D3  FED {0.55: 270} | MACRO {0.56: 270}
+  D4  FED {0.65: 270} | MACRO {0.62: 270}
+  D5  FED {0.85: 270} | MACRO {0.62: 270}
+
+==============================================================================
+14. Storozha discipliny (HYPOTHESIS sec.1.3)
+==============================================================================
+  Simvoly Yahoo, zaproshennye za ves' progon: ['CL=F', 'DX-Y.NYB', 'GC=F', 'HG=F', 'ZQ=F']
+  Instrumentov par vne belogo spiska zaprosheno: 0
+  Klyuchi Z05/result.json, prochitannye za progon: ['month_end_dates', 'monthly_states', 'pairs', 'state_distribution', 'theta', 'validator_effect']
+  Zapreshchyonnyh klyuchey prochitano: 0
+  Funkcii, opredelyonnye v module (46):
+    Step, _wo, _yahoo, _z05, add_months, avail_date, axis, calibrate, cell_key, classify_range, coherence, d2, daily_speed, getter, head, last_dom, load, mad, mean_spell_all, median, mkey, modal, monthly_level, monthly_speed, norm_speed, observed, pair_n, parts_at, phase_c, quad_spell_stats, quantile, rolling_scale, s2, say, shape_at, shape_months, shape_vote, shift_days, show, sign, spells, sub, to_months, to_step_monthly, validator_ok, weekly_speed
+  Iz nih s priznakami raschyota dohodnosti: 0 []
+
+result.json zapisan; vsego 41.6 s
