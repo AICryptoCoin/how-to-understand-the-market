@@ -51,7 +51,7 @@ from typing import Any, Iterable, Iterator, Sequence
 
 __all__ = [
     "Series", "MissingKey", "FetchError", "UpstreamBlocked",
-    "fred", "fred_meta", "fred_search",
+    "fred", "fred_meta", "fred_search", "alfred", "alfred_vintages",
     "treasury_curve", "yahoo", "stooq",
     "nyfed_acm", "nyfed_reference_rate", "nyfed_sce",
     "philfed_ads", "philfed_mbos", "philfed_nbos", "philfed_spf", "philfed_realtime",
@@ -888,6 +888,75 @@ def fred(series_id: str, *, start: str | None = None, end: str | None = None,
     for o in obs:
         s.dates.append(o["date"])
         s.values.append(_num(o["value"]))
+    return s
+
+
+_ALFRED_CSV = "https://alfred.stlouisfed.org/graph/alfredgraph.csv"
+
+
+def alfred_vintages(series_id: str, *, force: bool = False) -> list[str]:
+    """Даты винтажей ряда: когда ALFRED видел его в очередной редакции.
+
+    Пустой список означает «ряда в ALFRED нет», а не «нет пересмотров»:
+    у ФРБ Ричмонда и Канзас-Сити своих обзоров на FRED нет вовсе, значит нет
+    и винтажей — реальное время по ним невоспроизводимо в принципе.
+
+    **Грабля:** ``limit`` обязан лежать между 1 и 10000. Значение больше
+    даёт HTTP 400 с телом
+    ``{"error_code":400,"error_message":"... limit is not between 1 and 10000"}``
+    — то есть отказ выглядит как отказ источника, а на деле это наш параметр.
+    Диагноз ставится только по телу ответа.
+    """
+    url = (f"{FRED_API}/series/vintagedates"
+           f"?series_id={urllib.parse.quote(series_id)}"
+           f"&file_type=json&api_key={_key('FRED_API_KEY')}&limit=10000")
+    body = fetch(url, tag="alfred-vd", force=force, max_age=timedelta(days=1))
+    return list(json.loads(body).get("vintage_dates", []))
+
+
+def alfred(series_id: str, vintage_date: str, *, start: str | None = None,
+           end: str | None = None, force: bool = False) -> Series:
+    """Ряд ТАКИМ, каким его видели на дату ``vintage_date`` (ALFRED).
+
+    Маршрут — ``alfredgraph.csv``, а НЕ ``fredgraph.csv``: последний отдаёт
+    текущую редакцию и молча игнорирует запрос винтажа, то есть «бэктест на
+    винтажах» через него на самом деле идёт на пересмотренных данных.
+
+    Заголовок колонки в ответе — ``<ID>_<ГГГГММДД>``; расхождение с
+    запрошенной датой ловится здесь, а не в отчёте.
+
+        >>> alfred("PERMIT", "2010-05-20", start="2010-01-01").last()
+        ('2010-04-01', 606.0)
+    """
+    q = [f"id={urllib.parse.quote(series_id)}",
+         f"vintage_date={vintage_date}"]
+    if start:
+        q.append(f"cosd={start}")
+    if end:
+        q.append(f"coed={end}")
+    body = fetch(f"{_ALFRED_CSV}?" + "&".join(q), tag="alfred", force=force,
+                 max_age=timedelta(days=30))
+    rows = _rows_from_csv(body)
+    if not rows or len(rows[0]) < 2:
+        raise FetchError(f"ALFRED {series_id}@{vintage_date}: тело не разобралось "
+                         f"в CSV ({len(body)} байт)")
+    want = f"{series_id}_{vintage_date.replace('-', '')}"
+    got = str(rows[0][1]).strip()
+    if got != want:
+        raise FetchError(f"ALFRED {series_id}@{vintage_date}: колонка {got!r} "
+                         f"вместо {want!r} — вернулся не тот винтаж")
+    s = Series(series_id=f"{series_id}@{vintage_date}", source="ALFRED",
+               title=f"{series_id}, vintage {vintage_date}",
+               fetched_at=_now(),
+               meta={"series_id": series_id, "vintage_date": vintage_date})
+    for r in rows[1:]:
+        if len(r) < 2:
+            continue
+        d = _iso(r[0])
+        if d is None:
+            continue
+        s.dates.append(d)
+        s.values.append(_num(r[1]))
     return s
 
 
