@@ -1,0 +1,17 @@
+# Ключи контура research/ — FRED, BEA, Census. НИКОГДА не коммитить.
+.env
+.env.*
+!.env.example
+
+# Кэш загруженных рядов: ~47 МБ, восстанавливается прогоном research/smoke.py
+research/.cache/
+
+# Локальная БД контура и промежуточные файлы прогонов
+research/*.sqlite
+research/*.sqlite3
+__pycache__/
+*.pyc
+
+# Служебное
+.DS_Store
+Thumbs.db
