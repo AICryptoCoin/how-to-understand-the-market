@@ -42,9 +42,15 @@ cd research && python smoke.py && python smoke.py --selftest
 
 ## Ключи
 
-`research/.env.research` — `FRED_API_KEY`, `BEA_API_KEY`, `CENSUS_API_KEY`.
-Файл покрыт `.gitignore`, читается из окружения. Ключа EIA нет, и без него
-источник в контур не включается.
+**`.env.research` в корне репозитория** — `FRED_API_KEY`, `BEA_API_KEY`,
+`CENSUS_API_KEY`. Файл покрыт `.gitignore`, читается из окружения. Ключа EIA
+нет, и без него источник в контур не включается.
+
+Путь именно корневой: `research/sources.py` ищет файл рядом с модулем и **вверх
+по дереву до корня репозитория**. Положить его в `research/` тоже сработает, но
+канон — корень, как записано в `CLAUDE.md` и `research/README.md`. Проверка одна
+и дешёвая: `python smoke.py` из `research/` обязан дать **42/42**; строка «без
+ключа: 20» означает, что файл не найден.
 
 ## Связь с остальным флотом
 
