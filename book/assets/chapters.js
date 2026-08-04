@@ -36,6 +36,10 @@ window.BOOK_PARTS = [
   { id: "sintez",       label: "Часть XIV",   title: "Синтез — сама шпаргалка" },
   { id: "istoriya",     label: "Часть XV",    title: "История как лаборатория" },
   { id: "most",         label: "Часть XVI",   title: "Мост к разработке" },
+  // ВРЕМЕННО. Первая глава новой постановки. Реестр перестраивается
+  // при сверке с написанным (PROGRESS.md §6, пункт 7); до тех пор
+  // новая глава живёт здесь, чтобы приборы её видели и не считали сиротой.
+  { id: "novaya-rabota", label: "Часть XVII",  title: "Научная работа: как отличают прогноз от угадывания" },
 ];
 
 window.BOOK_CHAPTERS = [
@@ -143,4 +147,5 @@ window.BOOK_CHAPTERS = [
   { id: "kripta",               part: "most",         file: "kripta-kak-makro-aktiv.html", title: "Крипта как макро-актив",                                   status: "done" },
   { id: "istochniki",           part: "most",         file: "istochniki-dannyh.html",      title: "Источники данных и гигиена",                               status: "done" },
   { id: "k-kodu",               part: "most",         file: "ot-shpargalki-k-kodu.html",   title: "От шпаргалки к коду",                                      status: "done" },
+  { id: "ocenochnaya-funkciya", part: "novaya-rabota", file: "ocenochnaya-funkciya.html",  title: "Правильная оценочная функция",                             status: "todo" },
 ];
