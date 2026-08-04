@@ -147,5 +147,5 @@ window.BOOK_CHAPTERS = [
   { id: "kripta",               part: "most",         file: "kripta-kak-makro-aktiv.html", title: "Крипта как макро-актив",                                   status: "done" },
   { id: "istochniki",           part: "most",         file: "istochniki-dannyh.html",      title: "Источники данных и гигиена",                               status: "done" },
   { id: "k-kodu",               part: "most",         file: "ot-shpargalki-k-kodu.html",   title: "От шпаргалки к коду",                                      status: "done" },
-  { id: "ocenochnaya-funkciya", part: "novaya-rabota", file: "ocenochnaya-funkciya.html",  title: "Правильная оценочная функция",                             status: "todo" },
+  { id: "ocenochnaya-funkciya", part: "novaya-rabota", file: "ocenochnaya-funkciya.html",  title: "Правильная оценочная функция",                             status: "done" },
 ];
