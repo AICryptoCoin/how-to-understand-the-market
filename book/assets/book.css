@@ -62,7 +62,14 @@
   --font-ui: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, "Cascadia Mono", Consolas, monospace;
 
-  --measure: 40rem;
+  /* Решение оператора 2026-08-06: текст идёт В ШИРИНУ ГРАФИКИ, одной колонкой.
+     Мера и полоса совпадают. Цена названа и компенсирована: строка выходит
+     примерно в 136 знаков против книжной нормы 70-80, поэтому интерлиньяж
+     поднят до 1.8 -- чем длиннее строка, тем больше нужен просвет между
+     строками, иначе глаз промахивается мимо начала следующей.
+     Захочешь короче строку -- меняется одно число здесь: 2 знака на 1rem. */
+  --media: 68rem;
+  --measure: var(--media);
   --sidebar-w: 19rem;
 }
 
@@ -124,7 +131,14 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; scroll-padding-top: 5rem; }
+/* Книжный кегль растёт с экраном: на большом мониторе страница становится
+   КРУПНЕЕ, а не шире строкой. Мера в rem неизменна, значит число знаков
+   в строке постоянно, а физический размер полосы и графики -- нет.
+   1280 px -> ~16.5px · 1920 -> ~18.7px · 2560 -> 21px (потолок). */
+html {
+  font-size: clamp(16px, 0.35vw + 12px, 21px);
+  scroll-behavior: smooth; scroll-padding-top: 5rem;
+}
 
 body {
   margin: 0;
@@ -132,7 +146,7 @@ body {
   color: var(--ink);
   font-family: var(--font-prose);
   font-size: 1.0625rem;
-  line-height: 1.7;
+  line-height: 1.8;   /* компенсация длинной строки, см. --measure */
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
 }
@@ -212,10 +226,15 @@ hr { border: 0; border-top: 1px solid var(--grid); margin: 3rem 0; }
 .sidebar a[aria-current="page"] .num { color: var(--series-1); }
 .sidebar .todo { opacity: .48; }
 
-.content { min-width: 0; padding: 2.5rem 2rem 6rem; }
-.prose { max-width: var(--measure); margin: 0 auto; }
-/* Фигуры и широкие таблицы шире колонки текста */
-.prose .figure, .prose .wide { max-width: min(58rem, 100%); margin-inline: auto; }
+.content { min-width: 0; padding: 2.5rem clamp(1.25rem, 3vw, 4rem) 6rem; }
+
+/* Полоса набора шире меры: текст держится меры и центрируется, а фигуры
+   и широкие таблицы выходят на всю полосу -- как разворотная иллюстрация
+   в книге. Прежнее правило `.prose .figure { max-width: min(58rem,100%) }`
+   было МЁРТВЫМ: фигура -- блок внутри колонки в 40rem, поэтому min(58rem,100%)
+   всегда давал те же 40rem, и ни одна фигура за меру не выходила. */
+.prose { max-width: var(--media); margin: 0 auto; }
+.prose > * { max-width: var(--measure); margin-inline: auto; }
 
 /* ===================== ТЕКСТ ===================== */
 
@@ -575,6 +594,9 @@ table.data .num { text-align: right; font-variant-numeric: tabular-nums; }
 /* ===================== ПЕЧАТЬ ===================== */
 
 @media print {
+  /* Плавный кегль считается от ширины вьюпорта; на бумаге это не имеет смысла,
+     поэтому корень пришпилен, а размер текста задаётся в пунктах ниже. */
+  html { font-size: 16px; }
   .topbar, .sidebar, .chapter-nav, .figure__tools, #viz-tip { display: none !important; }
   .layout { display: block; }
   .content { padding: 0; }
