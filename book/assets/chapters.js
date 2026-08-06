@@ -19,6 +19,7 @@ window.BOOK_PARTS = [
   { id: "pribor-sistema",         label: "Часть XII", title: "Прибор" },
   { id: "kripta-granica",         label: "Часть XIII", title: "Крипта" },
   { id: "izmerennye-rezultaty",   label: "Часть XIV", title: "Что измерено" },
+  { id: "spravochnyy-apparat",    label: "Приложение", title: "Справочный аппарат" },
 ];
 
 window.BOOK_CHAPTERS = [
@@ -109,4 +110,8 @@ window.BOOK_CHAPTERS = [
   { id: "makro-sverh-ceny", part: "izmerennye-rezultaty", file: "makro-sverh-ceny.html", title: "Где макро не дало ничего сверх цены", status: "todo" },
   { id: "chuzhaya-konstrukciya", part: "izmerennye-rezultaty", file: "chuzhaya-konstrukciya.html", title: "Разобранный случай: чужая конструкция", status: "todo" },
   { id: "otkrytye-voprosy", part: "izmerennye-rezultaty", file: "otkrytye-voprosy.html", title: "Что осталось открытым", status: "todo" },
+
+
+  /* ── Приложение. Справочный аппарат ─────────────────── */
+  { id: "istochniki", part: "spravochnyy-apparat", file: "istochniki.html", title: "Источники", status: "todo" },
 ];
