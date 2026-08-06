@@ -748,11 +748,9 @@
         просто за то, что будущее не определено. <b>Второе слагаемое</b>,
         <code>(q − p)²</code>, — это в точности цена вранья, и она равна нулю
         только на правде. Хороший прогноз отличается от плохого не тем, что у
-        него нет первого слагаемого, а тем, что у него нет второго.
-        <b>[ДОПОЛНЕНО: разложение оценки Брайера на неопределённость,
-        надёжность и разрешающую способность — Murphy A. H. «A New Vector
-        Partition of the Probability Score», Journal of Applied Meteorology,
-        1973, т. 12, № 4, с. 595–600]</b>
+        него нет первого слагаемого, а тем, что у него нет второго. Полное
+        разложение — с надёжностью и разрешающей способностью — построил
+        Аллан Мёрфи; разбираем его в разделе о квадратичной оценке.
       </p>
     </div>
 
@@ -792,8 +790,8 @@
           <path class="viz-line" style="stroke:var(--series-1)" d="M90,78 L122,124.8 L154,164.4 L186,196.8 L218,222 L250,240 L282,250.8 L314,254.4 L346,250.8 L378,240 L410,222"/>
           <circle class="viz-mark" cx="314" cy="254.4" r="5.5" style="fill:var(--series-1)"/>
           <text class="viz-label" x="314" y="284" text-anchor="middle">минимум 0,21</text>
-          <text class="viz-annot" x="406" y="212" text-anchor="end">край: 0,30</text>
-          <text class="viz-annot" x="98" y="94">край: 0,70</text>
+          <text class="viz-annot" x="406" y="206" text-anchor="end">край: 0,30</text>
+          <text class="viz-annot" x="116" y="84">край: 0,70</text>
 
           <!-- ПРАВАЯ ПАНЕЛЬ -->
           <text class="viz-title" x="660" y="40" text-anchor="middle">Неправильная (линейная)</text>
@@ -813,10 +811,10 @@
           <text class="viz-annot" x="720" y="76" text-anchor="end">своя вера 0,7</text>
           <path class="viz-line" style="stroke:var(--series-2)" d="M500,78 L820,222"/>
           <circle class="viz-mark" cx="724" cy="178.8" r="5.5" style="fill:var(--series-2)"/>
-          <text class="viz-label" x="716" y="166" text-anchor="end">правда даёт 0,42</text>
+          <text class="viz-label" x="716" y="212" text-anchor="end">правда даёт 0,42</text>
           <circle class="viz-mark" cx="820" cy="222" r="5.5" style="fill:var(--series-8)"/>
           <text class="viz-label" x="816" y="252" text-anchor="end">минимум на краю: 0,30</text>
-          <text class="viz-annot" x="508" y="94">край: 0,70</text>
+          <text class="viz-annot" x="506" y="132">край: 0,70</text>
 
           <text class="viz-axis" x="440" y="386" text-anchor="middle">по горизонтали — заявленная вероятность, по вертикали — ожидаемый штраф при настоящей вере 0,7</text>
           <text class="viz-annot" x="440" y="410" text-anchor="middle">меньше — лучше</text>
@@ -1086,8 +1084,9 @@
       полезно диагностически: оно показывает, чинить ли калибровку или искать
       новую информацию. Здесь мы его не считаем — это отдельная работа, — но
       знать о его существовании нужно, потому что без него нельзя понять, что
-      именно сломалось у плохого прогноза. <b>[ДОПОЛНЕНО: там же, Murphy,
-      1973]</b>
+      именно сломалось у плохого прогноза. <b>[ДОПОЛНЕНО: Murphy A. H.
+      «A New Vector Partition of the Probability Score», Journal of Applied
+      Meteorology, 1973, т. 12, № 4, с. 595–600]</b>
     </p>
 
     <!-- ================================================================= -->
