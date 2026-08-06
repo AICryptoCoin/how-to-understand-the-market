@@ -51,6 +51,7 @@
         <li><a href="#s13">Ловушки</a></li>
         <li><a href="#s14">Что сделать перед следующей главой</a></li>
         <li><a href="#s15">Что читать дальше</a></li>
+        <li><a href="#s16">Источники</a></li>
       </ol>
     </nav>
 
@@ -914,8 +915,8 @@
       Дальше в главе разбираются три функции из этого семейства — те, с
       которыми читатель столкнётся на практике. Общая теория, объясняющая,
       откуда берётся всё семейство и как его строить, изложена в обзорной
-      работе Гнайтинга и Рафтери — она названа полностью в конце главы,
-      в «Что читать дальше».
+      работе Гнайтинга и Рафтери — она названа полностью в «Источниках»
+      в конце главы.
     </p>
 
     <h3>А если я не уверен в собственной вере?</h3>
@@ -984,8 +985,6 @@
       рынков и по той же причине. Синоптик, обязанный говорить «дождь будет»
       или «дождя не будет», выбрасывает половину того, что знает, — а измерять
       того, кто говорит «вероятность дождя 0,3», привычными мерами было нечем.
-      <b>[ДОПОЛНЕНО: Brier G. W. «Verification of Forecasts Expressed in Terms
-      of Probability», Monthly Weather Review, 1950, т. 78, № 1, с. 1–3]</b>
     </p>
 
     <h3>Как считать, когда исходов больше двух</h3>
@@ -1172,7 +1171,7 @@
       разницу между двумя прогнозами на одних и тех же датах.
     </p>
     <p>
-      Полная версия разложения делит штраф на три части:
+      Полная версия разложения, построенная Мёрфи, делит штраф на три части:
     </p>
     <ul>
       <li><b>Неустранимая неопределённость</b> — то самое <code>p(1 − p)</code>,
@@ -1187,9 +1186,7 @@
       Разделение полезно диагностически: оно показывает, чинить ли калибровку
       или искать новую информацию. Здесь мы его не считаем — это отдельная
       работа, — но знать о его существовании нужно: без него нельзя понять,
-      что именно сломалось у плохого прогноза. <b>[ДОПОЛНЕНО: Murphy A. H.
-      «A New Vector Partition of the Probability Score», Journal of Applied
-      Meteorology, 1973, т. 12, № 4, с. 595–600]</b>
+      что именно сломалось у плохого прогноза.
     </p>
 
     <!-- ================================================================= -->
@@ -1209,9 +1206,7 @@
       информации, содержащейся в сообщении «случилось то, чему вы давали
       вероятность <code>q</code>». Чем неожиданнее исход, тем больше
       информации он несёт и тем больше штраф. Функция впервые описана в этом
-      качестве Ирвингом Гудом. <b>[ДОПОЛНЕНО: Good I. J. «Rational Decisions»,
-      Journal of the Royal Statistical Society, Series B, 1952, т. 14, № 1,
-      с. 107–114]</b>
+      качестве Ирвингом Гудом.
     </p>
     <p>
       Она тоже правильная, и это проверяется тем же счётом. При вере
@@ -1447,9 +1442,7 @@
     <p>
       Мера, которая нужна, называется <b>CRPS</b> — непрерывная ранжированная
       вероятностная оценка (continuous ranked probability score). Её ввели
-      Мэтисон и Уинклер. <b>[ДОПОЛНЕНО: Matheson J. E., Winkler R. L. «Scoring
-      Rules for Continuous Probability Distributions», Management Science, 1976,
-      т. 22, № 10, с. 1087–1096]</b> Определение звучит страшно, а рисуется
+      Мэтисон и Уинклер. Определение звучит страшно, а рисуется
       просто, и рисунок здесь честнее формулы.
     </p>
     <p>
@@ -1732,14 +1725,8 @@
     </p>
     <p>
       Разложение CRPS на составляющие — по надёжности и разрешающей
-      способности, как у квадратичной оценки, — построено Херсбахом
-      <b>[ДОПОЛНЕНО: Hersbach H. «Decomposition of the Continuous Ranked
-      Probability Score for Ensemble Prediction Systems», Weather and
-      Forecasting, 2000, т. 15, № 5, с. 559–570]</b>; связный обзор всего
-      предмета, с которого стоит начинать знакомство, — у Гнайтинга и Кацфуса
-      <b>[ДОПОЛНЕНО: Gneiting T., Katzfuss M. «Probabilistic Forecasting»,
-      Annual Review of Statistics and Its Application, 2014, т. 1,
-      с. 125–151]</b>.
+      способности, как у квадратичной оценки, — построено Херсбахом; связный обзор всего
+      предмета, с которого стоит начинать знакомство, — у Гнайтинга и Кацфуса.
     </p>
 
     <!-- ================================================================= -->
@@ -1888,7 +1875,7 @@
     <div class="callout callout--beyond">
       <div class="callout__label" data-icon="✚">Как это формулируют в литературе</div>
       <p style="margin-bottom:0">
-        Найденное нами правило имеет устоявшееся имя: цель вероятностного
+        Найденное нами правило имеет устоявшееся имя, данное Гнайтингом, Балабдауи и Рафтери: цель вероятностного
         прогноза — <b>максимальная острота при сохранении калибровки</b>.
         «Острота» (sharpness) — это узость распределения, свойство самого
         прогноза, не зависящее от того, что случилось. «Калибровка»
@@ -1897,10 +1884,7 @@
         это подтверждается наблюдениями, и ни на сколько больше. Правильная
         оценочная функция ценна именно тем, что <em>оба</em> требования
         закодированы в одном числе, и оптимизировать по нему можно без ручного
-        баланса между ними. <b>[ДОПОЛНЕНО: Gneiting T., Balabdaoui F.,
-        Raftery A. E. «Probabilistic Forecasts, Calibration and Sharpness»,
-        Journal of the Royal Statistical Society, Series B, 2007, т. 69, № 2,
-        с. 243–268]</b>
+        баланса между ними.
       </p>
     </div>
 
@@ -2171,9 +2155,7 @@
       наивный интервал получается слишком узким. Стандартный инструмент
       сравнения предсказательной точности — тест Дибольда и Мариано; он
       построен ровно на поштучной разнице ошибок и допускает почти любую меру
-      штрафа, а не только квадратичную. <b>[ДОПОЛНЕНО: Diebold F. X.,
-      Mariano R. S. «Comparing Predictive Accuracy», Journal of Business &amp;
-      Economic Statistics, 1995, т. 13, № 3, с. 253–263]</b>
+      штрафа, а не только квадратичную.
     </p>
     <p>
       У него есть важное ограничение, о котором в рыночных отчётах обычно
@@ -2182,19 +2164,13 @@
       коэффициентах они совпадают, — обычный тест смещён: расширенная модель
       тратит наблюдения на оценку коэффициентов, которые в действительности
       равны нулю, и потому проигрывает в среднем даже когда обе модели
-      одинаково верны. Для этого случая есть отдельная поправка. <b>[ДОПОЛНЕНО:
-      Clark T. E., West K. D. «Approximately Normal Tests for Equal Predictive
-      Accuracy in Nested Models», Journal of Econometrics, 2007, т. 138, № 1,
-      с. 291–311]</b> Для нашей работы это не тонкость: базовый прогноз «ничего
+      одинаково верны. Для этого случая есть отдельная поправка — Кларка и Уэста. Для нашей работы это не тонкость: базовый прогноз «ничего
       не знаю» вложен в условный ровно в этом смысле.
     </p>
     <p>
       Сам автор теста через двадцать лет написал отдельную работу о том, как
       его применяют не по назначению, и её стоит прочесть прежде, чем
-      пользоваться. <b>[ДОПОЛНЕНО: Diebold F. X. «Comparing Predictive
-      Accuracy, Twenty Years Later: A Personal Perspective on the Use and Abuse
-      of Diebold–Mariano Tests», Journal of Business &amp; Economic Statistics,
-      2015, т. 33, № 1, с. 1]</b> Короткое содержание: тест задумывался для
+      пользоваться. Короткое содержание: тест задумывался для
       сравнения <em>прогнозов</em>, а применяется для сравнения
       <em>моделей</em>, и это разные утверждения.
     </p>
@@ -2274,25 +2250,16 @@
         эпохи. Причём соперникам дали фору: структурные модели строили прогноз,
         пользуясь <em>фактическими будущими</em> значениями объясняющих
         переменных, то есть знанием, недоступным на дату решения, — и всё равно
-        не выиграли. <b>[ДОПОЛНЕНО: Meese R. A.,
-        Rogoff K. «Empirical Exchange Rate Models of the Seventies: Do They Fit
-        Out of Sample?», Journal of International Economics, 1983, т. 14,
-        № 1–2, с. 3–24]</b>
+        не выиграли.
       </p>
       <p style="margin-bottom:0">
         <b>Премия за риск на рынке акций.</b> Уэлч и Гоял проверили набор
         предикторов, накопленный литературой за десятилетия, и обнаружили, что
-        вне выборки они систематически проигрывают историческому среднему.
-        <b>[ДОПОЛНЕНО: Welch I., Goyal A. «A Comprehensive Look at the
-        Empirical Performance of Equity Premium Prediction», Review of
-        Financial Studies, 2008, т. 21, № 4, с. 1455–1508]</b> Кэмпбелл и
+        вне выборки они систематически проигрывают историческому среднему. Кэмпбелл и
         Томпсон возразили: часть предикторов начинает обыгрывать среднее, если
         наложить на прогноз простые содержательные ограничения — например,
         запретить отрицательную ожидаемую премию, — но выигрыш при этом
-        <em>мал</em>. <b>[ДОПОЛНЕНО: Campbell J. Y., Thompson S. B. «Predicting
-        Excess Stock Returns Out of Sample: Can Anything Beat the Historical
-        Average?», Review of Financial Studies, 2008, т. 21, № 4,
-        с. 1509–1531]</b> Обе работы полезны нам не выводами про акции, а
+        <em>мал</em>. Обе работы полезны нам не выводами про акции, а
         установкой: обыграть базового соперника трудно, а небольшой выигрыш —
         нормальный исход, а не провал.
       </p>
@@ -2404,17 +2371,12 @@
         индекс. На пересмотренных данных он выглядел полезным; проверка,
         сделанная на тех редакциях, которые существовали в момент решения,
         и с честными прогнозами вне выборки, дала заметно более скромную
-        картину. <b>[ДОПОЛНЕНО: Diebold F. X., Rudebusch G. D. «Forecasting
-        Output with the Composite Leading Index: A Real-Time Analysis», Journal
-        of the American Statistical Association, 1991, т. 86, № 415,
-        с. 603–610]</b>
+        картину. Это проверка Дибольда и Рудебуша.
       </p>
       <p style="margin-bottom:0">
         Лечится это не аккуратностью, а архивом: нужны <b>винтажи</b> — снимки
         того, как ряд выглядел на каждую историческую дату. Такой архив
-        существует. <b>[ДОПОЛНЕНО: Croushore D., Stark T. «A Real-Time Data Set
-        for Macroeconomists», Journal of Econometrics, 2001, т. 105, № 1,
-        с. 111–130]</b> Отдельная часть книги посвящена тому, как работать с
+        существует — его описали Крашор и Старк. Отдельная часть книги посвящена тому, как работать с
         двумя руками расчёта — на винтажах и на пересмотренных данных, — и
         почему смешивать их нельзя.
       </p>
@@ -2529,7 +2491,7 @@
       Область эта старая и хорошо устроенная: почти всё, что здесь изложено,
       имеет точную формулировку в литературе, и полезнее прочитать её, чем
       принимать пересказ на веру. Порядок — по возрастанию математики, а не по
-      хронологии. <b>[ДОПОЛНЕНО]</b>
+      хронологии.
     </p>
 
     <ul>
@@ -2595,6 +2557,75 @@
       почему он труднее, чем кажется, и что означает оговорка «по истории,
       доступной к дате».
     </p>
+
+    <!-- ================================================================= -->
+    <h2 id="s16">Источники</h2>
+
+    <p>
+      Работы, на которые глава опирается. В тексте они названы по фамилиям
+      авторов, здесь — полностью, в порядке появления. Всё остальное в главе —
+      либо арифметика, посчитанная в тексте до последнего слагаемого, либо
+      решение самой научной работы, и об этом сказано на месте.
+    </p>
+
+    <ul>
+      <li><b>Квадратичная оценка.</b> Brier G. W. «Verification of Forecasts
+        Expressed in Terms of Probability», Monthly Weather Review, 1950,
+        т. 78, № 1, с. 1–3.</li>
+      <li><b>Разложение на неопределённость, надёжность и разрешающую
+        способность.</b> Murphy A. H. «A New Vector Partition of the
+        Probability Score», Journal of Applied Meteorology, 1973, т. 12, № 4,
+        с. 595–600.</li>
+      <li><b>Общая теория правильных оценочных функций.</b> Gneiting T.,
+        Raftery A. E. «Strictly Proper Scoring Rules, Prediction, and
+        Estimation», Journal of the American Statistical Association, 2007,
+        т. 102, № 477, с. 359–378.</li>
+      <li><b>Логарифмическая оценка.</b> Good I. J. «Rational Decisions»,
+        Journal of the Royal Statistical Society, Series B, 1952, т. 14, № 1,
+        с. 107–114.</li>
+      <li><b>CRPS.</b> Matheson J. E., Winkler R. L. «Scoring Rules for
+        Continuous Probability Distributions», Management Science, 1976,
+        т. 22, № 10, с. 1087–1096.</li>
+      <li><b>Разложение CRPS.</b> Hersbach H. «Decomposition of the Continuous
+        Ranked Probability Score for Ensemble Prediction Systems», Weather and
+        Forecasting, 2000, т. 15, № 5, с. 559–570.</li>
+      <li><b>Обзор вероятностного прогноза.</b> Gneiting T., Katzfuss M.
+        «Probabilistic Forecasting», Annual Review of Statistics and Its
+        Application, 2014, т. 1, с. 125–151.</li>
+      <li><b>Максимальная острота при сохранении калибровки.</b> Gneiting T.,
+        Balabdaoui F., Raftery A. E. «Probabilistic Forecasts, Calibration and
+        Sharpness», Journal of the Royal Statistical Society, Series B, 2007,
+        т. 69, № 2, с. 243–268.</li>
+      <li><b>Сравнение предсказательной точности.</b> Diebold F. X.,
+        Mariano R. S. «Comparing Predictive Accuracy», Journal of Business
+        &amp; Economic Statistics, 1995, т. 13, № 3, с. 253–263.</li>
+      <li><b>Поправка для вложенных моделей.</b> Clark T. E., West K. D.
+        «Approximately Normal Tests for Equal Predictive Accuracy in Nested
+        Models», Journal of Econometrics, 2007, т. 138, № 1, с. 291–311.</li>
+      <li><b>Как этот тест применяют не по назначению.</b> Diebold F. X.
+        «Comparing Predictive Accuracy, Twenty Years Later: A Personal
+        Perspective on the Use and Abuse of Diebold–Mariano Tests», Journal of
+        Business &amp; Economic Statistics, 2015, т. 33, № 1, с. 1.</li>
+      <li><b>Случайное блуждание против структурных моделей валютного
+        курса.</b> Meese R. A., Rogoff K. «Empirical Exchange Rate Models of
+        the Seventies: Do They Fit Out of Sample?», Journal of International
+        Economics, 1983, т. 14, № 1–2, с. 3–24.</li>
+      <li><b>Предикторы премии за риск против исторического среднего.</b>
+        Welch I., Goyal A. «A Comprehensive Look at the Empirical Performance
+        of Equity Premium Prediction», Review of Financial Studies, 2008,
+        т. 21, № 4, с. 1455–1508.</li>
+      <li><b>Возражение к предыдущей работе.</b> Campbell J. Y.,
+        Thompson S. B. «Predicting Excess Stock Returns Out of Sample: Can
+        Anything Beat the Historical Average?», Review of Financial Studies,
+        2008, т. 21, № 4, с. 1509–1531.</li>
+      <li><b>Опережающий индекс на данных реального времени.</b>
+        Diebold F. X., Rudebusch G. D. «Forecasting Output with the Composite
+        Leading Index: A Real-Time Analysis», Journal of the American
+        Statistical Association, 1991, т. 86, № 415, с. 603–610.</li>
+      <li><b>Архив винтажей.</b> Croushore D., Stark T. «A Real-Time Data Set
+        for Macroeconomists», Journal of Econometrics, 2001, т. 105, № 1,
+        с. 111–130.</li>
+    </ul>
 
     <nav class="chapter-nav" id="chapter-nav"></nav>
 
