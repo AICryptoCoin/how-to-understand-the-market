@@ -1,0 +1,103 @@
+
+==============================================================================
+Z28 PRE-REGISTERED RUN
+==============================================================================
+base: 1ecc3ea5740801c35b448b2c172d1db38955838b
+prereg: ff77a79e22d351e41ed4caca5433d9ac5f8b6c61 2026-08-15T15:49:48+03:00
+head before run: ff77a79e22d351e41ed4caca5433d9ac5f8b6c61
+
+==============================================================================
+0. CRPS PREFLIGHT BEFORE DATA
+==============================================================================
+  wide_at_minus20      14.900000000000 expected 14.90 error +0
+  narrow_at_minus20    20.900000000000 expected 20.90 error +0
+  expected_wide        9.100000000000 expected 9.10 error +1.78e-15
+  expected_narrow      11.200000000000 expected 11.20 error +0
+  status: PASS
+
+==============================================================================
+1. DATA THROUGH research/sources.py
+==============================================================================
+Yahoo: raw=24772 monthly=1184 1927-12..2026-07
+Yahoo URL: https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?period1=-2208988800&period2=1786799108&interval=1d
+[sources] Shiller: https://img1.wsimg.com/blobby/go/e5e77e0b-59d1-44d9-ab25-4763ac982e53/downloads/e27e58c1-8ae0-488c-a976-a298708c7175/ie_data.xls?ver=1785857394436
+Shiller: rows=1877 monthly=1867 1871-01..2026-07 workbook_last=2026-08
+Shiller URL: https://img1.wsimg.com/blobby/go/e5e77e0b-59d1-44d9-ab25-4763ac982e53/downloads/e27e58c1-8ae0-488c-a976-a298708c7175/ie_data.xls?ver=1785857394436
+Shiller cols: {'date': 0, 'price_P': 1, 'CPI': 4, 'real_total_return_price': 9}
+
+==============================================================================
+2. FORECASTS
+==============================================================================
+rule: W=12, expanding empirical ensemble, centered scale, no caps
+Yahoo forecast dates: 1052
+Shiller forecast dates: 1735
+
+==============================================================================
+3. OVERLAP-AWARE RESULTS
+==============================================================================
+Yahoo native (primary)
+  dates: 1937-12 .. 2025-07 n= 1052
+  mean CRPS baseline/price: 9.678553 / 9.509748
+  mean delta: 0.168805; sd: 1.921406
+  ACF lags: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] tau=8.887350 n_eff=118.370 factor=8.887350
+  overlap CI95: [-0.177336, 0.514947]
+  naive CI95:   [0.052696, 0.284915]
+  block CI95:   [-0.121726, 0.460004]
+  power: n_req=15 n_eff=118.370 mde=0.346141 sufficient=True
+  verdict: information_absent
+Shiller native (independent)
+  dates: 1881-01 .. 2025-07 n= 1735
+  mean CRPS baseline/price: 10.664190 / 10.720756
+  mean delta: -0.056565; sd: 2.197293
+  ACF lags: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24] tau=10.363114 n_eff=167.421 factor=10.363114
+  overlap CI95: [-0.389408, 0.276277]
+  naive CI95:   [-0.159959, 0.046828]
+  block CI95:   [-0.283252, 0.188387]
+  power: n_req=19 n_eff=167.421 mde=0.332843 sufficient=True
+  verdict: information_absent
+
+==============================================================================
+4. COMMON-SPAN ROUTE GAP
+==============================================================================
+Yahoo common
+  dates: 1937-12 .. 2025-07 n= 1052
+  mean CRPS baseline/price: 9.678553 / 9.509748
+  mean delta: 0.168805; sd: 1.921406
+  ACF lags: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14] tau=8.887350 n_eff=118.370 factor=8.887350
+  overlap CI95: [-0.177336, 0.514947]
+  naive CI95:   [0.052696, 0.284915]
+  block CI95:   [-0.121726, 0.460004]
+  power: n_req=15 n_eff=118.370 mde=0.346141 sufficient=True
+  verdict: information_absent
+Shiller common
+  dates: 1937-12 .. 2025-07 n= 1052
+  mean CRPS baseline/price: 9.438751 / 9.646747
+  mean delta: -0.207997; sd: 1.580944
+  ACF lags: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16] tau=9.377453 n_eff=112.184 factor=9.377453
+  overlap CI95: [-0.500551, 0.084558]
+  naive CI95:   [-0.303532, -0.112461]
+  block CI95:   [-0.447152, 0.023292]
+  power: n_req=10 n_eff=112.184 mde=0.292555 sufficient=True
+  verdict: information_absent
+  signed mean gap Yahoo-Shiller: 0.376802
+  absolute mean gap: 0.376802
+  per-date delta correlation: 0.657483
+
+==============================================================================
+5. INSTRUMENT CONTROLS
+==============================================================================
+  chapter preflight: True
+  Yahoo time/direct/placebo: True
+  Shiller time/direct/placebo: True
+  suspicious outcome: {'both_native_means_nonpositive': False, 'common_span_signs_differ': True, 'triggered': True}
+  all controls passed: True
+
+==============================================================================
+6. FINAL
+==============================================================================
+main verdict: information_absent
+independent verdict: information_absent
+instrument test only; NOT evidence for the central market thesis
+vintage rigor: NOT earned; prices are not retrospectively revised
+result: D:\loodo\loodo-market-cycle\research\Z28\result.json
+run finished UTC: 2026-08-15T13:05:14+00:00
