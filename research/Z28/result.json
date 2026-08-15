@@ -131,6 +131,7 @@
             "rho": -0.0169140319347775
           }
         ],
+        "censored_at_preregistered_cap": false,
         "difference_from_twelve": -2.622546986597099,
         "fixed_11": {
           "included_lags": [
@@ -168,8 +169,10 @@
           15,
           16
         ],
+        "multiplier_is_lower_bound_when_censored": false,
         "multiplier_n_over_n_eff": 9.377453013402901,
         "n_eff": 112.18397986067318,
+        "n_eff_is_upper_bound_when_censored": false,
         "pair_rule": [
           {
             "included": true,
@@ -271,7 +274,8 @@
         "ratio_to_twelve": 0.781454417783575,
         "stopped_at_lag": 17,
         "tau": 9.377453013402901,
-        "tau_unfloored": 9.377453013402901
+        "tau_unfloored": 9.377453013402901,
+        "truncation_reached_max_lag": false
       },
       "first_origin": "1937-12",
       "last_origin": "2025-07",
@@ -287,12 +291,33 @@
         "target_effect_pp": 1.0
       },
       "scale": {
+        "count_lt_one": 713,
         "max": 2.64918159695105,
         "mean": 0.9304108030635388,
         "median": 0.8531214789497126,
         "min": 0.26501216787592,
         "p25": 0.6402925680459363,
-        "p75": 1.0894621518804648
+        "p75": 1.0894621518804648,
+        "share_lt_one": 0.6777566539923955
+      },
+      "scale_decomposition": {
+        "actual_mean_delta_pp": -0.20799664576126264,
+        "components_are_not_additive_without_interaction": true,
+        "interaction": {
+          "definition": "actual minus level-only minus synchronization-only",
+          "mean_delta_pp": 0.08516088304037825
+        },
+        "level_only": {
+          "definition": "constant scale median(a_t)",
+          "mean_delta_pp": 0.06539745050131848
+        },
+        "max_abs_identity_error_pp": 0.0,
+        "median_dynamic_scale": 0.8531214789497126,
+        "status": "post_hoc_review_diagnostic_not_used_for_verdict",
+        "synchronization_only": {
+          "definition": "dynamic scale a_t / median(a_t); median one",
+          "mean_delta_pp": -0.3585549793029594
+        }
       },
       "sd_delta_pp": 1.5809436574279594,
       "verdict": "information_absent"
@@ -420,6 +445,7 @@
             "rho": -0.08571635974569473
           }
         ],
+        "censored_at_preregistered_cap": false,
         "difference_from_twelve": -3.112649911648578,
         "fixed_11": {
           "included_lags": [
@@ -455,8 +481,10 @@
           13,
           14
         ],
+        "multiplier_is_lower_bound_when_censored": false,
         "multiplier_n_over_n_eff": 8.887350088351422,
         "n_eff": 118.3704917148305,
+        "n_eff_is_upper_bound_when_censored": false,
         "pair_rule": [
           {
             "included": true,
@@ -558,7 +586,8 @@
         "ratio_to_twelve": 0.7406125073626185,
         "stopped_at_lag": 15,
         "tau": 8.887350088351422,
-        "tau_unfloored": 8.887350088351422
+        "tau_unfloored": 8.887350088351422,
+        "truncation_reached_max_lag": false
       },
       "first_origin": "1937-12",
       "last_origin": "2025-07",
@@ -574,12 +603,33 @@
         "target_effect_pp": 1.0
       },
       "scale": {
+        "count_lt_one": 840,
         "max": 1.9296638936957946,
         "mean": 0.7571211354051745,
         "median": 0.6920910133139081,
         "min": 0.22673905322718474,
         "p25": 0.5133743876188154,
-        "p75": 0.9406169602790129
+        "p75": 0.9406169602790129,
+        "share_lt_one": 0.7984790874524715
+      },
+      "scale_decomposition": {
+        "actual_mean_delta_pp": 0.1688052234806414,
+        "components_are_not_additive_without_interaction": true,
+        "interaction": {
+          "definition": "actual minus level-only minus synchronization-only",
+          "mean_delta_pp": 0.14901858588277403
+        },
+        "level_only": {
+          "definition": "constant scale median(a_t)",
+          "mean_delta_pp": 0.3810322506417951
+        },
+        "max_abs_identity_error_pp": 0.0,
+        "median_dynamic_scale": 0.6920910133139081,
+        "status": "post_hoc_review_diagnostic_not_used_for_verdict",
+        "synchronization_only": {
+          "definition": "dynamic scale a_t / median(a_t); median one",
+          "mean_delta_pp": -0.36124561304392766
+        }
       },
       "sd_delta_pp": 1.921406278342807,
       "verdict": "information_absent"
@@ -660,17 +710,17 @@
       "fetches": [
         {
           "bytes": 120953,
-          "finished_at_utc": "2026-08-15T13:05:09+00:00",
+          "finished_at_utc": "2026-08-15T15:21:57+00:00",
           "sha256": "39df9893cf49f66647e90748ea2b9aef2c4396490017807a1aa812d28cf2e171",
-          "started_at_utc": "2026-08-15T13:05:09+00:00",
+          "started_at_utc": "2026-08-15T15:21:57+00:00",
           "tag": "shiller-page",
           "url": "https://shillerdata.com/"
         },
         {
           "bytes": 1673216,
-          "finished_at_utc": "2026-08-15T13:05:09+00:00",
+          "finished_at_utc": "2026-08-15T15:21:57+00:00",
           "sha256": "71c3636da5269b074489db41ecf0dcf0caef6275d1f3ecaf753ddaca2b81db2f",
-          "started_at_utc": "2026-08-15T13:05:09+00:00",
+          "started_at_utc": "2026-08-15T15:21:57+00:00",
           "tag": "shiller",
           "url": "https://img1.wsimg.com/blobby/go/e5e77e0b-59d1-44d9-ab25-4763ac982e53/downloads/e27e58c1-8ae0-488c-a976-a298708c7175/ie_data.xls?ver=1785857394436"
         }
@@ -701,8 +751,8 @@
         "9": "REAL TOTAL RETURN PRICE"
       },
       "link_rule": "ie_data.xls href discovered from shillerdata.com page",
-      "load_finished_at_utc": "2026-08-15T13:05:09+00:00",
-      "load_started_at_utc": "2026-08-15T13:05:09+00:00",
+      "load_finished_at_utc": "2026-08-15T15:21:57+00:00",
+      "load_started_at_utc": "2026-08-15T15:21:57+00:00",
       "monthly_duplicates": 0,
       "monthly_first": "1871-01",
       "monthly_last": "2026-07",
@@ -729,15 +779,15 @@
       "fetches": [
         {
           "bytes": 2649671,
-          "finished_at_utc": "2026-08-15T13:05:09+00:00",
-          "sha256": "342e1a5d1884c7a3b61c474885d46ccea3279e9adb346110954fa7d791ececa5",
-          "started_at_utc": "2026-08-15T13:05:08+00:00",
+          "finished_at_utc": "2026-08-15T15:21:57+00:00",
+          "sha256": "5c3c71ec164660334cb9580233803de55f493963b69ed006abacc7f102bc04c7",
+          "started_at_utc": "2026-08-15T15:21:56+00:00",
           "tag": "yahoo",
-          "url": "https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?period1=-2208988800&period2=1786799108&interval=1d"
+          "url": "https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?period1=-2208988800&period2=1786807316&interval=1d"
         }
       ],
-      "load_finished_at_utc": "2026-08-15T13:05:09+00:00",
-      "load_started_at_utc": "2026-08-15T13:05:08+00:00",
+      "load_finished_at_utc": "2026-08-15T15:21:57+00:00",
+      "load_started_at_utc": "2026-08-15T15:21:56+00:00",
       "meta": {
         "dataGranularity": "1d",
         "exchange": "SNP",
@@ -757,7 +807,7 @@
       "route": "sources.yahoo",
       "routing": "period1/period2",
       "selected_daily_observations": 24762,
-      "series_fetched_at": "2026-08-15T13:05:09+00:00",
+      "series_fetched_at": "2026-08-15T15:21:57+00:00",
       "series_id": "^GSPC",
       "source": "Yahoo Finance",
       "title": "S&P 500",
@@ -777,6 +827,103 @@
     "yahoo_structural_n_over_12": 87.66666666666667
   },
   "independent_verdict": "information_absent",
+  "instrument_controls": {
+    "chapter_preflight_passed": true,
+    "does_not_change_measurement_or_verdict": true,
+    "mutation_proof": {
+      "baseline": {
+        "forecast_origins": 1052,
+        "information_set": {
+          "max_recent_vol_source_minus_origin": 0,
+          "max_reference_available_minus_origin": 0,
+          "max_scenario_available_minus_origin": 0,
+          "origins_checked": 1052,
+          "outcome_available_minus_origin_values": [
+            12
+          ],
+          "passed": true,
+          "production_values_audited": true,
+          "value_type": "TimedValue"
+        },
+        "passed": true,
+        "placebo_origins": [
+          "1937-12",
+          "1981-09",
+          "2025-07"
+        ]
+      },
+      "mode": "offline in-memory source mutation; no network",
+      "mutants": [
+        {
+          "caught_error": "scenario lookahead or omission: actual=(119, 120, 121) expected=(118, 119, 120)",
+          "expected_error_fragment": "scenario lookahead",
+          "label": "future-leak",
+          "mutation_detected": true
+        },
+        {
+          "caught_error": "scale=1 placebo production transform changed",
+          "expected_error_fragment": "scale=1 placebo production transform changed",
+          "label": "scale-transform",
+          "mutation_detected": true
+        }
+      ],
+      "mutants_caught": 2,
+      "mutants_expected": 2,
+      "passed": true,
+      "restored_after_future": {
+        "forecast_origins": 1052,
+        "information_set": {
+          "max_recent_vol_source_minus_origin": 0,
+          "max_reference_available_minus_origin": 0,
+          "max_scenario_available_minus_origin": 0,
+          "origins_checked": 1052,
+          "outcome_available_minus_origin_values": [
+            12
+          ],
+          "passed": true,
+          "production_values_audited": true,
+          "value_type": "TimedValue"
+        },
+        "passed": true,
+        "placebo_origins": [
+          "1937-12",
+          "1981-09",
+          "2025-07"
+        ]
+      },
+      "restored_after_transform": {
+        "forecast_origins": 1052,
+        "information_set": {
+          "max_recent_vol_source_minus_origin": 0,
+          "max_reference_available_minus_origin": 0,
+          "max_scenario_available_minus_origin": 0,
+          "origins_checked": 1052,
+          "outcome_available_minus_origin_values": [
+            12
+          ],
+          "passed": true,
+          "production_values_audited": true,
+          "value_type": "TimedValue"
+        },
+        "passed": true,
+        "placebo_origins": [
+          "1937-12",
+          "1981-09",
+          "2025-07"
+        ]
+      },
+      "sequence": [
+        "green_before_mutation",
+        "red_future_leak_caught",
+        "green_after_future_restore",
+        "red_scale_transform_caught",
+        "green_after_transform_restore"
+      ],
+      "source_sha256": "2efdf022670bf4fc0e04339037aeb5588306ed16f63638dd48871c6f2f46f5fc"
+    },
+    "production_information_value_type": "TimedValue",
+    "production_transform": "centered_scale"
+  },
   "instrument_suspicion": {
     "both_native_means_nonpositive": false,
     "common_span_signs_differ": true,
@@ -786,7 +933,10 @@
     "No macro-conditional forecast is present.",
     "Yahoo is price return; Shiller is total return with dividends.",
     "Pre-1957 Shiller index history is reconstructed.",
-    "Only the preregistered 12-month volatility rule is tested."
+    "Only the preregistered 12-month volatility rule is tested.",
+    "The expanding volatility reference retains early-crash levels; Delta mixes persistent width level, temporal synchronization, and their CRPS interaction.",
+    "Alternative volatility anchors were not selected post hoc.",
+    "A dependence multiplier that reaches lag 24 is censored at the preregistered cap."
   ],
   "main_verdict": "information_absent",
   "parameters": {
@@ -794,6 +944,7 @@
     "acf_truncation": "paired initial-positive sequence",
     "bootstrap_block_months": 12,
     "bootstrap_repetitions": 20000,
+    "bootstrap_seed": 20260815,
     "cut_month": "2026-07",
     "fixed_overlap_sensitivity_lag": 11,
     "horizon_months": 12,
@@ -813,34 +964,74 @@
     "committed_at": "2026-08-15T15:49:48+03:00",
     "file": "research/Z28/HYPOTHESIS.md"
   },
+  "reproducibility": {
+    "algorithm": "SHA-256 of canonical JSON numeric_projection",
+    "excludes": [
+      "run timestamps and environment",
+      "data passport timestamps, URLs, and fetch metadata",
+      "this reproducibility object"
+    ],
+    "matches_previous_result": true,
+    "numeric_projection_sha256": "2cb260037f3d81de0ba2cc410deaf71bf244e36bcf1abab09444ebe58f868eec",
+    "previous_result_numeric_projection_sha256": "2cb260037f3d81de0ba2cc410deaf71bf244e36bcf1abab09444ebe58f868eec"
+  },
   "routes": {
     "shiller": {
       "diagnostics": {
-        "direct_crps_and_placebo": [
+        "direct_crps_and_production_placebo": [
           {
             "baseline_fast_minus_direct": 0.0,
             "origin": "1881-01",
             "passed": true,
-            "placebo_delta_a_eq_1": 0.0,
+            "placebo_production_path": {
+              "delta_pp": 0.0,
+              "max_element_error": 3.552713678800501e-15,
+              "passed": true,
+              "production_function": "centered_scale",
+              "scale": 1.0
+            },
             "price_fast_minus_direct": 0.0
           },
           {
             "baseline_fast_minus_direct": 0.0,
             "origin": "1953-04",
             "passed": true,
-            "placebo_delta_a_eq_1": 0.0,
+            "placebo_production_path": {
+              "delta_pp": 0.0,
+              "max_element_error": 7.105427357601002e-15,
+              "passed": true,
+              "production_function": "centered_scale",
+              "scale": 1.0
+            },
             "price_fast_minus_direct": 0.0
           },
           {
             "baseline_fast_minus_direct": 0.0,
             "origin": "2025-07",
             "passed": true,
-            "placebo_delta_a_eq_1": 0.0,
+            "placebo_production_path": {
+              "delta_pp": 0.0,
+              "max_element_error": 7.105427357601002e-15,
+              "passed": true,
+              "production_function": "centered_scale",
+              "scale": 1.0
+            },
             "price_fast_minus_direct": 0.0
           }
         ],
-        "passed": true,
-        "time_invariant_passed": true
+        "information_set": {
+          "max_recent_vol_source_minus_origin": 0,
+          "max_reference_available_minus_origin": 0,
+          "max_scenario_available_minus_origin": 0,
+          "origins_checked": 1735,
+          "outcome_available_minus_origin_values": [
+            12
+          ],
+          "passed": true,
+          "production_values_audited": true,
+          "value_type": "TimedValue"
+        },
+        "passed": true
       },
       "per_date": [
         {
@@ -23524,6 +23715,7 @@
               "rho": 0.01660411597063499
             }
           ],
+          "censored_at_preregistered_cap": true,
           "difference_from_twelve": -1.6368856483866807,
           "fixed_11": {
             "included_lags": [
@@ -23569,8 +23761,10 @@
             23,
             24
           ],
+          "multiplier_is_lower_bound_when_censored": true,
           "multiplier_n_over_n_eff": 10.36311435161332,
           "n_eff": 167.4207136129784,
+          "n_eff_is_upper_bound_when_censored": true,
           "pair_rule": [
             {
               "included": true,
@@ -23672,7 +23866,8 @@
           "ratio_to_twelve": 0.8635928626344432,
           "stopped_at_lag": null,
           "tau": 10.36311435161332,
-          "tau_unfloored": 10.36311435161332
+          "tau_unfloored": 10.36311435161332,
+          "truncation_reached_max_lag": true
         },
         "first_origin": "1881-01",
         "last_origin": "2025-07",
@@ -23688,12 +23883,33 @@
           "target_effect_pp": 1.0
         },
         "scale": {
+          "count_lt_one": 1010,
           "max": 5.3838027645868625,
           "mean": 1.0531233835387552,
           "median": 0.9350247971887687,
           "min": 0.26501216787592,
           "p25": 0.7241488303148282,
-          "p75": 1.1987001652291978
+          "p75": 1.1987001652291978,
+          "share_lt_one": 0.5821325648414986
+        },
+        "scale_decomposition": {
+          "actual_mean_delta_pp": -0.056565492479302065,
+          "components_are_not_additive_without_interaction": true,
+          "interaction": {
+            "definition": "actual minus level-only minus synchronization-only",
+            "mean_delta_pp": 0.04046925125254643
+          },
+          "level_only": {
+            "definition": "constant scale median(a_t)",
+            "mean_delta_pp": -0.015068974117396194
+          },
+          "max_abs_identity_error_pp": 0.0,
+          "median_dynamic_scale": 0.9350247971887687,
+          "status": "post_hoc_review_diagnostic_not_used_for_verdict",
+          "synchronization_only": {
+            "definition": "dynamic scale a_t / median(a_t); median one",
+            "mean_delta_pp": -0.08196576961445232
+          }
         },
         "sd_delta_pp": 2.197292560482805,
         "verdict": "information_absent"
@@ -23701,31 +23917,60 @@
     },
     "yahoo": {
       "diagnostics": {
-        "direct_crps_and_placebo": [
+        "direct_crps_and_production_placebo": [
           {
             "baseline_fast_minus_direct": 0.0,
             "origin": "1937-12",
             "passed": true,
-            "placebo_delta_a_eq_1": 0.0,
+            "placebo_production_path": {
+              "delta_pp": 0.0,
+              "max_element_error": 7.105427357601002e-15,
+              "passed": true,
+              "production_function": "centered_scale",
+              "scale": 1.0
+            },
             "price_fast_minus_direct": 0.0
           },
           {
             "baseline_fast_minus_direct": 0.0,
             "origin": "1981-09",
             "passed": true,
-            "placebo_delta_a_eq_1": 0.0,
+            "placebo_production_path": {
+              "delta_pp": 0.0,
+              "max_element_error": 7.105427357601002e-15,
+              "passed": true,
+              "production_function": "centered_scale",
+              "scale": 1.0
+            },
             "price_fast_minus_direct": 0.0
           },
           {
             "baseline_fast_minus_direct": 0.0,
             "origin": "2025-07",
             "passed": true,
-            "placebo_delta_a_eq_1": 0.0,
+            "placebo_production_path": {
+              "delta_pp": 0.0,
+              "max_element_error": 7.105427357601002e-15,
+              "passed": true,
+              "production_function": "centered_scale",
+              "scale": 1.0
+            },
             "price_fast_minus_direct": -1.7763568394002505e-15
           }
         ],
-        "passed": true,
-        "time_invariant_passed": true
+        "information_set": {
+          "max_recent_vol_source_minus_origin": 0,
+          "max_reference_available_minus_origin": 0,
+          "max_scenario_available_minus_origin": 0,
+          "origins_checked": 1052,
+          "outcome_available_minus_origin_values": [
+            12
+          ],
+          "passed": true,
+          "production_values_audited": true,
+          "value_type": "TimedValue"
+        },
+        "passed": true
       },
       "per_date": [
         {
@@ -37530,6 +37775,7 @@
               "rho": -0.08571635974569473
             }
           ],
+          "censored_at_preregistered_cap": false,
           "difference_from_twelve": -3.112649911648578,
           "fixed_11": {
             "included_lags": [
@@ -37565,8 +37811,10 @@
             13,
             14
           ],
+          "multiplier_is_lower_bound_when_censored": false,
           "multiplier_n_over_n_eff": 8.887350088351422,
           "n_eff": 118.3704917148305,
+          "n_eff_is_upper_bound_when_censored": false,
           "pair_rule": [
             {
               "included": true,
@@ -37668,7 +37916,8 @@
           "ratio_to_twelve": 0.7406125073626185,
           "stopped_at_lag": 15,
           "tau": 8.887350088351422,
-          "tau_unfloored": 8.887350088351422
+          "tau_unfloored": 8.887350088351422,
+          "truncation_reached_max_lag": false
         },
         "first_origin": "1937-12",
         "last_origin": "2025-07",
@@ -37684,12 +37933,33 @@
           "target_effect_pp": 1.0
         },
         "scale": {
+          "count_lt_one": 840,
           "max": 1.9296638936957946,
           "mean": 0.7571211354051745,
           "median": 0.6920910133139081,
           "min": 0.22673905322718474,
           "p25": 0.5133743876188154,
-          "p75": 0.9406169602790129
+          "p75": 0.9406169602790129,
+          "share_lt_one": 0.7984790874524715
+        },
+        "scale_decomposition": {
+          "actual_mean_delta_pp": 0.1688052234806414,
+          "components_are_not_additive_without_interaction": true,
+          "interaction": {
+            "definition": "actual minus level-only minus synchronization-only",
+            "mean_delta_pp": 0.14901858588277403
+          },
+          "level_only": {
+            "definition": "constant scale median(a_t)",
+            "mean_delta_pp": 0.3810322506417951
+          },
+          "max_abs_identity_error_pp": 0.0,
+          "median_dynamic_scale": 0.6920910133139081,
+          "status": "post_hoc_review_diagnostic_not_used_for_verdict",
+          "synchronization_only": {
+            "definition": "dynamic scale a_t / median(a_t); median one",
+            "mean_delta_pp": -0.36124561304392766
+          }
         },
         "sd_delta_pp": 1.921406278342807,
         "verdict": "information_absent"
@@ -37701,14 +37971,14 @@
       "certifi": "2026.7.22",
       "xlrd": "2.0.2"
     },
-    "finished_at_utc": "2026-08-15T13:05:14+00:00",
-    "head": "ff77a79e22d351e41ed4caca5433d9ac5f8b6c61",
+    "finished_at_utc": "2026-08-15T15:22:07+00:00",
+    "head": "9993e955ddafe58431bfed5bf0815e3d49618a6e",
     "platform": "Windows-11-10.0.26200-SP0",
     "python": "3.14.5 (tags/v3.14.5:5607950, May 10 2026, 10:43:50) [MSC v.1944 64 bit (AMD64)]",
     "seed": 20260815,
-    "started_at_utc": "2026-08-15T13:05:08+00:00"
+    "started_at_utc": "2026-08-15T15:21:52+00:00"
   },
-  "schema_version": 1,
+  "schema_version": 2,
   "scope": "instrument_test_not_book_market_evidence",
   "task": "Z28",
   "vintage_statement": "Prices are not retrospectively revised; this task therefore does not earn vintage-data rigor for later macro work."

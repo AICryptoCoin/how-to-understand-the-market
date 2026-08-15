@@ -26,6 +26,8 @@ import random
 import statistics
 import subprocess
 import sys
+import types
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import Any, Iterable, Sequence
 
@@ -62,6 +64,15 @@ COMMON_FIRST_ORIGIN = "1937-12"
 LAST_ORIGIN = "2025-07"
 
 RESULT_PATH = os.path.join(HERE, "result.json")
+
+
+@dataclass(frozen=True)
+class TimedValue:
+    """A calculated value plus the exact month indices used to know it."""
+
+    value: float
+    available_index: int
+    source_indices: tuple[int, ...]
 
 
 def utc_now() -> str:
@@ -490,6 +501,105 @@ def load_shiller() -> dict[str, Any]:
     }
 
 
+def centered_scale(values: Sequence[float], scale: float,
+                   center: float | None = None) -> tuple[float, list[float]]:
+    """Production price-only transform: preserve center and change width."""
+    require(len(values) > 0, "centered scale received an empty ensemble")
+    require(math.isfinite(scale) and scale > 0,
+            "centered scale is not finite and positive")
+    actual_center = statistics.fmean(values) if center is None else float(center)
+    require(math.isfinite(actual_center), "centered scale center is not finite")
+    transformed = [actual_center + scale * (x - actual_center)
+                   for x in values]  # MUTATE_SCALE_TRANSFORM
+    require(all(math.isfinite(x) for x in transformed),
+            "centered scale produced a non-finite value")
+    return actual_center, transformed
+
+
+def audit_information_set(
+    *,
+    origin_index: int,
+    scenario_points: Sequence[TimedValue],
+    outcome_point: TimedValue,
+    recent_vol_point: TimedValue,
+    reference_vol_points: Sequence[TimedValue],
+) -> dict[str, Any]:
+    """Audit the exact production objects passed to scoring and scaling."""
+    expected_scenarios = tuple(range(HORIZON, origin_index + 1))
+    actual_scenarios = tuple(point.available_index for point in scenario_points)
+    require(actual_scenarios == expected_scenarios,
+            "scenario lookahead or omission: actual=%r expected=%r" %
+            (actual_scenarios[-3:], expected_scenarios[-3:]))
+    require(all(max(point.source_indices) <= origin_index
+                for point in scenario_points),
+            "scenario source lookahead")
+
+    expected_recent_sources = tuple(
+        range(origin_index - VOL_WINDOW + 1, origin_index + 1)
+    )
+    require(recent_vol_point.source_indices == expected_recent_sources,
+            "recent-volatility source lookahead or omission")
+    require(recent_vol_point.available_index <= origin_index,
+            "recent-volatility availability lookahead")
+
+    expected_reference = tuple(range(HORIZON, origin_index + 1))
+    actual_reference = tuple(
+        point.available_index for point in reference_vol_points
+    )
+    require(actual_reference == expected_reference,
+            "reference-volatility lookahead or omission")
+    require(all(max(point.source_indices) <= origin_index
+                for point in reference_vol_points),
+            "reference-volatility source lookahead")
+
+    require(outcome_point.available_index == origin_index + HORIZON,
+            "outcome availability is not exactly t+12")
+    require(outcome_point.source_indices ==
+            (origin_index, origin_index + HORIZON),
+            "outcome does not use exactly origin and t+12")
+
+    return {
+        "origin_index": origin_index,
+        "scenario_count": len(scenario_points),
+        "max_scenario_available_minus_origin": (
+            max(actual_scenarios) - origin_index
+        ),
+        "max_recent_vol_source_minus_origin": (
+            max(recent_vol_point.source_indices) - origin_index
+        ),
+        "max_reference_available_minus_origin": (
+            max(actual_reference) - origin_index
+        ),
+        "outcome_available_minus_origin": (
+            outcome_point.available_index - origin_index
+        ),
+        "passed": True,
+    }
+
+
+def placebo_production_path(ensemble: Sequence[float], outcome: float,
+                            center: float) -> dict[str, Any]:
+    """Call the production transform at scale=1 and require exact identity."""
+    placebo_center, placebo = centered_scale(ensemble, 1.0, center)
+    max_element_error = max(
+        abs(actual - expected) for actual, expected in zip(placebo, ensemble)
+    )
+    delta = crps_empirical(ensemble, outcome) - crps_empirical(placebo, outcome)
+    require(abs(placebo_center - center) <= TOL,
+            "scale=1 placebo production center changed")
+    require(max_element_error <= TOL,
+            "scale=1 placebo production transform changed")
+    require(abs(delta) <= TOL,
+            "scale=1 placebo production CRPS is not zero")
+    return {
+        "production_function": "centered_scale",
+        "scale": 1.0,
+        "max_element_error": max_element_error,
+        "delta_pp": delta,
+        "passed": True,
+    }
+
+
 def route_forecasts(route: dict[str, Any]) -> dict[str, Any]:
     months: list[str] = route["months"]
     response: list[float] = route["response_levels"]
@@ -498,56 +608,81 @@ def route_forecasts(route: dict[str, Any]) -> dict[str, Any]:
     require(n_levels == len(response) == len(prices),
             "%s route arrays differ" % route["name"])
 
-    annual: list[float | None] = [None] * n_levels
+    annual: list[TimedValue | None] = [None] * n_levels
     log_returns: list[float | None] = [None] * n_levels
-    rolling_vol: list[float | None] = [None] * n_levels
-    rolling_vol_cumsum: list[float] = [0.0] * n_levels
+    rolling_vol: list[TimedValue | None] = [None] * n_levels
 
     for i in range(1, n_levels):
         log_returns[i] = math.log(prices[i] / prices[i - 1])
     for i in range(HORIZON, n_levels):
-        annual[i] = 100.0 * (response[i] / response[i - HORIZON] - 1.0)
-        window = [log_returns[j] for j in range(i - VOL_WINDOW + 1, i + 1)]
+        annual[i] = TimedValue(
+            value=100.0 * (response[i] / response[i - HORIZON] - 1.0),
+            available_index=i,
+            source_indices=(i - HORIZON, i),
+        )
+        source_indices = tuple(range(i - VOL_WINDOW + 1, i + 1))
+        window = [log_returns[j] for j in source_indices]
         require(all(value is not None for value in window),
                 "volatility window contains None")
-        rolling_vol[i] = (
-            statistics.stdev(float(value) for value in window)
-            * math.sqrt(12.0) * 100.0
+        rolling_vol[i] = TimedValue(
+            value=(statistics.stdev(float(value) for value in window)
+                   * math.sqrt(12.0) * 100.0),
+            available_index=i,
+            source_indices=source_indices,
         )
-        previous = rolling_vol_cumsum[i - 1] if i else 0.0
-        rolling_vol_cumsum[i] = previous + float(rolling_vol[i])
-    for i in range(1, HORIZON):
-        rolling_vol_cumsum[i] = rolling_vol_cumsum[i - 1]
 
     records: list[dict[str, Any]] = []
-    internal: list[tuple[int, list[float], list[float], float]] = []
-    time_invariant = True
+    internal: list[tuple[int, list[float], list[float], float, float]] = []
+    information_audits: list[dict[str, Any]] = []
     for i in range(WARMUP, n_levels - HORIZON):
         require(months[i] == add_months(months[0], i),
                 "monthly grid drifted at origin")
         require(months[i + HORIZON] == add_months(months[i], HORIZON),
                 "outcome is not exactly 12 months ahead")
-        ensemble = [float(annual[j]) for j in range(HORIZON, i + 1)]
-        require(all(value is not None for value in annual[HORIZON:i + 1]),
+        scenario_points = tuple(
+            annual[HORIZON:i + 1]
+        )  # MUTATE_FUTURE_BOUNDARY
+        require(all(point is not None for point in scenario_points),
                 "baseline ensemble contains unavailable return")
-        outcome = float(annual[i + HORIZON])
-        recent_vol = float(rolling_vol[i])
-        vol_count = i - HORIZON + 1
-        reference_vol = rolling_vol_cumsum[i] / vol_count
+        scenario_timed = tuple(
+            point for point in scenario_points if point is not None
+        )
+        outcome_point = annual[i + HORIZON]
+        recent_vol_point = rolling_vol[i]
+        reference_points = tuple(rolling_vol[HORIZON:i + 1])
+        require(outcome_point is not None, "outcome return is unavailable")
+        require(recent_vol_point is not None,
+                "recent volatility is unavailable")
+        require(all(point is not None for point in reference_points),
+                "reference volatility contains unavailable value")
+        reference_timed = tuple(
+            point for point in reference_points if point is not None
+        )
+        audit = audit_information_set(
+            origin_index=i,
+            scenario_points=scenario_timed,
+            outcome_point=outcome_point,
+            recent_vol_point=recent_vol_point,
+            reference_vol_points=reference_timed,
+        )
+        information_audits.append(audit)
+
+        ensemble = [point.value for point in scenario_timed]
+        outcome = outcome_point.value
+        recent_vol = recent_vol_point.value
+        reference_total = 0.0
+        for point in reference_timed:
+            reference_total += point.value
+        reference_vol = reference_total / len(reference_timed)
         require(reference_vol > 0 and math.isfinite(reference_vol),
                 "reference volatility is invalid")
         scale = recent_vol / reference_vol
         require(scale > 0 and math.isfinite(scale), "scale is invalid")
-        center = statistics.fmean(ensemble)
-        price_ensemble = [center + scale * (x - center) for x in ensemble]
+        center, price_ensemble = centered_scale(ensemble, scale)
         baseline_score = crps_empirical(ensemble, outcome)
         price_score = crps_empirical(price_ensemble, outcome)
         delta = baseline_score - price_score
 
-        time_invariant = time_invariant and (
-            HORIZON <= i and i + HORIZON < n_levels
-            and i - VOL_WINDOW + 1 >= 1
-        )
         records.append({
             "origin": months[i],
             "outcome_month": months[i + HORIZON],
@@ -563,7 +698,7 @@ def route_forecasts(route: dict[str, Any]) -> dict[str, Any]:
         })
         if i in (WARMUP, (WARMUP + n_levels - HORIZON - 1) // 2,
                  n_levels - HORIZON - 1):
-            internal.append((i, ensemble, price_ensemble, outcome))
+            internal.append((i, ensemble, price_ensemble, outcome, center))
 
     expected_n = n_levels - WARMUP - HORIZON
     require(len(records) == expected_n, "forecast count arithmetic failed")
@@ -571,40 +706,207 @@ def route_forecasts(route: dict[str, Any]) -> dict[str, Any]:
             "first forecast origin changed")
     require(records[-1]["origin"] == LAST_ORIGIN,
             "last forecast origin changed")
-    require(time_invariant, "time invariant failed")
+    require(len(information_audits) == expected_n,
+            "information-set audit count changed")
 
     direct_checks: list[dict[str, Any]] = []
-    for i, ensemble, price_ensemble, outcome in internal:
+    for i, ensemble, price_ensemble, outcome, center in internal:
         fast_base = crps_empirical(ensemble, outcome)
         direct_base = crps_empirical_direct(ensemble, outcome)
         fast_price = crps_empirical(price_ensemble, outcome)
         direct_price = crps_empirical_direct(price_ensemble, outcome)
-        placebo_delta = (
-            crps_empirical(ensemble, outcome)
-            - crps_empirical([statistics.fmean(ensemble) + 1.0 *
-                              (x - statistics.fmean(ensemble))
-                              for x in ensemble], outcome)
-        )
+        placebo = placebo_production_path(ensemble, outcome, center)
         require(abs(fast_base - direct_base) <= 1e-10,
                 "fast/direct baseline CRPS mismatch")
         require(abs(fast_price - direct_price) <= 1e-10,
                 "fast/direct price CRPS mismatch")
-        require(abs(placebo_delta) <= TOL, "a=1 placebo is not zero")
         direct_checks.append({
             "origin": months[i],
             "baseline_fast_minus_direct": fast_base - direct_base,
             "price_fast_minus_direct": fast_price - direct_price,
-            "placebo_delta_a_eq_1": placebo_delta,
+            "placebo_production_path": placebo,
             "passed": True,
         })
 
+    information_set = {
+        "production_values_audited": True,
+        "value_type": "TimedValue",
+        "origins_checked": len(information_audits),
+        "max_scenario_available_minus_origin": max(
+            row["max_scenario_available_minus_origin"]
+            for row in information_audits
+        ),
+        "max_recent_vol_source_minus_origin": max(
+            row["max_recent_vol_source_minus_origin"]
+            for row in information_audits
+        ),
+        "max_reference_available_minus_origin": max(
+            row["max_reference_available_minus_origin"]
+            for row in information_audits
+        ),
+        "outcome_available_minus_origin_values": sorted({
+            row["outcome_available_minus_origin"]
+            for row in information_audits
+        }),
+        "passed": True,
+    }
     return {
         "records": records,
         "diagnostics": {
-            "time_invariant_passed": time_invariant,
-            "direct_crps_and_placebo": direct_checks,
+            "information_set": information_set,
+            "direct_crps_and_production_placebo": direct_checks,
             "passed": True,
         },
+        "calculation": {
+            "months": months,
+            "annual_returns": annual,
+        },
+    }
+
+
+def synthetic_control_route() -> dict[str, Any]:
+    """A deterministic, network-free route with the production date shape."""
+    months = month_range(YAHOO_START, CUT_MONTH)
+    levels: list[float] = []
+    for i in range(len(months)):
+        log_level = (
+            math.log(100.0) + 0.004 * i
+            + 0.045 * math.sin(i / 5.0)
+            + 0.018 * math.cos(i / 17.0)
+        )
+        levels.append(math.exp(log_level))
+    return {
+        "name": "synthetic_control_route",
+        "months": months,
+        "response_levels": levels,
+        "price_levels": levels,
+        "passport": {"network_used": False},
+    }
+
+
+def offline_control_selftest() -> dict[str, Any]:
+    """Exercise the production forecast path without data loaders or network."""
+    run = route_forecasts(synthetic_control_route())
+    diagnostics = run["diagnostics"]
+    require(diagnostics["passed"], "offline production diagnostics failed")
+    require(diagnostics["information_set"]["passed"],
+            "offline information-set control failed")
+    require(all(row["placebo_production_path"]["passed"]
+                for row in diagnostics["direct_crps_and_production_placebo"]),
+            "offline production placebo failed")
+    return {
+        "forecast_origins": len(run["records"]),
+        "information_set": diagnostics["information_set"],
+        "placebo_origins": [
+            row["origin"]
+            for row in diagnostics["direct_crps_and_production_placebo"]
+        ],
+        "passed": True,
+    }
+
+
+def execute_source_mutant(source: str, target: str, replacement: str,
+                          label: str, expected_error: str) -> dict[str, Any]:
+    """Run one in-memory source mutation and require the control to reject it."""
+    require(source.count(target) == 1,
+            "%s mutation target count is not one" % label)
+    mutated = source.replace(target, replacement)
+    module_name = "z28_mutant_%s" % label.replace("-", "_")
+    module = types.ModuleType(module_name)
+    module.__file__ = os.path.abspath(__file__)
+    module.__package__ = None
+    sys.modules[module_name] = module
+    try:
+        exec(compile(mutated, module.__file__, "exec"), module.__dict__)
+        try:
+            module.offline_control_selftest()
+        except AssertionError as exc:
+            message = str(exc)
+            require(expected_error in message,
+                    "%s mutant failed for the wrong reason: %s" %
+                    (label, message))
+            return {
+                "label": label,
+                "mutation_detected": True,
+                "expected_error_fragment": expected_error,
+                "caught_error": message,
+            }
+        raise AssertionError("%s mutant survived the controls" % label)
+    finally:
+        sys.modules.pop(module_name, None)
+
+
+def mutation_control_proof(verbose: bool = True) -> dict[str, Any]:
+    """Prove both rewritten controls via green-red-green source mutations."""
+    with open(__file__, "r", encoding="ascii") as handle:
+        source = handle.read()
+
+    future_old = (
+        "        scenario_points = tuple(\n"
+        "            annual[HORIZON:i " + "+ 1]\n"
+        "        )  # MUTATE_FUTURE_BOUNDARY"
+    )
+    future_new = (
+        "        scenario_points = tuple(\n"
+        "            annual[HORIZON:i " + "+ 2]\n"
+        "        )  # MUTATE_FUTURE_BOUNDARY"
+    )
+    transform_old = (
+        "    transformed = [actual_center + scale * (x "
+        + "- actual_center)\n"
+        "                   for x in values]  # MUTATE_SCALE_TRANSFORM"
+    )
+    transform_new = (
+        "    transformed = [actual_center + scale * (x "
+        + "+ actual_center)\n"
+        "                   for x in values]  # MUTATE_SCALE_TRANSFORM"
+    )
+
+    baseline = offline_control_selftest()
+    if verbose:
+        say("GREEN before mutation: production controls PASS")
+
+    future = execute_source_mutant(
+        source, future_old, future_new, "future-leak", "scenario lookahead"
+    )
+    if verbose:
+        say("RED future-leak mutant: CAUGHT -", future["caught_error"])
+
+    restored_after_future = offline_control_selftest()
+    if verbose:
+        say("GREEN after future restore: production controls PASS")
+
+    transform = execute_source_mutant(
+        source, transform_old, transform_new, "scale-transform",
+        "scale=1 placebo production transform changed",
+    )
+    if verbose:
+        say("RED scale-transform mutant: CAUGHT -", transform["caught_error"])
+
+    restored_after_transform = offline_control_selftest()
+    if verbose:
+        say("GREEN after transform restore: production controls PASS")
+        say("MUTATION PROOF: PASS (2/2 mutants caught)")
+
+    return {
+        "mode": "offline in-memory source mutation; no network",
+        "source_sha256": hashlib.sha256(
+            source.encode("ascii")
+        ).hexdigest(),
+        "sequence": [
+            "green_before_mutation",
+            "red_future_leak_caught",
+            "green_after_future_restore",
+            "red_scale_transform_caught",
+            "green_after_transform_restore",
+        ],
+        "baseline": baseline,
+        "mutants": [future, transform],
+        "restored_after_future": restored_after_future,
+        "restored_after_transform": restored_after_transform,
+        "mutants_caught": 2,
+        "mutants_expected": 2,
+        "passed": True,
     }
 
 
@@ -646,6 +948,7 @@ def dependence(values: Sequence[float]) -> dict[str, Any]:
     fixed_lags = list(range(1, min(FIXED_OVERLAP_LAG, limit) + 1))
     fixed_tau_unfloored = 1.0 + 2.0 * math.fsum(acf[lag] for lag in fixed_lags)
     fixed_tau = max(1.0, fixed_tau_unfloored)
+    reached_max_lag = bool(included) and included[-1] == limit
     return {
         "acf": [{"lag": lag, "rho": acf[lag]} for lag in sorted(acf)],
         "pair_rule": pairs,
@@ -657,6 +960,10 @@ def dependence(values: Sequence[float]) -> dict[str, Any]:
         "multiplier_n_over_n_eff": tau,
         "difference_from_twelve": tau - 12.0,
         "ratio_to_twelve": tau / 12.0,
+        "truncation_reached_max_lag": reached_max_lag,
+        "censored_at_preregistered_cap": reached_max_lag,
+        "multiplier_is_lower_bound_when_censored": reached_max_lag,
+        "n_eff_is_upper_bound_when_censored": reached_max_lag,
         "fixed_11": {
             "included_lags": fixed_lags,
             "tau_unfloored": fixed_tau_unfloored,
@@ -700,6 +1007,81 @@ def block_bootstrap_ci(values: Sequence[float], seed: int) -> list[float]:
     return [quantile(means, 0.025), quantile(means, 0.975)]
 
 
+def scale_decomposition(
+    records: Sequence[dict[str, Any]],
+    calculation: dict[str, Any],
+) -> dict[str, Any]:
+    """Post-review diagnostic: level, synchronization, and interaction."""
+    months: Sequence[str] = calculation["months"]
+    annual: Sequence[TimedValue | None] = calculation["annual_returns"]
+    month_to_index = {month: i for i, month in enumerate(months)}
+    scales = [float(row["scale"]) for row in records]
+    median_scale = quantile(sorted(scales), 0.5)
+    require(median_scale > 0, "decomposition median scale is not positive")
+
+    level_deltas: list[float] = []
+    synchronization_deltas: list[float] = []
+    interactions: list[float] = []
+    identity_errors: list[float] = []
+    for row in records:
+        origin_index = month_to_index[row["origin"]]
+        points = annual[HORIZON:origin_index + 1]
+        require(all(point is not None for point in points),
+                "decomposition ensemble contains unavailable return")
+        ensemble = [point.value for point in points if point is not None]
+        center = float(row["baseline_center_pp"])
+        outcome = float(row["outcome_return_pp"])
+        baseline_score = float(row["crps_baseline_pp"])
+
+        _, level_ensemble = centered_scale(ensemble, median_scale, center)
+        level_delta = baseline_score - crps_empirical(level_ensemble, outcome)
+
+        synchronization_scale = float(row["scale"]) / median_scale
+        _, synchronization_ensemble = centered_scale(
+            ensemble, synchronization_scale, center
+        )
+        synchronization_delta = (
+            baseline_score
+            - crps_empirical(synchronization_ensemble, outcome)
+        )
+        interaction = (
+            float(row["delta_pp"]) - level_delta - synchronization_delta
+        )
+        identity_error = (
+            float(row["delta_pp"])
+            - (level_delta + synchronization_delta + interaction)
+        )
+        level_deltas.append(level_delta)
+        synchronization_deltas.append(synchronization_delta)
+        interactions.append(interaction)
+        identity_errors.append(identity_error)
+
+    max_identity_error = max(abs(value) for value in identity_errors)
+    require(max_identity_error <= 1e-12,
+            "scale decomposition identity failed")
+    return {
+        "status": "post_hoc_review_diagnostic_not_used_for_verdict",
+        "median_dynamic_scale": median_scale,
+        "level_only": {
+            "definition": "constant scale median(a_t)",
+            "mean_delta_pp": statistics.fmean(level_deltas),
+        },
+        "synchronization_only": {
+            "definition": "dynamic scale a_t / median(a_t); median one",
+            "mean_delta_pp": statistics.fmean(synchronization_deltas),
+        },
+        "interaction": {
+            "definition": "actual minus level-only minus synchronization-only",
+            "mean_delta_pp": statistics.fmean(interactions),
+        },
+        "actual_mean_delta_pp": statistics.fmean(
+            float(row["delta_pp"]) for row in records
+        ),
+        "components_are_not_additive_without_interaction": True,
+        "max_abs_identity_error_pp": max_identity_error,
+    }
+
+
 def verdict(mean: float, ci: Sequence[float], powered: bool) -> str:
     if mean > 0 and ci[0] > 0:
         return "information_present"
@@ -710,7 +1092,8 @@ def verdict(mean: float, ci: Sequence[float], powered: bool) -> str:
     return "not_established"
 
 
-def summarize(records: Sequence[dict[str, Any]], seed: int) -> dict[str, Any]:
+def summarize(records: Sequence[dict[str, Any]], seed: int,
+              calculation: dict[str, Any]) -> dict[str, Any]:
     deltas = [float(row["delta_pp"]) for row in records]
     baseline_scores = [float(row["crps_baseline_pp"]) for row in records]
     price_scores = [float(row["crps_price_pp"]) for row in records]
@@ -733,6 +1116,8 @@ def summarize(records: Sequence[dict[str, Any]], seed: int) -> dict[str, Any]:
     mde = Z95 * sd / math.sqrt(n_eff)
     boot_ci = block_bootstrap_ci(deltas, seed)
     sorted_scales = sorted(scales)
+    scale_lt_one = sum(scale < 1.0 for scale in scales)
+    decomposition = scale_decomposition(records, calculation)
 
     return {
         "n_nominal": n,
@@ -767,7 +1152,10 @@ def summarize(records: Sequence[dict[str, Any]], seed: int) -> dict[str, Any]:
             "p75": quantile(sorted_scales, 0.75),
             "max": sorted_scales[-1],
             "mean": statistics.fmean(scales),
+            "count_lt_one": scale_lt_one,
+            "share_lt_one": scale_lt_one / n,
         },
+        "scale_decomposition": decomposition,
         "verdict": verdict(mean, ci, powered),
     }
 
@@ -786,8 +1174,10 @@ def pearson(left: Sequence[float], right: Sequence[float]) -> float:
     return numerator / denominator
 
 
-def common_comparison(yahoo_records: Sequence[dict[str, Any]],
-                      shiller_records: Sequence[dict[str, Any]]) -> dict[str, Any]:
+def common_comparison(yahoo_run: dict[str, Any],
+                      shiller_run: dict[str, Any]) -> dict[str, Any]:
+    yahoo_records = yahoo_run["records"]
+    shiller_records = shiller_run["records"]
     yahoo = {row["origin"]: row for row in yahoo_records
              if COMMON_FIRST_ORIGIN <= row["origin"] <= LAST_ORIGIN}
     shiller = {row["origin"]: row for row in shiller_records
@@ -796,8 +1186,10 @@ def common_comparison(yahoo_records: Sequence[dict[str, Any]],
     require(len(yahoo) == 1052, "common route count is not preregistered 1052")
     yahoo_rows = list(yahoo.values())
     shiller_rows = list(shiller.values())
-    yahoo_stats = summarize(yahoo_rows, SEED)
-    shiller_stats = summarize(shiller_rows, SEED)
+    yahoo_stats = summarize(yahoo_rows, SEED, yahoo_run["calculation"])
+    shiller_stats = summarize(
+        shiller_rows, SEED, shiller_run["calculation"]
+    )
     yd = [float(row["delta_pp"]) for row in yahoo_rows]
     sd = [float(row["delta_pp"]) for row in shiller_rows]
     signed = yahoo_stats["mean_delta_pp"] - shiller_stats["mean_delta_pp"]
@@ -822,7 +1214,10 @@ def common_comparison(yahoo_records: Sequence[dict[str, Any]],
 
 def print_summary(label: str, stats: dict[str, Any]) -> None:
     dep = stats["dependence"]
+    fixed = dep["fixed_11"]
     power = stats["power"]
+    scale = stats["scale"]
+    decomposition = stats["scale_decomposition"]
     say(label)
     say("  dates:", stats["first_origin"], "..", stats["last_origin"],
         "n=", stats["n_nominal"])
@@ -833,13 +1228,28 @@ def print_summary(label: str, stats: dict[str, Any]) -> None:
     say("  ACF lags:", dep["included_lags"],
         "tau=%.6f n_eff=%.3f factor=%.6f" %
         (dep["tau"], dep["n_eff"], dep["multiplier_n_over_n_eff"]))
+    if dep["censored_at_preregistered_cap"]:
+        say("  WARNING: tau reached lag cap %d; multiplier is censored lower bound"
+            % ACF_MAX_LAG)
     say("  overlap CI95: [%.6f, %.6f]" % tuple(stats["ci95_overlap_adjusted_pp"]))
+    say("  fixed lags 1..11: tau=%.6f n_eff=%.3f CI95=[%.6f, %.6f]" %
+        (fixed["tau"], fixed["n_eff"],
+         stats["ci95_fixed_lags_1_11_pp"][0],
+         stats["ci95_fixed_lags_1_11_pp"][1]))
     say("  naive CI95:   [%.6f, %.6f]" % tuple(stats["ci95_naive_pp"]))
     say("  block CI95:   [%.6f, %.6f]" %
         tuple(stats["ci95_circular_block_bootstrap_pp"]))
     say("  power: n_req=%d n_eff=%.3f mde=%.6f sufficient=%s" %
         (power["required_n_eff_observed_sd"], power["achieved_n_eff"],
          power["achieved_mde_pp"], power["sufficient"]))
+    say("  scale: median=%.6f mean=%.6f lt1=%d/%d (%.4f%%)" %
+        (scale["median"], scale["mean"], scale["count_lt_one"],
+         stats["n_nominal"], 100.0 * scale["share_lt_one"]))
+    say("  decomposition level/synchronization/interaction: "
+        "%+.6f / %+.6f / %+.6f" %
+        (decomposition["level_only"]["mean_delta_pp"],
+         decomposition["synchronization_only"]["mean_delta_pp"],
+         decomposition["interaction"]["mean_delta_pp"]))
     say("  verdict:", stats["verdict"])
 
 
@@ -851,8 +1261,55 @@ def atomic_json(path: str, payload: dict[str, Any]) -> None:
     os.replace(temp, path)
 
 
+def previous_numeric_projection_hash() -> str | None:
+    try:
+        with open(RESULT_PATH, "r", encoding="utf-8") as handle:
+            previous = json.load(handle)
+    except (FileNotFoundError, json.JSONDecodeError, OSError):
+        return None
+    value = previous.get("reproducibility", {}).get(
+        "numeric_projection_sha256"
+    )
+    return value if isinstance(value, str) else None
+
+
+def numeric_projection(payload: dict[str, Any]) -> dict[str, Any]:
+    """Stable result content; exclude timestamps, URLs, and environment."""
+    keys = (
+        "schema_version",
+        "task",
+        "scope",
+        "base_commit",
+        "preregistration",
+        "parameters",
+        "ex_ante_feasibility",
+        "crps_preflight",
+        "routes",
+        "common_span_comparison",
+        "instrument_suspicion",
+        "instrument_controls",
+        "all_instrument_controls_passed",
+        "main_verdict",
+        "independent_verdict",
+        "vintage_statement",
+        "limitations",
+    )
+    return {key: payload[key] for key in keys}
+
+
+def numeric_projection_hash(payload: dict[str, Any]) -> str:
+    canonical = json.dumps(
+        numeric_projection(payload),
+        ensure_ascii=True,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("ascii")
+    return hashlib.sha256(canonical).hexdigest()
+
+
 def main() -> int:
     run_started = utc_now()
+    previous_hash = previous_numeric_projection_hash()
     head("Z28 PRE-REGISTERED RUN")
     say("base:", BASE_COMMIT)
     say("prereg:", PREREG_COMMIT, PREREG_TIME)
@@ -866,6 +1323,9 @@ def main() -> int:
             (key, preflight["actual"][key], preflight["expected"][key],
              preflight["errors"][key]))
     say("  status: PASS")
+
+    head("0B. FALSIFIABLE CONTROL MUTATIONS BEFORE DATA")
+    mutation_proof = mutation_control_proof(verbose=True)
 
     head("1. DATA THROUGH research/sources.py")
     yahoo = load_yahoo()
@@ -894,15 +1354,17 @@ def main() -> int:
     say("Shiller forecast dates:", len(shiller_run["records"]))
 
     head("3. OVERLAP-AWARE RESULTS")
-    yahoo_stats = summarize(yahoo_run["records"], SEED)
-    shiller_stats = summarize(shiller_run["records"], SEED)
+    yahoo_stats = summarize(
+        yahoo_run["records"], SEED, yahoo_run["calculation"]
+    )
+    shiller_stats = summarize(
+        shiller_run["records"], SEED, shiller_run["calculation"]
+    )
     print_summary("Yahoo native (primary)", yahoo_stats)
     print_summary("Shiller native (independent)", shiller_stats)
 
     head("4. COMMON-SPAN ROUTE GAP")
-    comparison = common_comparison(
-        yahoo_run["records"], shiller_run["records"]
-    )
+    comparison = common_comparison(yahoo_run, shiller_run)
     print_summary("Yahoo common", comparison["yahoo"])
     print_summary("Shiller common", comparison["shiller"])
     say("  signed mean gap Yahoo-Shiller: %.6f" %
@@ -923,21 +1385,27 @@ def main() -> int:
     suspicious["triggered"] = any(suspicious.values())
     controls_passed = (
         preflight["passed"]
+        and mutation_proof["passed"]
         and yahoo_run["diagnostics"]["passed"]
         and shiller_run["diagnostics"]["passed"]
     )
 
     head("5. INSTRUMENT CONTROLS")
     say("  chapter preflight:", preflight["passed"])
-    say("  Yahoo time/direct/placebo:", yahoo_run["diagnostics"]["passed"])
-    say("  Shiller time/direct/placebo:", shiller_run["diagnostics"]["passed"])
+    say("  mutation proof:", mutation_proof["passed"],
+        "caught=%d/%d" % (mutation_proof["mutants_caught"],
+                           mutation_proof["mutants_expected"]))
+    say("  Yahoo provenance/direct/production-placebo:",
+        yahoo_run["diagnostics"]["passed"])
+    say("  Shiller provenance/direct/production-placebo:",
+        shiller_run["diagnostics"]["passed"])
     say("  suspicious outcome:", suspicious)
     say("  all controls passed:", controls_passed)
     require(controls_passed, "instrument controls failed")
 
     run_finished = utc_now()
     result = {
-        "schema_version": 1,
+        "schema_version": 2,
         "task": TASK,
         "scope": "instrument_test_not_book_market_evidence",
         "base_commit": BASE_COMMIT,
@@ -976,6 +1444,7 @@ def main() -> int:
             "target_effect_pp": TARGET_EFFECT,
             "bootstrap_block_months": BOOT_BLOCK,
             "bootstrap_repetitions": BOOT_REPS,
+            "bootstrap_seed": SEED,
         },
         "ex_ante_feasibility": {
             "calibration": "chapter-8 teaching distribution, not market data",
@@ -1016,6 +1485,13 @@ def main() -> int:
         },
         "common_span_comparison": comparison,
         "instrument_suspicion": suspicious,
+        "instrument_controls": {
+            "chapter_preflight_passed": preflight["passed"],
+            "mutation_proof": mutation_proof,
+            "production_transform": "centered_scale",
+            "production_information_value_type": "TimedValue",
+            "does_not_change_measurement_or_verdict": True,
+        },
         "all_instrument_controls_passed": controls_passed,
         "main_verdict": yahoo_stats["verdict"],
         "independent_verdict": shiller_stats["verdict"],
@@ -1028,7 +1504,27 @@ def main() -> int:
             "Yahoo is price return; Shiller is total return with dividends.",
             "Pre-1957 Shiller index history is reconstructed.",
             "Only the preregistered 12-month volatility rule is tested.",
+            "The expanding volatility reference retains early-crash levels; "
+            "Delta mixes persistent width level, temporal synchronization, "
+            "and their CRPS interaction.",
+            "Alternative volatility anchors were not selected post hoc.",
+            "A dependence multiplier that reaches lag 24 is censored at the "
+            "preregistered cap.",
         ],
+    }
+    current_hash = numeric_projection_hash(result)
+    result["reproducibility"] = {
+        "algorithm": "SHA-256 of canonical JSON numeric_projection",
+        "excludes": [
+            "run timestamps and environment",
+            "data passport timestamps, URLs, and fetch metadata",
+            "this reproducibility object",
+        ],
+        "numeric_projection_sha256": current_hash,
+        "previous_result_numeric_projection_sha256": previous_hash,
+        "matches_previous_result": (
+            previous_hash == current_hash if previous_hash is not None else None
+        ),
     }
     atomic_json(RESULT_PATH, result)
 
@@ -1037,14 +1533,29 @@ def main() -> int:
     say("independent verdict:", result["independent_verdict"])
     say("instrument test only; NOT evidence for the central market thesis")
     say("vintage rigor: NOT earned; prices are not retrospectively revised")
+    say("numeric projection SHA256:", current_hash)
+    say("previous numeric projection SHA256:", previous_hash)
+    say("matches previous result:",
+        result["reproducibility"]["matches_previous_result"])
     say("result:", RESULT_PATH)
     say("run finished UTC:", run_finished)
     return 0
 
 
+def cli() -> int:
+    if sys.argv[1:] == ["--mutation-controls"]:
+        head("Z28 OFFLINE CONTROL MUTATION PROOF")
+        proof = mutation_control_proof(verbose=True)
+        say("source SHA256:", proof["source_sha256"])
+        say("network used: False")
+        return 0
+    require(not sys.argv[1:], "unknown arguments: %r" % sys.argv[1:])
+    return main()
+
+
 if __name__ == "__main__":
     try:
-        raise SystemExit(main())
+        raise SystemExit(cli())
     except Exception as exc:  # noqa: BLE001
         say("")
         say("Z28 FAILED:", type(exc).__name__, str(exc))

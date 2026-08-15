@@ -1,0 +1,12 @@
+
+==============================================================================
+Z28 OFFLINE CONTROL MUTATION PROOF
+==============================================================================
+GREEN before mutation: production controls PASS
+RED future-leak mutant: CAUGHT - scenario lookahead or omission: actual=(119, 120, 121) expected=(118, 119, 120)
+GREEN after future restore: production controls PASS
+RED scale-transform mutant: CAUGHT - scale=1 placebo production transform changed
+GREEN after transform restore: production controls PASS
+MUTATION PROOF: PASS (2/2 mutants caught)
+source SHA256: 2efdf022670bf4fc0e04339037aeb5588306ed16f63638dd48871c6f2f46f5fc
+network used: False
