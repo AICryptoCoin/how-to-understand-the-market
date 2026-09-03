@@ -1,0 +1,2 @@
+publish/*.sh text eol=lf
+publish/*.txt text eol=lf
