@@ -4,8 +4,9 @@
 Russian-language book on reading the economy with data, and the open
 measurement pipeline behind it.
 
-**Written with Claude, an AI model developed by Anthropic.**
-See the [AI co-authorship statement](#ai-co-authorship-statement).
+**Author:** Volodymyr Biesov, Principal Investigator, European University.
+**Co-author:** Claude, an AI model developed by Anthropic. See the
+[AI co-authorship statement](#ai-co-authorship-statement).
 
 > **Status (September 2026): early stage.** The scientific model is fixed, the
 > ten-country data panel is surveyed and measured, ten pre-registered
@@ -230,9 +231,9 @@ Roles are fixed in [`CLAUDE.md`](CLAUDE.md), and every substantive decision is
 logged with its date and reason in the decision journal,
 [`PROGRESS.md`](PROGRESS.md) section 3.
 
-- **The author (project operator)** sets the question and the scope, makes
-  every substantive decision, reviews chapters as the reader, and owns all
-  legal and publication matters.
+- **Volodymyr Biesov, the author and project operator,** sets the question
+  and the scope, makes every substantive decision, reviews chapters as the
+  reader, and owns all legal and publication matters.
 - **Claude (Anthropic)** works as the architect: it designs the model and the
   chapter plan, writes the specifications of tasks, accepts delivered work by
   re-running it, keeps the documentation, and writes the chapters in dedicated
@@ -278,9 +279,10 @@ labour is stated explicitly.
   project documentation, and the prose of the chapters.
 - **What OpenAI Codex did.** It executed the measurement and reconnaissance
   tasks under those specifications and recomputed numbers at acceptance.
-- **What the human author did and does.** Framed the question, made and logged
-  every substantive decision, reviewed every chapter, and decides what is
-  published. The human author bears full responsibility for the content.
+- **What the human author, Volodymyr Biesov, did and does.** Framed the
+  question, made and logged every substantive decision, reviewed every
+  chapter, and decides what is published. The human author bears full
+  responsibility for the content.
 - **What this does not mean.** Claude is not a legal author and holds no rights
   in the work. Anthropic has not reviewed, sponsored or endorsed this project;
   the collaboration is with the model.
@@ -348,7 +350,9 @@ book cites the source and the route for every number instead of redistributing
 the series. Material derived from the original commercial course is kept out of
 this public repository, including its history.
 
-## Author
+## Authors
 
-[AICryptoCoin](https://github.com/AICryptoCoin), with Claude (Anthropic) as
-described above.
+- **Volodymyr Biesov**, Principal Investigator, European University;
+  [AICryptoCoin](https://github.com/AICryptoCoin) on GitHub.
+- **Claude** (Anthropic), AI co-author, in the role described in the
+  [AI co-authorship statement](#ai-co-authorship-statement).
