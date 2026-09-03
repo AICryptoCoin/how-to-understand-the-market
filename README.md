@@ -72,7 +72,7 @@ channel with its measured reliability, instead of a buy or sell signal.
 
 ## Design and methodology
 
-The model of the work is [`research/MODEL.md`](research/MODEL.md) (in Russian).
+The model of the work is [`research/MODEL.md`](research/MODEL.md) (Russian, with an [English translation](research/MODEL.en.md)).
 In brief:
 
 - **State** is a set of named causal channels (demand, supply, policy, credit,
@@ -227,9 +227,8 @@ chapter in.
 
 ## How the work is done
 
-Roles are fixed in [`CLAUDE.md`](CLAUDE.md), and every substantive decision is
-logged with its date and reason in the decision journal,
-[`PROGRESS.md`](PROGRESS.md) section 3.
+Every substantive decision is logged with its date and reason in the
+decision journal, [`PROGRESS.md`](PROGRESS.md) section 3.
 
 - **Volodymyr Biesov, the author and project operator,** sets the question
   and the scope, makes every substantive decision, reviews chapters as the
@@ -238,12 +237,14 @@ logged with its date and reason in the decision journal,
   chapter plan, writes the specifications of tasks, accepts delivered work by
   re-running it, keeps the documentation, and writes the chapters in dedicated
   Claude Code sessions.
-- **OpenAI Codex** works as the executor through a local task coordinator:
-  data reconnaissance, running the measurement tasks, controls and re-checks.
-- **Acceptance is double and independent.** Codex recomputes what can be
-  recomputed (numbers, links, instruments, page geometry); the architect checks
-  what only a full read can check (does the chapter teach what it promises, is
-  every claim backed, has it drifted back to the old construction).
+- **A local LLM** aggregates data and executes tasks through a local task
+  coordinator: data reconnaissance, running the measurement tasks, controls
+  and re-checks.
+- **Acceptance is double and independent.** The local LLM recomputes what can
+  be recomputed (numbers, links, instruments, page geometry); the architect
+  checks what only a full read can check (does the chapter teach what it
+  promises, is every claim backed, has it drifted back to the old
+  construction).
 
 Acceptance instruments for the book (run from `book/`):
 
@@ -270,15 +271,16 @@ known-bad cases.
 This work is co-authored by a human and an AI system, and the division of
 labour is stated explicitly.
 
-- **AI system.** Claude, developed by Anthropic, used through Claude Code. The
-  git history records the contribution commit by commit with the
-  `Co-Authored-By: Claude ...` trailer (Claude Opus 5 through August 2026,
-  Claude Fable 5.1 from September 2026).
+- **AI system.** Claude, developed by Anthropic, used through Claude Code.
+  The git history records the contribution commit by commit with a
+  `Co-Authored-By: Claude ...` trailer naming the specific Claude model used
+  for that commit.
 - **What Claude did.** The scientific model, the chapter plan, the
   specifications of all measurement tasks, acceptance of delivered work, the
   project documentation, and the prose of the chapters.
-- **What OpenAI Codex did.** It executed the measurement and reconnaissance
-  tasks under those specifications and recomputed numbers at acceptance.
+- **What the local LLM did.** Under Claude's specifications, it aggregated
+  data and executed the measurement and reconnaissance tasks, and recomputed
+  numbers at acceptance.
 - **What the human author, Volodymyr Biesov, did and does.** Framed the
   question, made and logged every substantive decision, reviewed every
   chapter, and decides what is published. The human author bears full
@@ -298,7 +300,7 @@ entry point.
 
 | Path | What it is |
 |---|---|
-| [`research/MODEL.md`](research/MODEL.md) | What the work measures and how. The source of everything else |
+| [`research/MODEL.md`](research/MODEL.md), [`research/MODEL.en.md`](research/MODEL.en.md) | What the work measures and how, in Russian and English. The source of everything else |
 | [`research/SOURCES.md`](research/SOURCES.md) | Source map: every series, its depth, its loading route, its terms |
 | [`research/sources.py`](research/sources.py), [`research/smoke.py`](research/smoke.py) | Loader (one function per source) and the content-checked smoke test |
 | `research/Z01/` to `research/Z28/` | Completed tasks: pre-registration, code, run log, report |
@@ -308,15 +310,15 @@ entry point.
 | [`book/index.html`](book/index.html), `book/*.html` | The new edition; [`book/assets/chapters.js`](book/assets/chapters.js) is the chapter registry |
 | `book/tools/` | Acceptance instruments: `audit.py`, `linkify.py`, `geometry-check.js` |
 | [`book/STYLE-GUIDE.md`](book/STYLE-GUIDE.md), [`book/ISTOCHNIKI.md`](book/ISTOCHNIKI.md) | Typesetting rules and the book's bibliography |
-| [`MASTER-PLAN.md`](MASTER-PLAN.md) | The current chapter plan, derived from the model |
+| [`MASTER-PLAN.md`](MASTER-PLAN.md), [`MASTER-PLAN.en.md`](MASTER-PLAN.en.md) | The current chapter plan, derived from the model, in Russian and English |
 | [`PROGRESS.md`](PROGRESS.md) | Project state and the decision journal (section 3): the entry point for anyone joining the work |
-| [`CLAUDE.md`](CLAUDE.md) | Working rules for the AI architect |
 
-Kept in the working repository and **not published**, for rights reasons:
+Kept in the working repository and **not published**: for rights reasons,
 slide-by-slide notes on the original commercial course, the formal
 specification and indicator catalogue extracted from it, the previous edition
 of the book (whose synthesis part reconstructs the course's cheat sheet), and
-the plans and audits of that edition.
+the plans and audits of that edition; and, as internal working notes rather
+than reader-facing material, `CLAUDE.md`.
 
 ## Reproducing
 
