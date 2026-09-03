@@ -72,8 +72,8 @@ channel with its measured reliability, instead of a buy or sell signal.
 
 ## Design and methodology
 
-The model of the work is [`research/MODEL.md`](research/MODEL.md) (Russian, with an [English translation](research/MODEL.en.md)).
-In brief:
+The scientific model behind the work, kept in the private working repository,
+in brief:
 
 - **State** is a set of named causal channels (demand, supply, policy, credit,
   external), each measured separately, each with its own refutable consequence
@@ -150,15 +150,11 @@ Each task folder in `research/Z##/` holds `HYPOTHESIS.md` (the
 pre-registration), `run.py`, `result.json`, `full-run.txt` (the raw run log)
 and `REPORT.md`.
 
-Data groundwork completed alongside: a source map of about 185 indicators with
-history depth measured from response bodies
-([`research/SOURCES.md`](research/SOURCES.md)); a content-checked smoke test of
-42 key series; reconnaissance of the ten-country panel, its vintage archives
-and business-cycle chronologies
-([`research/DATA-PANEL-RECON.md`](research/DATA-PANEL-RECON.md),
-[`research/VINTAGE-SOURCES-NON-US.md`](research/VINTAGE-SOURCES-NON-US.md),
-[`research/PANEL-FLOOR.md`](research/PANEL-FLOOR.md),
-[`research/CHANNELS-AND-PANEL.md`](research/CHANNELS-AND-PANEL.md)).
+Data groundwork completed alongside, and kept in the private working
+repository: a source map of about 185 indicators with history depth measured
+from response bodies; a content-checked smoke test of 42 key series; and
+reconnaissance of the ten-country panel, its vintage archives and
+business-cycle chronologies.
 
 ## Data sources
 
@@ -166,9 +162,9 @@ All series are loaded through one module,
 [`research/sources.py`](research/sources.py), one function per source, with
 caching and SSL handled centrally. Free registration keys are needed for FRED,
 BEA and Census; everything else is keyless. **No series is excluded because of
-its licence or price.** The terms of each source are recorded in
-`research/SOURCES.md` as a property of the series, so the reader sees what is
-free and what sits behind a subscription.
+its licence or price.** The terms of each source — free or by subscription —
+are tracked per series in the private working repository, so the reader sees
+what is free and what sits behind a subscription.
 
 | Group | Sources |
 |---|---|
@@ -190,21 +186,21 @@ the actual first and last dates.
 ## Deliverables
 
 1. **The book** (Russian, HTML, opens from `book/index.html` without a server).
-   Fifty-eight chapters in fifteen parts plus a sources appendix are planned by
-   [`MASTER-PLAN.md`](MASTER-PLAN.md), derived top-down from the model: for
-   every step of the measurement the plan asks what the reader must know to
-   understand it and what the reader must be able to do to check it. Chapter 8,
-   "A proper scoring rule" (`book/ocenochnaya-funkciya.html`), is written and
-   accepted. The previous edition (38 chapters, about 334 000 words, 198
-   figures) was written around the inherited construction and stays in the
-   working repository as material.
-2. **The measurement pipeline** in `research/`: the loader, the source map, the
-   smoke test with its self-test, and the task folders. Reproducible from a
-   clean clone plus three free API keys.
+   Fifty-eight chapters in fifteen parts plus a sources appendix are planned,
+   derived top-down from the model: for every step of the measurement the plan
+   asks what the reader must know to understand it and what the reader must be
+   able to do to check it. Chapter 8, "A proper scoring rule"
+   (`book/ocenochnaya-funkciya.html`), is written and accepted. The previous
+   edition (38 chapters, about 334 000 words, 198 figures) was written around
+   the inherited construction and is kept in the private working repository as
+   material.
+2. **The measurement pipeline** in `research/`: the loader, the smoke test
+   with its self-test, and the task folders. Reproducible from a clean clone
+   plus three free API keys.
 3. **The analyser** ("market clock"), a free software product built on the
    measured results, to be developed in a separate repository once the
-   measurements exist. Its output is fixed by the model
-   (`research/MODEL.md`, section 9): the state channel by channel with measured
+   measurements exist. Its output is fixed by the model (kept in the private
+   working repository): the state channel by channel with measured
    reliability, the probabilities of paths over the horizon, and a
    **discriminating observation** the user can wait for. Its safeguard is fixed
    as well: the language model in the interface restates measured numbers and
@@ -218,17 +214,17 @@ chapter in.
 
 | Component | State |
 |---|---|
-| Model of the work (`research/MODEL.md`) | Fixed on 2026-08-04 |
+| Model of the work | Fixed on 2026-08-04 (kept in the private working repository) |
 | Data panel | Ten countries selected and measured; the 2008 recession is covered for all ten through OECD first-release data; vintage density and history depth measured |
 | Measurement tasks | 10 complete (Z01 to Z06, Z25 to Z28), each with a pre-registration file. The conditional forecast that knows the economic state, the core measurement, has not been run yet |
 | Book, new edition | 1 of 58 chapters written; chapters 9 and 10 are next |
-| Book, previous edition | 38 chapters, kept in the working repository as material |
+| Book, previous edition | 38 chapters, kept in the private working repository as material |
 | Analyser | Not started; no product code lives in this repository |
 
 ## How the work is done
 
-Every substantive decision is logged with its date and reason in the
-decision journal, [`PROGRESS.md`](PROGRESS.md) section 3.
+Every substantive decision is made by the author and logged with its date and
+reason in the project's private decision journal.
 
 - **Volodymyr Biesov, the author and project operator,** sets the question
   and the scope, makes every substantive decision, reviews chapters as the
@@ -290,35 +286,33 @@ labour is stated explicitly.
   the collaboration is with the model.
 
 A book that teaches readers to check claims should show how it was made. The
-decision journal records, with dates, the cases in which the architect's own
-judgement was wrong and was corrected by measurement.
+practice is documented in the project's private decision journal, including
+the cases in which the architect's own judgement was wrong and was corrected
+by measurement.
 
 ## Repository map
 
 The working language of the repository is Russian; this README is the English
-entry point.
+entry point. This repository publishes the README, the finished chapters of
+the book, and the completed measurement pipeline with its results. The
+project's planning, decision journal and data-reconnaissance documents are
+kept in the private working repository.
 
 | Path | What it is |
 |---|---|
-| [`research/MODEL.md`](research/MODEL.md), [`research/MODEL.en.md`](research/MODEL.en.md) | What the work measures and how, in Russian and English. The source of everything else |
-| [`research/SOURCES.md`](research/SOURCES.md) | Source map: every series, its depth, its loading route, its terms |
-| [`research/sources.py`](research/sources.py), [`research/smoke.py`](research/smoke.py) | Loader (one function per source) and the content-checked smoke test |
-| `research/Z01/` to `research/Z28/` | Completed tasks: pre-registration, code, run log, report |
-| `research/DATA-PANEL-RECON.md`, `VINTAGE-SOURCES-NON-US.md`, `PANEL-FLOOR.md`, `CHANNELS-AND-PANEL.md` | Panel reconnaissance: countries, vintages, chronologies, channel composition |
-| [`research/DATA-ACCESS-RESEARCH.md`](research/DATA-ACCESS-RESEARCH.md), [`research/VERIFICATION-LOG.md`](research/VERIFICATION-LOG.md) | Survey of data access channels; log of independent re-checks of disputed claims |
-| [`research/SHA-MAP.md`](research/SHA-MAP.md) | Map of commit hashes across the repository move, so that pre-registration references stay verifiable |
-| [`book/index.html`](book/index.html), `book/*.html` | The new edition; [`book/assets/chapters.js`](book/assets/chapters.js) is the chapter registry |
+| [`book/index.html`](book/index.html), `book/*.html` | The book; [`book/assets/chapters.js`](book/assets/chapters.js) is the chapter registry |
+| `book/assets/` | Stylesheet, script and the chapter registry needed to render the book |
 | `book/tools/` | Acceptance instruments: `audit.py`, `linkify.py`, `geometry-check.js` |
-| [`book/STYLE-GUIDE.md`](book/STYLE-GUIDE.md), [`book/ISTOCHNIKI.md`](book/ISTOCHNIKI.md) | Typesetting rules and the book's bibliography |
-| [`MASTER-PLAN.md`](MASTER-PLAN.md), [`MASTER-PLAN.en.md`](MASTER-PLAN.en.md) | The current chapter plan, derived from the model, in Russian and English |
-| [`PROGRESS.md`](PROGRESS.md) | Project state and the decision journal (section 3): the entry point for anyone joining the work |
+| [`research/sources.py`](research/sources.py), [`research/smoke.py`](research/smoke.py) | Loader (one function per source) and the content-checked smoke test |
+| `research/Z01/` to `research/Z28/` | Completed measurement tasks: pre-registration, code, run log, report |
 
-Kept in the working repository and **not published**: for rights reasons,
-slide-by-slide notes on the original commercial course, the formal
-specification and indicator catalogue extracted from it, the previous edition
-of the book (whose synthesis part reconstructs the course's cheat sheet), and
-the plans and audits of that edition; and, as internal working notes rather
-than reader-facing material, `CLAUDE.md`.
+Kept in the private working repository and not published here: the scientific
+model, the chapter plan, the project's decision journal, the data-source map,
+the panel-reconnaissance reports, the book's style guide and chapter
+specifications, and the architect's internal working instructions
+(`CLAUDE.md`); and, for rights reasons, slide-by-slide notes on the original
+commercial course, the formal specification and indicator catalogue extracted
+from it, and the previous edition of the book with its plans and audits.
 
 ## Reproducing
 
@@ -347,7 +341,7 @@ in the commit timestamps above.
 The book is non-commercial and will be distributed free of charge. A formal
 licence for the text and the code will be attached by the author before
 release; until then all rights are reserved. Third-party data remain under
-their own terms, which are recorded per series in `research/SOURCES.md`; the
+their own terms, recorded per series in the private working repository; the
 book cites the source and the route for every number instead of redistributing
 the series. Material derived from the original commercial course is kept out of
 this public repository, including its history.
