@@ -106,6 +106,7 @@ DEFECT_KEYS = [
     ("xref_stale", "Номер разошёлся"),
     ("text_ch_ref", "Текст «глава N»"),
     ("math_broken", "Формула сломана"),
+    ("math_unrendered", "Формула не отрисуется"),
 ]
 
 # Классы, текст внутри которых — уже отсылка либо служебная подпись,
@@ -454,6 +455,7 @@ def audit_chapter(path: Path, meta: dict, class_props: dict, by_id: dict = None)
     # Пометка — целое слово в капсе: «СПОРНЫЙ» в подписи графики не является
     # пометкой [СПОР], а «КАНОНИЧЕСКИЙ» — пометкой [КАНОН].
     math_broken = mathcheck.check(raw)
+    math_unrendered = mathcheck.check_render(raw)
 
     marks = {m: len(re.findall(r"(?<![А-ЯЁA-Z])%s(?![А-ЯЁA-Zа-яёa-z])" % re.escape(m), raw))
              for m in ORIGIN_MARKS}
@@ -488,6 +490,7 @@ def audit_chapter(path: Path, meta: dict, class_props: dict, by_id: dict = None)
         "text_ch_ref": len(text_ch_ref),
         "figures_no_twin": len(missing_twin),
         "math_broken": len(math_broken),
+        "math_unrendered": len(math_unrendered),
     }
 
     reasons = [f"{DEFECT_LABELS[k]}: {n}" for k, n in defects.items() if n]
@@ -530,6 +533,7 @@ def audit_chapter(path: Path, meta: dict, class_props: dict, by_id: dict = None)
             "xref_stale": xref_stale,
             "text_ch_ref": text_ch_ref,
             "math_broken": math_broken,
+            "math_unrendered": math_unrendered,
         },
         "verdict": verdict,
         "reasons": reasons,
@@ -598,6 +602,7 @@ SELFTEST_EXPECT = {
         "tables_unscrolled": 1, "hex_colors": 2, "figures_no_twin": 1,
         "xref_broken": 1, "xref_stale": 1, "text_ch_ref": 1,
         "math_broken": 2,
+        "math_unrendered": 3,
         "missing_blocks": 5,
     },
     "clean.html": {
@@ -605,6 +610,7 @@ SELFTEST_EXPECT = {
         "tables_unscrolled": 0, "hex_colors": 0, "figures_no_twin": 0,
         "xref_broken": 0, "xref_stale": 0, "text_ch_ref": 0,
         "math_broken": 0,
+        "math_unrendered": 0,
         "missing_blocks": 0,
     },
 }

@@ -18,6 +18,11 @@ CRLF неотличимы от обычного перевода строки: �
 2. оборванный хвост команды внутри формулы (`ight)` там, где был `\\right)`);
 3. баланс парных конструкций `\\left`/`\\right` и разделителей формул.
 
+Отдельно от поломок стоит НЕОТРИСОВКА - формула цела, но читателю показан
+исходный LaTeX. Её ищет check_render: доллар вместо скобочного разделителя
+и неподключённый рендерер. До 2026-09-23 рендерера в книге не было вовсе,
+и все приборы называли это нормой.
+
 Модуль отдельный и самостоятельный: его можно прогнать по любому файлу
 напрямую, `python tools/mathcheck.py <файл>`, и он же вызывается из audit.py.
 """
@@ -69,6 +74,17 @@ REGION = re.compile(
 
 # Парные конструкции: имя команды без ведущего слэша.
 PAIRS = [("left", "right")]
+
+# Куски, где рендереру делать нечего и где разделители формул ничего не значат.
+MASKED = re.compile(
+    r"<svg\b.*?</svg>|<script\b.*?</script>|<style\b.*?</style>"
+    r"|<pre\b.*?</pre>|<code\b.*?</code>",
+    re.S | re.I,
+)
+
+# Чем глава подключает рендерер. Обе строки обязательны и в этом порядке:
+# настройка читается при запуске, поэтому идёт раньше библиотеки.
+WIRING = ("assets/math.js", "vendor/mathjax/tex-svg.js")
 
 
 def _line_of(raw, pos):
@@ -127,6 +143,39 @@ def check(raw: str) -> list:
     return out
 
 
+def check_render(raw: str) -> list:
+    """Список причин, по которым формула не отрисуется. Пустой - отрисуется.
+
+    Поломки формул (check выше) и неотрисовка - разные беды. Сломанная
+    формула видна как мусор; неотрисованная выглядит как исходный LaTeX
+    посреди прозы, и ни один прибор до 2026-09-23 этого не замечал: книга
+    полгода печатала читателю сырые команды, и приёмка говорила "в норме".
+    """
+    out = []
+    prose = MASKED.sub(lambda m: " " * len(m.group(0)), raw)
+
+    # Причина 1. Доллар как разделитель формулы.
+    #
+    # Доллар разделителем НЕ объявлен (см. assets/math.js), поэтому такая
+    # формула молча останется текстом. Деньгам доллар не запрещён: "$100"
+    # проходит. Запрещено писать "100 $" - разделить эти два случая может
+    # только цифра справа, и это соглашение книги, а не догадка прибора.
+    for m in re.finditer(r"\$", prose):
+        nxt = prose[m.end():m.end() + 1]
+        if not nxt.isdigit():
+            out.append("доллар вместо скобочного разделителя, строка %d"
+                       % _line_of(raw, m.start()))
+
+    # Причина 2. Формулы есть, а рендерер не подключён.
+    if (BS + "(") in prose or (BS + "[") in prose:
+        missing = [w for w in WIRING if w not in raw]
+        if missing:
+            out.append("в тексте есть формулы, но не подключено: %s"
+                       % ", ".join(missing))
+
+    return out
+
+
 def main(argv) -> int:
     if len(argv) < 2:
         print("использование: python tools/mathcheck.py <файл.html> [ещё файлы]")
@@ -138,11 +187,14 @@ def main(argv) -> int:
             print("НЕТ ФАЙЛА: %s" % name)
             bad += 1
             continue
-        problems = check(p.read_text(encoding="utf-8"))
-        print("%s: поломок %d" % (p.name, len(problems)))
-        for line in problems:
+        raw = p.read_text(encoding="utf-8")
+        problems = check(raw)
+        unrendered = check_render(raw)
+        print("%s: поломок %d, не отрисуется %d"
+              % (p.name, len(problems), len(unrendered)))
+        for line in problems + unrendered:
             print("   %s" % line)
-        bad += len(problems)
+        bad += len(problems) + len(unrendered)
     return 1 if bad else 0
 
 

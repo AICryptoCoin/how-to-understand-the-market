@@ -401,6 +401,11 @@ blockquote cite { display: block; margin-top: .5rem; font-style: normal; font-fa
   border-radius: .6rem; padding: 1.25rem; position: relative;
 }
 .figure svg { display: block; width: 100%; height: auto; overflow: visible; }
+/* Исключение: формула в подписи к фигуре — не рисунок фигуры. Правило выше
+   растянуло бы её на всю колонку; с включением рендерера 2026-09-23 так и
+   вышло — двенадцать формул главы 9 встали во всю ширину, буква «t» размером
+   в абзац. Ширину отдаём обратно самому SVG: у него она проставлена в ex. */
+.figure mjx-container svg { display: inline; width: auto; height: auto; }
 .figure figcaption {
   font-family: var(--font-ui); font-size: .8125rem; line-height: 1.55;
   color: var(--ink-2); margin-top: .75rem;
@@ -458,6 +463,32 @@ table.data thead th {
 table.data tbody tr:last-child td { border-bottom: 0; }
 table.data tbody tr:hover { background: var(--surface-2); }
 table.data .num { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* ===================== ФОРМУЛЫ =====================
+   Рисует MathJax (vendor/mathjax, настройка в math.js), вывод — SVG.
+   Цвет намеренно наследуется: глифы идут заливкой currentColor, поэтому
+   тёмная тема работает сама и отдельной палитры формулам не нужно. */
+
+mjx-container[jax="SVG"] { color: inherit; }
+
+/* Выключная формула. overflow-x обязателен: самая длинная в книге — 222
+   символа, на телефоне она шире экрана, и без прокрутки её правый край
+   просто обрезается. Прокрутка у самой формулы, а не у страницы. */
+mjx-container[jax="SVG"][display="true"] {
+  display: block;
+  margin: 1.6rem 0;
+  padding: .25rem 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Строчная формула не должна разгонять межстрочный интервал абзаца. */
+mjx-container[jax="SVG"]:not([display="true"]) { vertical-align: baseline; }
+
+/* Ошибку разбора MathJax показывает текстом. Пусть она будет заметна:
+   молча кривая формула хуже, чем явно красная. */
+mjx-container [data-mjx-error],
+mjx-container .MathJax_Error { color: var(--st-serious); }
 
 /* ===================== ЧЕК-ЛИСТ ===================== */
 
@@ -602,6 +633,9 @@ table.data .num { text-align: right; font-variant-numeric: tabular-nums; }
   .content { padding: 0; }
   body { background: #fff; color: #000; font-size: 11pt; }
   .figure, .indicator, .callout, table.data { break-inside: avoid; }
+  /* На бумаге прокручивать нечем: обрезанная по правому краю формула
+     осталась бы обрезанной навсегда. */
+  mjx-container[jax="SVG"][display="true"] { overflow-x: visible; break-inside: avoid; }
   h2, h3 { break-after: avoid; }
   a { color: #000; text-decoration: none; }
 }

@@ -1,2 +1,7 @@
 publish/*.sh text eol=lf
 publish/*.txt text eol=lf
+
+# Вендорённый чужой код: байт в байт, как получен из npm.
+# Хеш опубликован в book/assets/vendor/mathjax/README.md, и перевод
+# концов строк на чужой машине сделал бы его ложью.
+book/assets/vendor/** -text
