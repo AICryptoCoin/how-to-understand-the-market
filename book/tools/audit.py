@@ -51,6 +51,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import linkify  # noqa: E402  — сверка отсылок живёт там и только там
+import mathcheck  # noqa: E402  — поломки формул живут там и только там
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Пороги вердикта. Меняются здесь и больше нигде.
@@ -104,6 +105,7 @@ DEFECT_KEYS = [
     ("xref_broken", "Слаг не в реестре"),
     ("xref_stale", "Номер разошёлся"),
     ("text_ch_ref", "Текст «глава N»"),
+    ("math_broken", "Формула сломана"),
 ]
 
 # Классы, текст внутри которых — уже отсылка либо служебная подпись,
@@ -451,6 +453,8 @@ def audit_chapter(path: Path, meta: dict, class_props: dict, by_id: dict = None)
     # это честно два голоса, поэтому считаем каждое вхождение отдельно.
     # Пометка — целое слово в капсе: «СПОРНЫЙ» в подписи графики не является
     # пометкой [СПОР], а «КАНОНИЧЕСКИЙ» — пометкой [КАНОН].
+    math_broken = mathcheck.check(raw)
+
     marks = {m: len(re.findall(r"(?<![А-ЯЁA-Z])%s(?![А-ЯЁA-Zа-яёa-z])" % re.escape(m), raw))
              for m in ORIGIN_MARKS}
 
@@ -483,6 +487,7 @@ def audit_chapter(path: Path, meta: dict, class_props: dict, by_id: dict = None)
         "xref_stale": len(xref_stale),
         "text_ch_ref": len(text_ch_ref),
         "figures_no_twin": len(missing_twin),
+        "math_broken": len(math_broken),
     }
 
     reasons = [f"{DEFECT_LABELS[k]}: {n}" for k, n in defects.items() if n]
@@ -524,6 +529,7 @@ def audit_chapter(path: Path, meta: dict, class_props: dict, by_id: dict = None)
             "xref_broken": xref_broken,
             "xref_stale": xref_stale,
             "text_ch_ref": text_ch_ref,
+            "math_broken": math_broken,
         },
         "verdict": verdict,
         "reasons": reasons,
@@ -591,12 +597,14 @@ SELFTEST_EXPECT = {
         "html_in_text": 2, "dup_ids": 1, "broken_refs": 2, "overridden": 3,
         "tables_unscrolled": 1, "hex_colors": 2, "figures_no_twin": 1,
         "xref_broken": 1, "xref_stale": 1, "text_ch_ref": 1,
+        "math_broken": 2,
         "missing_blocks": 5,
     },
     "clean.html": {
         "html_in_text": 0, "dup_ids": 0, "broken_refs": 0, "overridden": 0,
         "tables_unscrolled": 0, "hex_colors": 0, "figures_no_twin": 0,
         "xref_broken": 0, "xref_stale": 0, "text_ch_ref": 0,
+        "math_broken": 0,
         "missing_blocks": 0,
     },
 }
