@@ -265,10 +265,14 @@ python tools/linkify.py --check && python tools/audit.py && python tools/audit.p
 
 Thirteen defect detectors must report zero and the self-test must pass. Every
 number of a chapter is bound to its place and to its source field by
-`tools/numbind.py` with a per-chapter manifest in `tools/numbers/` (chapter 11
-so far; chapters 8 to 10 are next). The binding proves it is alive twice: by
-catching random swaps of one number for another (`tools/mutate_numbers.py`)
-and by failing wherever a source field is perturbed (`--liveness`). Page
+`tools/numbind.py` with a per-chapter manifest in `tools/numbers/`, for all
+four chapters. The binding proves it is alive twice: by catching random swaps
+of one number for another (`tools/mutate_numbers.py`) and by failing wherever a
+source field is perturbed (`--liveness`). A second instrument,
+`tools/numbind_sense.py`, checks that each binding points at the field the
+sentence talks about (the route and the month named around the number), and
+that a derived table column either holds on the printed numbers of its row or
+says in its caption that it was computed from unrounded values. Page
 geometry is judged by ink with `tools/geometry-check.js`, run by
 `tools/geometry-run.py`, and the instrument has to prove it is alive by
 catching a deliberate mutation.
@@ -325,7 +329,7 @@ kept in the private working repository.
 |---|---|
 | [`book/index.html`](book/index.html), `book/*.html` | The book; [`book/assets/chapters.js`](book/assets/chapters.js) is the chapter registry |
 | `book/assets/` | Stylesheet, script and the chapter registry needed to render the book |
-| `book/tools/` | Acceptance instruments: `audit.py` (thirteen detectors), `linkify.py`, `mathcheck.py`, `numbind.py` with per-chapter manifests in `numbers/`, `mutate_numbers.py`, `geometry-check.js` with `geometry-run.py` |
+| `book/tools/` | Acceptance instruments: `audit.py` (thirteen detectors), `linkify.py`, `mathcheck.py`, `numbind.py` with per-chapter manifests in `numbers/`, `numbind_sense.py`, `mutate_numbers.py`, `geometry-check.js` with `geometry-run.py` |
 | [`research/sources.py`](research/sources.py), [`research/smoke.py`](research/smoke.py) | Loader (one function per source) and the content-checked smoke test |
 | `research/Z01/` to `research/Z28/` | Completed measurement tasks: pre-registration, code, run log, report |
 
