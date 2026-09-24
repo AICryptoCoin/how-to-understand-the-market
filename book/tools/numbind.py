@@ -271,7 +271,11 @@ def evaluate(spec, data, printed):
             vals.append([v for _, v in got] if "*" in path else got[0][1])
             return "_v[%d]" % (len(vals) - 1)
         code = PH_DATA.sub(sub, spec.expr)
-        return float(eval(code, dict(NS), {"_v": vals})), reads
+        # values go into globals: a generator or comprehension inside eval does not see
+        # eval's locals (found by the executor of chapter 11, 2026-09-24)
+        g = dict(NS)
+        g["_v"] = vals
+        return float(eval(code, g)), reads
     if isinstance(spec, A):
         vals = []
 
@@ -284,7 +288,9 @@ def evaluate(spec, data, printed):
         code = PH_TOK.sub(subt, spec.expr)
         if PH_DATA.search(code):
             raise ValueError("A must not read data; use E: %s" % spec.expr)
-        return float(eval(code, dict(NS), {"_t": vals})), reads
+        g = dict(NS)
+        g["_t"] = vals
+        return float(eval(code, g)), reads
     raise ValueError("unknown spec %r" % (spec,))
 
 
@@ -504,6 +510,18 @@ def selftest():
     ok = [d[2] for d in dead] == ["s1#1.3"]
     results.append(ok)
     print("  %-4s %-34s dead %s" % ("ok" if ok else "FAIL", "liveness catches a constant", [d[2] for d in dead]))
+    printed = {p["key"]: p["value"] for p in places(ch)}
+    try:
+        # the name must stand inside the generator body: the outermost iterable is
+        # evaluated in eval's own scope and would pass even on the broken engine
+        v1, _ = evaluate(E("sum({d:ci[*]}[i] for i in range(2))"), data, printed)
+        v2, _ = evaluate(A("sum([{#s1#2.1}, {#s1#2.2}][i] for i in range(2))"), data, printed)
+        ok = abs(v1 - 0.337611) < 1e-9 and abs(v2 - 0.1708) < 1e-9
+        got = "%.6f %.4f" % (v1, v2)
+    except Exception as ex:                              # noqa: BLE001 - the case under test
+        ok, got = False, "%s: %s" % (type(ex).__name__, ex)
+    results.append(ok)
+    print("  %-4s %-34s %s" % ("ok" if ok else "FAIL", "generators inside E and A", got))
     rows, dead = liveness(ch, data, rules)
     ok = dead == []
     results.append(ok)
