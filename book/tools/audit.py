@@ -108,6 +108,7 @@ DEFECT_KEYS = [
     ("math_broken", "Формула сломана"),
     ("math_unrendered", "Формула не отрисуется"),
     ("md_literal", "Разметка Markdown"),
+    ("space_punct", "Пробел перед знаком"),
 ]
 
 # Классы, текст внутри которых — уже отсылка либо служебная подпись,
@@ -155,6 +156,48 @@ def md_literal(raw: str) -> list:
     p.feed(raw[raw.find("<body"):] if "<body" in raw else raw)
     p.close()
     return [m.group(0) for m in MD_LITERAL.finditer("".join(p.chunks))]
+
+
+# Пробел перед знаком препинания в видимом тексте: «[-0,33 ; +0,48]» вместо
+# «[-0,33; +0,48]». В русском наборе пробела перед , . ; : ! ? нет. Формула
+# MathJax и код внутри <code> — слова предложения: формула заменяется меткой,
+# потому что пробелы внутри неё не рисуются, а фраза «обозначим её \(p\).»
+# иначе дала бы ложную тревогу; код проверяется как текст — моноширинный
+# набор пробел показывает. <pre>, <script>, <style> не смотрятся. Детектор
+# появился 2026-09-24: шесть таких мест стояли в опубликованных главах 8 и 9.
+SPACE_PUNCT = re.compile(r"(?<=\S) ([,.;:!?])(?=\s|$|[\])»])")
+SPACE_SKIP = {"pre", "script", "style"}
+MATH_SPAN = re.compile(r"\\\(.*?\\\)|\\\[.*?\\\]", re.S)
+
+
+class SpacedText(HTMLParser):
+    """Видимый текст body вне SPACE_SKIP одной строкой."""
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.depth = 0
+        self.chunks: list = []
+
+    def handle_starttag(self, tag, attrs):
+        if tag in SPACE_SKIP:
+            self.depth += 1
+
+    def handle_endtag(self, tag):
+        if tag in SPACE_SKIP and self.depth:
+            self.depth -= 1
+
+    def handle_data(self, data):
+        if not self.depth:
+            self.chunks.append(data)
+
+
+def space_punct(raw: str) -> list:
+    p = SpacedText()
+    p.feed(raw[raw.find("<body"):] if "<body" in raw else raw)
+    p.close()
+    text = MATH_SPAN.sub("§", "".join(p.chunks))
+    text = re.sub(r"\s+", " ", text)
+    return [text[max(0, m.start() - 30):m.end() + 12] for m in SPACE_PUNCT.finditer(text)]
 
 
 # Теги, которые стоят внутри предложения и текст не разрывают.
@@ -496,6 +539,7 @@ def audit_chapter(path: Path, meta: dict, class_props: dict, by_id: dict = None)
     math_broken = mathcheck.check(raw)
     math_unrendered = mathcheck.check_render(raw)
     md_found = md_literal(raw)
+    space_found = space_punct(raw)
 
     marks = {m: len(re.findall(r"(?<![А-ЯЁA-Z])%s(?![А-ЯЁA-Zа-яёa-z])" % re.escape(m), raw))
              for m in ORIGIN_MARKS}
@@ -532,6 +576,7 @@ def audit_chapter(path: Path, meta: dict, class_props: dict, by_id: dict = None)
         "math_broken": len(math_broken),
         "math_unrendered": len(math_unrendered),
         "md_literal": len(md_found),
+        "space_punct": len(space_found),
     }
 
     reasons = [f"{DEFECT_LABELS[k]}: {n}" for k, n in defects.items() if n]
@@ -576,6 +621,7 @@ def audit_chapter(path: Path, meta: dict, class_props: dict, by_id: dict = None)
             "math_broken": math_broken,
             "math_unrendered": math_unrendered,
             "md_literal": md_found,
+            "space_punct": space_found,
         },
         "verdict": verdict,
         "reasons": reasons,
@@ -646,6 +692,7 @@ SELFTEST_EXPECT = {
         "math_broken": 3,
         "math_unrendered": 3,
         "md_literal": 2,
+        "space_punct": 1,
         "missing_blocks": 5,
     },
     "clean.html": {
@@ -655,6 +702,7 @@ SELFTEST_EXPECT = {
         "math_broken": 0,
         "math_unrendered": 0,
         "md_literal": 0,
+        "space_punct": 0,
         "missing_blocks": 0,
     },
 }

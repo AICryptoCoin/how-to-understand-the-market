@@ -10,8 +10,8 @@ measurement pipeline behind it.
 
 > **Status (September 2026): early stage.** The scientific model is fixed, the
 > ten-country data panel is surveyed and measured, ten pre-registered
-> measurement tasks are complete, and the first chapter of the new edition is
-> written and accepted. The core measurement (a forecast that knows the state
+> measurement tasks are complete, and four chapters of the new edition (8 to 11,
+> on telling a good forecast from a lucky one) are written and accepted. The core measurement (a forecast that knows the state
 > of the economy against a forecast that knows nothing) has not been run yet,
 > and the analyser is not implemented. Details in [Status](#status).
 
@@ -32,8 +32,10 @@ themselves**: what a distribution is and why its mean is almost useless, how a
 proper scoring rule tells a good forecast from a lucky one, how each causal
 channel of the economy (demand, supply, policy, credit, the external sector) is
 measured and what observation would refute it, why data revisions and
-cross-country panels are traps, and why "not established" is a legitimate
-answer. Every number the method rests on is shown in the book together with its
+cross-country panels are traps, and why a result the data cannot settle is
+reported with numbers (the estimate, the interval, the smallest effect the
+data could detect and the data that would settle it) rather than with a
+label. Every number the method rests on is shown in the book together with its
 source and the route to it. The same measurements feed a free software
 analyser, a "market clock", that reports the state of the economy channel by
 channel with its measured reliability, instead of a buy or sell signal.
@@ -62,8 +64,9 @@ channel with its measured reliability, instead of a buy or sell signal.
    central thesis thereby becomes a measurement, and a negative answer will be
    printed as such.
 3. Which causal channels carry the information and which are silent? Channels
-   are never collapsed into one number, and "don't know" is a legitimate value
-   of a channel.
+   are never collapsed into one number, and a channel the data cannot settle
+   is reported with its estimate, interval, smallest detectable effect and
+   the data that would settle it, never as a bare "don't know".
 4. How much of the information survives in real time, that is, with vintage
    data as first published, and how much exists only in revised data?
 5. On a panel of ten countries whose recessions are synchronised, how many
@@ -88,7 +91,9 @@ in brief:
   **proper scoring rule**. The primary score is CRPS (continuous ranked
   probability score), because it is measured in the units of the outcome,
   percentage points of return, and can therefore be explained to a reader. The
-  logarithmic score is computed and printed alongside. The improvement over the
+  logarithmic score is printed alongside wherever the forecast has a density;
+  the empirical-ensemble forecasts of the first task, Z28, have none, so there
+  it was not computed. The improvement over the
   baseline is the measured tunnel width, per market and horizon, with an
   interval.
 - **A price-only competitor** serves as the second baseline (research
@@ -109,7 +114,10 @@ in brief:
   receives one of three verdicts: information present, information absent at
   adequate power, or not established. **Power is computed before the run**, so
   cells that cannot distinguish anything are declared in advance and are never
-  used for claims.
+  used for claims. A cell that cannot distinguish is never left as a bare
+  label either: its estimate, interval, smallest detectable effect and the
+  amount of data that would settle it are printed with it (the author's
+  decision of 24 September 2026).
 - **Pre-registration discipline.** Hypothesis, transformations, confirmation
   and refutation criteria are committed as a separate commit before the first
   data request, and the report prints the commit hashes and timestamps so the
@@ -186,11 +194,14 @@ the actual first and last dates.
 ## Deliverables
 
 1. **The book** (Russian, HTML, opens from `book/index.html` without a server).
-   Fifty-eight chapters in fifteen parts plus a sources appendix are planned,
+   Fifty-six chapters in fifteen parts plus a sources appendix are planned,
    derived top-down from the model: for every step of the measurement the plan
    asks what the reader must know to understand it and what the reader must be
-   able to do to check it. Chapter 8, "A proper scoring rule"
-   (`book/ocenochnaya-funkciya.html`), is written and accepted. The previous
+   able to do to check it. Four of the five chapters of part II, "How to tell
+   a good forecast from a lucky one", are written and accepted: chapter 8, "A
+   proper scoring rule"; chapter 9, "The 'know nothing' baseline"; chapter
+   10, "The second competitor: price only"; chapter 11, "Improvement over
+   the baseline". Chapter 12, "Comparison traps", is next. The previous
    edition (38 chapters, about 334 000 words, 198 figures) was written around
    the inherited construction and is kept in the private working repository as
    material.
@@ -209,15 +220,15 @@ the actual first and last dates.
 ## Status
 
 Early stage, stated plainly: the framing changed on 2026-08-03 after the
-inherited construction failed its tests, and the new edition of the book is one
-chapter in.
+inherited construction failed its tests, and the new edition of the book is four
+chapters in.
 
 | Component | State |
 |---|---|
 | Model of the work | Fixed on 2026-08-04 (kept in the private working repository) |
 | Data panel | Ten countries selected and measured; the 2008 recession is covered for all ten through OECD first-release data; vintage density and history depth measured |
-| Measurement tasks | 10 complete (Z01 to Z06, Z25 to Z28), each with a pre-registration file. The conditional forecast that knows the economic state, the core measurement, has not been run yet |
-| Book, new edition | 1 of 58 chapters written; chapters 9 and 10 are next |
+| Measurement tasks | 10 complete (Z01 to Z06, Z25 to Z28), each with a pre-registration file. The conditional forecast that knows the economic state, the core measurement, has not been run yet. Next: Z29, the cost of look-ahead measured on the Z28 instrument |
+| Book, new edition | 4 of 56 chapters written (8 to 11, part II); chapter 12 is next |
 | Book, previous edition | 38 chapters, kept in the private working repository as material |
 | Analyser | Not started; no product code lives in this repository |
 
@@ -230,17 +241,21 @@ reason in the project's private decision journal.
   and the scope, makes every substantive decision, reviews chapters as the
   reader, and owns all legal and publication matters.
 - **Claude (Anthropic)** works as the architect: it designs the model and the
-  chapter plan, writes the specifications of tasks, accepts delivered work by
-  re-running it, keeps the documentation, and writes the chapters in dedicated
-  Claude Code sessions.
-- **A local LLM** aggregates data and executes tasks through a local task
-  coordinator: data reconnaissance, running the measurement tasks, controls
-  and re-checks.
+  chapter plan, writes the specifications of tasks and chapters, accepts
+  delivered work by re-running every check itself, builds the acceptance
+  instruments and keeps the documentation. It wrote chapter 8; since
+  September 2026 the chapters are written by the local LLM under its
+  specifications.
+- **A local LLM** works in its own isolated working copy: data
+  reconnaissance, the measurement tasks, controls and re-checks, and, since
+  September 2026, the prose of the chapters under the architect's
+  specifications.
 - **Acceptance is double and independent.** The local LLM recomputes what can
   be recomputed (numbers, links, instruments, page geometry); the architect
   checks what only a full read can check (does the chapter teach what it
   promises, is every claim backed, has it drifted back to the old
-  construction).
+  construction) and then re-runs every recomputation itself. A fresh instance
+  of the local LLM audits each finished chapter.
 
 Acceptance instruments for the book (run from `book/`):
 
@@ -248,9 +263,15 @@ Acceptance instruments for the book (run from `book/`):
 python tools/linkify.py --check && python tools/audit.py && python tools/audit.py --selftest
 ```
 
-Nine defect detectors must report zero and the self-test must pass. Page
-geometry is judged by ink with `tools/geometry-check.js`, and the instrument
-has to prove it is alive by catching a deliberate mutation.
+Thirteen defect detectors must report zero and the self-test must pass. Every
+number of a chapter is bound to its place and to its source field by
+`tools/numbind.py` with a per-chapter manifest in `tools/numbers/` (chapter 11
+so far; chapters 8 to 10 are next). The binding proves it is alive twice: by
+catching random swaps of one number for another (`tools/mutate_numbers.py`)
+and by failing wherever a source field is perturbed (`--liveness`). Page
+geometry is judged by ink with `tools/geometry-check.js`, run by
+`tools/geometry-run.py`, and the instrument has to prove it is alive by
+catching a deliberate mutation.
 
 Measurement pipeline (run from `research/`, keys in `.env.research` at the
 repository root):
@@ -272,11 +293,13 @@ labour is stated explicitly.
   `Co-Authored-By: Claude ...` trailer naming the specific Claude model used
   for that commit.
 - **What Claude did.** The scientific model, the chapter plan, the
-  specifications of all measurement tasks, acceptance of delivered work, the
-  project documentation, and the prose of the chapters.
+  specifications of all measurement tasks and chapters, acceptance of
+  delivered work, the acceptance instruments, the project documentation, and
+  the prose of chapter 8.
 - **What the local LLM did.** Under Claude's specifications, it aggregated
-  data and executed the measurement and reconnaissance tasks, and recomputed
-  numbers at acceptance.
+  data, executed the measurement and reconnaissance tasks, wrote the prose of
+  chapters 9 to 11 and recomputed numbers at acceptance; a fresh instance
+  audited each chapter.
 - **What the human author, Volodymyr Biesov, did and does.** Framed the
   question, made and logged every substantive decision, reviewed every
   chapter, and decides what is published. The human author bears full
@@ -302,7 +325,7 @@ kept in the private working repository.
 |---|---|
 | [`book/index.html`](book/index.html), `book/*.html` | The book; [`book/assets/chapters.js`](book/assets/chapters.js) is the chapter registry |
 | `book/assets/` | Stylesheet, script and the chapter registry needed to render the book |
-| `book/tools/` | Acceptance instruments: `audit.py`, `linkify.py`, `geometry-check.js` |
+| `book/tools/` | Acceptance instruments: `audit.py` (thirteen detectors), `linkify.py`, `mathcheck.py`, `numbind.py` with per-chapter manifests in `numbers/`, `mutate_numbers.py`, `geometry-check.js` with `geometry-run.py` |
 | [`research/sources.py`](research/sources.py), [`research/smoke.py`](research/smoke.py) | Loader (one function per source) and the content-checked smoke test |
 | `research/Z01/` to `research/Z28/` | Completed measurement tasks: pre-registration, code, run log, report |
 
