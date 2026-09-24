@@ -107,6 +107,7 @@ DEFECT_KEYS = [
     ("text_ch_ref", "Текст «глава N»"),
     ("math_broken", "Формула сломана"),
     ("math_unrendered", "Формула не отрисуется"),
+    ("md_literal", "Разметка Markdown"),
 ]
 
 # Классы, текст внутри которых — уже отсылка либо служебная подпись,
@@ -117,6 +118,44 @@ MUTE_CLASSES = {"xref", "figref", "xref__n", "figref__n", "chapter-eyebrow"}
 # Отсылка не пересекает границу блока: заголовок ячейки «Пример из главы» и
 # следующая ячейка «1» — это не «глава 1». Границу ставит \x00 (см. ChapterParser).
 TEXT_CH_REF = re.compile(r"[Гг]лав[аеиуыойх]{0,3}[^\S\x00]+\d{1,3}")
+
+# Разметка Markdown в тексте. Обратный апостроф и **жирный** — синтаксис
+# Markdown; HTML печатает его читателю как есть. Имя файла или поля пишется
+# через <code>. Ищется в видимом тексте body вне <code>, <pre>, <kbd>, <samp>,
+# <script>, <style>; пара, разорванная inline-тегом, считается одной.
+# Детектор появился 2026-09-24: глава 10 ушла к читателям с семью парами
+# обратных апострофов, и ни один из одиннадцати детекторов этот класс не видел.
+MD_LITERAL = re.compile(r"`[^`]{0,120}`|`|[*][*][^*]{1,120}[*][*]")
+MD_SKIP = {"code", "pre", "kbd", "samp", "script", "style"}
+
+
+class VisibleText(HTMLParser):
+    """Видимый текст вне MD_SKIP одной строкой: пара апострофов через тег — одна."""
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.depth = 0
+        self.chunks: list = []
+
+    def handle_starttag(self, tag, attrs):
+        if tag in MD_SKIP:
+            self.depth += 1
+
+    def handle_endtag(self, tag):
+        if tag in MD_SKIP and self.depth:
+            self.depth -= 1
+
+    def handle_data(self, data):
+        if not self.depth:
+            self.chunks.append(data)
+
+
+def md_literal(raw: str) -> list:
+    p = VisibleText()
+    p.feed(raw[raw.find("<body"):] if "<body" in raw else raw)
+    p.close()
+    return [m.group(0) for m in MD_LITERAL.finditer("".join(p.chunks))]
+
 
 # Теги, которые стоят внутри предложения и текст не разрывают.
 INLINE_TAGS = {
@@ -456,6 +495,7 @@ def audit_chapter(path: Path, meta: dict, class_props: dict, by_id: dict = None)
     # пометкой [СПОР], а «КАНОНИЧЕСКИЙ» — пометкой [КАНОН].
     math_broken = mathcheck.check(raw)
     math_unrendered = mathcheck.check_render(raw)
+    md_found = md_literal(raw)
 
     marks = {m: len(re.findall(r"(?<![А-ЯЁA-Z])%s(?![А-ЯЁA-Zа-яёa-z])" % re.escape(m), raw))
              for m in ORIGIN_MARKS}
@@ -491,6 +531,7 @@ def audit_chapter(path: Path, meta: dict, class_props: dict, by_id: dict = None)
         "figures_no_twin": len(missing_twin),
         "math_broken": len(math_broken),
         "math_unrendered": len(math_unrendered),
+        "md_literal": len(md_found),
     }
 
     reasons = [f"{DEFECT_LABELS[k]}: {n}" for k, n in defects.items() if n]
@@ -534,6 +575,7 @@ def audit_chapter(path: Path, meta: dict, class_props: dict, by_id: dict = None)
             "text_ch_ref": text_ch_ref,
             "math_broken": math_broken,
             "math_unrendered": math_unrendered,
+            "md_literal": md_found,
         },
         "verdict": verdict,
         "reasons": reasons,
@@ -603,6 +645,7 @@ SELFTEST_EXPECT = {
         "xref_broken": 1, "xref_stale": 1, "text_ch_ref": 1,
         "math_broken": 3,
         "math_unrendered": 3,
+        "md_literal": 2,
         "missing_blocks": 5,
     },
     "clean.html": {
@@ -611,6 +654,7 @@ SELFTEST_EXPECT = {
         "xref_broken": 0, "xref_stale": 0, "text_ch_ref": 0,
         "math_broken": 0,
         "math_unrendered": 0,
+        "md_literal": 0,
         "missing_blocks": 0,
     },
 }
