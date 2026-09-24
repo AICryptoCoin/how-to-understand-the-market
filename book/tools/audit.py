@@ -601,7 +601,7 @@ SELFTEST_EXPECT = {
         "html_in_text": 2, "dup_ids": 1, "broken_refs": 2, "overridden": 3,
         "tables_unscrolled": 1, "hex_colors": 2, "figures_no_twin": 1,
         "xref_broken": 1, "xref_stale": 1, "text_ch_ref": 1,
-        "math_broken": 2,
+        "math_broken": 3,
         "math_unrendered": 3,
         "missing_blocks": 5,
     },

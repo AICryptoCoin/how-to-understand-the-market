@@ -89,7 +89,7 @@ window.BOOK_CHAPTERS = [
   /* ── Часть XI. Что считается результатом ────────────────────────────── */
   { id: "verdikt-rascheta", part: "kriterii-rezultata", file: "verdikt-rascheta.html", title: "Вердикт объявляют до расчёта", status: "todo" },
   { id: "moshnost-kriteriya", part: "kriterii-rezultata", file: "moshnost-kriteriya.html", title: "Мощность: может ли критерий сработать вообще", status: "todo" },
-  { id: "neustanovlennyj-rezultat", part: "kriterii-rezultata", file: "neustanovlennyj-rezultat.html", title: "«Не установлено» — законный ответ", status: "todo" },
+  { id: "neznanie-chislom", part: "kriterii-rezultata", file: "neznanie-chislom.html", title: "Сколько мы не знаем — числом", status: "todo" },
   { id: "mnozhestvennost-gipotez", part: "kriterii-rezultata", file: "mnozhestvennost-gipotez.html", title: "Множественность", status: "todo" },
   { id: "predregistraciya-proverka", part: "kriterii-rezultata", file: "predregistraciya-proverka.html", title: "Пред-регистрация и как её проверить", status: "todo" },
 
@@ -101,9 +101,8 @@ window.BOOK_CHAPTERS = [
   { id: "sborka-pribora", part: "pribor-sistema", file: "sborka-pribora.html", title: "Собрать прибор самому", status: "todo" },
 
   /* ── Часть XIII. Крипта ─────────────────────────────────────────────── */
-  { id: "kripta-otklik", part: "kripta-granica", file: "kripta-otklik.html", title: "Чем крипта отличается как отклик", status: "todo" },
-  { id: "korotkaya-istoriya", part: "kripta-granica", file: "korotkaya-istoriya.html", title: "Короткая история", status: "todo" },
-  { id: "granicy-utverzhdeniy", part: "kripta-granica", file: "granicy-utverzhdeniy.html", title: "Что можно утверждать и чего нельзя", status: "todo" },
+  /* Одна глава вместо трёх — решение оператора 2026-09-24 (MASTER-PLAN, часть XIII). */
+  { id: "kripta-korotkaya-istoriya", part: "kripta-granica", file: "kripta-korotkaya-istoriya.html", title: "Крипта: что различимо на короткой истории", status: "todo" },
 
   /* ── Часть XIV. Что измерено ────────────────────────────────────────── */
   { id: "rezultaty-rynok-gorizont", part: "izmerennye-rezultaty", file: "rezultaty-rynok-gorizont.html", title: "Результаты по парам «рынок × горизонт»", status: "todo" },
