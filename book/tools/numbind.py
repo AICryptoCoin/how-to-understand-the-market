@@ -142,7 +142,10 @@ def tokens_of(text):
         sign = ""
         if before in "+-\u2212" and s >= 1:
             prev = text[s - 2] if s >= 2 else ""
-            if not (prev.isalnum() or prev in ")]}"):
+            # a sign opening the unit ("-40" on an SVG axis) is a sign: "" is a substring
+            # of every string, so the emptiness test comes first (found by the executor of
+            # chapter 9, 2026-09-24: 16 axis ticks and labels had lost their minus)
+            if not prev or not (prev.isalnum() or prev in ")]}"):
                 sign = before
         p = m.group(0)
         digits = p.replace(" ", "")
@@ -468,7 +471,7 @@ def template(html_path):
 def selftest():
     ch = ('<body><section id="s1"><p>Mean 0{,}17 pp at n = 1052, tau = 8{,}89.</p>'
           '<p>Pair 0{,}1072 + 0{,}0636 = 0{,}1708; rho_1 and M10 are labels.</p></section>'
-          '<figure id="f"><svg><text>[\u22120,18; +0,51]</text></svg></figure>'
+          '<figure id="f"><svg><text>[\u22120,18; +0,51]</text><text>\u22122</text></svg></figure>'
           '<script>var x = 99;</script></body>')
     data = {"d": {"m": 0.168805, "n": 1052, "tau": 8.887350, "ci": [-0.177336, 0.514947], "k": 7}}
     ctx = {p["key"]: p["ctx"] for p in places(ch)}       # as --template writes them
@@ -481,6 +484,7 @@ def selftest():
         ("s1#2.3", A("{#s1#2.1} + {#s1#2.2}")),
         ("f#1.1", F("d", "ci[0]")),
         ("f#1.2", F("d", "ci[1]")),
+        ("f#2.1", L(-2, "structure")),
     ]
     rules = [(k, ctx.get(k, ""), s) for k, s in specs]
     results = []
@@ -495,13 +499,14 @@ def selftest():
         print("  %-4s %-34s expected %s got %s" % ("ok" if ok else "FAIL", name, want, got))
 
     pl = places(ch)
-    ok = [p["key"] for p in pl] == ["s1#1.1", "s1#1.2", "s1#1.3", "s1#2.1", "s1#2.2", "s1#2.3", "f#1.1", "f#1.2"]
+    ok = [p["key"] for p in pl] == ["s1#1.1", "s1#1.2", "s1#1.3", "s1#2.1", "s1#2.2", "s1#2.3", "f#1.1", "f#1.2", "f#2.1"]
     results.append(ok)
     print("  %-4s %-34s %s" % ("ok" if ok else "FAIL", "places: labels, script skipped", show(" ".join(p["key"] + "=" + p["printed"] for p in pl))))
     case("clean", ch, rules, {})
     case("value swapped", ch.replace("8{,}89", "8{,}78"), rules, {"value": 1})
     case("sign lost", ch.replace("\u22120,18", "0,18"), rules, {"place moved": 1, "value": 1})
     case("shown sum broken", ch.replace("0{,}1708", "0{,}1707"), rules, {"value": 1})
+    case("sign opening a unit lost", ch.replace("<text>" + "\u22122</text>", "<text>2</text>"), rules, {"value": 1})
     case("rule missing", ch, rules[:-1], {"no rule": 1})
     case("place gone", ch.replace("[\u22120,18; +0,51]", "[\u22120,18]"), rules, {"place gone": 1})
     case("text before number changed", ch.replace("Pair 0{,}1072", "Sum 0{,}1072"), rules, {"place moved": 3})
