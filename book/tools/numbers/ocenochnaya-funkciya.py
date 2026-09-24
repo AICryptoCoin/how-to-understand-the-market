@@ -1,4 +1,3 @@
-"""numbind manifest for Chapter 8 (ocenochnaya-funkciya)."""
 CHAPTER = "book/ocenochnaya-funkciya.html"
 DATA = {"Z28": "research/Z28/result.json"}
 RULES = [
@@ -89,13 +88,13 @@ RULES = [
     ('s3#19.3', 'Итого 8 + 78 = ', A("{#s3#19.1} + {#s3#19.2}")),  # 86
     ('s3#20.1', 'удшил свою долю попаданий с ', A("{#s3#7.1}")),  # 90
     ('s3#20.2', 'ою долю попаданий с 90 % до ', A("{#s3#19.3}")),  # 86
-    ('s3#21.1', '−', L(30, "structure")),  # 30
-    ('s3#22.1', '−', L(20, "structure")),  # 20
-    ('s3#23.1', '−', L(10, "structure")),  # 10
+    ('s3#21.1', '', L(-30, "structure")),  # −30
+    ('s3#22.1', '', L(-20, "structure")),  # −20
+    ('s3#23.1', '', L(-10, "structure")),  # −10
     ('s3#24.1', '', L(0, "structure")),  # 0
-    ('s3#25.1', '+', L(10, "structure")),  # 10
-    ('s3#26.1', '+', L(20, "structure")),  # 20
-    ('s3#27.1', '+', L(30, "structure")),  # 30
+    ('s3#25.1', '', L(10, "structure")),  # +10
+    ('s3#26.1', '', L(20, "structure")),  # +20
+    ('s3#27.1', '', L(30, "structure")),  # +30
     ('s3#28.1', '', L(0.05, "toy")),  # 0,05
     ('s3#29.1', '', L(0.10, "toy")),  # 0,10
     ('s3#30.1', '', L(0.15, "toy")),  # 0,15
@@ -103,7 +102,7 @@ RULES = [
     ('s3#32.1', '', L(0.20, "toy")),  # 0,20
     ('s3#33.1', '', L(0.15, "toy")),  # 0,15
     ('s3#34.1', '', L(0.10, "toy")),  # 0,10
-    ('s3#35.1', '+', A("-{#s3#21.1} * {#s3#28.1} - {#s3#22.1} * {#s3#29.1} - {#s3#23.1} * {#s3#30.1} + {#s3#24.1} * {#s3#31.1} + {#s3#25.1} * {#s3#32.1} + {#s3#26.1} * {#s3#33.1} + {#s3#27.1} * {#s3#34.1}")),  # 3,00
+    ('s3#35.1', '', A("{#s3#21.1} * {#s3#28.1} + {#s3#22.1} * {#s3#29.1} + {#s3#23.1} * {#s3#30.1} + {#s3#24.1} * {#s3#31.1} + {#s3#25.1} * {#s3#32.1} + {#s3#26.1} * {#s3#33.1} + {#s3#27.1} * {#s3#34.1}")),  # +3,00
     ('s3#36.1', '', L(0, "structure")),  # 0
     ('s3#37.1', '', L(0, "structure")),  # 0
     ('s3#38.1', '', L(0, "structure")),  # 0
@@ -111,14 +110,14 @@ RULES = [
     ('s3#40.1', '', L(0.30, "toy")),  # 0,30
     ('s3#41.1', '', L(0, "structure")),  # 0
     ('s3#42.1', '', L(0, "structure")),  # 0
-    ('s3#43.1', '+', A("{#s3#24.1} * {#s3#39.1} + {#s3#25.1} * {#s3#40.1}")),  # 3,00
-    ('s3#44.1', '−', A("{#s3#21.1}")),  # 30
-    ('s3#45.1', '−', A("{#s3#22.1}")),  # 20
-    ('s3#46.1', '−', A("{#s3#23.1}")),  # 10
+    ('s3#43.1', '', A("{#s3#24.1} * {#s3#39.1} + {#s3#25.1} * {#s3#40.1}")),  # +3,00
+    ('s3#44.1', '', A("{#s3#21.1}")),  # −30
+    ('s3#45.1', '', A("{#s3#22.1}")),  # −20
+    ('s3#46.1', '', A("{#s3#23.1}")),  # −10
     ('s3#47.1', '', A("{#s3#24.1}")),  # 0
-    ('s3#48.1', '+', A("{#s3#25.1}")),  # 10
-    ('s3#49.1', '+', A("{#s3#26.1}")),  # 20
-    ('s3#50.1', '+', A("{#s3#27.1}")),  # 30
+    ('s3#48.1', '', A("{#s3#25.1}")),  # +10
+    ('s3#49.1', '', A("{#s3#26.1}")),  # +20
+    ('s3#50.1', '', A("{#s3#27.1}")),  # +30
     ('s3#51.1', '', A("{#s3#28.1}")),  # 0,05
     ('s3#52.1', '', A("{#s3#29.1}")),  # 0,10
     ('s3#53.1', '', A("{#s3#30.1}")),  # 0,15
@@ -127,14 +126,14 @@ RULES = [
     ('s3#56.1', '', A("{#s3#33.1}")),  # 0,15
     ('s3#57.1', '', A("{#s3#34.1}")),  # 0,10
     ('s3#58.1', '', A("{#s3#51.1} + {#s3#52.1} + {#s3#53.1} + {#s3#54.1} + {#s3#55.1} + {#s3#56.1} + {#s3#57.1}")),  # 1,00
-    ('s3#59.1', '−', A("{#s3#44.1} * {#s3#51.1}")),  # 1,5
-    ('s3#60.1', '−', A("{#s3#45.1} * {#s3#52.1}")),  # 2,0
-    ('s3#61.1', '−', A("{#s3#46.1} * {#s3#53.1}")),  # 1,5
+    ('s3#59.1', '', A("{#s3#44.1} * {#s3#51.1}")),  # −1,5
+    ('s3#60.1', '', A("{#s3#45.1} * {#s3#52.1}")),  # −2,0
+    ('s3#61.1', '', A("{#s3#46.1} * {#s3#53.1}")),  # −1,5
     ('s3#62.1', '', A("{#s3#47.1} * {#s3#54.1}")),  # 0
-    ('s3#63.1', '+', A("{#s3#48.1} * {#s3#55.1}")),  # 2,0
-    ('s3#64.1', '+', A("{#s3#49.1} * {#s3#56.1}")),  # 3,0
-    ('s3#65.1', '+', A("{#s3#50.1} * {#s3#57.1}")),  # 3,0
-    ('s3#66.1', '+', A("-{#s3#59.1} - {#s3#60.1} - {#s3#61.1} + {#s3#62.1} + {#s3#63.1} + {#s3#64.1} + {#s3#65.1}")),  # 3,0
+    ('s3#63.1', '', A("{#s3#48.1} * {#s3#55.1}")),  # +2,0
+    ('s3#64.1', '', A("{#s3#49.1} * {#s3#56.1}")),  # +3,0
+    ('s3#65.1', '', A("{#s3#50.1} * {#s3#57.1}")),  # +3,0
+    ('s3#66.1', '', A("{#s3#59.1} + {#s3#60.1} + {#s3#61.1} + {#s3#62.1} + {#s3#63.1} + {#s3#64.1} + {#s3#65.1}")),  # +3,0
     ('s3#67.1', 'ве, и считать почти нечего: ', A("{#s3#47.1}")),  # 0
     ('s3#67.2', ', и считать почти нечего: 0·', A("{#s3#39.1}")),  # 0,70
     ('s3#67.3', 'тать почти нечего: 0·0,70 + ', A("{#s3#48.1}")),  # 10
@@ -657,9 +656,9 @@ RULES = [
     ('s8#2.5', 'прогноз: 0 · 0 · 0 · 0,70 · ', A("{#s3#40.1}")),  # 0,30
     ('s8#2.6', ': 0 · 0 · 0 · 0,70 · 0,30 · ', A("{#s3#41.1}")),  # 0
     ('s8#2.7', '· 0 · 0 · 0,70 · 0,30 · 0 · ', A("{#s3#42.1}")),  # 0
-    ('s8#2.8', '0,30 · 0 · 0 по корзинам от ', A("-{#s3#21.1}")),  # −30
+    ('s8#2.8', '0,30 · 0 · 0 по корзинам от ', A("{#s3#21.1}")),  # −30
     ('s8#2.9', '0 · 0 по корзинам от −30 до ', A("{#s3#27.1}")),  # +30
-    ('s8#3.1', 'Случилось ', A("-{#s3#22.1}")),  # −20
+    ('s8#3.1', 'Случилось ', A("{#s3#22.1}")),  # −20
     ('s8#3.2', 'о прогноз считал вероятным: ', A("{#s8#2.1}")),  # 0
     ('s8#3.3', 'гноз считал вероятным: 0 + (', A("{#s8#2.2}")),  # 0
     ('s8#3.4', ' считал вероятным: 0 + (0 − ', L(1, "structure")),  # 1
@@ -672,7 +671,7 @@ RULES = [
     ('s8#3.11', '0)² + (0,30)² + 0 + 0 = 1 + ', A("({#s8#3.6})**2")),  # 0,49
     ('s8#3.12', '0,30)² + 0 + 0 = 1 + 0,49 + ', A("({#s8#3.7})**2")),  # 0,09
     ('s8#3.13', '+ 0 + 0 = 1 + 0,49 + 0,09 = ', A("{#s8#3.10} + {#s8#3.11} + {#s8#3.12}")),  # 1,58
-    ('s8#4.1', 'Случилось ', A("-{#s3#23.1}")),  # −10
+    ('s8#4.1', 'Случилось ', A("{#s3#23.1}")),  # −10
     ('s8#4.2', 'рзину, то есть вдвое ближе: ', A("{#s8#2.1}")),  # 0
     ('s8#4.3', 'у, то есть вдвое ближе: 0 + ', A("{#s8#2.2}")),  # 0
     ('s8#4.4', ' есть вдвое ближе: 0 + 0 + (', A("{#s8#2.3}")),  # 0
@@ -687,13 +686,13 @@ RULES = [
     ('s8#5.2', 'орядочены: для неё «−10» и «', A("{#s8#3.1}")),  # −20
     ('s8#6.1', 'ашем примере ниже она равна ', L(24.0, "toy")),  # 24,0
     ('s8#6.2', 'а равна 24,0, а штраф равен ', L(14.90, "toy")),  # 14,90
-    ('s8#7.1', '−', L(30, "structure")),  # 30
-    ('s8#8.1', '−', L(20, "structure")),  # 20
-    ('s8#9.1', '−', L(10, "structure")),  # 10
+    ('s8#7.1', '', L(-30, "structure")),  # −30
+    ('s8#8.1', '', L(-20, "structure")),  # −20
+    ('s8#9.1', '', L(-10, "structure")),  # −10
     ('s8#10.1', '', L(0, "structure")),  # 0
-    ('s8#11.1', '+', L(10, "structure")),  # 10
-    ('s8#12.1', '+', L(20, "structure")),  # 20
-    ('s8#13.1', '+', L(30, "structure")),  # 30
+    ('s8#11.1', '', L(10, "structure")),  # +10
+    ('s8#12.1', '', L(20, "structure")),  # +20
+    ('s8#13.1', '', L(30, "structure")),  # +30
     ('s8#14.1', '', A("{#s3#28.1}")),  # 0,05
     ('s8#15.1', '', A("{#s3#29.1}")),  # 0,10
     ('s8#16.1', '', A("{#s3#30.1}")),  # 0,15
@@ -708,21 +707,21 @@ RULES = [
     ('s8#25.1', '', A("{#s8#24.1} + {#s8#18.1}")),  # 0,75
     ('s8#26.1', '', A("{#s8#25.1} + {#s8#19.1}")),  # 0,90
     ('s8#27.1', '', A("{#s8#26.1} + {#s8#20.1}")),  # 1,00
-    ('s8#28.1', 'Случилось ', A("-{#s3#22.1}")),  # −20
+    ('s8#28.1', 'Случилось ', A("{#s3#22.1}")),  # −20
     ('fig-ocenochnaya-funkciya-4#1.1', '', L(1, "structure")),  # 1
     ('fig-ocenochnaya-funkciya-4#2.1', '', L(0.00, "structure")),  # 0,00
     ('fig-ocenochnaya-funkciya-4#3.1', '', L(0.25, "structure")),  # 0,25
     ('fig-ocenochnaya-funkciya-4#4.1', '', L(0.50, "structure")),  # 0,50
     ('fig-ocenochnaya-funkciya-4#5.1', '', L(0.75, "structure")),  # 0,75
     ('fig-ocenochnaya-funkciya-4#6.1', '', L(1.00, "structure")),  # 1,00
-    ('fig-ocenochnaya-funkciya-4#7.1', 'случившийся исход: ', A("-{#s3#22.1}")),  # −20
-    ('fig-ocenochnaya-funkciya-4#8.1', '−', L(30, "structure")),  # 30
-    ('fig-ocenochnaya-funkciya-4#9.1', '−', L(20, "structure")),  # 20
-    ('fig-ocenochnaya-funkciya-4#10.1', '−', L(10, "structure")),  # 10
+    ('fig-ocenochnaya-funkciya-4#7.1', 'случившийся исход: ', A("{#s3#22.1}")),  # −20
+    ('fig-ocenochnaya-funkciya-4#8.1', '', L(-30, "structure")),  # −30
+    ('fig-ocenochnaya-funkciya-4#9.1', '', L(-20, "structure")),  # −20
+    ('fig-ocenochnaya-funkciya-4#10.1', '', L(-10, "structure")),  # −10
     ('fig-ocenochnaya-funkciya-4#11.1', '', L(0, "structure")),  # 0
-    ('fig-ocenochnaya-funkciya-4#12.1', '+', L(10, "structure")),  # 10
-    ('fig-ocenochnaya-funkciya-4#13.1', '+', L(20, "structure")),  # 20
-    ('fig-ocenochnaya-funkciya-4#14.1', '+', L(30, "structure")),  # 30
+    ('fig-ocenochnaya-funkciya-4#12.1', '', L(10, "structure")),  # +10
+    ('fig-ocenochnaya-funkciya-4#13.1', '', L(20, "structure")),  # +20
+    ('fig-ocenochnaya-funkciya-4#14.1', '', L(30, "structure")),  # +30
     ('fig-ocenochnaya-funkciya-4#15.1', '', A("{#s8#21.1}")),  # 0,05
     ('fig-ocenochnaya-funkciya-4#16.1', '', A("1 - {#s8#22.1}")),  # 0,85
     ('fig-ocenochnaya-funkciya-4#17.1', '', A("1 - {#s8#23.1}")),  # 0,70
@@ -734,13 +733,13 @@ RULES = [
     ('fig-ocenochnaya-funkciya-4#23.1', '', L(0.25, "structure")),  # 0,25
     ('fig-ocenochnaya-funkciya-4#24.1', '', L(0.50, "structure")),  # 0,50
     ('fig-ocenochnaya-funkciya-4#25.1', '', L(0.75, "structure")),  # 0,75
-    ('fig-ocenochnaya-funkciya-4#26.1', '−', L(30, "structure")),  # 30
-    ('fig-ocenochnaya-funkciya-4#27.1', '−', L(20, "structure")),  # 20
-    ('fig-ocenochnaya-funkciya-4#28.1', '−', L(10, "structure")),  # 10
+    ('fig-ocenochnaya-funkciya-4#26.1', '', L(-30, "structure")),  # −30
+    ('fig-ocenochnaya-funkciya-4#27.1', '', L(-20, "structure")),  # −20
+    ('fig-ocenochnaya-funkciya-4#28.1', '', L(-10, "structure")),  # −10
     ('fig-ocenochnaya-funkciya-4#29.1', '', L(0, "structure")),  # 0
-    ('fig-ocenochnaya-funkciya-4#30.1', '+', L(10, "structure")),  # 10
-    ('fig-ocenochnaya-funkciya-4#31.1', '+', L(20, "structure")),  # 20
-    ('fig-ocenochnaya-funkciya-4#32.1', '+', L(30, "structure")),  # 30
+    ('fig-ocenochnaya-funkciya-4#30.1', '', L(10, "structure")),  # +10
+    ('fig-ocenochnaya-funkciya-4#31.1', '', L(20, "structure")),  # +20
+    ('fig-ocenochnaya-funkciya-4#32.1', '', L(30, "structure")),  # +30
     ('fig-ocenochnaya-funkciya-4#33.1', '', A("{#s8#29.1}")),  # 0,025
     ('fig-ocenochnaya-funkciya-4#34.1', '', A("{#s8#29.2}")),  # 7,225
     ('fig-ocenochnaya-funkciya-4#35.1', '', A("{#s8#29.3}")),  # 4,900
@@ -757,52 +756,52 @@ RULES = [
     ('fig-ocenochnaya-funkciya-4#40.7', 'т 7,225 + 4,900 = 12,125 из ', A("{#s8#29.7}")),  # 14,90
     ('fig-ocenochnaya-funkciya-4#41.1', 'Вклад = расхождение² × ', L(10, "structure")),  # 10
     ('fig-ocenochnaya-funkciya-4#42.1', 'от ', L(-40, "structure")),  # −40
-    ('fig-ocenochnaya-funkciya-4#42.2', 'от −40 до ', A("-{#s3#21.1}")),  # −30
+    ('fig-ocenochnaya-funkciya-4#42.2', 'от −40 до ', A("{#s3#21.1}")),  # −30
     ('fig-ocenochnaya-funkciya-4#43.1', '', L(0.00, "structure")),  # 0,00
     ('fig-ocenochnaya-funkciya-4#44.1', '', L(0, "structure")),  # 0
-    ('fig-ocenochnaya-funkciya-4#45.1', '', A("abs({#fig-ocenochnaya-funkciya-4#43.1} - {#fig-ocenochnaya-funkciya-4#44.1})")),  # 0,00
+    ('fig-ocenochnaya-funkciya-4#45.1', '', A("abs({#fig-ocenochnaya-funkciya-4#43.1} - {#fig-ocenochnaya-funkciya-4#44.1})")),  # 0,00 — |…|, модуль разности («расхождение»)
     ('fig-ocenochnaya-funkciya-4#46.1', '', A("({#fig-ocenochnaya-funkciya-4#45.1})**2 * 10")),  # 0,000
-    ('fig-ocenochnaya-funkciya-4#47.1', 'от ', A("-{#s3#21.1}")),  # −30
-    ('fig-ocenochnaya-funkciya-4#47.2', 'от −30 до ', A("-{#s3#22.1}")),  # −20
+    ('fig-ocenochnaya-funkciya-4#47.1', 'от ', A("{#s3#21.1}")),  # −30
+    ('fig-ocenochnaya-funkciya-4#47.2', 'от −30 до ', A("{#s3#22.1}")),  # −20
     ('fig-ocenochnaya-funkciya-4#48.1', '', A("{#s8#21.1}")),  # 0,05
     ('fig-ocenochnaya-funkciya-4#49.1', '', L(0, "structure")),  # 0
-    ('fig-ocenochnaya-funkciya-4#50.1', '', A("abs({#fig-ocenochnaya-funkciya-4#48.1} - {#fig-ocenochnaya-funkciya-4#49.1})")),  # 0,05
+    ('fig-ocenochnaya-funkciya-4#50.1', '', A("abs({#fig-ocenochnaya-funkciya-4#48.1} - {#fig-ocenochnaya-funkciya-4#49.1})")),  # 0,05 — |…|, модуль разности («расхождение»)
     ('fig-ocenochnaya-funkciya-4#51.1', '', A("{#s8#29.1}")),  # 0,025
-    ('fig-ocenochnaya-funkciya-4#52.1', 'от ', A("-{#s3#22.1}")),  # −20
-    ('fig-ocenochnaya-funkciya-4#52.2', 'от −20 до ', A("-{#s3#23.1}")),  # −10
+    ('fig-ocenochnaya-funkciya-4#52.1', 'от ', A("{#s3#22.1}")),  # −20
+    ('fig-ocenochnaya-funkciya-4#52.2', 'от −20 до ', A("{#s3#23.1}")),  # −10
     ('fig-ocenochnaya-funkciya-4#53.1', '', A("{#s8#22.1}")),  # 0,15
     ('fig-ocenochnaya-funkciya-4#54.1', '', L(1, "structure")),  # 1
-    ('fig-ocenochnaya-funkciya-4#55.1', '', A("abs({#fig-ocenochnaya-funkciya-4#53.1} - {#fig-ocenochnaya-funkciya-4#54.1})")),  # 0,85
+    ('fig-ocenochnaya-funkciya-4#55.1', '', A("abs({#fig-ocenochnaya-funkciya-4#53.1} - {#fig-ocenochnaya-funkciya-4#54.1})")),  # 0,85 — |…|, модуль разности («расхождение»)
     ('fig-ocenochnaya-funkciya-4#56.1', '', A("{#s8#29.2}")),  # 7,225
-    ('fig-ocenochnaya-funkciya-4#57.1', 'от ', A("-{#s3#23.1}")),  # −10
+    ('fig-ocenochnaya-funkciya-4#57.1', 'от ', A("{#s3#23.1}")),  # −10
     ('fig-ocenochnaya-funkciya-4#57.2', 'от −10 до ', A("{#s3#24.1}")),  # 0
     ('fig-ocenochnaya-funkciya-4#58.1', '', A("{#s8#23.1}")),  # 0,30
     ('fig-ocenochnaya-funkciya-4#59.1', '', L(1, "structure")),  # 1
-    ('fig-ocenochnaya-funkciya-4#60.1', '', A("abs({#fig-ocenochnaya-funkciya-4#58.1} - {#fig-ocenochnaya-funkciya-4#59.1})")),  # 0,70
+    ('fig-ocenochnaya-funkciya-4#60.1', '', A("abs({#fig-ocenochnaya-funkciya-4#58.1} - {#fig-ocenochnaya-funkciya-4#59.1})")),  # 0,70 — |…|, модуль разности («расхождение»)
     ('fig-ocenochnaya-funkciya-4#61.1', '', A("{#s8#29.3}")),  # 4,900
     ('fig-ocenochnaya-funkciya-4#62.1', 'от ', A("{#s3#24.1}")),  # 0
     ('fig-ocenochnaya-funkciya-4#62.2', 'от 0 до ', A("{#s3#25.1}")),  # +10
     ('fig-ocenochnaya-funkciya-4#63.1', '', A("{#s8#24.1}")),  # 0,55
     ('fig-ocenochnaya-funkciya-4#64.1', '', L(1, "structure")),  # 1
-    ('fig-ocenochnaya-funkciya-4#65.1', '', A("abs({#fig-ocenochnaya-funkciya-4#63.1} - {#fig-ocenochnaya-funkciya-4#64.1})")),  # 0,45
+    ('fig-ocenochnaya-funkciya-4#65.1', '', A("abs({#fig-ocenochnaya-funkciya-4#63.1} - {#fig-ocenochnaya-funkciya-4#64.1})")),  # 0,45 — |…|, модуль разности («расхождение»)
     ('fig-ocenochnaya-funkciya-4#66.1', '', A("{#s8#29.4}")),  # 2,025
     ('fig-ocenochnaya-funkciya-4#67.1', 'от ', A("{#s3#25.1}")),  # +10
     ('fig-ocenochnaya-funkciya-4#67.2', 'от +10 до ', A("{#s3#26.1}")),  # +20
     ('fig-ocenochnaya-funkciya-4#68.1', '', A("{#s8#25.1}")),  # 0,75
     ('fig-ocenochnaya-funkciya-4#69.1', '', L(1, "structure")),  # 1
-    ('fig-ocenochnaya-funkciya-4#70.1', '', A("abs({#fig-ocenochnaya-funkciya-4#68.1} - {#fig-ocenochnaya-funkciya-4#69.1})")),  # 0,25
+    ('fig-ocenochnaya-funkciya-4#70.1', '', A("abs({#fig-ocenochnaya-funkciya-4#68.1} - {#fig-ocenochnaya-funkciya-4#69.1})")),  # 0,25 — |…|, модуль разности («расхождение»)
     ('fig-ocenochnaya-funkciya-4#71.1', '', A("{#s8#29.5}")),  # 0,625
     ('fig-ocenochnaya-funkciya-4#72.1', 'от ', A("{#s3#26.1}")),  # +20
     ('fig-ocenochnaya-funkciya-4#72.2', 'от +20 до ', A("{#s3#27.1}")),  # +30
     ('fig-ocenochnaya-funkciya-4#73.1', '', A("{#s8#26.1}")),  # 0,90
     ('fig-ocenochnaya-funkciya-4#74.1', '', L(1, "structure")),  # 1
-    ('fig-ocenochnaya-funkciya-4#75.1', '', A("abs({#fig-ocenochnaya-funkciya-4#73.1} - {#fig-ocenochnaya-funkciya-4#74.1})")),  # 0,10
+    ('fig-ocenochnaya-funkciya-4#75.1', '', A("abs({#fig-ocenochnaya-funkciya-4#73.1} - {#fig-ocenochnaya-funkciya-4#74.1})")),  # 0,10 — |…|, модуль разности («расхождение»)
     ('fig-ocenochnaya-funkciya-4#76.1', '', A("{#s8#29.6}")),  # 0,100
     ('fig-ocenochnaya-funkciya-4#77.1', 'от ', A("{#s3#27.1}")),  # +30
     ('fig-ocenochnaya-funkciya-4#77.2', 'от +30 до ', L(40, "structure")),  # +40
     ('fig-ocenochnaya-funkciya-4#78.1', '', A("{#s8#27.1}")),  # 1,00
     ('fig-ocenochnaya-funkciya-4#79.1', '', L(1, "structure")),  # 1
-    ('fig-ocenochnaya-funkciya-4#80.1', '', A("abs({#fig-ocenochnaya-funkciya-4#78.1} - {#fig-ocenochnaya-funkciya-4#79.1})")),  # 0,00
+    ('fig-ocenochnaya-funkciya-4#80.1', '', A("abs({#fig-ocenochnaya-funkciya-4#78.1} - {#fig-ocenochnaya-funkciya-4#79.1})")),  # 0,00 — |…|, модуль разности («расхождение»)
     ('fig-ocenochnaya-funkciya-4#81.1', '', A("({#fig-ocenochnaya-funkciya-4#80.1})**2 * 10")),  # 0,000
     ('fig-ocenochnaya-funkciya-4#82.1', '', A("{#fig-ocenochnaya-funkciya-4#45.1} + {#fig-ocenochnaya-funkciya-4#50.1} + {#fig-ocenochnaya-funkciya-4#55.1} + {#fig-ocenochnaya-funkciya-4#60.1} + {#fig-ocenochnaya-funkciya-4#65.1} + {#fig-ocenochnaya-funkciya-4#70.1} + {#fig-ocenochnaya-funkciya-4#75.1} + {#fig-ocenochnaya-funkciya-4#80.1}")),  # 2,40
     ('fig-ocenochnaya-funkciya-4#83.1', '', A("{#fig-ocenochnaya-funkciya-4#46.1} + {#fig-ocenochnaya-funkciya-4#51.1} + {#fig-ocenochnaya-funkciya-4#56.1} + {#fig-ocenochnaya-funkciya-4#61.1} + {#fig-ocenochnaya-funkciya-4#66.1} + {#fig-ocenochnaya-funkciya-4#71.1} + {#fig-ocenochnaya-funkciya-4#76.1} + {#fig-ocenochnaya-funkciya-4#81.1}")),  # 14,900
@@ -814,13 +813,13 @@ RULES = [
     ('s8#29.6', '5 + 4,900 + 2,025 + 0,625 + ', A("({#s8#26.1} - 1)**2 * 10")),  # 0,100
     ('s8#29.7', '0 + 2,025 + 0,625 + 0,100 = ', A("{#s8#29.1} + {#s8#29.2} + {#s8#29.3} + {#s8#29.4} + {#s8#29.5} + {#s8#29.6}")),  # 14,90
     ('s8#30.1', ' проще: ноль до нуля, потом ', A("{#s3#39.1}")),  # 0,70
-    ('s8#31.1', 'от ', A("-{#s3#22.1}")),  # −20
-    ('s8#31.2', 'от −20 до ', A("-{#s3#23.1}")),  # −10
+    ('s8#31.1', 'от ', A("{#s3#22.1}")),  # −20
+    ('s8#31.2', 'от −20 до ', A("{#s3#23.1}")),  # −10
     ('s8#31.3', 'от −20 до −10: (', L(0, "structure")),  # 0
     ('s8#31.4', 'от −20 до −10: (0 − ', L(1, "structure")),  # 1
     ('s8#31.5', 'от −20 до −10: (0 − 1)² · ', L(10, "structure")),  # 10
     ('s8#31.6', '−20 до −10: (0 − 1)² · 10 = ', A("({#s8#31.3} - {#s8#31.4})**2 * {#s8#31.5}")),  # 10,000
-    ('s8#32.1', 'от ', A("-{#s3#23.1}")),  # −10
+    ('s8#32.1', 'от ', A("{#s3#23.1}")),  # −10
     ('s8#32.2', 'от −10 до ', A("{#s3#24.1}")),  # 0
     ('s8#32.3', 'от −10 до 0: (', L(0, "structure")),  # 0
     ('s8#32.4', 'от −10 до 0: (0 − ', L(1, "structure")),  # 1
@@ -837,8 +836,8 @@ RULES = [
     ('s8#34.3', 'ил 14,90, узкий уверенный — ', A("{#s8#34.1}")),  # 20,90
     ('s8#35.1', 'рогноз говорит «будет ровно ', L(0, "structure")),  # 0
     ('s8#35.2', 'а ступенька, только в точке ', A("{#s8#35.1}")),  # 0
-    ('s8#35.3', 'умя ступеньками, в нуле и в ', A("-{#s3#22.1}")),  # −20
-    ('s8#35.4', 'тных пунктов; площадь равна ', A("abs({#s8#35.2} - {#s8#35.3})")),  # 20,00
+    ('s8#35.3', 'умя ступеньками, в нуле и в ', A("{#s3#22.1}")),  # −20
+    ('s8#35.4', 'тных пунктов; площадь равна ', A("abs({#s8#35.2} - {#s8#35.3})")),  # 20,00 — |…|, модуль разности
     ('s8#35.5', 'ощадь равна 20,00, то есть |', A("{#s8#35.2}")),  # 0
     ('s8#35.6', ' равна 20,00, то есть |0 − (', A("{#s8#35.3}")),  # −20
     ('s8#35.7', '0,00, то есть |0 − (−20)| = ', A("{#s8#35.4}")),  # 20
@@ -850,20 +849,20 @@ RULES = [
     ('s8#38.2', 'наборе: сценариев три, −10, ', L(0, "toy")),  # 0
     ('s8#38.3', 'ре: сценариев три, −10, 0 и ', L(10, "toy")),  # +10
     ('s8#38.4', 'весом одна треть; случилось ', L(-20, "toy")),  # −20
-    ('s8#39.1', 'днее расстояние до исхода: (', A("abs({#s8#38.1} - {#s8#38.4})")),  # 10
-    ('s8#39.2', 'расстояние до исхода: (10 + ', A("abs({#s8#38.2} - {#s8#38.4})")),  # 20
-    ('s8#39.3', 'ояние до исхода: (10 + 20 + ', A("abs({#s8#38.3} - {#s8#38.4})")),  # 30
+    ('s8#39.1', 'днее расстояние до исхода: (', A("abs({#s8#38.1} - {#s8#38.4})")),  # 10 — «расстояние», модуль разности (|…|)
+    ('s8#39.2', 'расстояние до исхода: (10 + ', A("abs({#s8#38.2} - {#s8#38.4})")),  # 20 — «расстояние», модуль разности (|…|)
+    ('s8#39.3', 'ояние до исхода: (10 + 20 + ', A("abs({#s8#38.3} - {#s8#38.4})")),  # 30 — «расстояние», модуль разности (|…|)
     ('s8#39.4', 'до исхода: (10 + 20 + 30) / ', L(3, "structure")),  # 3
     ('s8#39.5', 'схода: (10 + 20 + 30) / 3 = ', A("({#s8#39.1} + {#s8#39.2} + {#s8#39.3}) / {#s8#39.4}")),  # 20
-    ('s8#39.6', 'ями, по всем девяти парам: (', A("abs({#s8#38.1} - {#s8#38.1})")),  # 0
-    ('s8#39.7', ' по всем девяти парам: (0 + ', A("abs({#s8#38.1} - {#s8#38.2})")),  # 10
-    ('s8#39.8', 'сем девяти парам: (0 + 10 + ', A("abs({#s8#38.1} - {#s8#38.3})")),  # 20
-    ('s8#39.9', 'евяти парам: (0 + 10 + 20 + ', A("abs({#s8#38.2} - {#s8#38.1})")),  # 10
-    ('s8#39.10', ' парам: (0 + 10 + 20 + 10 + ', A("abs({#s8#38.2} - {#s8#38.2})")),  # 0
-    ('s8#39.11', 'ам: (0 + 10 + 20 + 10 + 0 + ', A("abs({#s8#38.2} - {#s8#38.3})")),  # 10
-    ('s8#39.12', '0 + 10 + 20 + 10 + 0 + 10 + ', A("abs({#s8#38.3} - {#s8#38.1})")),  # 20
-    ('s8#39.13', '0 + 20 + 10 + 0 + 10 + 20 + ', A("abs({#s8#38.3} - {#s8#38.2})")),  # 10
-    ('s8#39.14', '0 + 10 + 0 + 10 + 20 + 10 + ', A("abs({#s8#38.3} - {#s8#38.3})")),  # 0
+    ('s8#39.6', 'ями, по всем девяти парам: (', A("abs({#s8#38.1} - {#s8#38.1})")),  # 0 — «расстояние», попарное расстояние (|…|)
+    ('s8#39.7', ' по всем девяти парам: (0 + ', A("abs({#s8#38.1} - {#s8#38.2})")),  # 10 — «расстояние», попарное расстояние (|…|)
+    ('s8#39.8', 'сем девяти парам: (0 + 10 + ', A("abs({#s8#38.1} - {#s8#38.3})")),  # 20 — «расстояние», попарное расстояние (|…|)
+    ('s8#39.9', 'евяти парам: (0 + 10 + 20 + ', A("abs({#s8#38.2} - {#s8#38.1})")),  # 10 — «расстояние», попарное расстояние (|…|)
+    ('s8#39.10', ' парам: (0 + 10 + 20 + 10 + ', A("abs({#s8#38.2} - {#s8#38.2})")),  # 0 — «расстояние», попарное расстояние (|…|)
+    ('s8#39.11', 'ам: (0 + 10 + 20 + 10 + 0 + ', A("abs({#s8#38.2} - {#s8#38.3})")),  # 10 — «расстояние», попарное расстояние (|…|)
+    ('s8#39.12', '0 + 10 + 20 + 10 + 0 + 10 + ', A("abs({#s8#38.3} - {#s8#38.1})")),  # 20 — «расстояние», попарное расстояние (|…|)
+    ('s8#39.13', '0 + 20 + 10 + 0 + 10 + 20 + ', A("abs({#s8#38.3} - {#s8#38.2})")),  # 10 — «расстояние», попарное расстояние (|…|)
+    ('s8#39.14', '0 + 10 + 0 + 10 + 20 + 10 + ', A("abs({#s8#38.3} - {#s8#38.3})")),  # 0 — «расстояние», попарное расстояние (|…|)
     ('s8#39.15', '0 + 0 + 10 + 20 + 10 + 0) / ', L(9, "structure")),  # 9
     ('s8#39.16', '0 + 10 + 20 + 10 + 0) / 9 = ', A("{#s8#39.6} + {#s8#39.7} + {#s8#39.8} + {#s8#39.9} + {#s8#39.10} + {#s8#39.11} + {#s8#39.12} + {#s8#39.13} + {#s8#39.14}")),  # 80
     ('s8#39.17', ' 10 + 20 + 10 + 0) / 9 = 80/', A("{#s8#39.15}")),  # 9
@@ -907,7 +906,7 @@ RULES = [
     ('s8#43.9', '0: (2/3 − 1)² · 10 = 10/9 ≈ ', A("{#s8#43.7} / {#s8#43.8}")),  # 1,1111
     ('s8#44.1', 'Сумма — ', A("{#s8#39.25}")),  # 15,5556
     ('s8#45.1', 'сто шести — получится ровно ', A("{#s8#29.7}")),  # 14,90
-    ('s9#1.1', ' исходе. Пусть случилось не ', A("-{#s3#22.1}")),  # −20
+    ('s9#1.1', ' исходе. Пусть случилось не ', A("{#s3#22.1}")),  # −20
     ('s9#1.2', '. Пусть случилось не −20, а ', A("{#s3#24.1}")),  # 0
     ('s9#2.1', 'есть вкладов, как и раньше: ', A("({#s8#21.1})**2 * 10")),  # 0,025
     ('s9#2.2', 'адов, как и раньше: 0,025 + ', A("({#s8#22.1})**2 * 10")),  # 0,225
@@ -925,16 +924,16 @@ RULES = [
     ('fig-ocenochnaya-funkciya-5#3.1', '', L(0.50, "structure")),  # 0,50
     ('fig-ocenochnaya-funkciya-5#4.1', '', L(0.75, "structure")),  # 0,75
     ('fig-ocenochnaya-funkciya-5#5.1', '', L(1.00, "structure")),  # 1,00
-    ('fig-ocenochnaya-funkciya-5#6.1', '−', L(30, "structure")),  # 30
-    ('fig-ocenochnaya-funkciya-5#7.1', '−', L(20, "structure")),  # 20
-    ('fig-ocenochnaya-funkciya-5#8.1', '−', L(10, "structure")),  # 10
+    ('fig-ocenochnaya-funkciya-5#6.1', '', L(-30, "structure")),  # −30
+    ('fig-ocenochnaya-funkciya-5#7.1', '', L(-20, "structure")),  # −20
+    ('fig-ocenochnaya-funkciya-5#8.1', '', L(-10, "structure")),  # −10
     ('fig-ocenochnaya-funkciya-5#9.1', '', L(0, "structure")),  # 0
-    ('fig-ocenochnaya-funkciya-5#10.1', '+', L(10, "structure")),  # 10
-    ('fig-ocenochnaya-funkciya-5#11.1', '+', L(20, "structure")),  # 20
-    ('fig-ocenochnaya-funkciya-5#12.1', '+', L(30, "structure")),  # 30
-    ('fig-ocenochnaya-funkciya-5#13.1', 'исход ', A("-{#s3#22.1}")),  # −20
+    ('fig-ocenochnaya-funkciya-5#10.1', '', L(10, "structure")),  # +10
+    ('fig-ocenochnaya-funkciya-5#11.1', '', L(20, "structure")),  # +20
+    ('fig-ocenochnaya-funkciya-5#12.1', '', L(30, "structure")),  # +30
+    ('fig-ocenochnaya-funkciya-5#13.1', 'исход ', A("{#s3#22.1}")),  # −20
     ('fig-ocenochnaya-funkciya-5#14.1', 'исход ', A("{#s3#24.1}")),  # 0
-    ('fig-ocenochnaya-funkciya-5#15.1', 'Штраф, если случилось ', A("-{#s3#22.1}")),  # −20
+    ('fig-ocenochnaya-funkciya-5#15.1', 'Штраф, если случилось ', A("{#s3#22.1}")),  # −20
     ('fig-ocenochnaya-funkciya-5#16.1', 'Штраф, если случилось ', A("{#s3#24.1}")),  # 0
     ('fig-ocenochnaya-funkciya-5#17.1', '', L(0, "structure")),  # 0
     ('fig-ocenochnaya-funkciya-5#18.1', '', L(10, "structure")),  # 10
@@ -945,17 +944,17 @@ RULES = [
     ('fig-ocenochnaya-funkciya-5#23.1', '', A("{#s9#3.4}")),  # 0,90
     ('fig-ocenochnaya-funkciya-5#24.1', 'Рис. ', L(8, "structure")),  # 8
     ('fig-ocenochnaya-funkciya-5#25.1', 'CRPS точечного «будет ', A("{#s3#24.1}")),  # 0
-    ('fig-ocenochnaya-funkciya-5#26.1', '−', L(30, "structure")),  # 30
+    ('fig-ocenochnaya-funkciya-5#26.1', '', L(-30, "structure")),  # −30
     ('fig-ocenochnaya-funkciya-5#27.1', '', A("{#s3#28.1}")),  # 0,05
     ('fig-ocenochnaya-funkciya-5#28.1', '', L(23.90, "toy")),  # 23,90
     ('fig-ocenochnaya-funkciya-5#29.1', '', L(30.90, "toy")),  # 30,90
     ('fig-ocenochnaya-funkciya-5#30.1', '', L(30.00, "toy")),  # 30,00
-    ('fig-ocenochnaya-funkciya-5#31.1', '−', L(20, "structure")),  # 20
+    ('fig-ocenochnaya-funkciya-5#31.1', '', L(-20, "structure")),  # −20
     ('fig-ocenochnaya-funkciya-5#32.1', '', A("{#s3#29.1}")),  # 0,10
     ('fig-ocenochnaya-funkciya-5#33.1', '', A("{#s8#29.7}")),  # 14,90
     ('fig-ocenochnaya-funkciya-5#34.1', '', A("{#s8#34.1}")),  # 20,90
     ('fig-ocenochnaya-funkciya-5#35.1', '', A("{#s8#35.4}")),  # 20,00
-    ('fig-ocenochnaya-funkciya-5#36.1', '−', L(10, "structure")),  # 10
+    ('fig-ocenochnaya-funkciya-5#36.1', '', L(-10, "structure")),  # −10
     ('fig-ocenochnaya-funkciya-5#37.1', '', A("{#s3#30.1}")),  # 0,15
     ('fig-ocenochnaya-funkciya-5#38.1', '', L(7.90, "toy")),  # 7,90
     ('fig-ocenochnaya-funkciya-5#39.1', '', L(10.90, "toy")),  # 10,90
@@ -965,17 +964,17 @@ RULES = [
     ('fig-ocenochnaya-funkciya-5#43.1', '', A("{#s9#2.7}")),  # 3,90
     ('fig-ocenochnaya-funkciya-5#44.1', '', A("{#s9#3.4}")),  # 0,90
     ('fig-ocenochnaya-funkciya-5#45.1', '', L(0.00, "structure")),  # 0,00
-    ('fig-ocenochnaya-funkciya-5#46.1', '+', L(10, "structure")),  # 10
+    ('fig-ocenochnaya-funkciya-5#46.1', '', L(10, "structure")),  # +10
     ('fig-ocenochnaya-funkciya-5#47.1', '', A("{#s3#32.1}")),  # 0,20
     ('fig-ocenochnaya-funkciya-5#48.1', '', L(4.90, "toy")),  # 4,90
     ('fig-ocenochnaya-funkciya-5#49.1', '', L(4.90, "toy")),  # 4,90
     ('fig-ocenochnaya-funkciya-5#50.1', '', L(10.00, "toy")),  # 10,00
-    ('fig-ocenochnaya-funkciya-5#51.1', '+', L(20, "structure")),  # 20
+    ('fig-ocenochnaya-funkciya-5#51.1', '', L(20, "structure")),  # +20
     ('fig-ocenochnaya-funkciya-5#52.1', '', A("{#s3#33.1}")),  # 0,15
     ('fig-ocenochnaya-funkciya-5#53.1', '', L(9.90, "toy")),  # 9,90
     ('fig-ocenochnaya-funkciya-5#54.1', '', L(14.90, "toy")),  # 14,90
     ('fig-ocenochnaya-funkciya-5#55.1', '', L(20.00, "toy")),  # 20,00
-    ('fig-ocenochnaya-funkciya-5#56.1', '+', L(30, "structure")),  # 30
+    ('fig-ocenochnaya-funkciya-5#56.1', '', L(30, "structure")),  # +30
     ('fig-ocenochnaya-funkciya-5#57.1', '', A("{#s3#34.1}")),  # 0,10
     ('fig-ocenochnaya-funkciya-5#58.1', '', L(17.90, "toy")),  # 17,90
     ('fig-ocenochnaya-funkciya-5#59.1', '', L(24.90, "toy")),  # 24,90
@@ -987,7 +986,7 @@ RULES = [
     ('s9#4.2', 'окий получает 9,10, узкий — ', L(11.20, "toy")),  # 11,20
     ('s9#5.1', 'чечный прогноз «будет ровно ', A("{#s3#24.1}")),  # 0
     ('s9#5.2', '0» получает ожидаемый штраф ', L(13.00, "toy")),  # 13,00
-    ('s9#6.1', 'дения в квадрат. При исходе ', A("-{#s3#22.1}")),  # −20
+    ('s9#6.1', 'дения в квадрат. При исходе ', A("{#s3#22.1}")),  # −20
     ('s9#6.2', 'е −20 линейка даёт широкому ', A("{#s8#6.1}")),  # 24,0
     ('s9#6.3', 'речалось), а узкому — всего ', L(23.0, "toy")),  # 23,0
     ('s9#6.4', 'о широкому прогнозу выходит ', L(18.20, "toy")),  # 18,20
@@ -1021,14 +1020,14 @@ RULES = [
     ('s10#20.1', 'ноза стандартное отклонение ', A("{#s10#9.1}")),  # 5,02
     ('s10#20.2', 'отклонение 5,02, у разниц — ', A("{#s10#18.1}")),  # 0,35
     ('fig-ocenochnaya-funkciya-6#1.1', 'синтетический пример: ', L(36, "structure")),  # 36
-    ('fig-ocenochnaya-funkciya-6#2.1', '+', L(4, "structure")),  # 4
-    ('fig-ocenochnaya-funkciya-6#3.1', '+', L(3, "structure")),  # 3
-    ('fig-ocenochnaya-funkciya-6#4.1', '+', L(2, "structure")),  # 2
-    ('fig-ocenochnaya-funkciya-6#5.1', '+', L(1, "structure")),  # 1
+    ('fig-ocenochnaya-funkciya-6#2.1', '', L(4, "structure")),  # +4
+    ('fig-ocenochnaya-funkciya-6#3.1', '', L(3, "structure")),  # +3
+    ('fig-ocenochnaya-funkciya-6#4.1', '', L(2, "structure")),  # +2
+    ('fig-ocenochnaya-funkciya-6#5.1', '', L(1, "structure")),  # +1
     ('fig-ocenochnaya-funkciya-6#6.1', '', L(0, "structure")),  # 0
-    ('fig-ocenochnaya-funkciya-6#7.1', '−', L(1, "structure")),  # 1
-    ('fig-ocenochnaya-funkciya-6#8.1', '−', L(2, "structure")),  # 2
-    ('fig-ocenochnaya-funkciya-6#9.1', '−', L(3, "structure")),  # 3
+    ('fig-ocenochnaya-funkciya-6#7.1', '', L(-1, "structure")),  # −1
+    ('fig-ocenochnaya-funkciya-6#8.1', '', L(-2, "structure")),  # −2
+    ('fig-ocenochnaya-funkciya-6#9.1', '', L(-3, "structure")),  # −3
     ('fig-ocenochnaya-funkciya-6#10.1', '', L(0, "structure")),  # 0
     ('fig-ocenochnaya-funkciya-6#11.1', '', L(6, "structure")),  # 6
     ('fig-ocenochnaya-funkciya-6#12.1', '', L(12, "structure")),  # 12
@@ -1036,123 +1035,123 @@ RULES = [
     ('fig-ocenochnaya-funkciya-6#14.1', '', L(24, "structure")),  # 24
     ('fig-ocenochnaya-funkciya-6#15.1', '', L(30, "structure")),  # 30
     ('fig-ocenochnaya-funkciya-6#16.1', '', L(36, "structure")),  # 36
-    ('fig-ocenochnaya-funkciya-6#17.1', 'оба минимума: ', A("-{#fig-ocenochnaya-funkciya-6#26.1}")),  # −2,5
+    ('fig-ocenochnaya-funkciya-6#17.1', 'оба минимума: ', A("{#fig-ocenochnaya-funkciya-6#26.1}")),  # −2,5
     ('fig-ocenochnaya-funkciya-6#18.1', 'итог: ', A("{#fig-ocenochnaya-funkciya-6#128.1}")),  # +2,7
     ('fig-ocenochnaya-funkciya-6#19.1', 'среднего поштучной разницы [', A("{#s10#24.4}")),  # −0,33
     ('fig-ocenochnaya-funkciya-6#19.2', 'о поштучной разницы [−0,33; ', A("{#s10#24.5}")),  # +0,48
     ('fig-ocenochnaya-funkciya-6#20.1', 'Рис. ', L(8, "structure")),  # 8
-    ('fig-ocenochnaya-funkciya-6#20.2', 'нуля и дважды опускается до ', A("{#fig-ocenochnaya-funkciya-6#17.1}")),  # −2,5
+    ('fig-ocenochnaya-funkciya-6#20.2', 'нуля и дважды опускается до ', A("{#fig-ocenochnaya-funkciya-6#26.1}")),  # −2,5
     ('fig-ocenochnaya-funkciya-6#21.1', '', L(1, "structure")),  # 1
-    ('fig-ocenochnaya-funkciya-6#22.1', '+', L(0.4, "toy")),  # 0,4
-    ('fig-ocenochnaya-funkciya-6#23.1', '+', A("{#fig-ocenochnaya-funkciya-6#22.1}")),  # 0,4
+    ('fig-ocenochnaya-funkciya-6#22.1', '', L(0.4, "toy")),  # +0,4
+    ('fig-ocenochnaya-funkciya-6#23.1', '', A("{#fig-ocenochnaya-funkciya-6#22.1}")),  # +0,4
     ('fig-ocenochnaya-funkciya-6#24.1', '', L(19, "structure")),  # 19
-    ('fig-ocenochnaya-funkciya-6#25.1', '−', L(0.7, "toy")),  # 0,7
-    ('fig-ocenochnaya-funkciya-6#26.1', '−', A("{#fig-ocenochnaya-funkciya-6#125.1} + {#fig-ocenochnaya-funkciya-6#25.1}")),  # 2,5
+    ('fig-ocenochnaya-funkciya-6#25.1', '', L(-0.7, "toy")),  # −0,7
+    ('fig-ocenochnaya-funkciya-6#26.1', '', A("{#fig-ocenochnaya-funkciya-6#125.1} + {#fig-ocenochnaya-funkciya-6#25.1}")),  # −2,5
     ('fig-ocenochnaya-funkciya-6#27.1', '', L(2, "structure")),  # 2
-    ('fig-ocenochnaya-funkciya-6#28.1', '−', L(0.6, "toy")),  # 0,6
-    ('fig-ocenochnaya-funkciya-6#29.1', '−', A("abs({#fig-ocenochnaya-funkciya-6#23.1} - {#fig-ocenochnaya-funkciya-6#28.1})")),  # 0,2
+    ('fig-ocenochnaya-funkciya-6#28.1', '', L(-0.6, "toy")),  # −0,6
+    ('fig-ocenochnaya-funkciya-6#29.1', '', A("{#fig-ocenochnaya-funkciya-6#23.1} + {#fig-ocenochnaya-funkciya-6#28.1}")),  # −0,2
     ('fig-ocenochnaya-funkciya-6#30.1', '', L(20, "structure")),  # 20
-    ('fig-ocenochnaya-funkciya-6#31.1', '+', L(1.9, "toy")),  # 1,9
-    ('fig-ocenochnaya-funkciya-6#32.1', '−', A("{#fig-ocenochnaya-funkciya-6#26.1} - {#fig-ocenochnaya-funkciya-6#31.1}")),  # 0,6
+    ('fig-ocenochnaya-funkciya-6#31.1', '', L(1.9, "toy")),  # +1,9
+    ('fig-ocenochnaya-funkciya-6#32.1', '', A("{#fig-ocenochnaya-funkciya-6#26.1} + {#fig-ocenochnaya-funkciya-6#31.1}")),  # −0,6
     ('fig-ocenochnaya-funkciya-6#33.1', '', L(3, "structure")),  # 3
-    ('fig-ocenochnaya-funkciya-6#34.1', '+', L(1.1, "toy")),  # 1,1
-    ('fig-ocenochnaya-funkciya-6#35.1', '+', A("{#fig-ocenochnaya-funkciya-6#34.1} - {#fig-ocenochnaya-funkciya-6#29.1}")),  # 0,9
+    ('fig-ocenochnaya-funkciya-6#34.1', '', L(1.1, "toy")),  # +1,1
+    ('fig-ocenochnaya-funkciya-6#35.1', '', A("{#fig-ocenochnaya-funkciya-6#29.1} + {#fig-ocenochnaya-funkciya-6#34.1}")),  # +0,9
     ('fig-ocenochnaya-funkciya-6#36.1', '', L(21, "structure")),  # 21
-    ('fig-ocenochnaya-funkciya-6#37.1', '−', L(0.3, "toy")),  # 0,3
-    ('fig-ocenochnaya-funkciya-6#38.1', '−', A("{#fig-ocenochnaya-funkciya-6#32.1} + {#fig-ocenochnaya-funkciya-6#37.1}")),  # 0,9
+    ('fig-ocenochnaya-funkciya-6#37.1', '', L(-0.3, "toy")),  # −0,3
+    ('fig-ocenochnaya-funkciya-6#38.1', '', A("{#fig-ocenochnaya-funkciya-6#32.1} + {#fig-ocenochnaya-funkciya-6#37.1}")),  # −0,9
     ('fig-ocenochnaya-funkciya-6#39.1', '', L(4, "structure")),  # 4
-    ('fig-ocenochnaya-funkciya-6#40.1', '−', L(0.2, "toy")),  # 0,2
-    ('fig-ocenochnaya-funkciya-6#41.1', '+', A("{#fig-ocenochnaya-funkciya-6#35.1} - {#fig-ocenochnaya-funkciya-6#40.1}")),  # 0,7
+    ('fig-ocenochnaya-funkciya-6#40.1', '', L(-0.2, "toy")),  # −0,2
+    ('fig-ocenochnaya-funkciya-6#41.1', '', A("{#fig-ocenochnaya-funkciya-6#35.1} + {#fig-ocenochnaya-funkciya-6#40.1}")),  # +0,7
     ('fig-ocenochnaya-funkciya-6#42.1', '', L(22, "structure")),  # 22
-    ('fig-ocenochnaya-funkciya-6#43.1', '−', L(1.6, "toy")),  # 1,6
-    ('fig-ocenochnaya-funkciya-6#44.1', '−', A("{#fig-ocenochnaya-funkciya-6#38.1} + {#fig-ocenochnaya-funkciya-6#43.1}")),  # 2,5
+    ('fig-ocenochnaya-funkciya-6#43.1', '', L(-1.6, "toy")),  # −1,6
+    ('fig-ocenochnaya-funkciya-6#44.1', '', A("{#fig-ocenochnaya-funkciya-6#38.1} + {#fig-ocenochnaya-funkciya-6#43.1}")),  # −2,5
     ('fig-ocenochnaya-funkciya-6#45.1', '', L(5, "structure")),  # 5
-    ('fig-ocenochnaya-funkciya-6#46.1', '+', L(0.9, "toy")),  # 0,9
-    ('fig-ocenochnaya-funkciya-6#47.1', '+', A("{#fig-ocenochnaya-funkciya-6#41.1} + {#fig-ocenochnaya-funkciya-6#46.1}")),  # 1,6
+    ('fig-ocenochnaya-funkciya-6#46.1', '', L(0.9, "toy")),  # +0,9
+    ('fig-ocenochnaya-funkciya-6#47.1', '', A("{#fig-ocenochnaya-funkciya-6#41.1} + {#fig-ocenochnaya-funkciya-6#46.1}")),  # +1,6
     ('fig-ocenochnaya-funkciya-6#48.1', '', L(23, "structure")),  # 23
-    ('fig-ocenochnaya-funkciya-6#49.1', '+', L(0.8, "toy")),  # 0,8
-    ('fig-ocenochnaya-funkciya-6#50.1', '−', A("{#fig-ocenochnaya-funkciya-6#44.1} - {#fig-ocenochnaya-funkciya-6#49.1}")),  # 1,7
+    ('fig-ocenochnaya-funkciya-6#49.1', '', L(0.8, "toy")),  # +0,8
+    ('fig-ocenochnaya-funkciya-6#50.1', '', A("{#fig-ocenochnaya-funkciya-6#44.1} + {#fig-ocenochnaya-funkciya-6#49.1}")),  # −1,7
     ('fig-ocenochnaya-funkciya-6#51.1', '', L(6, "structure")),  # 6
-    ('fig-ocenochnaya-funkciya-6#52.1', '−', L(1.4, "toy")),  # 1,4
-    ('fig-ocenochnaya-funkciya-6#53.1', '+', A("{#fig-ocenochnaya-funkciya-6#47.1} - {#fig-ocenochnaya-funkciya-6#52.1}")),  # 0,2
+    ('fig-ocenochnaya-funkciya-6#52.1', '', L(-1.4, "toy")),  # −1,4
+    ('fig-ocenochnaya-funkciya-6#53.1', '', A("{#fig-ocenochnaya-funkciya-6#47.1} + {#fig-ocenochnaya-funkciya-6#52.1}")),  # +0,2
     ('fig-ocenochnaya-funkciya-6#54.1', '', L(24, "structure")),  # 24
-    ('fig-ocenochnaya-funkciya-6#55.1', '+', L(2.4, "toy")),  # 2,4
-    ('fig-ocenochnaya-funkciya-6#56.1', '+', A("{#fig-ocenochnaya-funkciya-6#55.1} - {#fig-ocenochnaya-funkciya-6#50.1}")),  # 0,7
+    ('fig-ocenochnaya-funkciya-6#55.1', '', L(2.4, "toy")),  # +2,4
+    ('fig-ocenochnaya-funkciya-6#56.1', '', A("{#fig-ocenochnaya-funkciya-6#50.1} + {#fig-ocenochnaya-funkciya-6#55.1}")),  # +0,7
     ('fig-ocenochnaya-funkciya-6#57.1', '', L(7, "structure")),  # 7
-    ('fig-ocenochnaya-funkciya-6#58.1', '+', L(0.3, "toy")),  # 0,3
-    ('fig-ocenochnaya-funkciya-6#59.1', '+', A("{#fig-ocenochnaya-funkciya-6#53.1} + {#fig-ocenochnaya-funkciya-6#58.1}")),  # 0,5
+    ('fig-ocenochnaya-funkciya-6#58.1', '', L(0.3, "toy")),  # +0,3
+    ('fig-ocenochnaya-funkciya-6#59.1', '', A("{#fig-ocenochnaya-funkciya-6#53.1} + {#fig-ocenochnaya-funkciya-6#58.1}")),  # +0,5
     ('fig-ocenochnaya-funkciya-6#60.1', '', L(25, "structure")),  # 25
-    ('fig-ocenochnaya-funkciya-6#61.1', '−', L(0.9, "toy")),  # 0,9
-    ('fig-ocenochnaya-funkciya-6#62.1', '−', A("abs({#fig-ocenochnaya-funkciya-6#56.1} - {#fig-ocenochnaya-funkciya-6#61.1})")),  # 0,2
+    ('fig-ocenochnaya-funkciya-6#61.1', '', L(-0.9, "toy")),  # −0,9
+    ('fig-ocenochnaya-funkciya-6#62.1', '', A("{#fig-ocenochnaya-funkciya-6#56.1} + {#fig-ocenochnaya-funkciya-6#61.1}")),  # −0,2
     ('fig-ocenochnaya-funkciya-6#63.1', '', L(8, "structure")),  # 8
-    ('fig-ocenochnaya-funkciya-6#64.1', '+', L(2.1, "toy")),  # 2,1
-    ('fig-ocenochnaya-funkciya-6#65.1', '+', A("{#fig-ocenochnaya-funkciya-6#59.1} + {#fig-ocenochnaya-funkciya-6#64.1}")),  # 2,6
+    ('fig-ocenochnaya-funkciya-6#64.1', '', L(2.1, "toy")),  # +2,1
+    ('fig-ocenochnaya-funkciya-6#65.1', '', A("{#fig-ocenochnaya-funkciya-6#59.1} + {#fig-ocenochnaya-funkciya-6#64.1}")),  # +2,6
     ('fig-ocenochnaya-funkciya-6#66.1', '', L(26, "structure")),  # 26
-    ('fig-ocenochnaya-funkciya-6#67.1', '+', L(0.6, "toy")),  # 0,6
-    ('fig-ocenochnaya-funkciya-6#68.1', '+', A("{#fig-ocenochnaya-funkciya-6#67.1} - {#fig-ocenochnaya-funkciya-6#62.1}")),  # 0,4
+    ('fig-ocenochnaya-funkciya-6#67.1', '', L(0.6, "toy")),  # +0,6
+    ('fig-ocenochnaya-funkciya-6#68.1', '', A("{#fig-ocenochnaya-funkciya-6#62.1} + {#fig-ocenochnaya-funkciya-6#67.1}")),  # +0,4
     ('fig-ocenochnaya-funkciya-6#69.1', '', L(9, "structure")),  # 9
-    ('fig-ocenochnaya-funkciya-6#70.1', '−', L(0.8, "toy")),  # 0,8
-    ('fig-ocenochnaya-funkciya-6#71.1', '+', A("{#fig-ocenochnaya-funkciya-6#65.1} - {#fig-ocenochnaya-funkciya-6#70.1}")),  # 1,8
+    ('fig-ocenochnaya-funkciya-6#70.1', '', L(-0.8, "toy")),  # −0,8
+    ('fig-ocenochnaya-funkciya-6#71.1', '', A("{#fig-ocenochnaya-funkciya-6#65.1} + {#fig-ocenochnaya-funkciya-6#70.1}")),  # +1,8
     ('fig-ocenochnaya-funkciya-6#72.1', '', L(27, "structure")),  # 27
-    ('fig-ocenochnaya-funkciya-6#73.1', '+', L(1.3, "toy")),  # 1,3
-    ('fig-ocenochnaya-funkciya-6#74.1', '+', A("{#fig-ocenochnaya-funkciya-6#68.1} + {#fig-ocenochnaya-funkciya-6#73.1}")),  # 1,7
+    ('fig-ocenochnaya-funkciya-6#73.1', '', L(1.3, "toy")),  # +1,3
+    ('fig-ocenochnaya-funkciya-6#74.1', '', A("{#fig-ocenochnaya-funkciya-6#68.1} + {#fig-ocenochnaya-funkciya-6#73.1}")),  # +1,7
     ('fig-ocenochnaya-funkciya-6#75.1', '', L(10, "structure")),  # 10
-    ('fig-ocenochnaya-funkciya-6#76.1', '−', L(0.5, "toy")),  # 0,5
-    ('fig-ocenochnaya-funkciya-6#77.1', '+', A("{#fig-ocenochnaya-funkciya-6#71.1} - {#fig-ocenochnaya-funkciya-6#76.1}")),  # 1,3
+    ('fig-ocenochnaya-funkciya-6#76.1', '', L(-0.5, "toy")),  # −0,5
+    ('fig-ocenochnaya-funkciya-6#77.1', '', A("{#fig-ocenochnaya-funkciya-6#71.1} + {#fig-ocenochnaya-funkciya-6#76.1}")),  # +1,3
     ('fig-ocenochnaya-funkciya-6#78.1', '', L(28, "structure")),  # 28
-    ('fig-ocenochnaya-funkciya-6#79.1', '−', L(2.0, "toy")),  # 2,0
-    ('fig-ocenochnaya-funkciya-6#80.1', '−', A("abs({#fig-ocenochnaya-funkciya-6#74.1} - {#fig-ocenochnaya-funkciya-6#79.1})")),  # 0,3
+    ('fig-ocenochnaya-funkciya-6#79.1', '', L(-2.0, "toy")),  # −2,0
+    ('fig-ocenochnaya-funkciya-6#80.1', '', A("{#fig-ocenochnaya-funkciya-6#74.1} + {#fig-ocenochnaya-funkciya-6#79.1}")),  # −0,3
     ('fig-ocenochnaya-funkciya-6#81.1', '', L(11, "structure")),  # 11
-    ('fig-ocenochnaya-funkciya-6#82.1', '+', L(1.6, "toy")),  # 1,6
-    ('fig-ocenochnaya-funkciya-6#83.1', '+', A("{#fig-ocenochnaya-funkciya-6#77.1} + {#fig-ocenochnaya-funkciya-6#82.1}")),  # 2,9
+    ('fig-ocenochnaya-funkciya-6#82.1', '', L(1.6, "toy")),  # +1,6
+    ('fig-ocenochnaya-funkciya-6#83.1', '', A("{#fig-ocenochnaya-funkciya-6#77.1} + {#fig-ocenochnaya-funkciya-6#82.1}")),  # +2,9
     ('fig-ocenochnaya-funkciya-6#84.1', '', L(29, "structure")),  # 29
-    ('fig-ocenochnaya-funkciya-6#85.1', '+', L(0.2, "toy")),  # 0,2
-    ('fig-ocenochnaya-funkciya-6#86.1', '−', A("abs({#fig-ocenochnaya-funkciya-6#85.1} - {#fig-ocenochnaya-funkciya-6#80.1})")),  # 0,1
+    ('fig-ocenochnaya-funkciya-6#85.1', '', L(0.2, "toy")),  # +0,2
+    ('fig-ocenochnaya-funkciya-6#86.1', '', A("{#fig-ocenochnaya-funkciya-6#80.1} + {#fig-ocenochnaya-funkciya-6#85.1}")),  # −0,1
     ('fig-ocenochnaya-funkciya-6#87.1', '', L(12, "structure")),  # 12
-    ('fig-ocenochnaya-funkciya-6#88.1', '−', L(0.9, "toy")),  # 0,9
-    ('fig-ocenochnaya-funkciya-6#89.1', '+', A("{#fig-ocenochnaya-funkciya-6#83.1} - {#fig-ocenochnaya-funkciya-6#88.1}")),  # 2,0
+    ('fig-ocenochnaya-funkciya-6#88.1', '', L(-0.9, "toy")),  # −0,9
+    ('fig-ocenochnaya-funkciya-6#89.1', '', A("{#fig-ocenochnaya-funkciya-6#83.1} + {#fig-ocenochnaya-funkciya-6#88.1}")),  # +2,0
     ('fig-ocenochnaya-funkciya-6#90.1', '', L(30, "structure")),  # 30
-    ('fig-ocenochnaya-funkciya-6#91.1', '+', L(1.5, "toy")),  # 1,5
-    ('fig-ocenochnaya-funkciya-6#92.1', '+', A("{#fig-ocenochnaya-funkciya-6#91.1} - {#fig-ocenochnaya-funkciya-6#86.1}")),  # 1,4
+    ('fig-ocenochnaya-funkciya-6#91.1', '', L(1.5, "toy")),  # +1,5
+    ('fig-ocenochnaya-funkciya-6#92.1', '', A("{#fig-ocenochnaya-funkciya-6#86.1} + {#fig-ocenochnaya-funkciya-6#91.1}")),  # +1,4
     ('fig-ocenochnaya-funkciya-6#93.1', '', L(13, "structure")),  # 13
-    ('fig-ocenochnaya-funkciya-6#94.1', '−', L(1.2, "toy")),  # 1,2
-    ('fig-ocenochnaya-funkciya-6#95.1', '+', A("{#fig-ocenochnaya-funkciya-6#89.1} - {#fig-ocenochnaya-funkciya-6#94.1}")),  # 0,8
+    ('fig-ocenochnaya-funkciya-6#94.1', '', L(-1.2, "toy")),  # −1,2
+    ('fig-ocenochnaya-funkciya-6#95.1', '', A("{#fig-ocenochnaya-funkciya-6#89.1} + {#fig-ocenochnaya-funkciya-6#94.1}")),  # +0,8
     ('fig-ocenochnaya-funkciya-6#96.1', '', L(31, "structure")),  # 31
-    ('fig-ocenochnaya-funkciya-6#97.1', '−', L(0.4, "toy")),  # 0,4
-    ('fig-ocenochnaya-funkciya-6#98.1', '+', A("{#fig-ocenochnaya-funkciya-6#92.1} - {#fig-ocenochnaya-funkciya-6#97.1}")),  # 1,0
+    ('fig-ocenochnaya-funkciya-6#97.1', '', L(-0.4, "toy")),  # −0,4
+    ('fig-ocenochnaya-funkciya-6#98.1', '', A("{#fig-ocenochnaya-funkciya-6#92.1} + {#fig-ocenochnaya-funkciya-6#97.1}")),  # +1,0
     ('fig-ocenochnaya-funkciya-6#99.1', '', L(14, "structure")),  # 14
-    ('fig-ocenochnaya-funkciya-6#100.1', '+', L(0.7, "toy")),  # 0,7
-    ('fig-ocenochnaya-funkciya-6#101.1', '+', A("{#fig-ocenochnaya-funkciya-6#95.1} + {#fig-ocenochnaya-funkciya-6#100.1}")),  # 1,5
+    ('fig-ocenochnaya-funkciya-6#100.1', '', L(0.7, "toy")),  # +0,7
+    ('fig-ocenochnaya-funkciya-6#101.1', '', A("{#fig-ocenochnaya-funkciya-6#95.1} + {#fig-ocenochnaya-funkciya-6#100.1}")),  # +1,5
     ('fig-ocenochnaya-funkciya-6#102.1', '', L(32, "structure")),  # 32
-    ('fig-ocenochnaya-funkciya-6#103.1', '+', L(2.2, "toy")),  # 2,2
-    ('fig-ocenochnaya-funkciya-6#104.1', '+', A("{#fig-ocenochnaya-funkciya-6#98.1} + {#fig-ocenochnaya-funkciya-6#103.1}")),  # 3,2
+    ('fig-ocenochnaya-funkciya-6#103.1', '', L(2.2, "toy")),  # +2,2
+    ('fig-ocenochnaya-funkciya-6#104.1', '', A("{#fig-ocenochnaya-funkciya-6#98.1} + {#fig-ocenochnaya-funkciya-6#103.1}")),  # +3,2
     ('fig-ocenochnaya-funkciya-6#105.1', '', L(15, "structure")),  # 15
-    ('fig-ocenochnaya-funkciya-6#106.1', '−', L(2.3, "toy")),  # 2,3
-    ('fig-ocenochnaya-funkciya-6#107.1', '−', A("abs({#fig-ocenochnaya-funkciya-6#101.1} - {#fig-ocenochnaya-funkciya-6#106.1})")),  # 0,8
+    ('fig-ocenochnaya-funkciya-6#106.1', '', L(-2.3, "toy")),  # −2,3
+    ('fig-ocenochnaya-funkciya-6#107.1', '', A("{#fig-ocenochnaya-funkciya-6#101.1} + {#fig-ocenochnaya-funkciya-6#106.1}")),  # −0,8
     ('fig-ocenochnaya-funkciya-6#108.1', '', L(33, "structure")),  # 33
-    ('fig-ocenochnaya-funkciya-6#109.1', '−', L(1.3, "toy")),  # 1,3
-    ('fig-ocenochnaya-funkciya-6#110.1', '+', A("{#fig-ocenochnaya-funkciya-6#104.1} - {#fig-ocenochnaya-funkciya-6#109.1}")),  # 1,9
+    ('fig-ocenochnaya-funkciya-6#109.1', '', L(-1.3, "toy")),  # −1,3
+    ('fig-ocenochnaya-funkciya-6#110.1', '', A("{#fig-ocenochnaya-funkciya-6#104.1} + {#fig-ocenochnaya-funkciya-6#109.1}")),  # +1,9
     ('fig-ocenochnaya-funkciya-6#111.1', '', L(16, "structure")),  # 16
-    ('fig-ocenochnaya-funkciya-6#112.1', '−', L(0.4, "toy")),  # 0,4
-    ('fig-ocenochnaya-funkciya-6#113.1', '−', A("{#fig-ocenochnaya-funkciya-6#107.1} + {#fig-ocenochnaya-funkciya-6#112.1}")),  # 1,2
+    ('fig-ocenochnaya-funkciya-6#112.1', '', L(-0.4, "toy")),  # −0,4
+    ('fig-ocenochnaya-funkciya-6#113.1', '', A("{#fig-ocenochnaya-funkciya-6#107.1} + {#fig-ocenochnaya-funkciya-6#112.1}")),  # −1,2
     ('fig-ocenochnaya-funkciya-6#114.1', '', L(34, "structure")),  # 34
-    ('fig-ocenochnaya-funkciya-6#115.1', '+', L(0.7, "toy")),  # 0,7
-    ('fig-ocenochnaya-funkciya-6#116.1', '+', A("{#fig-ocenochnaya-funkciya-6#110.1} + {#fig-ocenochnaya-funkciya-6#115.1}")),  # 2,6
+    ('fig-ocenochnaya-funkciya-6#115.1', '', L(0.7, "toy")),  # +0,7
+    ('fig-ocenochnaya-funkciya-6#116.1', '', A("{#fig-ocenochnaya-funkciya-6#110.1} + {#fig-ocenochnaya-funkciya-6#115.1}")),  # +2,6
     ('fig-ocenochnaya-funkciya-6#117.1', '', L(17, "structure")),  # 17
-    ('fig-ocenochnaya-funkciya-6#118.1', '+', L(0.5, "toy")),  # 0,5
-    ('fig-ocenochnaya-funkciya-6#119.1', '−', A("{#fig-ocenochnaya-funkciya-6#113.1} - {#fig-ocenochnaya-funkciya-6#118.1}")),  # 0,7
+    ('fig-ocenochnaya-funkciya-6#118.1', '', L(0.5, "toy")),  # +0,5
+    ('fig-ocenochnaya-funkciya-6#119.1', '', A("{#fig-ocenochnaya-funkciya-6#113.1} + {#fig-ocenochnaya-funkciya-6#118.1}")),  # −0,7
     ('fig-ocenochnaya-funkciya-6#120.1', '', L(35, "structure")),  # 35
-    ('fig-ocenochnaya-funkciya-6#121.1', '+', L(1.0, "toy")),  # 1,0
-    ('fig-ocenochnaya-funkciya-6#122.1', '+', A("{#fig-ocenochnaya-funkciya-6#116.1} + {#fig-ocenochnaya-funkciya-6#121.1}")),  # 3,6
+    ('fig-ocenochnaya-funkciya-6#121.1', '', L(1.0, "toy")),  # +1,0
+    ('fig-ocenochnaya-funkciya-6#122.1', '', A("{#fig-ocenochnaya-funkciya-6#116.1} + {#fig-ocenochnaya-funkciya-6#121.1}")),  # +3,6
     ('fig-ocenochnaya-funkciya-6#123.1', '', L(18, "structure")),  # 18
-    ('fig-ocenochnaya-funkciya-6#124.1', '−', L(1.1, "toy")),  # 1,1
-    ('fig-ocenochnaya-funkciya-6#125.1', '−', A("{#fig-ocenochnaya-funkciya-6#119.1} + {#fig-ocenochnaya-funkciya-6#124.1}")),  # 1,8
+    ('fig-ocenochnaya-funkciya-6#124.1', '', L(-1.1, "toy")),  # −1,1
+    ('fig-ocenochnaya-funkciya-6#125.1', '', A("{#fig-ocenochnaya-funkciya-6#119.1} + {#fig-ocenochnaya-funkciya-6#124.1}")),  # −1,8
     ('fig-ocenochnaya-funkciya-6#126.1', '', L(36, "structure")),  # 36
-    ('fig-ocenochnaya-funkciya-6#127.1', '−', L(0.9, "toy")),  # 0,9
-    ('fig-ocenochnaya-funkciya-6#128.1', '+', A("{#fig-ocenochnaya-funkciya-6#122.1} - {#fig-ocenochnaya-funkciya-6#127.1}")),  # 2,7
+    ('fig-ocenochnaya-funkciya-6#127.1', '', L(-0.9, "toy")),  # −0,9
+    ('fig-ocenochnaya-funkciya-6#128.1', '', A("{#fig-ocenochnaya-funkciya-6#122.1} + {#fig-ocenochnaya-funkciya-6#127.1}")),  # +2,7
     ('fig-ocenochnaya-funkciya-6#129.1', '', L(36, "structure")),  # 36
-    ('fig-ocenochnaya-funkciya-6#130.1', '+', A("{#fig-ocenochnaya-funkciya-6#128.1}")),  # 2,7
-    ('fig-ocenochnaya-funkciya-6#131.1', '+', A("{#fig-ocenochnaya-funkciya-6#130.1} / {#fig-ocenochnaya-funkciya-6#129.1}")),  # 0,0750
+    ('fig-ocenochnaya-funkciya-6#130.1', '', A("{#fig-ocenochnaya-funkciya-6#128.1}")),  # +2,7
+    ('fig-ocenochnaya-funkciya-6#131.1', '', A("{#fig-ocenochnaya-funkciya-6#130.1} / {#fig-ocenochnaya-funkciya-6#129.1}")),  # +0,0750
     ('fig-ocenochnaya-funkciya-6#132.1', '', L(1.2332, "toy")),  # 1,2332
     ('fig-ocenochnaya-funkciya-6#133.1', '', A("{#fig-ocenochnaya-funkciya-6#132.1} / sqrt({#fig-ocenochnaya-funkciya-6#129.1})")),  # 0,2055
     ('fig-ocenochnaya-funkciya-6#134.1', 'Интервал ', L(95, "structure")),  # 95
@@ -1211,10 +1210,10 @@ RULES = [
     ('s12#4.3', 'вый фактический бар 1927-12-', L(30, "source")),  # 30
     ('s12#4.4', 'с shillerdata.com, данные с ', L(1871, "source")),  # 1871
     ('s12#4.5', 'llerdata.com, данные с 1871-', L(1, "source")),  # 01
-    ('s12#5.1', 'еобразование. Доходность за ', L(12, "structure")),  # 12
-    ('s12#6.1', ' — не раньше, чем накопится ', L(120, "structure")),  # 120
-    ('s12#7.1', ' распределение всех прошлых ', L(12, "structure")),  # 12
-    ('s12#8.1', 'независимых наблюдений: при ', L(12, "structure")),  # 12
+    ('s12#5.1', 'еобразование. Доходность за ', F("Z28", "parameters.horizon_months")),  # 12
+    ('s12#6.1', ' — не раньше, чем накопится ', F("Z28", "parameters.warmup_monthly_returns")),  # 120
+    ('s12#7.1', ' распределение всех прошлых ', F("Z28", "parameters.horizon_months")),  # 12
+    ('s12#8.1', 'независимых наблюдений: при ', F("Z28", "parameters.horizon_months")),  # 12
     ('s12#9.1', 'новом ^GSPC множитель вышел ', F("Z28", "routes.yahoo.statistics.dependence.tau")),  # 8,89
     ('s12#9.2', 'а с дивидендами — не меньше ', F("Z28", "routes.shiller.statistics.dependence.tau")),  # 10,36
     ('s12#9.3', 'явленному заранее потолку в ', F("Z28", "parameters.acf_max_lag")),  # 24
@@ -1259,7 +1258,7 @@ RULES = [
     ('s13#8.7', ' среднее: (18 · 0,5 + 18 · (', A("{#s13#8.2}")),  # −0,4
     ('s13#8.8', ' (18 · 0,5 + 18 · (−0,4)) / ', A("{#s13#8.4} + {#s13#8.6}")),  # 36
     ('s13#8.9', ' 0,5 + 18 · (−0,4)) / 36 = (', A("{#s13#8.4} * {#s13#8.5}")),  # 9
-    ('s13#8.10', ' + 18 · (−0,4)) / 36 = (9 − ', A("abs({#s13#8.6} * {#s13#8.7})")),  # 7,2
+    ('s13#8.10', ' + 18 · (−0,4)) / 36 = (9 − ', A("abs({#s13#8.6} * {#s13#8.7})")),  # 7,2 — минус перед модулем в показанной сумме
     ('s13#8.11', ' (−0,4)) / 36 = (9 − 7,2) / ', A("{#s13#8.8}")),  # 36
     ('s13#8.12', '4)) / 36 = (9 − 7,2) / 36 = ', A("({#s13#8.9} - {#s13#8.10}) / {#s13#8.11}")),  # +0,05
     ('s14#1.1', 'те лист бумаги и посчитайте ', A("{#s5#1.1}")),  # 0,7
