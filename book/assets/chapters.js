@@ -38,7 +38,7 @@ window.BOOK_CHAPTERS = [
   { id: "ocenochnaya-funkciya", part: "ocenka-prognoza", file: "ocenochnaya-funkciya.html", title: "Правильная оценочная функция", status: "done" },
   { id: "bazovyy-sopernik", part: "ocenka-prognoza", file: "bazovyy-sopernik.html", title: "Базовый соперник «ничего не знаю»", status: "done" },
   { id: "cena-sopernik", part: "ocenka-prognoza", file: "cena-sopernik.html", title: "Второй соперник: только цена", status: "done" },
-  { id: "uluchshenie-bazovogo", part: "ocenka-prognoza", file: "uluchshenie-bazovogo.html", title: "Улучшение против базового", status: "todo" },
+  { id: "uluchshenie-bazovogo", part: "ocenka-prognoza", file: "uluchshenie-bazovogo.html", title: "Улучшение против базового", status: "done" },
   { id: "lovushki-sravneniya", part: "ocenka-prognoza", file: "lovushki-sravneniya.html", title: "Ловушки сравнения", status: "todo" },
 
   /* ── Часть III. Спрос ───────────────────────────────────────────────── */
