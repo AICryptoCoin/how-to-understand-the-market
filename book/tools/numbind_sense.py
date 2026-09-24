@@ -6,9 +6,11 @@ same value passes. This instrument reads the meaning side at acceptance. For eve
 that reads data (F, and E with data placeholders) it builds the context of the place and
 checks what the field path fixes:
 
-  route  routes.yahoo and common_span_comparison.yahoo - the Yahoo route; routes.shiller -
-         Shiller over the full history; common_span_comparison.shiller - Shiller over the
-         common span; other common_span_comparison fields - both routes of the common span.
+  route  routes.yahoo and common_span_comparison.yahoo - the Yahoo route (the text may
+         name it Yahoo or ^GSPC); routes.shiller - Shiller over the full history, or over
+         the common span when the expression slices its rows; common_span_comparison.
+         shiller - Shiller over the common span; other common_span_comparison fields -
+         both routes of the common span.
   month  a path through per_date[i] fixes two months: the forecast origin and the outcome
          month. A context that names a month must name one of them.
 
@@ -33,9 +35,19 @@ route (Yahoo <-> Shiller) and every dated rule to the neighbouring date, and eac
 rebinding must be flagged. A rebinding that passes is a blind spot, listed by name:
 usually a sentence that names both routes. Blind spots are read by eye at acceptance.
 
+--tables reads the other side of a table: a cell that is a sum, a difference or an
+absolute difference of two cells of its row, of the same precision, and matches it on
+the unrounded data but misses it on the printed numbers by one unit of the last digit.
+The reader checks the row with what is printed; a derived column taken from unrounded
+values is legitimate only when the table says so in words (a caption or a cell with
+"неокруглённ"). Undeclared near misses exit 1 and are listed; declared ones are counted.
+Two unrelated columns can meet by chance (a table of two halves side by side, dates of
+one row): every line is read by eye, one line per row.
+
 usage: python -X utf8 book/tools/numbind_sense.py MANIFEST [--html FILE] [--default Y|S|C]
-                                                  [--swap] [--list]
+                                                  [--swap] [--list] [--tables]
 """
+import itertools
 import argparse
 import json
 import re
@@ -179,27 +191,38 @@ class Ctx(numbind.Units):
         return " ".join(row) + " | " + " ".join(col)
 
     def panel(self, svg, serial, named_fn):
-        """Nearest label above the text, in the same drawing, naming exactly one route.
+        """Label of the same drawing that heads the text and names exactly one route.
 
         Labels are the texts of class viz-label or viz-legend (book/STYLE-GUIDE.md): a
         title or an annotation that names one route is a remark, not a panel header.
-        Only labels above count: panels stack top-down and a label heads what is below.
+        A label heads what stands on its own line or below it, so labels further down
+        do not count; among the rest the nearest line wins, then the nearest column -
+        rows of a chart put the label left of its value, panels put it on top. For a
+        month the axis labels count too, and the nearest column wins first: the date on
+        a category axis heads the bar in its column, above it or below.
         """
         me = self.text_at[serial]
         if me[1] is None or me[2] is None:
             return ""
         best = None
+        dates = named_fn is months_named
         for e in self.svg_text.get(svg, []):
-            if (e[0] == serial or e[1] is None or e[2] is None or e[2] >= me[2]
-                    or not LABEL & set(e[4].split()) or len(named_fn(e[3])) != 1):
+            classes = LABEL | (AXIS if dates else set())
+            if (e[0] == serial or e[1] is None or e[2] is None
+                    or (not dates and e[2] > me[2] + 2)
+                    or not classes & set(e[4].split()) or len(named_fn(e[3])) != 1):
                 continue
-            d = (e[1] - me[1]) ** 2 + (e[2] - me[2]) ** 2
+            if dates:           # the column first: a bar may hang below its axis date
+                d = (abs(e[1] - me[1]), abs(e[2] - me[2]))
+            else:
+                d = (max(0.0, me[2] - e[2]), abs(e[1] - me[1]))
             if best is None or d < best[0]:
                 best = (d, e[3])
         return norm(best[1]) if best else ""
 
 
 LABEL = {"viz-label", "viz-legend"}
+AXIS = {"viz-axis"}              # a category axis carries the dates of its columns
 BACK = 3                         # prose units looked back for "previous"
 UPPER = "A-Z" + chr(0x410) + "-" + chr(0x42F) + chr(0x401) + chr(0xAB)
 SENT = re.compile(r"(?<=[.!?" + chr(0x2026) + r"])\s+(?=[" + UPPER + "])")
@@ -274,7 +297,7 @@ W_FULL = r"полн\w* истори|1881"
 def routes_named(t):
     t = t.lower()
     r = set()
-    if "yahoo" in t:
+    if "yahoo" in t or "gspc" in t:
         r.add("Y")
     if W_SHILLER in t:
         common = re.search(W_COMMON, t)
@@ -305,8 +328,11 @@ def route_ok(field, named):
     return any((x == "S|C" and field & {"S", "C"}) or x in field for x in named)
 
 
-MONTHS = ["январ[ьяе]", "феврал[ьяе]", "март[ае]?", "апрел[ьяе]", "ма[йяе]", "июн[ьяе]",
-          "июл[ьяе]", "август[ае]?", "сентябр[ьяе]", "октябр[ьяе]", "ноябр[ьяе]", "декабр[ьяе]"]
+# every case form: "декабрь", "декабря", "декабре", "к декабрю", "декабрём"
+MONTHS = ["январ(?:ь|я|е|ю|ём)", "феврал(?:ь|я|е|ю|ём)", "март(?:а|е|у|ом)?", "апрел(?:ь|я|е|ю|ем)",
+          "ма(?:й|я|е|ю|ем)", "июн(?:ь|я|е|ю|ем)", "июл(?:ь|я|е|ю|ем)", "август(?:а|е|у|ом)?",
+          "сентябр(?:ь|я|е|ю|ём)", "октябр(?:ь|я|е|ю|ём)", "ноябр(?:ь|я|е|ю|ём)",
+          "декабр(?:ь|я|е|ю|ём)"]
 RU_MONTH = re.compile(r"(?<![\w])(%s)\s+(1[89]\d\d|20\d\d)" % "|".join("(?:%s)" % m for m in MONTHS),
                       re.I)
 ISO_MONTH = re.compile(r"(?<!\d)(1[89]\d\d|20\d\d)-(0[1-9]|1[0-2])(?!\d)")
@@ -322,6 +348,8 @@ def months_named(t):
 
 
 PH = re.compile(r"\{([A-Za-z0-9_]+):([^{}]+)\}")
+# Shiller's rows sliced in the expression - "[683:]", "[-1052:]" - are the common span
+SLICE = re.compile(r"routes\.shiller\.per_date[^{}]*\}\s*\[")
 PER_DATE = re.compile(r"^(.*\.per_date)\[(\d+)\]")
 
 
@@ -345,7 +373,52 @@ def months_of(data, alias, path, shift=0):
 
 
 # --------------------------------------------------------------------------- run
-def run(manifest, html_path, default, want_swap, want_list):
+def tables(html_text):
+    """Near misses of derived table columns: (row label, key, printed, relation, declared)."""
+    body = html_text[html_text.find("<body"):] if "<body" in html_text else html_text
+    p = Ctx()
+    p.feed(body)
+    p.close()
+    per, keyof = {}, {}
+    for uk in p.order:
+        cont, raw = p.units[uk]
+        if not numbind.tokens_of(norm(raw)):
+            continue
+        per[cont] = per.get(cont, 0) + 1
+        keyof[uk] = "%s#%d" % (cont, per[cont])
+    rows = {}
+    for uk, (t, r, c) in p.unit_cell.items():
+        if uk not in keyof:
+            continue
+        toks = numbind.tokens_of(norm(p.units[uk][1]))
+        if len(toks) == 1:
+            rows.setdefault((t, r), {})[c] = (keyof[uk] + ".1",) + tuple(toks[0][2:])
+    out = []
+    for (t, r), row in sorted(rows.items()):
+        caption = (p.tab_cap.get(t, "") + " " + p.fig_cap.get(p.tab_fig.get(t), "")
+                   + " " + " ".join(p.cells.get((t, rr, cc), "") for (tt, rr, cc) in p.cells if tt == t))
+        declared = "неокруглённ" in caption.lower() or "неокругленн" in caption.lower()
+        for c in sorted(row):
+            key, printed, v, dec = row[c]
+            if dec < 1:
+                continue
+            unit = 10 ** (-dec)
+            others = [row[x] for x in sorted(row) if x != c and row[x][3] == dec]
+            pairs = list(itertools.permutations(others, 2))
+            rel = [(n, fa, fb, w) for (_, fa, a, _), (_, fb, b, _) in pairs
+                   for n, w in (("a-b", a - b), ("|a-b|", abs(a - b)), ("a+b", a + b))]
+            if any(abs(v - w) <= 0.5 * unit + 1e-9 for _, _, _, w in rel):
+                continue
+            near = [x for x in rel if abs(v - x[3]) <= 1.5 * unit + 1e-9]
+            if near:            # one line per row: the three cells of a + b = c are one miss
+                n, fa, fb, w = near[0]
+                label = norm(p.cells.get((t, r, 0), ""))[:24]
+                out.append((label, key, printed, "%s(%s, %s) = %.4f" % (n, fa, fb, w), declared))
+                break
+    return out
+
+
+def run(manifest, html_path, default, want_swap, want_list, want_tables=False):
     m = numbind.load_manifest(manifest)
     html_path = Path(html_path) if html_path else ROOT / m["CHAPTER"]
     data = {k: json.loads((ROOT / v).read_text(encoding="utf-8")) for k, v in m["DATA"].items()}
@@ -370,6 +443,8 @@ def run(manifest, html_path, default, want_swap, want_list):
         field = set()
         for _a, p in ps:
             field |= route_of_path(p)
+        if isinstance(spec, numbind.E) and SLICE.search(spec.expr):
+            field.add("C")
         if field:
             n_route += 1
             lvl, named, text = judge(levels, routes_named)
@@ -452,7 +527,16 @@ def run(manifest, html_path, default, want_swap, want_list):
         print("\nmonth not named (%d):" % len(m_none))
         for key, src, fm, text in m_none:
             print("  %-26s %-15s %s | %s" % (key, "/".join(sorted(fm)), src[:70], cut(text)))
-    return 1 if (r_bad or r_implied or m_bad) else 0
+    t_bad = []
+    if want_tables:
+        near = tables(html_text)
+        t_bad = [x for x in near if not x[4]]
+        print("tables: rows whose derived cell is off the printed row by one unit %d | declared unrounded %d"
+              % (len(t_bad), len(near) - len(t_bad)))
+        for label, key, printed, rel, declared in near:
+            print("  %s %-30s %-10s %-24s printed row gives %s"
+                  % ("declared  " if declared else "NEAR-MISS ", key, printed, show(label), show(rel)))
+    return 1 if (r_bad or r_implied or m_bad or t_bad) else 0
 
 
 def main():
@@ -462,8 +546,9 @@ def main():
     ap.add_argument("--default", choices=["Y", "S", "C"])
     ap.add_argument("--swap", action="store_true")
     ap.add_argument("--list", action="store_true")
+    ap.add_argument("--tables", action="store_true")
     a = ap.parse_args()
-    return run(a.manifest, a.html, a.default, a.swap, a.list)
+    return run(a.manifest, a.html, a.default, a.swap, a.list, a.tables)
 
 
 if __name__ == "__main__":
