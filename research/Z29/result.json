@@ -27,9 +27,9 @@
           "range_parameter": null,
           "routing": "period1/period2",
           "value_rule": "adjclose if present, otherwise close; last daily value per month",
-          "load_started_at_utc": "2026-09-25T07:55:31+00:00",
-          "load_finished_at_utc": "2026-09-25T07:55:32+00:00",
-          "series_fetched_at": "2026-09-25T07:55:32+00:00",
+          "load_started_at_utc": "2026-09-25T07:55:59+00:00",
+          "load_finished_at_utc": "2026-09-25T07:56:00+00:00",
+          "series_fetched_at": "2026-09-25T07:56:00+00:00",
           "source": "Yahoo Finance",
           "series_id": "^GSPC",
           "title": "S&P 500",
@@ -42,11 +42,11 @@
           "fetches": [
             {
               "tag": "yahoo",
-              "url": "https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?period1=-2208988800&period2=1790322931&interval=1d",
-              "started_at_utc": "2026-09-25T07:55:31+00:00",
-              "finished_at_utc": "2026-09-25T07:55:31+00:00",
+              "url": "https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?period1=-2208988800&period2=1790322959&interval=1d",
+              "started_at_utc": "2026-09-25T07:55:59+00:00",
+              "finished_at_utc": "2026-09-25T07:56:00+00:00",
               "bytes": 2652565,
-              "sha256": "e037c7fd6d42618f3f1f58a919e23198698a1fb43fbd287014b3ef0060be0e84"
+              "sha256": "de470ca5b6c456a44895c1eabf7608551565e47e329154ade3065522c4923f34"
             }
           ],
           "raw_observations": 24800,
@@ -13804,23 +13804,23 @@
           "link_rule": "ie_data.xls href discovered from shillerdata.com page",
           "response_rule": "Real Total Return Price * CPI",
           "price_predictor_rule": "raw nominal P column",
-          "load_started_at_utc": "2026-09-25T07:55:32+00:00",
-          "load_finished_at_utc": "2026-09-25T07:55:32+00:00",
+          "load_started_at_utc": "2026-09-25T07:56:00+00:00",
+          "load_finished_at_utc": "2026-09-25T07:56:01+00:00",
           "source": "Robert Shiller via shillerdata.com",
           "fetches": [
             {
               "tag": "shiller-page",
               "url": "https://shillerdata.com/",
-              "started_at_utc": "2026-09-25T07:55:32+00:00",
-              "finished_at_utc": "2026-09-25T07:55:32+00:00",
+              "started_at_utc": "2026-09-25T07:56:00+00:00",
+              "finished_at_utc": "2026-09-25T07:56:00+00:00",
               "bytes": 121518,
               "sha256": "9a84803bbd7901961a19f1de867f23d68db2a2464f6400f046c3ab36200f2ddc"
             },
             {
               "tag": "shiller",
               "url": "https://img1.wsimg.com/blobby/go/e5e77e0b-59d1-44d9-ab25-4763ac982e53/downloads/70fec4f5-727f-4e53-b5f1-179af109c5fa/ie_data.xls?ver=1788371540009",
-              "started_at_utc": "2026-09-25T07:55:32+00:00",
-              "finished_at_utc": "2026-09-25T07:55:32+00:00",
+              "started_at_utc": "2026-09-25T07:56:00+00:00",
+              "finished_at_utc": "2026-09-25T07:56:00+00:00",
               "bytes": 1674752,
               "sha256": "044196dafe44c3030b2facbdea023975b3f6aa68b4e52f8f9bafc403e19589c1"
             }
@@ -36505,6 +36505,627 @@
             "delta_pp": -0.44127030582276205
           }
         ]
+      }
+    }
+  },
+  "leaks": {
+    "L1": {
+      "spec": {
+        "title": "Ensemble peeks 1 month ahead",
+        "target": "        scenario_points = tuple(\n            annual[HORIZON:i + 1]\n        )  # MUTATE_FUTURE_BOUNDARY",
+        "replacement": "        scenario_points = tuple(\n            annual[HORIZON:i + 2]\n        )  # MUTATE_FUTURE_BOUNDARY",
+        "leak_type": "baseline_ensemble",
+        "description": "annual[HORIZON:i + 1] -> annual[HORIZON:i + 2]"
+      },
+      "audit": {
+        "yahoo": {
+          "caught": true,
+          "first_origin": "1937-12",
+          "error_message": "scenario lookahead or omission: actual=(119, 120, 121) expected=(118, 119, 120)"
+        },
+        "shiller": {
+          "caught": true,
+          "first_origin": "1881-01",
+          "error_message": "scenario lookahead or omission: actual=(119, 120, 121) expected=(118, 119, 120)"
+        }
+      },
+      "measurement": {
+        "yahoo": {
+          "fake_gain_metrics": {
+            "n": 1052,
+            "mean": 0.005269701809162095,
+            "s": 0.03661874925800255,
+            "tau": 6.149939876625315,
+            "n_eff": 171.05858286492204,
+            "half_width_honest": 0.005487659332131168,
+            "ci95_honest": [
+              -0.00021795752296907295,
+              0.010757361141293262
+            ],
+            "half_width_naive": 0.0022128486350315416,
+            "ci95_naive": [
+              0.0030568531741305533,
+              0.007482550444193636
+            ],
+            "t_honest": 1.882153195166822,
+            "t_naive": 4.667565319401289,
+            "powered": true,
+            "verdict": "information_absent"
+          },
+          "diff_vs_honest_metrics": {
+            "n": 1052,
+            "mean": -0.16353552167147928,
+            "s": 1.9184511666327544,
+            "tau": 8.877041255061666,
+            "n_eff": 118.50795437051194,
+            "half_width_honest": 0.34540853875815153,
+            "ci95_honest": [
+              -0.5089440604296308,
+              0.18187301708667225
+            ],
+            "half_width_naive": 0.11593083137677668,
+            "ci95_naive": [
+              -0.27946635304825596,
+              -0.0476046902947026
+            ],
+            "t_honest": -0.9279724920191627,
+            "t_naive": -2.7648350198953895,
+            "powered": true,
+            "verdict": "information_absent"
+          },
+          "verdict_changed": false,
+          "extra": {}
+        },
+        "shiller": {
+          "fake_gain_metrics": {
+            "n": 1735,
+            "mean": 0.0011954164367380994,
+            "s": 0.022827605668097405,
+            "tau": 7.142011711606893,
+            "n_eff": 242.92875313832823,
+            "half_width_honest": 0.0028706283699161356,
+            "ci95_honest": [
+              -0.0016752119331780362,
+              0.004066044806654235
+            ],
+            "half_width_naive": 0.0010741543550352223,
+            "ci95_naive": [
+              0.00012126208170287712,
+              0.0022695707917733217
+            ],
+            "t_honest": 0.8162032538106371,
+            "t_naive": 2.1812658534814076,
+            "powered": true,
+            "verdict": "information_absent"
+          },
+          "diff_vs_honest_metrics": {
+            "n": 1735,
+            "mean": 0.05776075826802624,
+            "s": 2.193954552779725,
+            "tau": 10.314639687686224,
+            "n_eff": 168.20752372681227,
+            "half_width_honest": 0.3315591287048721,
+            "ci95_honest": [
+              -0.27379837043684585,
+              0.3893198869728983
+            ],
+            "half_width_naive": 0.10323666318238588,
+            "ci95_naive": [
+              -0.045475904914359634,
+              0.16099742145041213
+            ],
+            "t_honest": 0.3414506686863177,
+            "t_naive": 1.0966170613759954,
+            "powered": true,
+            "verdict": "information_absent"
+          },
+          "verdict_changed": false,
+          "extra": {}
+        }
+      }
+    },
+    "L2": {
+      "spec": {
+        "title": "Ensemble includes incomplete 12-month return windows",
+        "target": "        scenario_points = tuple(\n            annual[HORIZON:i + 1]\n        )  # MUTATE_FUTURE_BOUNDARY",
+        "replacement": "        scenario_points = tuple(\n            annual[HORIZON:i + HORIZON]\n        )  # MUTATE_FUTURE_BOUNDARY",
+        "leak_type": "baseline_ensemble",
+        "description": "annual[HORIZON:i + 1] -> annual[HORIZON:i + HORIZON]"
+      },
+      "audit": {
+        "yahoo": {
+          "caught": true,
+          "first_origin": "1937-12",
+          "error_message": "scenario lookahead or omission: actual=(129, 130, 131) expected=(118, 119, 120)"
+        },
+        "shiller": {
+          "caught": true,
+          "first_origin": "1881-01",
+          "error_message": "scenario lookahead or omission: actual=(129, 130, 131) expected=(118, 119, 120)"
+        }
+      },
+      "measurement": {
+        "yahoo": {
+          "fake_gain_metrics": {
+            "n": 1052,
+            "mean": 0.18775209754529026,
+            "s": 0.30022986090524967,
+            "tau": 18.77941561256459,
+            "n_eff": 56.018782570430304,
+            "half_width_honest": 0.07862182548065186,
+            "ci95_honest": [
+              0.1091302720646384,
+              0.2663739230259421
+            ],
+            "half_width_naive": 0.018142706983764703,
+            "ci95_naive": [
+              0.16960939056152557,
+              0.20589480452905495
+            ],
+            "t_honest": 4.680559233254246,
+            "t_naive": 20.28330786128412,
+            "powered": true,
+            "verdict": "information_present"
+          },
+          "diff_vs_honest_metrics": {
+            "n": 1052,
+            "mean": 0.01894687406464889,
+            "s": 1.992575671505456,
+            "tau": 8.547033024260957,
+            "n_eff": 123.08364750830762,
+            "half_width_honest": 0.35202273751222124,
+            "ci95_honest": [
+              -0.33307586344757234,
+              0.37096961157687014
+            ],
+            "half_width_naive": 0.12041012989880635,
+            "ci95_naive": [
+              -0.10146325583415747,
+              0.13935700396345524
+            ],
+            "t_honest": 0.10549282534746088,
+            "t_naive": 0.3084115364539604,
+            "powered": true,
+            "verdict": "information_absent"
+          },
+          "verdict_changed": true,
+          "extra": {}
+        },
+        "shiller": {
+          "fake_gain_metrics": {
+            "n": 1735,
+            "mean": 0.12797248501151257,
+            "s": 0.23724018519004983,
+            "tau": 13.380306041964424,
+            "n_eff": 129.6681850593364,
+            "half_width_honest": 0.04083453454813382,
+            "ci95_honest": [
+              0.08713795046337874,
+              0.1688070195596464
+            ],
+            "half_width_naive": 0.011163351155456242,
+            "ci95_naive": [
+              0.11680913385605632,
+              0.1391358361669688
+            ],
+            "t_honest": 6.142498583567854,
+            "t_naive": 22.468707391684074,
+            "powered": true,
+            "verdict": "information_present"
+          },
+          "diff_vs_honest_metrics": {
+            "n": 1735,
+            "mean": 0.18453782684280073,
+            "s": 2.154954003105967,
+            "tau": 9.93789104630184,
+            "n_eff": 174.58432497563362,
+            "half_width_honest": 0.31966232363100805,
+            "ci95_honest": [
+              -0.13512449678820732,
+              0.5042001504738087
+            ],
+            "half_width_naive": 0.10140148997631543,
+            "ci95_naive": [
+              0.0831363368664853,
+              0.28593931681911616
+            ],
+            "t_honest": 1.1314881794746616,
+            "t_naive": 3.5669509461485345,
+            "powered": true,
+            "verdict": "information_absent"
+          },
+          "verdict_changed": true,
+          "extra": {}
+        }
+      }
+    },
+    "L3": {
+      "spec": {
+        "title": "Reference volatility is whole-sample constant mean",
+        "target": "        reference_total = 0.0\n        for point in reference_timed:\n            reference_total += point.value\n        reference_vol = reference_total / len(reference_timed)",
+        "replacement": "        reference_vol = statistics.fmean(\n            p.value for p in rolling_vol if p is not None\n        )",
+        "leak_type": "price_volatility",
+        "description": "reference_vol = constant whole-sample mean rolling_vol"
+      },
+      "audit": {
+        "yahoo": {
+          "caught": false,
+          "first_origin": null,
+          "error_message": null
+        },
+        "shiller": {
+          "caught": false,
+          "first_origin": null,
+          "error_message": null
+        }
+      },
+      "measurement": {
+        "yahoo": {
+          "fake_gain_metrics": {
+            "n": 1052,
+            "mean": -0.30608418269658383,
+            "s": 2.7570170174919846,
+            "tau": 21.41732772375419,
+            "n_eff": 49.11910643423621,
+            "half_width_honest": 0.7710282476884092,
+            "ci95_honest": [
+              -1.077112430384993,
+              0.46494406499182533
+            ],
+            "half_width_naive": 0.1666048531841269,
+            "ci95_naive": [
+              -0.47268903588071076,
+              -0.13947932951245692
+            ],
+            "t_honest": -0.7780843307413404,
+            "t_naive": -3.600885488145321,
+            "powered": true,
+            "verdict": "information_absent"
+          },
+          "diff_vs_honest_metrics": {
+            "n": 1052,
+            "mean": -0.4748894061772252,
+            "s": 2.2144283197152945,
+            "tau": 24.582186445966002,
+            "n_eff": 42.79521686618058,
+            "half_width_honest": 0.6634681549277245,
+            "ci95_honest": [
+              -1.1383575611049497,
+              0.1885787487504993
+            ],
+            "half_width_naive": 0.13381654982621521,
+            "ci95_naive": [
+              -0.6087059560034405,
+              -0.34107285635101
+            ],
+            "t_honest": -1.4029056695400204,
+            "t_naive": -6.955666076551445,
+            "powered": true,
+            "verdict": "information_absent"
+          },
+          "verdict_changed": false,
+          "extra": {}
+        },
+        "shiller": {
+          "fake_gain_metrics": {
+            "n": 1735,
+            "mean": -0.10486235703754782,
+            "s": 2.189522582002546,
+            "tau": 9.878634465925726,
+            "n_eff": 175.63156183018188,
+            "half_width_honest": 0.32382041004751216,
+            "ci95_honest": [
+              -0.42868276708506,
+              0.21895805300996435
+            ],
+            "half_width_naive": 0.10302811653141807,
+            "ci95_naive": [
+              -0.2078904735689659,
+              -0.00183424050612975
+            ],
+            "t_honest": -0.6347043404813104,
+            "t_naive": -1.9948944687435686,
+            "powered": true,
+            "verdict": "information_absent"
+          },
+          "diff_vs_honest_metrics": {
+            "n": 1735,
+            "mean": -0.048297015206259675,
+            "s": 0.40602277660940045,
+            "tau": 6.942510115625223,
+            "n_eff": 249.90961066014245,
+            "half_width_honest": 0.050340206093589905,
+            "ci95_honest": [
+              -0.09863722129984959,
+              0.0020431908873302304
+            ],
+            "half_width_naive": 0.019105426126577667,
+            "ci95_naive": [
+              -0.06740244133283735,
+              -0.029191589079682008
+            ],
+            "t_honest": -1.8804481973768241,
+            "t_naive": -4.954725907556906,
+            "powered": true,
+            "verdict": "information_absent"
+          },
+          "verdict_changed": false,
+          "extra": {}
+        }
+      }
+    },
+    "L4": {
+      "spec": {
+        "title": "Ensemble centered at whole-sample mean return",
+        "target": "        center, price_ensemble = centered_scale(ensemble, scale)\n        baseline_score = crps_empirical(ensemble, outcome)",
+        "replacement": "        whole_center = statistics.fmean(\n            p.value for p in annual if p is not None\n        )\n        center, price_ensemble = centered_scale(\n            ensemble, scale, center=whole_center\n        )\n        leaked_base_ensemble = [\n            x - statistics.fmean(ensemble) + whole_center for x in ensemble\n        ]\n        baseline_score = crps_empirical(leaked_base_ensemble, outcome)",
+        "leak_type": "baseline_center",
+        "description": "center = whole-sample mean 12m return; baseline shifted to center"
+      },
+      "audit": {
+        "yahoo": {
+          "caught": false,
+          "first_origin": null,
+          "error_message": null
+        },
+        "shiller": {
+          "caught": false,
+          "first_origin": null,
+          "error_message": null
+        }
+      },
+      "measurement": {
+        "yahoo": {
+          "fake_gain_metrics": {
+            "n": 1052,
+            "mean": 0.20372973725600138,
+            "s": 1.0156104337548841,
+            "tau": 12.097757588996181,
+            "n_eff": 86.9582641461483,
+            "half_width_honest": 0.21346554885304733,
+            "ci95_honest": [
+              -0.009735811597045951,
+              0.4171952861090487
+            ],
+            "half_width_naive": 0.061372717736041985,
+            "ci95_naive": [
+              0.14235701951995938,
+              0.2651024549920434
+            ],
+            "t_honest": 1.8706076327878718,
+            "t_naive": 6.506315831395262,
+            "powered": true,
+            "verdict": "information_absent"
+          },
+          "diff_vs_honest_metrics": {
+            "n": 1052,
+            "mean": 0.03492451377536002,
+            "s": 2.3375055006957206,
+            "tau": 9.18302624878743,
+            "n_eff": 114.55918468477765,
+            "half_width_honest": 0.42804926517708164,
+            "ci95_honest": [
+              -0.39312475140172165,
+              0.46297377895244163
+            ],
+            "half_width_naive": 0.14125402864388806,
+            "ci95_naive": [
+              -0.10632951486852804,
+              0.17617854241924807
+            ],
+            "t_honest": 0.15991628199942687,
+            "t_naive": 0.48460244041802414,
+            "powered": true,
+            "verdict": "information_absent"
+          },
+          "verdict_changed": false,
+          "extra": {
+            "price_forecast_with_leaked_center": {
+              "n": 1052,
+              "mean": 0.280430747274028,
+              "s": 1.9300840260159517,
+              "tau": 11.695174401164294,
+              "n_eff": 89.95162995562254,
+              "half_width_honest": 0.39886668989783725,
+              "ci95_honest": [
+                -0.11843594262380924,
+                0.6792974371718652
+              ],
+              "half_width_naive": 0.11663379795890254,
+              "ci95_naive": [
+                0.16379694931512545,
+                0.39706454523293055
+              ],
+              "t_honest": 1.3780149573229006,
+              "t_naive": 4.7125642333174245,
+              "powered": true,
+              "verdict": "information_absent"
+            }
+          }
+        },
+        "shiller": {
+          "fake_gain_metrics": {
+            "n": 1735,
+            "mean": 0.09720895274392391,
+            "s": 1.3344907141641258,
+            "tau": 11.725074619497377,
+            "n_eff": 147.97347192272068,
+            "half_width_honest": 0.21502041493545931,
+            "ci95_honest": [
+              -0.1178114621915354,
+              0.31222936767938325
+            ],
+            "half_width_naive": 0.06279454066340248,
+            "ci95_naive": [
+              0.03441441208052143,
+              0.1600034934073264
+            ],
+            "t_honest": 0.8860998032920752,
+            "t_naive": 3.0341737572281353,
+            "powered": true,
+            "verdict": "information_absent"
+          },
+          "diff_vs_honest_metrics": {
+            "n": 1735,
+            "mean": 0.15377429457521208,
+            "s": 2.473748217776861,
+            "tau": 11.111332845630617,
+            "n_eff": 156.14688391611503,
+            "half_width_honest": 0.3880117744929712,
+            "ci95_honest": [
+              -0.23423747991775912,
+              0.5417860690681833
+            ],
+            "half_width_naive": 0.11640237088461591,
+            "ci95_naive": [
+              0.037371923690596165,
+              0.270176665459828
+            ],
+            "t_honest": 0.7767744104190206,
+            "t_naive": 2.589273870256274,
+            "powered": true,
+            "verdict": "information_absent"
+          },
+          "verdict_changed": false,
+          "extra": {
+            "price_forecast_with_leaked_center": {
+              "n": 1735,
+              "mean": -0.14046378781252364,
+              "s": 2.189416583823337,
+              "tau": 11.841770045166038,
+              "n_eff": 146.51525856206345,
+              "half_width_honest": 0.3545218825384374,
+              "ci95_honest": [
+                -0.4949856703509611,
+                0.21405809472591378
+              ],
+              "half_width_naive": 0.1030231287807324,
+              "ci95_naive": [
+                -0.24348691659325605,
+                -0.03744065903179124
+              ],
+              "t_honest": -0.7765642621022052,
+              "t_naive": -2.672303077675847,
+              "powered": true,
+              "verdict": "information_absent"
+            }
+          }
+        }
+      }
+    },
+    "L5": {
+      "spec": {
+        "title": "Recent volatility is future realized volatility over t+1..t+12",
+        "target": "        recent_vol_point = rolling_vol[i]",
+        "replacement": "        future_window = [\n            log_returns[j] for j in range(i + 1, i + HORIZON + 1)\n        ]\n        recent_vol_point = TimedValue(\n            value=(statistics.stdev(float(v) for v in future_window)\n                   * math.sqrt(12.0) * 100.0),\n            available_index=i + HORIZON,\n            source_indices=tuple(range(i + 1, i + HORIZON + 1)),\n        )",
+        "leak_type": "price_volatility",
+        "description": "recent_vol = realized stdev over t+1..t+12"
+      },
+      "audit": {
+        "yahoo": {
+          "caught": true,
+          "first_origin": "1937-12",
+          "error_message": "recent-volatility source lookahead or omission"
+        },
+        "shiller": {
+          "caught": true,
+          "first_origin": "1881-01",
+          "error_message": "recent-volatility source lookahead or omission"
+        }
+      },
+      "measurement": {
+        "yahoo": {
+          "fake_gain_metrics": {
+            "n": 1052,
+            "mean": 0.3642025801311042,
+            "s": 1.902544888236629,
+            "tau": 7.34503353224622,
+            "n_eff": 143.22603094751057,
+            "half_width_honest": 0.3115874844829812,
+            "ci95_honest": [
+              0.052615095648123,
+              0.6757900646140853
+            ],
+            "half_width_naive": 0.11496962469575914,
+            "ci95_naive": [
+              0.24923295543534504,
+              0.4791722048268633
+            ],
+            "t_honest": 2.2909683238447074,
+            "t_naive": 6.208918737848983,
+            "powered": true,
+            "verdict": "information_present"
+          },
+          "diff_vs_honest_metrics": {
+            "n": 1052,
+            "mean": 0.1953973566504628,
+            "s": 1.735029894540035,
+            "tau": 6.135049743127165,
+            "n_eff": 171.47375229980995,
+            "half_width_honest": 0.25969537051205654,
+            "ci95_honest": [
+              -0.06429801386159376,
+              0.45509272716251936
+            ],
+            "half_width_naive": 0.10484679601755635,
+            "ci95_naive": [
+              0.09055056063290644,
+              0.3002441526680191
+            ],
+            "t_honest": 1.474723320172267,
+            "t_naive": 3.6527469944887794,
+            "powered": true,
+            "verdict": "information_absent"
+          },
+          "verdict_changed": true,
+          "extra": {}
+        },
+        "shiller": {
+          "fake_gain_metrics": {
+            "n": 1735,
+            "mean": 0.22082772168129652,
+            "s": 2.563682859847238,
+            "tau": 8.327291581907907,
+            "n_eff": 208.35105663520977,
+            "half_width_honest": 0.3481148240005508,
+            "ci95_honest": [
+              -0.1272871023192543,
+              0.5689425456818473
+            ],
+            "half_width_naive": 0.12063425086594207,
+            "ci95_naive": [
+              0.10019347081535446,
+              0.3414619725472386
+            ],
+            "t_honest": 1.2433320980742155,
+            "t_naive": 3.5878892718149022,
+            "powered": true,
+            "verdict": "information_absent"
+          },
+          "diff_vs_honest_metrics": {
+            "n": 1735,
+            "mean": 0.2773930635125847,
+            "s": 2.1901301846843233,
+            "tau": 6.183472757338848,
+            "n_eff": 280.5866651455393,
+            "half_width_honest": 0.25626688408672327,
+            "ci95_honest": [
+              0.021126179425861424,
+              0.533659947599308
+            ],
+            "half_width_naive": 0.10305670731208301,
+            "ci95_naive": [
+              0.1743363562005017,
+              0.3804497708246677
+            ],
+            "t_honest": 2.121578862685495,
+            "t_naive": 5.275643077148074,
+            "powered": true,
+            "verdict": "information_present"
+          },
+          "verdict_changed": false,
+          "extra": {}
+        }
       }
     }
   }

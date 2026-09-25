@@ -10,5 +10,49 @@ Executing Shiller honest route_forecasts (audit enabled)...
 Route yahoo   : n=1052, max |delta_act - delta_pub| = 0.000e+00 pp -> EXACT MATCH (<= 1e-9)
 Route shiller : n=1735, max |delta_act - delta_pub| = 1.113e-04 pp -> DATA SHIFT
 
+==============================================================================
+2. FIVE LOOKAHEAD LEAKS ON Z28 INSTRUMENT
+==============================================================================
+
+--- [L1] Ensemble peeks 1 month ahead ---
+  Audit [yahoo  ]: CAUGHT (first: 1937-12) -> scenario lookahead or omission: actual=(119, 120, 121) expected=(118, 119, 120)
+  Audit [shiller]: CAUGHT (first: 1881-01) -> scenario lookahead or omission: actual=(119, 120, 121) expected=(118, 119, 120)
+  [yahoo  ] Fake gain: +0.005 pp, 95% CI [-0.000, +0.011], t_h=+1.88 (t_naive=+4.67), vrd=information_absent
+  [yahoo  ] Diff vs honest Z28: -0.164 pp, 95% CI [-0.509, +0.182], tau= 8.88
+  [shiller] Fake gain: +0.001 pp, 95% CI [-0.002, +0.004], t_h=+0.82 (t_naive=+2.18), vrd=information_absent
+  [shiller] Diff vs honest Z28: +0.058 pp, 95% CI [-0.274, +0.389], tau=10.31
+
+--- [L2] Ensemble includes incomplete 12-month return windows ---
+  Audit [yahoo  ]: CAUGHT (first: 1937-12) -> scenario lookahead or omission: actual=(129, 130, 131) expected=(118, 119, 120)
+  Audit [shiller]: CAUGHT (first: 1881-01) -> scenario lookahead or omission: actual=(129, 130, 131) expected=(118, 119, 120)
+  [yahoo  ] Fake gain: +0.188 pp, 95% CI [+0.109, +0.266], t_h=+4.68 (t_naive=+20.28), vrd=information_present
+  [yahoo  ] Diff vs honest Z28: +0.019 pp, 95% CI [-0.333, +0.371], tau= 8.55
+  [shiller] Fake gain: +0.128 pp, 95% CI [+0.087, +0.169], t_h=+6.14 (t_naive=+22.47), vrd=information_present
+  [shiller] Diff vs honest Z28: +0.185 pp, 95% CI [-0.135, +0.504], tau= 9.94
+
+--- [L3] Reference volatility is whole-sample constant mean ---
+  Audit [yahoo  ]: BLIND (passed) (first: None) -> OK
+  Audit [shiller]: BLIND (passed) (first: None) -> OK
+  [yahoo  ] Fake gain: -0.306 pp, 95% CI [-1.077, +0.465], t_h=-0.78 (t_naive=-3.60), vrd=information_absent
+  [yahoo  ] Diff vs honest Z28: -0.475 pp, 95% CI [-1.138, +0.189], tau=24.58
+  [shiller] Fake gain: -0.105 pp, 95% CI [-0.429, +0.219], t_h=-0.63 (t_naive=-1.99), vrd=information_absent
+  [shiller] Diff vs honest Z28: -0.048 pp, 95% CI [-0.099, +0.002], tau= 6.94
+
+--- [L4] Ensemble centered at whole-sample mean return ---
+  Audit [yahoo  ]: BLIND (passed) (first: None) -> OK
+  Audit [shiller]: BLIND (passed) (first: None) -> OK
+  [yahoo  ] Fake gain: +0.204 pp, 95% CI [-0.010, +0.417], t_h=+1.87 (t_naive=+6.51), vrd=information_absent
+  [yahoo  ] Diff vs honest Z28: +0.035 pp, 95% CI [-0.393, +0.463], tau= 9.18
+  [shiller] Fake gain: +0.097 pp, 95% CI [-0.118, +0.312], t_h=+0.89 (t_naive=+3.03), vrd=information_absent
+  [shiller] Diff vs honest Z28: +0.154 pp, 95% CI [-0.234, +0.542], tau=11.11
+
+--- [L5] Recent volatility is future realized volatility over t+1..t+12 ---
+  Audit [yahoo  ]: CAUGHT (first: 1937-12) -> recent-volatility source lookahead or omission
+  Audit [shiller]: CAUGHT (first: 1881-01) -> recent-volatility source lookahead or omission
+  [yahoo  ] Fake gain: +0.364 pp, 95% CI [+0.053, +0.676], t_h=+2.29 (t_naive=+6.21), vrd=information_present
+  [yahoo  ] Diff vs honest Z28: +0.195 pp, 95% CI [-0.064, +0.455], tau= 6.14
+  [shiller] Fake gain: +0.221 pp, 95% CI [-0.127, +0.569], t_h=+1.24 (t_naive=+3.59), vrd=information_absent
+  [shiller] Diff vs honest Z28: +0.277 pp, 95% CI [+0.021, +0.534], tau= 6.18
+
 Machine results written to C:\Users\marke\orca\workspaces\loodo-market-cycle\z29-cena-podglyadyvaniya\research\Z29\result.json
 Z29 run complete.
