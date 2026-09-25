@@ -1,6 +1,6 @@
 
 ==============================================================================
-1. HONESTY CONTROL: REPRODUCING Z28 IN MEMORY
+1. HONEST CONTROL: REPRODUCING Z28 IN MEMORY
 ==============================================================================
 Z28 source sha256: 2efdf022670bf4fc0e04339037aeb5588306ed16f63638dd48871c6f2f46f5fc
 Loading Yahoo ^GSPC route...
@@ -11,70 +11,105 @@ Route yahoo   : n=1052, max |delta_act - delta_pub| = 0.000e+00 pp -> EXACT MATC
 Route shiller : n=1735, max |delta_act - delta_pub| = 1.113e-04 pp -> DATA SHIFT
 
 ==============================================================================
-2. FIVE LOOKAHEAD LEAKS ON Z28 INSTRUMENT
+2. FIVE LOOKAHEAD LEAKS ON Z28 INSTRUMENT (ROUND 2)
 ==============================================================================
 
 --- [L1] Ensemble peeks 1 month ahead ---
-  Audit [yahoo  ]: CAUGHT (first: 1937-12) -> scenario lookahead or omission: actual=(119, 120, 121) expected=(118, 119, 120)
-  Audit [shiller]: CAUGHT (first: 1881-01) -> scenario lookahead or omission: actual=(119, 120, 121) expected=(118, 119, 120)
-  [yahoo  ] Fake gain: +0.005 pp, 95% CI [-0.000, +0.011], t_h=+1.88 (t_naive=+4.67), vrd=information_absent
-  [yahoo  ] Diff vs honest Z28: -0.164 pp, 95% CI [-0.509, +0.182], tau= 8.88
-  [shiller] Fake gain: +0.001 pp, 95% CI [-0.002, +0.004], t_h=+0.82 (t_naive=+2.18), vrd=information_absent
-  [shiller] Diff vs honest Z28: +0.058 pp, 95% CI [-0.274, +0.389], tau=10.31
+  Audit [yahoo  ]: CAUGHT (first origin: 1937-12) -> scenario lookahead or omission: actual=(119, 120, 121) expected=(118, 119, 120)
+  Audit [shiller]: CAUGHT (first origin: 1881-01) -> scenario lookahead or omission: actual=(119, 120, 121) expected=(118, 119, 120)
+  [yahoo  ] Fake gain d: +0.005 pp, 95% CI [-0.000, +0.011], t_h=+1.88, vrd=information_absent
+  [yahoo  ] Z28 under leak (delta - d): +0.164 pp, 95% CI [-0.182, +0.509], t_h=+0.93, vrd=information_absent
+  [yahoo  ] Max difference vs round 1: 0.000e+00 pp
+  [shiller] Fake gain d: +0.001 pp, 95% CI [-0.002, +0.004], t_h=+0.82, vrd=information_absent
+  [shiller] Z28 under leak (delta - d): -0.058 pp, 95% CI [-0.389, +0.274], t_h=-0.34, vrd=information_absent
+  [shiller] Max difference vs round 1: 0.000e+00 pp
 
 --- [L2] Ensemble includes incomplete 12-month return windows ---
-  Audit [yahoo  ]: CAUGHT (first: 1937-12) -> scenario lookahead or omission: actual=(129, 130, 131) expected=(118, 119, 120)
-  Audit [shiller]: CAUGHT (first: 1881-01) -> scenario lookahead or omission: actual=(129, 130, 131) expected=(118, 119, 120)
-  [yahoo  ] Fake gain: +0.188 pp, 95% CI [+0.109, +0.266], t_h=+4.68 (t_naive=+20.28), vrd=information_present
-  [yahoo  ] Diff vs honest Z28: +0.019 pp, 95% CI [-0.333, +0.371], tau= 8.55
-  [shiller] Fake gain: +0.128 pp, 95% CI [+0.087, +0.169], t_h=+6.14 (t_naive=+22.47), vrd=information_present
-  [shiller] Diff vs honest Z28: +0.185 pp, 95% CI [-0.135, +0.504], tau= 9.94
+  Audit [yahoo  ]: CAUGHT (first origin: 1937-12) -> scenario lookahead or omission: actual=(129, 130, 131) expected=(118, 119, 120)
+  Audit [shiller]: CAUGHT (first origin: 1881-01) -> scenario lookahead or omission: actual=(129, 130, 131) expected=(118, 119, 120)
+  [yahoo  ] Fake gain d: +0.188 pp, 95% CI [+0.109, +0.266], t_h=+4.68, vrd=information_present
+  [yahoo  ] Z28 under leak (delta - d): -0.019 pp, 95% CI [-0.371, +0.333], t_h=-0.11, vrd=information_absent
+  [yahoo  ] Max difference vs round 1: 0.000e+00 pp
+  [shiller] Fake gain d: +0.128 pp, 95% CI [+0.087, +0.169], t_h=+6.14, vrd=information_present
+  [shiller] Z28 under leak (delta - d): -0.185 pp, 95% CI [-0.504, +0.135], t_h=-1.13, vrd=information_absent
+  [shiller] Max difference vs round 1: 0.000e+00 pp
 
 --- [L3] Reference volatility is whole-sample constant mean ---
-  Audit [yahoo  ]: BLIND (passed) (first: None) -> OK
-  Audit [shiller]: BLIND (passed) (first: None) -> OK
-  [yahoo  ] Fake gain: -0.306 pp, 95% CI [-1.077, +0.465], t_h=-0.78 (t_naive=-3.60), vrd=information_absent
-  [yahoo  ] Diff vs honest Z28: -0.475 pp, 95% CI [-1.138, +0.189], tau=24.58
-  [shiller] Fake gain: -0.105 pp, 95% CI [-0.429, +0.219], t_h=-0.63 (t_naive=-1.99), vrd=information_absent
-  [shiller] Diff vs honest Z28: -0.048 pp, 95% CI [-0.099, +0.002], tau= 6.94
+  Audit [yahoo  ]: BLIND (passed) (first origin: None) -> OK
+  Audit [shiller]: BLIND (passed) (first origin: None) -> OK
+  [yahoo  ] Z28 under leak d: -0.306 pp, 95% CI [-1.077, +0.465], t_h=-0.78, vrd=information_absent
+  [yahoo  ] Fake gain (d - delta): -0.475 pp, 95% CI [-1.138, +0.189], t_h=-1.40, vrd=information_absent
+  [yahoo  ] Max difference vs round 1: 0.000e+00 pp
+  [shiller] Z28 under leak d: -0.105 pp, 95% CI [-0.429, +0.219], t_h=-0.63, vrd=information_absent
+  [shiller] Fake gain (d - delta): -0.048 pp, 95% CI [-0.099, +0.002], t_h=-1.88, vrd=information_absent
+  [shiller] Max difference vs round 1: 0.000e+00 pp
 
 --- [L4] Ensemble centered at whole-sample mean return ---
-  Audit [yahoo  ]: BLIND (passed) (first: None) -> OK
-  Audit [shiller]: BLIND (passed) (first: None) -> OK
-  [yahoo  ] Fake gain: +0.204 pp, 95% CI [-0.010, +0.417], t_h=+1.87 (t_naive=+6.51), vrd=information_absent
-  [yahoo  ] Diff vs honest Z28: +0.035 pp, 95% CI [-0.393, +0.463], tau= 9.18
-  [shiller] Fake gain: +0.097 pp, 95% CI [-0.118, +0.312], t_h=+0.89 (t_naive=+3.03), vrd=information_absent
-  [shiller] Diff vs honest Z28: +0.154 pp, 95% CI [-0.234, +0.542], tau=11.11
+  Audit [yahoo  ]: BLIND (passed) (first origin: None) -> OK
+  Audit [shiller]: BLIND (passed) (first origin: None) -> OK
+  [yahoo  ] Fake gain d: +0.204 pp, 95% CI [-0.010, +0.417], t_h=+1.87, vrd=information_absent
+  [yahoo  ] Z28 under leak (delta - d): -0.035 pp, 95% CI [-0.463, +0.393], t_h=-0.16, vrd=information_absent
+  [yahoo  ] Max difference vs round 1: 0.000e+00 pp
+  [shiller] Fake gain d: +0.097 pp, 95% CI [-0.118, +0.312], t_h=+0.89, vrd=information_absent
+  [shiller] Z28 under leak (delta - d): -0.154 pp, 95% CI [-0.542, +0.234], t_h=-0.78, vrd=information_absent
+  [shiller] Max difference vs round 1: 0.000e+00 pp
 
 --- [L5] Recent volatility is future realized volatility over t+1..t+12 ---
-  Audit [yahoo  ]: CAUGHT (first: 1937-12) -> recent-volatility source lookahead or omission
-  Audit [shiller]: CAUGHT (first: 1881-01) -> recent-volatility source lookahead or omission
-  [yahoo  ] Fake gain: +0.364 pp, 95% CI [+0.053, +0.676], t_h=+2.29 (t_naive=+6.21), vrd=information_present
-  [yahoo  ] Diff vs honest Z28: +0.195 pp, 95% CI [-0.064, +0.455], tau= 6.14
-  [shiller] Fake gain: +0.221 pp, 95% CI [-0.127, +0.569], t_h=+1.24 (t_naive=+3.59), vrd=information_absent
-  [shiller] Diff vs honest Z28: +0.277 pp, 95% CI [+0.021, +0.534], tau= 6.18
+  Audit [yahoo  ]: CAUGHT (first origin: 1937-12) -> recent-volatility source lookahead or omission
+  Audit [shiller]: CAUGHT (first origin: 1881-01) -> recent-volatility source lookahead or omission
+  [yahoo  ] Z28 under leak d: +0.364 pp, 95% CI [+0.053, +0.676], t_h=+2.29, vrd=information_present
+  [yahoo  ] Fake gain (d - delta): +0.195 pp, 95% CI [-0.064, +0.455], t_h=+1.47, vrd=information_absent
+  [yahoo  ] Max difference vs round 1: 0.000e+00 pp
+  [shiller] Z28 under leak d: +0.221 pp, 95% CI [-0.127, +0.569], t_h=+1.24, vrd=information_absent
+  [shiller] Fake gain (d - delta): +0.277 pp, 95% CI [+0.021, +0.534], t_h=+2.12, vrd=information_present
+  [shiller] Max difference vs round 1: 0.000e+00 pp
 
 ==============================================================================
-3. Z03: REALTIME RECALCULATION BY PRE-REGISTRATION
+3. Z03: REALTIME RECALCULATION BY ARCHITECT SPECIFICATION (ROUND 2)
 ==============================================================================
-Reproducing published economic dating...
-  Published econ: TP=5, FA=1, FN=0, FA/TP=0.2, lags=[5, 7, 12, 22, 22]
-  Reproduction control: EXACT MATCH (5/1/0, lags [5, 7, 12, 22, 22])
-Recalculating by pre-registered recognition month...
-  Corrected prereg: TP=2, FA=4, FN=6, FA/TP=2.0, lags=[6, 15]
-  U1 (FN <= 1): FAIL
-  U2 (FA/TP <= 0.5): FAIL
+Signals (6): 1989-06, 2000-07, 2006-08, 2019-05, 2020-02, 2022-11
+Window: t_start=1982-01 (from T10Y3M.first 1982-01-04) .. t_end=2026-03 (from _last_covered_mi)
+Last covered vintage: 2026Q2
+Truncated sheet to vintage 2026Q2: 244 columns (from 245)
+Control 1 (parsing): EXACT MATCH with Z03 result.json two_quarter_realtime_events
+Control 2 (scoring): EXACT MATCH with published 5/1/0, lags [5, 7, 12, 22, 22]
+
+Variant (A) Vintage Edge (Primary):
+  Events (8): 1970Q2 (1970-05), 1974Q3 (1974-08), 1981Q4 (1981-11), 1982Q2 (1982-05), 1991Q2 (1991-05), 2009Q1 (2009-02), 2020Q3 (2020-08), 2022Q3 (2022-08)
+  Score: TP=3, FA=3, FN=2, censored=0, FA/TP=1.0, lags=[6, 15, 23]
+  U1 (FN <= 1): False, U2 (FA/TP <= 0.5): False
+
+Variant (B) Strictly First Publications (Sensitivity):
+  Events (11): 1965Q4 (1965-11), 1965Q4 (1965-11), 1965Q4 (1965-11), 1965Q4 (1965-11), 1970Q2 (1970-05), 1974Q3 (1974-08), 1981Q4 (1981-11), 1991Q2 (1991-05), 2009Q1 (2009-02), 2020Q3 (2020-08), 2022Q3 (2022-08)
+  Score: TP=3, FA=3, FN=2, censored=0, FA/TP=1.0, lags=[6, 15, 23]
+  U1 (FN <= 1): False, U2 (FA/TP <= 0.5): False
+
+Variant (C) Round 1 Legacy (by recognised_month):
+  Score: TP=2, FA=4, FN=6, censored=0, FA/TP=2.0, lags=[6, 15]
+  U1 (FN <= 1): False, U2 (FA/TP <= 0.5): False
 
 ==============================================================================
-4. Z01: OUT-OF-SAMPLE LAG AUDIT AND CLEAN SPLIT
+4. Z01: OUT-OF-SAMPLE RECALCULATION VIA ALFRED (ROUND 2)
 ==============================================================================
-Auditing published Z01 claims...
-  Claim A published: in-sample peak lag 19 (r=-0.6032, span ['1986-01', '2015-12']), OOS r_at_peak=-0.2214, OOS peak lag 0 (r=-0.3827)
-  Claim B published: in-sample peak lag 17 (r=0.2981, span ['1986-01', '2015-12']), OOS r_at_peak=0.0677, OOS peak lag 20 (r=0.0959)
-Checking data requirements for clean cut recalculation (t <= 2009-12)...
-  Note: result.json stores 37-lag CCF arrays, not raw observation series.
-  Re-running Z01/run.py requires FRED_API_KEY (absent in isolated tree per spec 8).
-  Per spec section 0: stopping condition applies only to Z01 clean cut; discrepancy documented.
+Fetching vintage series from ALFRED on 2026-07-27 (no API key needed)...
+Fetching NAHB HMI table 2...
+Loaded monthly counts: UNRATE=941, DGS10=775, HMI=501
+
+Claim A: NAHB HMI → уровень безработицы (обратная связь)
+  Published split (computed vs published in result.json):
+    In-sample:  computed lag=19, r=-0.6032 (published lag=19, r=-0.6032)
+    Out-sample: computed r_at_peak=-0.2214, peak lag=0, r=-0.3827 (published r_at_peak=-0.2214, lag=0, r=-0.3827)
+  Clean partition (t <= 2009-12):
+    In-sample peak:  lag=17, r=-0.6144, n=288
+    Out-sample:      r at in-sample peak=-0.3141, peak lag=0, r=-0.3827, n=117
+
+Claim B: NAHB HMI YoY → US10Y YoY (прямая связь)
+  Published split (computed vs published in result.json):
+    In-sample:  computed lag=17, r=0.3046 (published lag=17, r=0.2981)
+    Out-sample: computed r_at_peak=0.0668, peak lag=20, r=0.0947 (published r_at_peak=0.0677, lag=20, r=0.0959)
+  Clean partition (t <= 2009-12):
+    In-sample peak:  lag=34, r=0.2355, n=288
+    Out-sample:      r at in-sample peak=-0.0195, peak lag=20, r=0.0947, n=127
 
 ==============================================================================
 5. SHILLER DIVIDEND INTERPOLATION AUDIT
@@ -85,4 +120,4 @@ Literal quote from Shiller documentation:
 Requirements for uncorrupted measurement: To measure true monthly lookahead from dividend interpolation, an independent monthly series of actual cash dividend payments without linear interpolation is required (such as CRSP monthly total return indexes or S&P 500 Daily/Monthly Dividend Points from S&P Dow Jones Indices).
 
 Machine results written to C:\Users\marke\orca\workspaces\loodo-market-cycle\z29-cena-podglyadyvaniya\research\Z29\result.json
-Z29 run complete.
+Z29 Round 2 complete.
