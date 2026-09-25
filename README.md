@@ -143,9 +143,9 @@ tests are kept as results rather than discarded:
 
 | Task | Claim tested | Outcome |
 |---|---|---|
-| Z01 | The NAHB housing index leads unemployment by 10 months and the 10-year yield by 18 | Refuted for unemployment: the peak is at 17 months, although the link itself is strong (p = 0.003 after correction for the lag search). Undetermined for the yield. Reproduced by an independent pipeline to the third decimal |
+| Z01 | The NAHB housing index leads unemployment by 10 months and the 10-year yield by 18 | Refuted for unemployment: the peak is at 17 months, although the link itself is strong (p = 0.003 after correction for the lag search). Undetermined for the yield. Reproduced by an independent pipeline to the third decimal. On a clean out-of-sample split (Z29) the in-sample lead is 17 months and the out-of-sample peak is at lag 0 |
 | Z02 | The twelve-link "H-O-P-E" ordering of the cycle is stable | Refuted: the threshold is met in none of six post-1970 cycles (median rank correlation 0.29), bootstrap intervals cover zero |
-| Z03 | Yield-curve inversion predicts recession | Undetermined: it depends on the definitions. The false-alarm rate was measured for the first time (2 false per 4 correct in the main configuration); lag median 13 months, range 8 to 16; the 2022 to 2024 episode is a false alarm under all 24 definitions |
+| Z03 | Yield-curve inversion predicts recession | Undetermined: it depends on the definitions. The false-alarm rate was measured for the first time (2 false per 4 correct in the main configuration); lag median 13 months, range 8 to 16; the 2022 to 2024 episode is a false alarm under all 24 definitions. Dated by when a recession was first visible in real-time GDP releases, the side check scores 3 correct, 3 false and 2 missed, not the published 5, 1 and 0 (Z29) |
 | Z04 | Dis-inversion is a sharper signal than inversion | Undetermined: only two paired episodes exist, the criterion cannot fire at n = 2, about twenty episodes would be needed |
 | Z05 | The state classifier predicts the sign of prescribed asset pairs | Refuted: hit rate 0.49 at 1 month and 0.48 at 3 months against a 0.55 threshold, 0 of 14 pairs; the specification was also found internally contradictory. Reproduced independently to the fourth decimal |
 | Z06 | Published ISM thresholds separate growth regimes (tested on a composite of five regional Fed surveys, since ISM is proprietary) | Refuted: no identifiable zero-growth line (90 % interval of 4.07 sigma against less than 1.0 required), structural break in 2009. The composite does recognise recessions (AUC 0.92) |
@@ -153,6 +153,7 @@ tests are kept as results rather than discarded:
 | Z26 | The repaired construction v2 has a calibration satisfying both of its requirements | None: of 506 cells, 36 satisfy A, 7 satisfy B, 0 satisfy both |
 | Z27 | Which constraint makes the instrument silent | The curve-shape validator: with it the share of defined states is 0.018, without it 0.290. Requirement B is unattainable in all 864 cells |
 | Z28 | A price-only forecast (recent volatility) of the 12-month S&P 500 return distribution beats the "know nothing" baseline | No information: the CRPS difference is positive, but the 95 % interval covers zero at adequate power for a 1 pp effect. The same verdict on the independent Shiller data route |
+| Z29 | How much fake skill look-ahead gives on the Z28 instrument, and whether the information-set audit catches it | Measured, not a verdict. An ensemble that includes unfinished 12-month windows beats the honest baseline by 0.19 pp of CRPS on Yahoo (95 % interval 0.11 to 0.27, t = 4.7) and by 0.13 pp on the Shiller route, turning "no information" into "information"; the same leak placed in the baseline makes the honest price forecast look worse than it is (+0.17 becomes -0.02). Future volatility in the price forecast gives +0.36 pp on Yahoo (t = 2.3). The audit catches the three leaks that carry their own time labels and misses the two built from constants computed over the whole sample. Recounted in real time: Z03 scores 3 correct, 3 false and 2 missed instead of 5, 1 and 0; on a clean split Z01's unemployment lead moves from 19 to 17 months and the out-of-sample peak stays at lag 0. Reproduced by the architect's own code |
 
 Each task folder in `research/Z##/` holds `HYPOTHESIS.md` (the
 pre-registration), `run.py`, `result.json`, `full-run.txt` (the raw run log)
@@ -227,7 +228,7 @@ chapters in.
 |---|---|
 | Model of the work | Fixed on 2026-08-04 (kept in the private working repository) |
 | Data panel | Ten countries selected and measured; the 2008 recession is covered for all ten through OECD first-release data; vintage density and history depth measured |
-| Measurement tasks | 10 complete (Z01 to Z06, Z25 to Z28), each with a pre-registration file. The conditional forecast that knows the economic state, the core measurement, has not been run yet. Next: Z29, the cost of look-ahead measured on the Z28 instrument |
+| Measurement tasks | 11 complete (Z01 to Z06, Z25 to Z29), each with a pre-registration file. The conditional forecast that knows the economic state, the core measurement, has not been run yet. Z29 measured the cost of look-ahead on the Z28 instrument, the numbers chapter 12 is built on |
 | Book, new edition | 4 of 56 chapters written (8 to 11, part II); chapter 12 is next |
 | Book, previous edition | 38 chapters, kept in the private working repository as material |
 | Analyser | Not started; no product code lives in this repository |
@@ -331,7 +332,7 @@ kept in the private working repository.
 | `book/assets/` | Stylesheet, script and the chapter registry needed to render the book |
 | `book/tools/` | Acceptance instruments: `audit.py` (thirteen detectors), `linkify.py`, `mathcheck.py`, `numbind.py` with per-chapter manifests in `numbers/`, `numbind_sense.py`, `mutate_numbers.py`, `geometry-check.js` with `geometry-run.py` |
 | [`research/sources.py`](research/sources.py), [`research/smoke.py`](research/smoke.py) | Loader (one function per source) and the content-checked smoke test |
-| `research/Z01/` to `research/Z28/` | Completed measurement tasks: pre-registration, code, run log, report |
+| `research/Z01/` to `research/Z29/` | Completed measurement tasks: pre-registration, code, run log, report |
 
 Kept in the private working repository and not published here: the scientific
 model, the chapter plan, the project's decision journal, the data-source map,
