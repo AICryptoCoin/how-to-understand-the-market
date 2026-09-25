@@ -54,5 +54,35 @@ Route shiller : n=1735, max |delta_act - delta_pub| = 1.113e-04 pp -> DATA SHIFT
   [shiller] Fake gain: +0.221 pp, 95% CI [-0.127, +0.569], t_h=+1.24 (t_naive=+3.59), vrd=information_absent
   [shiller] Diff vs honest Z28: +0.277 pp, 95% CI [+0.021, +0.534], tau= 6.18
 
+==============================================================================
+3. Z03: REALTIME RECALCULATION BY PRE-REGISTRATION
+==============================================================================
+Reproducing published economic dating...
+  Published econ: TP=5, FA=1, FN=0, FA/TP=0.2, lags=[5, 7, 12, 22, 22]
+  Reproduction control: EXACT MATCH (5/1/0, lags [5, 7, 12, 22, 22])
+Recalculating by pre-registered recognition month...
+  Corrected prereg: TP=2, FA=4, FN=6, FA/TP=2.0, lags=[6, 15]
+  U1 (FN <= 1): FAIL
+  U2 (FA/TP <= 0.5): FAIL
+
+==============================================================================
+4. Z01: OUT-OF-SAMPLE LAG AUDIT AND CLEAN SPLIT
+==============================================================================
+Auditing published Z01 claims...
+  Claim A published: in-sample peak lag 19 (r=-0.6032, span ['1986-01', '2015-12']), OOS r_at_peak=-0.2214, OOS peak lag 0 (r=-0.3827)
+  Claim B published: in-sample peak lag 17 (r=0.2981, span ['1986-01', '2015-12']), OOS r_at_peak=0.0677, OOS peak lag 20 (r=0.0959)
+Checking data requirements for clean cut recalculation (t <= 2009-12)...
+  Note: result.json stores 37-lag CCF arrays, not raw observation series.
+  Re-running Z01/run.py requires FRED_API_KEY (absent in isolated tree per spec 8).
+  Per spec section 0: stopping condition applies only to Z01 clean cut; discrepancy documented.
+
+==============================================================================
+5. SHILLER DIVIDEND INTERPOLATION AUDIT
+==============================================================================
+Source URL: https://shillerdata.com/
+Literal quote from Shiller documentation:
+  "Monthly dividend and earnings data are computed from the S&P four-quarter totals for the quarters since 1926, with linear interpolation to monthly figures. Dividend and earnings data before 1926 are from Cowles and Associates (Common Stock Indexes, 2nd ed. [Bloomington, Ind.: Principia Press, 1939]), interpolated from annual data. Stock price data are monthly averages of daily closing prices."
+Requirements for uncorrupted measurement: To measure true monthly lookahead from dividend interpolation, an independent monthly series of actual cash dividend payments without linear interpolation is required (such as CRSP monthly total return indexes or S&P 500 Daily/Monthly Dividend Points from S&P Dow Jones Indices).
+
 Machine results written to C:\Users\marke\orca\workspaces\loodo-market-cycle\z29-cena-podglyadyvaniya\research\Z29\result.json
 Z29 run complete.

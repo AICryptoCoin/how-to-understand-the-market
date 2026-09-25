@@ -723,11 +723,23 @@ def main() -> int:
 
     clean_source = read_z28_clean_source()
 
-    full_results: dict[str, Any] = {
-        "task": "Z29",
-        "description": "Price of Lookahead (Cena podglyadyvaniya)",
-        "seed": SEED,
-    }
+    res_path = os.path.join(HERE, "result.json")
+    if os.path.exists(res_path) and args.step != "all":
+        try:
+            with open(res_path, "r", encoding="utf-8") as f:
+                full_results = json.load(f)
+        except Exception:
+            full_results = {
+                "task": "Z29",
+                "description": "Price of Lookahead (Cena podglyadyvaniya)",
+                "seed": SEED,
+            }
+    else:
+        full_results = {
+            "task": "Z29",
+            "description": "Price of Lookahead (Cena podglyadyvaniya)",
+            "seed": SEED,
+        }
 
     ctrl_res = step_control(clean_source)
     full_results["honesty_control"] = ctrl_res["control"]

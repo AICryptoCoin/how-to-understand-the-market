@@ -27,9 +27,9 @@
           "range_parameter": null,
           "routing": "period1/period2",
           "value_rule": "adjclose if present, otherwise close; last daily value per month",
-          "load_started_at_utc": "2026-09-25T07:55:59+00:00",
-          "load_finished_at_utc": "2026-09-25T07:56:00+00:00",
-          "series_fetched_at": "2026-09-25T07:56:00+00:00",
+          "load_started_at_utc": "2026-09-25T07:59:28+00:00",
+          "load_finished_at_utc": "2026-09-25T07:59:28+00:00",
+          "series_fetched_at": "2026-09-25T07:59:28+00:00",
           "source": "Yahoo Finance",
           "series_id": "^GSPC",
           "title": "S&P 500",
@@ -42,11 +42,11 @@
           "fetches": [
             {
               "tag": "yahoo",
-              "url": "https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?period1=-2208988800&period2=1790322959&interval=1d",
-              "started_at_utc": "2026-09-25T07:55:59+00:00",
-              "finished_at_utc": "2026-09-25T07:56:00+00:00",
+              "url": "https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?period1=-2208988800&period2=1790323168&interval=1d",
+              "started_at_utc": "2026-09-25T07:59:28+00:00",
+              "finished_at_utc": "2026-09-25T07:59:28+00:00",
               "bytes": 2652565,
-              "sha256": "de470ca5b6c456a44895c1eabf7608551565e47e329154ade3065522c4923f34"
+              "sha256": "be23c3eaabacb05bd225177a6c2415dc96e0b76cd3b1b1a5c66859ee5d73d894"
             }
           ],
           "raw_observations": 24800,
@@ -13804,23 +13804,23 @@
           "link_rule": "ie_data.xls href discovered from shillerdata.com page",
           "response_rule": "Real Total Return Price * CPI",
           "price_predictor_rule": "raw nominal P column",
-          "load_started_at_utc": "2026-09-25T07:56:00+00:00",
-          "load_finished_at_utc": "2026-09-25T07:56:01+00:00",
+          "load_started_at_utc": "2026-09-25T07:59:28+00:00",
+          "load_finished_at_utc": "2026-09-25T07:59:29+00:00",
           "source": "Robert Shiller via shillerdata.com",
           "fetches": [
             {
               "tag": "shiller-page",
               "url": "https://shillerdata.com/",
-              "started_at_utc": "2026-09-25T07:56:00+00:00",
-              "finished_at_utc": "2026-09-25T07:56:00+00:00",
+              "started_at_utc": "2026-09-25T07:59:28+00:00",
+              "finished_at_utc": "2026-09-25T07:59:29+00:00",
               "bytes": 121518,
               "sha256": "9a84803bbd7901961a19f1de867f23d68db2a2464f6400f046c3ab36200f2ddc"
             },
             {
               "tag": "shiller",
               "url": "https://img1.wsimg.com/blobby/go/e5e77e0b-59d1-44d9-ab25-4763ac982e53/downloads/70fec4f5-727f-4e53-b5f1-179af109c5fa/ie_data.xls?ver=1788371540009",
-              "started_at_utc": "2026-09-25T07:56:00+00:00",
-              "finished_at_utc": "2026-09-25T07:56:00+00:00",
+              "started_at_utc": "2026-09-25T07:59:29+00:00",
+              "finished_at_utc": "2026-09-25T07:59:29+00:00",
               "bytes": 1674752,
               "sha256": "044196dafe44c3030b2facbdea023975b3f6aa68b4e52f8f9bafc403e19589c1"
             }
@@ -37128,5 +37128,183 @@
         }
       }
     }
+  },
+  "z03_recalculation": {
+    "reproduction_control": {
+      "score": {
+        "n_signals": 6,
+        "TP": 5,
+        "FA": 1,
+        "FN": 0,
+        "censored": 0,
+        "fa_per_tp": 0.2,
+        "peaks_eligible": 5,
+        "peaks_left_edge_excluded": [],
+        "missed_peaks": [],
+        "lags": [
+          5,
+          7,
+          12,
+          22,
+          22
+        ],
+        "lag_median": 12,
+        "lag_min": 5,
+        "lag_max": 22,
+        "lag_iqr": [
+          7,
+          22
+        ],
+        "episodes": [
+          {
+            "signal": "1989-06",
+            "outcome": "TP",
+            "peak": "1990-06",
+            "lag": 12
+          },
+          {
+            "signal": "2000-07",
+            "outcome": "TP",
+            "peak": "2000-12",
+            "lag": 5
+          },
+          {
+            "signal": "2006-08",
+            "outcome": "TP",
+            "peak": "2008-06",
+            "lag": 22
+          },
+          {
+            "signal": "2019-05",
+            "outcome": "TP",
+            "peak": "2019-12",
+            "lag": 7
+          },
+          {
+            "signal": "2020-02",
+            "outcome": "TP",
+            "peak": "2021-12",
+            "lag": 22
+          },
+          {
+            "signal": "2022-11",
+            "outcome": "FA",
+            "peak": null,
+            "lag": null
+          }
+        ]
+      },
+      "matched_published": true
+    },
+    "prereg_recalculated": {
+      "score": {
+        "n_signals": 6,
+        "TP": 2,
+        "FA": 4,
+        "FN": 6,
+        "censored": 0,
+        "fa_per_tp": 2.0,
+        "peaks_eligible": 7,
+        "peaks_left_edge_excluded": [
+          "1982-05"
+        ],
+        "missed_peaks": [
+          "1992-08",
+          "1996-02",
+          "2002-08",
+          "2004-02",
+          "2009-02",
+          "2022-08"
+        ],
+        "lags": [
+          6,
+          15
+        ],
+        "lag_median": 15,
+        "lag_min": 6,
+        "lag_max": 15,
+        "lag_iqr": [
+          6,
+          6
+        ],
+        "episodes": [
+          {
+            "signal": "1989-06",
+            "outcome": "FA",
+            "peak": null,
+            "lag": null
+          },
+          {
+            "signal": "2000-07",
+            "outcome": "FA",
+            "peak": null,
+            "lag": null
+          },
+          {
+            "signal": "2006-08",
+            "outcome": "FA",
+            "peak": null,
+            "lag": null
+          },
+          {
+            "signal": "2019-05",
+            "outcome": "TP",
+            "peak": "2020-08",
+            "lag": 15
+          },
+          {
+            "signal": "2020-02",
+            "outcome": "TP",
+            "peak": "2020-08",
+            "lag": 6
+          },
+          {
+            "signal": "2022-11",
+            "outcome": "FA",
+            "peak": null,
+            "lag": null
+          }
+        ]
+      },
+      "U1": false,
+      "U2": false
+    }
+  },
+  "z01_audit": {
+    "published_reproduced": {
+      "claims_A": {
+        "oos_in_peak_lag": 19,
+        "oos_in_peak_r": -0.6032,
+        "oos_in_span": [
+          "1986-01",
+          "2015-12"
+        ],
+        "oos_out_r_at_insample": -0.2214,
+        "oos_out_peak_lag": 0,
+        "oos_out_peak_r": -0.3827
+      },
+      "claims_B": {
+        "oos_in_peak_lag": 17,
+        "oos_in_peak_r": 0.2981,
+        "oos_in_span": [
+          "1986-01",
+          "2015-12"
+        ],
+        "oos_out_r_at_insample": 0.0677,
+        "oos_out_peak_lag": 20,
+        "oos_out_peak_r": 0.0959
+      },
+      "status": "published_numbers_verified"
+    },
+    "clean_cut_recalculation": {
+      "status": "halted_missing_fred_key",
+      "reason": "Missing FRED_API_KEY for live Z01 refetch; raw monthly series not stored in result.json",
+      "spec_section_0_applied": true
+    }
+  },
+  "shiller_dividend_audit": {
+    "source_url": "https://shillerdata.com/",
+    "exact_quote": "Monthly dividend and earnings data are computed from the S&P four-quarter totals for the quarters since 1926, with linear interpolation to monthly figures. Dividend and earnings data before 1926 are from Cowles and Associates (Common Stock Indexes, 2nd ed. [Bloomington, Ind.: Principia Press, 1939]), interpolated from annual data. Stock price data are monthly averages of daily closing prices.",
+    "requirements_to_measure": "To measure true monthly lookahead from dividend interpolation, an independent monthly series of actual cash dividend payments without linear interpolation is required (such as CRSP monthly total return indexes or S&P 500 Daily/Monthly Dividend Points from S&P Dow Jones Indices)."
   }
 }
