@@ -1,0 +1,14 @@
+
+==============================================================================
+1. HONESTY CONTROL: REPRODUCING Z28 IN MEMORY
+==============================================================================
+Z28 source sha256: 2efdf022670bf4fc0e04339037aeb5588306ed16f63638dd48871c6f2f46f5fc
+Loading Yahoo ^GSPC route...
+Loading Shiller Total Return route...
+Executing Yahoo honest route_forecasts (audit enabled)...
+Executing Shiller honest route_forecasts (audit enabled)...
+Route yahoo   : n=1052, max |delta_act - delta_pub| = 0.000e+00 pp -> EXACT MATCH (<= 1e-9)
+Route shiller : n=1735, max |delta_act - delta_pub| = 1.113e-04 pp -> DATA SHIFT
+
+Machine results written to C:\Users\marke\orca\workspaces\loodo-market-cycle\z29-cena-podglyadyvaniya\research\Z29\result.json
+Z29 run complete.
